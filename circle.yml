@@ -6,9 +6,7 @@ dependencies:
   cache_directories:
     - ~/.android
     - ~/android
-  override:
-    - ./install-dependencies.sh
-
+    
 test:
   override:
     - ./gradlew build
