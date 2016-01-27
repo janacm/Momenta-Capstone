@@ -1,3 +1,14 @@
 machine:
-  pre:
-    - chmod +x ./gradlew
+  environment:
+    ANDROID_HOME: /home/ubuntu/android
+
+dependencies:
+  cache_directories:
+    - ~/.android
+    - ~/android
+  override:
+    - ./install-dependencies.sh
+
+test:
+  override:
+    - ./gradlew build
