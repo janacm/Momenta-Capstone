@@ -14,7 +14,6 @@ test:
     - $ANDROID_HOME/tools/emulator -avd testing -no-window -no-boot-anim -no-audio:
         background: true
         parallel: true
-    - circle-android wait-for-boot    
     #- bin/android-wait-for-emulator
     #- bin/run-tests test.namespace
-    - chmod +x gradlew clean assembleDebug assembleRelease test
+    - chmod +x gradlew
