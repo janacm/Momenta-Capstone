@@ -1,12 +1,4 @@
-machine:
-  environment:
-    ANDROID_HOME: /home/ubuntu/android
 
-dependencies:
-  cache_directories:
-    - ~/.android
-    - ~/android
-    
 test:
   override:
-    - ./gradlew build
+    - chmod +x gradlew clean assembleDebug assembleRelease test
