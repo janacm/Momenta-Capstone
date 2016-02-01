@@ -6,11 +6,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 /**
- * Created by joesi on 2016-01-31.
+ * Created by Joe on 2016-01-31.
+ * For Momenta
  */
 public class ManagerFragmentPagerAdapter  extends FragmentPagerAdapter {
-    final int PAGE_COUNT = 3;
-    private String tabTitles[] = new String[] { "Tab1", "Tab2", "Tab3" };
+    final int PAGE_COUNT = 4;
+    private String tabTitles[] = new String[] { "Dashboard","Log", "Awards", "Trends" };
     private Context context;
 
     public ManagerFragmentPagerAdapter(FragmentManager fm, Context context) {
@@ -25,7 +26,21 @@ public class ManagerFragmentPagerAdapter  extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return PageFragment.newInstance(position + 1);
+        if(position == 0){
+            //Change to Dashboradfragment
+            return DashboardFragment.newInstance(position + 1);
+        }else if(position == 1){
+            //Change to Logfragment
+            return LogFragment.newInstance(position + 1);
+        }else if(position == 2){
+            //Change to AwardsFragment
+            return AwardsFragment.newInstance(position + 1);
+        }else if(position == 3){
+            //Change to StatsFragment
+            return StatsFragment.newInstance(position + 1);
+        }
+
+        return LogFragment.newInstance(position + 1);
     }
 
     @Override
