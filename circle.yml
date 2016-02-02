@@ -26,7 +26,6 @@ test:
     # ru- adb shell input keyevent 82
     # run tests  against the emulator.
     - ADB_INSTALL_TIMEOUT=10 ./gradlew connectedAndroidTest
-        timeout: 360
     # copy the test results to the test results directory.
-    - cp -r /home/ubuntu/TestApp/app/build/outputs/androidTest-results
+    - cp -r /home/ubuntu/Momenta-Capstone/app/build/outputs/androidTest-results
 
