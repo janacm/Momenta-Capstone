@@ -25,5 +25,8 @@ test:
     - adb shell input keyevent 82
     # ru- adb shell input keyevent 82
     # run tests  against the emulator.
-    - ./gradlew connectedAndroidTest
+    - ADB_INSTALL_TIMEOUT=10 ./gradlew connectedAndroidTest
+        timeout: 360
+    # copy the test results to the test results directory.
+    - cp -r /home/ubuntu/TestApp/app/build/outputs/androidTest-results
 
