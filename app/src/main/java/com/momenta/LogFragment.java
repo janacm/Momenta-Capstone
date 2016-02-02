@@ -37,7 +37,7 @@ public class LogFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_log, container, false);
-        TextView textView = (TextView) view;
+        TextView textView = (TextView) view.findViewById(R.id.textView);
         textView.setText("Fragment #" + mPage);
         return view;
     }

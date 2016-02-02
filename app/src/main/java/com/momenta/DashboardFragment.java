@@ -35,7 +35,7 @@ public class DashboardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
-        TextView textView = (TextView) view;
+        TextView textView = (TextView) view.findViewById(R.id.textView3);
         textView.setText("Fragment #" + mPage);
         return view;
     }
