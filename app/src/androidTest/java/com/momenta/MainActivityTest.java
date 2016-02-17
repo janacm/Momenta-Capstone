@@ -26,4 +26,16 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActiv
         TextView textView = (TextView) activity.findViewById(R.id.textView2);
         assertNotNull(textView);
     }
+
+    @SmallTest
+    public void textTextViewNotNull2(){
+        TextView textView = (TextView) activity.findViewById(R.id.textView2);
+        assertNotNull(textView);
+    }
+
+    @SmallTest
+    public void textTextViewNotNull3(){
+        TextView textView = (TextView) activity.findViewById(R.id.textView2);
+        assertNotNull(textView);
+    }
 }
