@@ -4,10 +4,7 @@ dependencies:
     - echo y | android update sdk --no-ui --all --filter "build-tools-23.0.2"
 
     - echo n | android create avd -n testing -f -t android-23
-  cache_directories:
-    - ~/.android
-    - ~/android
-  
+
   override:
     #- ./install-dependencies.sh
     # - VERSION=`perl -ne '/VERSION_NAME=(.*)/ && print "$1\n"' <  gradle.properties`.jar && cd Branch-SDK && jar -cf $VERSION src/
