@@ -1,11 +1,18 @@
 package com.momenta;
 import android.test.ActivityInstrumentationTestCase2;
+import android.support.test.runner.AndroidJUnit4;
+
+import android.test.suitebuilder.annotation.LargeTest;
 import android.test.suitebuilder.annotation.SmallTest;
 import android.widget.TextView;
+
+import org.junit.runner.RunWith;
 
 /**
  * Created by joesi on 2016-02-16.
  */
+@RunWith(AndroidJUnit4.class)
+@LargeTest
 public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActivity> {
 
     private MainActivity activity;
