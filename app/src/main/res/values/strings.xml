@@ -2,4 +2,16 @@
     <string name="app_name">Momenta</string>
     <string name="action_settings">Settings</string>
     <string name="new_activity_hint">New Activity</string>
+    <string name="dashboard_demo_select_time">Select time</string>
+
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <string name="title_activity_screen_take_over">ScreenTakeOverActivity</string>
+    <string name="demo_button">NOO!!</string>
+
+    <string name="sampleQuote">\"It does not matter how slowly you go as long as you do not stop.\"</string>
+    <string name="quoteCredit">- Confucius</string>
+    <string name="later">Later</string>
+    <string name="dummy_button">GO!</string>
 </resources>
