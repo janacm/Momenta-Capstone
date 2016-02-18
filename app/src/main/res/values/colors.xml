@@ -10,4 +10,6 @@
     <color name="primary_dark_material_dark_1">#3597da</color>
     <color name="primary_material_dark">#3597DA</color>
     <color name="primary_text_default_material_light">#3597da</color>
+
+    <color name="black_overlay">#66000000</color>
 </resources>

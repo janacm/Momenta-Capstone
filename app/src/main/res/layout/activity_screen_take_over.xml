@@ -1,0 +1,74 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0099cc"
+    tools:context="com.momenta.ScreenTakeOverActivity">
+
+    <LinearLayout
+        android:id="@+id/st_fullscreen_content"
+        style="?metaButtonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary"
+        android:orientation="vertical"
+        tools:ignore="UselessParent"
+        android:gravity="center_vertical|center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="36sp"
+            android:textColor="#FFFFFF"
+            android:text="M"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="30dp"
+            android:textSize="14sp"
+            android:textColor="#FFFFFF"
+            android:text="Log your progess!"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="40dp"
+            android:paddingEnd="40dp"
+            android:textSize="14sp"
+            android:textColor="#FFFFFF"
+            android:text="@string/sampleQuote"
+            android:textStyle="italic"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:paddingTop="10dp"
+            android:textColor="#FFFFFF"
+            android:text="@string/quoteCredit"
+            />
+
+        <Button
+            android:id="@+id/dummy_button"
+            style="?metaButtonBarButtonStyle"
+            android:background="#FFFFFF"
+            android:layout_marginTop="40dp"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimary"
+            android:text="@string/dummy_button" />
+
+        <Button
+            style="?metaButtonBarButtonStyle"
+            android:layout_marginTop="20dp"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:text="@string/later" />
+
+    </LinearLayout>
+
+</FrameLayout>
