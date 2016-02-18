@@ -1,49 +1,24 @@
 package com.momenta;
-import android.test.ActivityInstrumentationTestCase2;
+import android.support.test.espresso.assertion.ViewAssertions;
+import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
-import android.test.suitebuilder.annotation.LargeTest;
-import android.test.suitebuilder.annotation.SmallTest;
-import android.widget.TextView;
-
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 /**
  * Created by joesi on 2016-02-16.
  */
 @RunWith(AndroidJUnit4.class)
-@SmallTest
-public class MainActivityTest extends ActivityInstrumentationTestCase2<MainActivity> {
-
-    private MainActivity activity;
-
-    public MainActivityTest() {
-        super(MainActivity.class);
-    }
-
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-
-        activity = getActivity();
-    }
+public class MainActivityTest {
+    @Rule public final ActivityTestRule<MainActivity> main = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void textTextViewNotNull(){
-        TextView textView = (TextView) activity.findViewById(R.id.textView2);
-        assertNotNull(textView);
-    }
-
-    @Test
-    public void textTextViewNotNull2(){
-        TextView textView = (TextView) activity.findViewById(R.id.textView2);
-        assertNotNull(textView);
-    }
-
-    @Test
-    public void textTextViewNotNull3(){
-        TextView textView = (TextView) activity.findViewById(R.id.textView2);
-        assertNotNull(textView);
+    public void shouldBeAbleToLaunchMainScreen(){
+        onView(withText("Hello")).check(ViewAssertions.doesNotExist());
     }
 }
