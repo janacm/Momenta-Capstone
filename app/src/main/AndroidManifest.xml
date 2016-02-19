@@ -26,6 +26,11 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_screen_take_over"
             android:theme="@style/FullscreenTheme"></activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_settings"
+            android:theme="@style/momentaTheme"></activity>
     </application>
 
 </manifest>
