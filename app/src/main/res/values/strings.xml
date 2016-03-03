@@ -8,6 +8,8 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
 
     <string name="title_activity_screen_take_over">ScreenTakeOverActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
     <string name="demo_button">NOO!!</string>
 
     <string name="sampleQuote">\"It does not matter how slowly you go as long as you do not stop.\"</string>
