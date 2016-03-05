@@ -1,5 +1,8 @@
 package com.momenta;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Blueprint of a user activity.
  */
@@ -7,14 +10,28 @@ public class Task {
 
     private int id;
     private String name;
-    private double duration;
+    private int hours;
+    private int minutes;
 
-    public Task(int id, String name, double duration) {
-        this.id = id;
+    public Task ( String name ) {
         this.name = name;
-        this.duration = duration;
+        hours = 1;
+        minutes = 45;
     }
 
+    public Task ( String name, int duration  ) {
+        this.name = name;
+        hours = 0;
+        minutes = 0;
+        addMinute(duration);
+    }
+
+    public Task (int id, String name ) {
+        this.id = id;
+        this.name = name;
+        hours = 1;
+        minutes = 45;
+    }
 
     public int getId() {
         return id;
@@ -32,11 +49,31 @@ public class Task {
         this.name = name;
     }
 
-    public double getDuration() {
-        return duration;
+    public String getDuration() {
+        return hours + "h " + minutes + "m";
     }
 
-    public void setDuration(double duration) {
-        this.duration = duration;
+    public void setDuration(int hours, int minutes) {
+        this.hours = hours;
+        this.minutes = minutes;
     }
+
+    public void addMinute(int minutes) {
+        if ( minutes <60 ) {
+            this.minutes += 60;
+        } else {
+            this.hours += minutes/60;
+            this.minutes += minutes % 60;
+        }
+    }
+
+    //Method to create filler activites
+    public static List<Task> createTasks() {
+        List activites = new ArrayList<Task>();
+        activites.add( new Task("Study for law exam") );
+        activites.add( new Task("Go to the gym") );
+        activites.add( new Task("Organize house") );
+        return activites;
+    }
+
 }

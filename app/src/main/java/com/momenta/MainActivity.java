@@ -2,17 +2,14 @@ package com.momenta;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -67,9 +64,16 @@ public class MainActivity extends AppCompatActivity {
         Log.d("MainActivty", "Fragment Retrieved.");
         if (fragment != null && fragment.isVisible()) {
             if (fragment instanceof DashboardFragment) {
-                ((DashboardFragment) fragment).sendBroadcast(v);
+                ( (DashboardFragment) fragment).sendBroadcast(v);
             }
         }
         Log.d("MainActivty", "Request deispatched");
+    }
+
+    public void addButton(View v) {
+        Fragment fragment = fragementManager.getItem(1);
+        if ( fragment instanceof  LogFragment ) {
+            ( (LogFragment) fragment).addActivity();
+        }
     }
 }

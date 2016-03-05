@@ -3,36 +3,64 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <LinearLayout
+        android:id="@+id/new_activity_linear_layout"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="25dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="25dp"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/new_activity_edit_text"
+            android:hint="@string/new_activity_hint"
+            android:singleLine="true"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:id="@+id/new_activity_add_button"
+            android:contentDescription="@string/add_activity_content_description"
+            android:background="@drawable/ic_add_circle_white"
+            android:onClick="addButton"
+            android:layout_weight="0" />
+
+    </LinearLayout>
+
     <TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:textAppearance="?android:attr/textAppearanceMedium"
-    android:text="Medium Text"
-    android:id="@+id/textView"
-    android:layout_centerVertical="true"
-    android:layout_centerHorizontal="true" />
-
-    <EditText
-        android:layout_width="200dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/new_activity_edit_text"
-        android:layout_marginTop="49dp"
-        android:hint="@string/new_activity_hint"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="60dp"
-        android:layout_marginStart="60dp"
-         />
+        android:id="@+id/ongoing_activity_label"
+        android:layout_marginTop="24dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginEnd="25dp"
+        android:layout_below="@+id/new_activity_linear_layout"
+        android:text="@string/ongoing_activity_string"
+        android:textSize="20sp"
+        android:textColor="#eeeeee" />
 
-    <ImageButton
-        android:layout_width="wrap_content"
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/imageButton"
-        android:layout_alignBottom="@+id/new_activity_edit_text"
-        android:layout_toRightOf="@+id/new_activity_edit_text"
-        android:layout_toEndOf="@+id/new_activity_edit_text"
-        android:src="@mipmap/ic_launcher"/>
+        android:id="@+id/activity_recycler_view"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="25dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginEnd="25dp"
+        android:scrollbars="vertical"
+        android:layout_below="@+id/ongoing_activity_label"
+       />
+
 
 
 </RelativeLayout>
