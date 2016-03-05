@@ -20,6 +20,10 @@ public class Task {
     }
 
     public Task ( String name, int duration  ) {
+        //TODO Can this value be negative?
+        if ( duration < 0 ) {
+            throw new IllegalArgumentException("Duration cannot be negative: " + duration);
+        }
         this.name = name;
         hours = 0;
         minutes = 0;
@@ -54,17 +58,33 @@ public class Task {
     }
 
     public void setDuration(int hours, int minutes) {
+        //TODO Can either of these values be negative?
+        if ( hours < 0 || minutes < 0 ) {
+            throw new IllegalArgumentException("Duration cannot be negative: " + hours + " " + minutes);
+        }
         this.hours = hours;
         this.minutes = minutes;
     }
 
     public void addMinute(int minutes) {
-        if ( minutes <60 ) {
-            this.minutes += 60;
-        } else {
-            this.hours += minutes/60;
-            this.minutes += minutes % 60;
+        //TODO Can this value be negative?
+        if ( minutes < 0 ) {
+            throw new IllegalArgumentException("Duration cannot be negative: " + minutes);
         }
+
+        this.minutes += minutes;
+        if ( ! (this.minutes < 60) ) {
+            this.hours += this.minutes/60;
+            this.minutes = this.minutes % 60;
+        }
+    }
+
+    public int getHours(){
+        return hours;
+    }
+
+    public int getMinutes(){
+        return minutes;
     }
 
     //Method to create filler activites
