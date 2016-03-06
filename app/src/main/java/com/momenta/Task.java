@@ -13,28 +13,46 @@ public class Task {
     private int hours;
     private int minutes;
 
+    /**
+     * Creates a task with hours and minutes equals zero.
+     * @param name the name of the task
+     */
     public Task ( String name ) {
         this.name = name;
-        hours = 1;
-        minutes = 45;
+        hours = 0;
+        minutes = 0;
     }
 
+    /**
+     * Creates a task with name and duration
+     * @param name the name of the task
+     * @param duration the duration in minutes of the task
+     */
     public Task ( String name, int duration  ) {
         //TODO Can this value be negative?
         if ( duration < 0 ) {
             throw new IllegalArgumentException("Duration cannot be negative: " + duration);
         }
         this.name = name;
-        hours = 0;
-        minutes = 0;
+        hours = 0; minutes = 0;
         addMinute(duration);
     }
 
-    public Task (int id, String name ) {
+    /**
+     * Creates a task with its ID, name and duration
+     * @param id the id of the task
+     * @param name the name of the task
+     * @param duration the duration in minutes of the task
+     */
+    public Task (int id, String name, int duration) {
         this.id = id;
         this.name = name;
-        hours = 1;
-        minutes = 45;
+        //TODO Can this value be negative?
+        if ( duration < 0 ) {
+            throw new IllegalArgumentException("Duration cannot be negative: " + duration);
+        }
+        hours = 0; minutes = 0;
+        addMinute(duration);
     }
 
     public int getId() {
@@ -53,10 +71,27 @@ public class Task {
         this.name = name;
     }
 
-    public String getDuration() {
-        return hours + "h " + minutes + "m";
+    /**
+     * Used to get the hours and minute values in a string
+     * @return String in format 0h 00m
+     */
+    public String getTimeString() {
+        if ( hours>0 && minutes>0 ) {
+            return hours + "h " + minutes + "m";
+        } else if ( hours==0 && minutes>0 ) {
+            return minutes + "m";
+        } else if ( hours>0 ) {
+            return hours + "h";
+        } else {
+            return "";
+        }
     }
 
+    /**
+     * Used to set the hours and minutes of the task
+     * @param hours Sets the hour value of this task
+     * @param minutes Sets the minute value of this task
+     */
     public void setDuration(int hours, int minutes) {
         //TODO Can either of these values be negative?
         if ( hours < 0 || minutes < 0 ) {
@@ -66,6 +101,10 @@ public class Task {
         this.minutes = minutes;
     }
 
+    /**
+     * Used to add time to task
+     * @param minutes the time in minutes to be added to the task
+     */
     public void addMinute(int minutes) {
         //TODO Can this value be negative?
         if ( minutes < 0 ) {
@@ -79,21 +118,20 @@ public class Task {
         }
     }
 
+    /**
+     * Used to get the time of this task in minutes
+     * @return the total time of this task in minutes.
+     */
+    public int getTime() {
+        return (this.hours*60) + minutes;
+    }
+
     public int getHours(){
         return hours;
     }
 
     public int getMinutes(){
         return minutes;
-    }
-
-    //Method to create filler activites
-    public static List<Task> createTasks() {
-        List activites = new ArrayList<Task>();
-        activites.add( new Task("Study for law exam") );
-        activites.add( new Task("Go to the gym") );
-        activites.add( new Task("Organize house") );
-        return activites;
     }
 
 }

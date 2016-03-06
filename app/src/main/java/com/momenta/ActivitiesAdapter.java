@@ -16,14 +16,15 @@ public class ActivitiesAdapter extends
         RecyclerView.Adapter<ActivitiesAdapter.ViewHolder> {
 
     private List<Task> tasks;
+    private Context context;
 
-    public ActivitiesAdapter(List<Task> tasks) {
-        this.tasks = tasks;
+    public ActivitiesAdapter(Context context) {
+        this.tasks = DBHelper.getInstance(context).getTasksList();
     }
 
     @Override
     public ActivitiesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
+        context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the item_activity layout
@@ -40,11 +41,12 @@ public class ActivitiesAdapter extends
 
         //Set the fields of the item_activity layout from the task object
         holder.activityName.setText( task.getName() );
-        holder.activityDuration.setText( task.getDuration() );
+        holder.activityDuration.setText( task.getTimeString() );
     }
 
-    public void addItem( Task task ) {
-        tasks.add(task);
+    public void retrieveTasks() {
+        tasks.clear();
+        tasks.addAll( DBHelper.getInstance(context).getTasksList() );
         notifyDataSetChanged();
     }
 

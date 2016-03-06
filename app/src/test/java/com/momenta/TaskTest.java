@@ -64,4 +64,17 @@ public class TaskTest {
         exception.expect(IllegalArgumentException.class);
         task.setDuration(30, -40);
     }
+
+    @Test
+    public void testGetTime() {
+        Task task = new Task("Test task", 198);
+        task.setDuration(7, 14);
+        assertEquals(434, task.getTime());
+
+        task.addMinute(60);
+        assertEquals(494, task.getTime());
+
+        assertEquals(8, task.getHours());
+        assertEquals(14, task.getMinutes());
+    }
 }

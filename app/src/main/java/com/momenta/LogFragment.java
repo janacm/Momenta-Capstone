@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import java.util.ArrayList;
+
 /**
  * Created by Joe on 2016-01-31.
  * For Momenta
@@ -19,6 +21,7 @@ public class LogFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private EditText newActivity;
 
     private int mPage;
 
@@ -45,17 +48,21 @@ public class LogFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new ActivitiesAdapter( Task.createTasks() );
+        mAdapter = new ActivitiesAdapter(this.getContext());
         mRecyclerView.setAdapter(mAdapter);
+
+        newActivity = (EditText) view.findViewById(R.id.new_activity_edit_text);
 
         return view;
     }
 
     public void addActivity() {
-        EditText editText = (EditText) getView().findViewById(R.id.new_activity_edit_text);
         //If the text box is empty do nothing.
-        if ( !editText.getText().toString().trim().isEmpty() ) {
-            ( (ActivitiesAdapter) mAdapter ).addItem( new Task(editText.getText().toString().trim(), 30 ) );
+        if ( !newActivity.getText().toString().trim().isEmpty() ) {
+            Task task = new Task(newActivity.getText().toString().trim(), 30);
+            DBHelper.getInstance(getContext()).insertTask(task);
+            ((ActivitiesAdapter) mAdapter).retrieveTasks();
+            newActivity.setText("");
         }
 
     }
