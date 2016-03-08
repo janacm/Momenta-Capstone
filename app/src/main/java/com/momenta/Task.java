@@ -101,6 +101,11 @@ public class Task {
         this.minutes = minutes;
     }
 
+    public void setTimeInMinutes( int minutes ) {
+        hours = 0; this.minutes = 0;
+        addMinute(minutes);
+    }
+
     /**
      * Used to add time to task
      * @param minutes the time in minutes to be added to the task

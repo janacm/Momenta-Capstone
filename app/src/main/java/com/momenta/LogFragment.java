@@ -1,15 +1,17 @@
 package com.momenta;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
-
-import java.util.ArrayList;
 
 /**
  * Created by Joe on 2016-01-31.
@@ -56,14 +58,30 @@ public class LogFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Call back method for the add activity button on log fragment.
+     * This method is called by the addButton in MainActivity.java
+     */
     public void addActivity() {
         //If the text box is empty do nothing.
         if ( !newActivity.getText().toString().trim().isEmpty() ) {
-            Task task = new Task(newActivity.getText().toString().trim(), 30);
-            DBHelper.getInstance(getContext()).insertTask(task);
-            ((ActivitiesAdapter) mAdapter).retrieveTasks();
-            newActivity.setText("");
-        }
 
+            LayoutInflater inflater = LayoutInflater.from(getContext());
+            View alertView = inflater.inflate(R.layout.activity_alert_dialog, null);
+            TimeDialogBuilder timeDialogBuilder = new TimeDialogBuilder(this, alertView,
+                    newActivity.getText().toString().trim());
+            AlertDialog alertDialog = timeDialogBuilder.getAlertDialog();
+            alertDialog.show();
+        }
+    }
+
+    /**
+     * Public method to update the LogFragment view after an activity has been added
+     * This method retrieves clears the recycyler view and retrieves all the activites from the db,
+     * Clears the new activity edit text.
+     */
+    public void updateView( ) {
+        ((ActivitiesAdapter) mAdapter).retrieveTasks();
+        newActivity.setText("");
     }
 }
