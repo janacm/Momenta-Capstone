@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -19,7 +20,9 @@ public class ActivitiesAdapter extends
     private Context context;
 
     public ActivitiesAdapter(Context context) {
-        this.tasks = DBHelper.getInstance(context).getTasksList();
+        List<Task> list = DBHelper.getInstance(context).getTasksList();
+        Collections.reverse(list);
+        this.tasks = list;
     }
 
     @Override
@@ -45,8 +48,10 @@ public class ActivitiesAdapter extends
     }
 
     public void retrieveTasks() {
+        List<Task> list = DBHelper.getInstance(context).getTasksList();
+        Collections.reverse(list);
         tasks.clear();
-        tasks.addAll( DBHelper.getInstance(context).getTasksList() );
+        tasks.addAll( list );
         notifyDataSetChanged();
     }
 
