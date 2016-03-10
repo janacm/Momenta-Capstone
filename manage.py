@@ -11,7 +11,22 @@ if __name__ == "__main__":
     from django.core.management import execute_from_command_line
 
     execute_from_command_line(sys.argv)
-    
+  
+#Start
+my_settings = {
+    'MONGO_HOST': 'localhost',
+    'MONGO_PORT': 27017,
+    'MONGO_DBNAME': 'the_db_name',
+    'DOMAIN': {'contacts': {}}
+}
+   
+from eve import Eve
+
+app = Eve(settings=my_settings)
+app.run()
+
+#End
+
 from pymongo import MongoClient
 client = MongoClient()
 
