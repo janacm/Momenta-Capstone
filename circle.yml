@@ -17,6 +17,7 @@ test:
     - emulator -avd circleci-android22 -no-window -no-audio:
         background: true
         parallel: true
+    - cp -r ${HOME}/${CIRCLE_PROJECT_REPONAME}/app/build/outputs/apk/ $CIRCLE_ARTIFACTS
     #wait for it to have booted
     - circle-android wait-for-boot
     #unlock the emulator screen
