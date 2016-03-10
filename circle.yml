@@ -19,7 +19,7 @@ test:
         parallel: true
     #wait for it to have booted
     - circle-android wait-for-boot
-    - cp -r /home/ubuntu/Momenta-Capstone/app/build/outputs/app-debug.apk $CIRCLE_ARTIFACTS
+    - cp -r /home/ubuntu/Momenta-Capstone/app/build/outputs/apk/app-debug.apk $CIRCLE_ARTIFACTS
     #unlock the emulator screen
     - sleep 30
     - adb shell input keyevent 82
