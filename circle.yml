@@ -5,7 +5,7 @@ dependencies:
 
     - echo n | android create avd -n testing -f -t android-23
   artifacts:
-        - /home/ubuntu/app/build/outputs/apk/
+        - /home/ubuntu/Momenta-Capstone/build/outputs/apk/
   override:
     #- ./install-dependencies.sh
     # - VERSION=`perl -ne '/VERSION_NAME=(.*)/ && print "$1\n"' <  gradle.properties`.jar && cd Branch-SDK && jar -cf $VERSION src/
