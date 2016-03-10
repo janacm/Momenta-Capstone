@@ -5,13 +5,6 @@ import sys
 import pymongo
 import datetime
 
-if __name__ == "__main__":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gettingstarted.settings")
-
-    from django.core.management import execute_from_command_line
-
-    execute_from_command_line(sys.argv)
-  
 #Start
 my_settings = {
     'MONGO_HOST': 'momenta.herokuapp.com',
@@ -22,10 +15,28 @@ my_settings = {
    
 from eve import Eve
 
+if 'PORT' in os.environ:
+    port = int(os.environ.get('PORT'))
+    # use '0.0.0.0' to ensure your REST API is reachable from all your
+    # network (and not only your computer).
+    host = '0.0.0.0'
+else:
+    port = 5000
+    host = 'momenta.herokuapp.com'
+
 app = Eve(settings=my_settings)
-app.run()
+
 
 #End
+
+if __name__ == "__main__":
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gettingstarted.settings")
+
+    from django.core.management import execute_from_command_line
+
+    execute_from_command_line(sys.argv)
+    app.run(host=host, port=port)
+
 
 from pymongo import MongoClient
 client = MongoClient()
