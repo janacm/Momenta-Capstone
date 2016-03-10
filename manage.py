@@ -5,7 +5,6 @@ import sys
 import pymongo
 import datetime
 
-
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gettingstarted.settings")
 
@@ -48,4 +47,3 @@ result = db.Momenta.insert_one(
     }
 )
 print result.inserted_id
-
