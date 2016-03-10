@@ -17,7 +17,7 @@ my_settings = {
     'MONGO_HOST': 'momenta.herokuapp.com',
    # 'MONGO_PORT': 27017,
     #'MONGO_DBNAME': 'the_db_name',
-    #'DOMAIN': {'contacts': {}}
+    'DOMAIN': {'contacts': {}}
 }
    
 from eve import Eve
