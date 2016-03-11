@@ -35,3 +35,8 @@ build
 *.ipr
 *~
 *.swp
+venv
+*.pyc
+staticfiles
+.env
+db.sqlite3
