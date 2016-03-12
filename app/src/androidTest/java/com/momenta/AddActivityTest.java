@@ -21,6 +21,6 @@ public class AddActivityTest {
     @Test
     public void addActivity(){
         onView(withId(R.id.new_activity_edit_text)).perform(typeText("Test activity"));
-        onView(withId(R.id.imageButton)).perform(click());
+        onView(withId(R.id.new_activity_add_button)).perform(click());
     }
 }
