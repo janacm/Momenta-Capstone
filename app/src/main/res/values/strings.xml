@@ -2,4 +2,37 @@
     <string name="app_name">Momenta</string>
     <string name="action_settings">Settings</string>
     <string name="new_activity_hint">New Activity</string>
+    <string name="dashboard_demo_select_time">Select time</string>
+    <string name="title_activity_screen_take_over">ScreenTakeOverActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="ongoing_activity_string">Ongoing activities</string>
+    <string name="add_activity_content_description">Add activity button</string>
+    <string name="H_string">H</string>
+    <string name="M_string">M</string>
+    <string name="set_goal_String">Set your goal for</string>
+    <string name="dialog_done">Done</string>
+    <string name="dialog_more">More</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_hour_string">00</string>
+
+
+    <!-- Demo/Sample strings-->
+    <string name="sample_duration_string">1h 45m</string>
+    <string name="dummy_button">GO!</string>
+    <string name="demo_activty">Go swimming</string>
+    <string name="later">Later</string>
+    <string name="sampleQuote">\"It does not matter how slowly you go as long as you do not stop.\"</string>
+    <string name="quoteCredit">- Confucius</string>
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_content">DUMMY CONTENT</string>
+    <string name="one">1</string>
+    <string name="two">2</string>
+    <string name="three">3</string>
+    <string name="four">4</string>
+    <string name="five">5</string>
+    <string name="six">6</string>
+    <string name="seven">7</string>
+    <string name="eight">8</string>
+    <string name="nine">9</string>
+    <string name="zero">0</string>
 </resources>
