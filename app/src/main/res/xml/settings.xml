@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory
-        android:title="Settings">
-    <EditTextPreference
+    <com.momenta.IntervalDialogPreference
+        android:defaultValue="0"
+        android:inputType="number"
         android:key="interval_time"
-        android:title="Interval Time"
-        android:summary="Time interval of notifications"
-        android:defaultValue="0"/>
-    </PreferenceCategory>
-
+        android:title="@string/interval_time_title" />
 
 </PreferenceScreen>

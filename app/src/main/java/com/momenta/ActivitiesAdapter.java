@@ -13,8 +13,7 @@ import java.util.List;
 /**
  * Adapter to handle the activities data and serve the recycler view
  */
-public class ActivitiesAdapter extends
-        RecyclerView.Adapter<ActivitiesAdapter.ViewHolder> {
+public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.ViewHolder> {
 
     private List<Task> tasks;
     private Context context;
