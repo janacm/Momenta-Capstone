@@ -5,6 +5,29 @@ import sys
 import pymongo
 import datetime
 
+#Start
+my_settings = {
+    'MONGO_HOST': 'momenta.herokuapp.com',
+   # 'MONGO_PORT': 27017,
+    #'MONGO_DBNAME': 'the_db_name',
+    'DOMAIN': {'contacts': {}}
+}
+   
+from eve import Eve
+
+if 'PORT' in os.environ:
+    port = int(os.environ.get('PORT'))
+    # use '0.0.0.0' to ensure your REST API is reachable from all your
+    # network (and not only your computer).
+    host = '0.0.0.0'
+else:
+    port = 5000
+    host = '127.0.0.1'
+
+app = Eve(settings=my_settings)
+
+
+#End
 
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "gettingstarted.settings")
@@ -12,7 +35,9 @@ if __name__ == "__main__":
     from django.core.management import execute_from_command_line
 
     execute_from_command_line(sys.argv)
-    
+    app.run(host=host, port=port)
+
+
 from pymongo import MongoClient
 client = MongoClient()
 
@@ -48,4 +73,3 @@ result = db.Momenta.insert_one(
     }
 )
 print result.inserted_id
-

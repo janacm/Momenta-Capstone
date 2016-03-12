@@ -19,7 +19,6 @@ test:
         parallel: true
     #wait for it to have booted
     - circle-android wait-for-boot
-    - cp -r /home/ubuntu/Momenta-Capstone/app/build/outputs/app-debug.apk $CIRCLE_ARTIFACTS
     #unlock the emulator screen
     - sleep 30
     - adb shell input keyevent 82
@@ -29,4 +28,5 @@ test:
     - ADB_INSTALL_TIMEOUT=10 ./gradlew connectedAndroidTest
     # copy the test results to the test results directory.
     - cp -r /home/ubuntu/Momenta-Capstone/app/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
+    - cp -r /home/ubuntu/Momenta-Capstone/app/build/outputs/ $CIRCLE_ARTIFACTS
 
