@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,10 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -81,6 +86,7 @@ public class LogFragment extends Fragment implements View.OnClickListener {
         switch ( v.getId() ) {
             case R.id.new_activity_add_button:
                 addActivity();
+                httpRequest();
                 return;
             case R.id.new_activity_goal_edit_text:
                 inputGoal();
@@ -150,6 +156,32 @@ public class LogFragment extends Fragment implements View.OnClickListener {
      */
     private void toast(String toToast) {
         Toast.makeText(getContext(), toToast, Toast.LENGTH_LONG).show();
+    }
+
+    private void httpRequest(){
+        String ping_url = "http://momenta.herokuapp.com/people";
+        new HttpTask(ping_url,"GET") {
+            @Override
+            protected void onPostExecute(JSONObject json) {
+                super.onPostExecute(json);
+                try
+                {
+                    if(json != null) {
+                        JSONArray ping_result = json.getJSONArray("_items");
+                        JSONObject status_obj = ping_result.getJSONObject(0);
+                        String status = status_obj.getString("_created");
+                        toast(status);
+
+                    }
+                }
+                catch (JSONException e)
+                {
+
+                    e.printStackTrace();
+                }
+            }
+        }.execute();
+
     }
 
 }
