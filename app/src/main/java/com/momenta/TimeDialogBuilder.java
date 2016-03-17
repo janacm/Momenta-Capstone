@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -13,24 +14,45 @@ import android.widget.TextView;
  */
 public class TimeDialogBuilder implements View.OnClickListener{
 
-    private static final String POSITIVE = "POSITIVE";
-    private static final String NEGATIVE = "NEGATIVE";
-    private static final String NEUTRAL = "NEUTRAL";
-    public String CLICKED = "";
     private String time;
     private AlertDialog.Builder builder;
     private View view;
-    private String activity;
+    private EditText timeText;
+    private TextView goalTextView;
 
-    public TimeDialogBuilder(LogFragment fragment, View v, String activity){
-        time = "";
+//    public TimeDialogBuilder(LogFragment fragment, View v, String activity){
+//        time = "";
+//        view = v;
+//        this.activity = activity;
+//
+//        TextView nameTextView = (TextView)v.findViewById(R.id.activity_name_textview);
+//        nameTextView.setText(activity);
+//        setUpButtons(v);
+//        setUpDialogButtons(fragment, v);
+//    }
+
+    public TimeDialogBuilder(LogFragment fragment, View v, String activity, EditText edittext){
         view = v;
-        this.activity = activity;
+        timeText = edittext;
 
         TextView nameTextView = (TextView)v.findViewById(R.id.activity_name_textview);
         nameTextView.setText(activity);
         setUpButtons(v);
         setUpDialogButtons(fragment, v);
+        time = Task.stripNonDigits( edittext.getText().toString() );
+        updateTextView();
+    }
+
+    public TimeDialogBuilder(TaskActivity taskActivity, View v, String activity, TextView textview){
+        view = v;
+        goalTextView = textview;
+
+        TextView nameTextView = (TextView)v.findViewById(R.id.activity_name_textview);
+        nameTextView.setText(activity);
+        setUpButtons(v);
+        setUpDialogButtons(taskActivity, v);
+        time = Task.stripNonDigits( textview.getText().toString() );
+        updateTextView();
     }
 
     private void setUpDialogButtons(final LogFragment fragment, View v) {
@@ -39,22 +61,36 @@ public class TimeDialogBuilder implements View.OnClickListener{
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        CLICKED = NEGATIVE;
                     }
                 })
                 .setNeutralButton(fragment.getContext().getString(R.string.dialog_more),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                CLICKED = NEUTRAL;
                             }
                         })
                 .setPositiveButton(R.string.dialog_done, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Task task = new Task(activity);
-                        task.setTimeInMinutes( timeInMinutes() );
-                        DBHelper.getInstance(fragment.getContext()).insertTask(task);
-                        fragment.updateView();
-                        CLICKED = POSITIVE;
+                        timeText.setText(getTimeString(timeInMinutes()) );
+                    }
+                });
+    }
+
+    private void setUpDialogButtons(final TaskActivity taskActivity, View v) {
+        builder = new AlertDialog.Builder(taskActivity);
+        builder.setView(v)
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                })
+                .setNeutralButton(taskActivity.getString(R.string.dialog_more),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                            }
+                        })
+                .setPositiveButton(R.string.dialog_done, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        goalTextView.setText( getTimeString( timeInMinutes() ) );
                     }
                 });
     }
@@ -156,7 +192,30 @@ public class TimeDialogBuilder implements View.OnClickListener{
         String temp = "0000" + time;
         int minutes = Integer.valueOf( temp.substring( temp.length()-2, temp.length() ) );
         int hour = Integer.valueOf( temp.substring( temp.length()-4, temp.length()-2 ) );
-        int result = (hour*60) + minutes;
-        return result;
+        return (hour*60) + minutes;
+    }
+
+    /**
+     * Converts minutes to hours and minutes.
+     * @param minutes Time in minutes to be converted to.
+     * @return String representation of time in 0H 00M format.
+     */
+    private String getTimeString(int minutes) {
+        int hours = 0;
+
+        if ( ! (minutes < 60) ) {
+            hours += minutes/60;
+            minutes = minutes % 60;
+        }
+
+        if ( hours>0 && minutes>0 ) {
+            return hours + "H " + minutes + "M";
+        } else if ( hours==0 && minutes>0 ) {
+            return minutes + "M";
+        } else if ( hours>0 ) {
+            return hours + "H";
+        } else {
+            return "";
+        }
     }
 }
