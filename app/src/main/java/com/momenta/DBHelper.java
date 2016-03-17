@@ -130,7 +130,8 @@ public class DBHelper extends SQLiteOpenHelper {
             int dbID = cursor.getInt(cursor.getColumnIndex(ACTIVITY_ID));
             String name = cursor.getString(cursor.getColumnIndex(ACTIVITY_NAME));
             int duration = cursor.getInt(cursor.getColumnIndex(ACTIVITY_DURATION));
-            cal.setTimeInMillis( cursor.getInt(cursor.getColumnIndex(ACTIVITY_DEADLINE)) );
+            long along = cursor.getLong(cursor.getColumnIndex(ACTIVITY_DEADLINE));
+            cal.setTimeInMillis( along );
 
             task = new Task(dbID, name, duration , cal);
         } else {
