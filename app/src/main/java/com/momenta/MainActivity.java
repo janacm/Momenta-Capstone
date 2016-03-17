@@ -71,15 +71,4 @@ public class MainActivity extends AppCompatActivity {
         Log.d("MainActivty", "Request deispatched");
     }
 
-    /**
-     * Call back method for the add activity button on the log fragement
-     * This method call the addActivity() method in LogFragment.java
-     * @param v The view off the button
-     */
-    public void addButton(View v) {
-        Fragment fragment = fragementManager.getItem(1);
-        if ( fragment instanceof  LogFragment ) {
-            ( (LogFragment) fragment).addActivity();
-        }
-    }
 }

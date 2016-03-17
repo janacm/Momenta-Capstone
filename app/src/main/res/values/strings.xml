@@ -14,6 +14,8 @@
     <string name="dialog_more">More</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_hour_string">00</string>
+    <string name="activity_string">Activity</string>
+    <string name="goal_string">Goal</string>
 
 
     <!-- Demo/Sample strings-->
@@ -35,4 +37,14 @@
     <string name="eight">8</string>
     <string name="nine">9</string>
     <string name="zero">0</string>
+    <string name="title_activity_task">TaskActivity</string>
+    <string name="deadline_string">Deadline</string>
+    <string name="sample_time_string">50 hours</string>
+    <string name="priority_string">Priority</string>
+    <string name="sample_deadline_string">March 12 5PM</string>
+    <string name="sample_priority_string">Priority 1</string>
+    <string name="goal_icon_content_description">Icon for Goal</string>
+    <string name="task_name_hint">Activity Name</string>
+    <string name="deadline_icon_content_description">Deadline Icon</string>
+    <string name="priority_icon_content_description">Priority Icon</string>
 </resources>

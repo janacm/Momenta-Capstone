@@ -5,8 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -15,7 +17,7 @@ import java.util.List;
 public class DBHelper extends SQLiteOpenHelper {
 
     //DBHelper Instance
-    private static DBHelper mInstance = null;
+    public static DBHelper mInstance = null;
 
     //Database Constants, DB_VERSION must be incremented if the schema is changed.
     public static final int DATABASE_VERSION = 1;
@@ -25,25 +27,27 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String SAMPLE_TABLE = "SAMPLE_TABLE";
 
     //Sample Table Columns
-    private static final String ACTIVITY_ID = "ACTIVITY_ID";
-    private static final String ACTIVITY_NAME = "ACTIVITY_NAME";
-    private static final String ACTIVITY_DURATION = "ACTIVITY_DURATION";
+    public static final String ACTIVITY_ID = "ACTIVITY_ID";
+    public static final String ACTIVITY_NAME = "ACTIVITY_NAME";
+    public static final String ACTIVITY_DURATION = "ACTIVITY_DURATION";
+    public static final String ACTIVITY_DEADLINE = "ACTIVITY_DEADLINE";
 
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_SAMPLE_TABLE = "CREATE TABLE " + SAMPLE_TABLE +  "("
                 + ACTIVITY_ID + " INTEGER PRIMARY KEY, " + ACTIVITY_NAME
-                + " CHAR(32) NOT NULL, " + ACTIVITY_DURATION + " INTEGER NOT NULL)";
+                + " CHAR(32) NOT NULL, " + ACTIVITY_DURATION + " INTEGER NOT NULL, "
+                + ACTIVITY_DEADLINE + " long default 0)";
         db.execSQL(CREATE_SAMPLE_TABLE);
 
         //Inserting dummy data
         db.execSQL("INSERT INTO " +  SAMPLE_TABLE
-                + " VALUES ( 1, 'Study for law exam', 120);");
+                + " VALUES ( 1, 'Study for law exam', 120, 0);");
         db.execSQL("INSERT INTO " + SAMPLE_TABLE
-                + " VALUES ( 2, 'Go to the gym', 50);");
+                + " VALUES ( 2, 'Go to the gym', 50, 0);");
         db.execSQL("INSERT INTO " + SAMPLE_TABLE
-                + " VALUES ( 3, 'Organize House', 72);");
+                + " VALUES ( 3, 'Organize House', 72, 0);");
     }
 
     @Override
@@ -76,6 +80,9 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(ACTIVITY_NAME, task.getName());
         values.put(ACTIVITY_DURATION, task.getTime());
+        if ( task.getDeadline() != null) {
+            values.put(ACTIVITY_DEADLINE, task.getDeadline().getTimeInMillis());
+        }
 
         return db.insert(SAMPLE_TABLE, null, values);
     }
@@ -84,20 +91,73 @@ public class DBHelper extends SQLiteOpenHelper {
      * Used to retrieve all the shows in the database.
      * @return ArrayList containing all shows.
      */
-    public List<Task> getTasksList() {
+    public List<Task> getAllTasks() {
         SQLiteDatabase db = getReadableDatabase();
         List<Task> taskList = new ArrayList<>();
+        Calendar cal = Calendar.getInstance();
+
         Cursor cursor = db.query(SAMPLE_TABLE,
-                new String[]{ACTIVITY_ID, ACTIVITY_NAME, ACTIVITY_DURATION},
+                new String[]{ACTIVITY_ID, ACTIVITY_NAME, ACTIVITY_DURATION, ACTIVITY_DEADLINE},
                 null, null, null, null, null, null);
         while (cursor != null && cursor.moveToNext()) {
-            Task task = new Task(cursor.getInt(cursor.getColumnIndex(ACTIVITY_ID)), cursor.getString(cursor
-                    .getColumnIndex(ACTIVITY_NAME)), cursor.getInt(cursor.getColumnIndex(ACTIVITY_DURATION)));
-            taskList.add(task);
+            int id = cursor.getInt(cursor.getColumnIndex(ACTIVITY_ID));
+            String name = cursor.getString(cursor.getColumnIndex(ACTIVITY_NAME));
+            int duration = cursor.getInt(cursor.getColumnIndex(ACTIVITY_DURATION));
+            cal.setTimeInMillis(cursor.getLong(cursor.getColumnIndex(ACTIVITY_DEADLINE)) );
+
+            taskList.add( new Task(id, name, duration, cal) );
         }
         if (cursor != null) {
             cursor.close();
         }
         return taskList;
+    }
+
+    /**
+     * Used to retrieve a single task from the db
+     * @param id of the task to be retrieved from the db
+     * @return Task object of the task with the corresponding id
+     *         or null if no task with the id could be found.
+     */
+    public Task getTask(int id) {
+        SQLiteDatabase db = getReadableDatabase();
+        Calendar cal = Calendar.getInstance();
+        Task task;
+        Cursor cursor = db.query(SAMPLE_TABLE,
+                new String[]{ACTIVITY_ID, ACTIVITY_NAME, ACTIVITY_DURATION, ACTIVITY_DEADLINE},
+                ACTIVITY_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
+        if (cursor != null && cursor.moveToNext()) {
+            int dbID = cursor.getInt(cursor.getColumnIndex(ACTIVITY_ID));
+            String name = cursor.getString(cursor.getColumnIndex(ACTIVITY_NAME));
+            int duration = cursor.getInt(cursor.getColumnIndex(ACTIVITY_DURATION));
+            cal.setTimeInMillis( cursor.getInt(cursor.getColumnIndex(ACTIVITY_DEADLINE)) );
+
+            task = new Task(dbID, name, duration , cal);
+        } else {
+            return null;
+        }
+        cursor.close();
+        return task;
+    }
+
+    /**
+     * Used to update the fields of a task in the DB matching the id of
+     * the provided task, with its fields.
+     * @param task the updated task fields to be matched
+     * @return true if the operation was successful and false otherwise.
+     */
+    public boolean updateTask(Task task) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(ACTIVITY_NAME, task.getName());
+        cv.put(ACTIVITY_DURATION, task.getTime());
+        cv.put(ACTIVITY_DEADLINE, task.getDeadline().getTimeInMillis());
+        String[] whereArgs = new String[]{task.getId() + ""};
+        int result = 0;
+        try {
+            result = db.update(SAMPLE_TABLE, cv, ACTIVITY_ID + " = ?", whereArgs);
+        } catch (Exception e) {
+        }
+        return result > 0;
     }
 }

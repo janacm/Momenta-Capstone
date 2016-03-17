@@ -28,10 +28,60 @@
             android:id="@+id/new_activity_add_button"
             android:contentDescription="@string/add_activity_content_description"
             android:background="@drawable/ic_add_circle_white"
-            android:onClick="addButton"
             android:layout_weight="0" />
 
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginStart="25dp"
+        android:layout_below="@+id/new_activity_linear_layout"
+        android:text="@string/goal_string"/>
+
+
+    <EditText
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/new_activity_goal_edit_text"
+        android:layout_below="@+id/new_activity_linear_layout"
+        android:layout_marginLeft="25dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="25dp"
+        android:hint="for 1 hour"
+        android:focusable="false"
+        android:inputType="time"
+        android:singleLine="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:id="@+id/new_activity_by_textview"
+        android:layout_below="@+id/new_activity_linear_layout"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@id/new_activity_goal_edit_text"
+        android:text="@string/deadline_string"/>
+
+    <EditText
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/new_activity_deadline_edit_text"
+        android:layout_toRightOf="@+id/new_activity_goal_edit_text"
+        android:layout_below="@+id/new_activity_linear_layout"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="25dp"
+        android:hint="By March 25th"
+        android:focusable="false"
+        android:layout_marginEnd="25dp"
+        android:singleLine="true"
+        android:inputType="time" />
 
     <TextView
         android:layout_width="match_parent"
@@ -42,7 +92,7 @@
         android:layout_marginStart="25dp"
         android:layout_marginRight="25dp"
         android:layout_marginEnd="25dp"
-        android:layout_below="@+id/new_activity_linear_layout"
+        android:layout_below="@+id/new_activity_goal_edit_text"
         android:text="@string/ongoing_activity_string"
         android:textSize="20sp"
         android:textColor="#eeeeee" />
