@@ -1,6 +1,7 @@
 package com.momenta;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,14 +14,13 @@ import java.util.List;
 /**
  * Adapter to handle the activities data and serve the recycler view
  */
-public class ActivitiesAdapter extends
-        RecyclerView.Adapter<ActivitiesAdapter.ViewHolder> {
+public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.ViewHolder> {
 
     private List<Task> tasks;
     private Context context;
 
     public ActivitiesAdapter(Context context) {
-        List<Task> list = DBHelper.getInstance(context).getTasksList();
+        List<Task> list = DBHelper.getInstance(context).getAllTasks();
         Collections.reverse(list);
         this.tasks = list;
     }
@@ -38,17 +38,27 @@ public class ActivitiesAdapter extends
     }
 
     @Override
-    public void onBindViewHolder(ActivitiesAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(ActivitiesAdapter.ViewHolder holder, final int position) {
         //Get the tasks at index, position from the tasks list
         Task task = tasks.get(position);
 
         //Set the fields of the item_activity layout from the task object
         holder.activityName.setText( task.getName() );
         holder.activityDuration.setText( task.getTimeString() );
+
+        //Set onClick listener for each activity
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, TaskActivity.class);
+                intent.putExtra(DBHelper.ACTIVITY_ID, tasks.get(position).getId() );
+                context.startActivity(intent);
+            }
+        });
     }
 
     public void retrieveTasks() {
-        List<Task> list = DBHelper.getInstance(context).getTasksList();
+        List<Task> list = DBHelper.getInstance(context).getAllTasks();
         Collections.reverse(list);
         tasks.clear();
         tasks.addAll( list );

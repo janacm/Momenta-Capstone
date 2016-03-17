@@ -19,18 +19,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".Reciever">
+        <receiver android:name=".Receiver">
         </receiver>
         <activity
             android:name=".ScreenTakeOverActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_screen_take_over"
-            android:theme="@style/FullscreenTheme"></activity>
+            android:theme="@style/FullscreenTheme" />
         <activity
             android:name=".SettingsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_settings"
-            android:theme="@style/momentaTheme"></activity>
+            android:theme="@style/momentaTheme" />
+        <activity android:name=".TaskActivity"></activity>
     </application>
 
 </manifest>

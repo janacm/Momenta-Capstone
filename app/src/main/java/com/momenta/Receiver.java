@@ -8,13 +8,13 @@ import android.util.Log;
 /**
  * Recieves the alarm broadcast from the system.
  */
-public class Reciever extends WakefulBroadcastReceiver {
+public class Receiver extends WakefulBroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("Reciever", "Alarm Set.");
+        Log.d("Receiver", "Alarm Set.");
         Intent sIntent = new Intent(context, ScreenTakeOverActivity.class);
-        sIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        sIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.getApplicationContext().startActivity(sIntent);
     }
 }
