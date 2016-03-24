@@ -39,7 +39,7 @@ public class DBHelper extends SQLiteOpenHelper {
         String CREATE_SAMPLE_TABLE = "CREATE TABLE " + SAMPLE_TABLE +  "("
                 + ACTIVITY_ID + " INTEGER PRIMARY KEY, " + ACTIVITY_NAME
                 + " CHAR(32) NOT NULL, " + ACTIVITY_DURATION + " INTEGER NOT NULL, "
-                + ACTIVITY_DEADLINE + " long default 0 " + ACTIVITY_PRIORITY
+                + ACTIVITY_DEADLINE + " long default 0, " + ACTIVITY_PRIORITY
                 + " CHAR(32) NOT NULL )";
         db.execSQL(CREATE_SAMPLE_TABLE);
 
