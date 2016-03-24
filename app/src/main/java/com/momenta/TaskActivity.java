@@ -10,8 +10,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,7 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class TaskActivity extends AppCompatActivity {
+public class TaskActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     EditText activityName;
     TextView activityDeadline;
@@ -52,6 +57,9 @@ public class TaskActivity extends AppCompatActivity {
             activityDeadline.setText("Set a deadline");
         }
 
+        Spinner spinner = (Spinner)findViewById(R.id.task_priority_spinner);
+        spinner.setOnItemSelectedListener(this);
+        spinner.setSelection( spinnerPosition(task.getPriority()) );
     }
 
     @Override
@@ -113,6 +121,7 @@ public class TaskActivity extends AppCompatActivity {
         int goalInMinutes = Task.convertHourMinuteToMinute( goal );
         task.setName(activityName.getText().toString());
         task.setTimeInMinutes(goalInMinutes);
+//        priority.get
 
         if ( DBHelper.getInstance(this).updateTask(task) ) {
             toast("Activity has been updated");
@@ -131,4 +140,52 @@ public class TaskActivity extends AppCompatActivity {
         Toast.makeText(this, toToast, Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * Helper method to get the position of enum values in the spinner.
+     * @param priority The priority obejct
+     * @return the position of the priority in the spinner, or 1 if not found.
+     */
+    private int spinnerPosition(Task.Priority priority) {
+        switch (priority) {
+            case VERY_LOW:
+                return 0;
+            case LOW:
+                return 1;
+            case MEDIUM:
+                return 2;
+            case HIGH:
+                return 3;
+            case VERY_HIGH:
+                return 4;
+            default:
+                return 2;
+        }
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        switch(position) {
+            case 0:
+                task.setPriority(Task.Priority.VERY_LOW);
+                break;
+            case 1:
+                task.setPriority(Task.Priority.LOW);
+                break;
+            case 2:
+                task.setPriority(Task.Priority.MEDIUM);
+                break;
+            case 3:
+                task.setPriority(Task.Priority.HIGH);
+                break;
+            case 4:
+                task.setPriority(Task.Priority.VERY_HIGH);
+                break;
+        }
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 }
