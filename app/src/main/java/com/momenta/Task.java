@@ -2,6 +2,7 @@ package com.momenta;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Enumeration;
 import java.util.Locale;
 
 /**
@@ -15,6 +16,9 @@ public class Task {
     private int minutes;
     private Calendar deadline = Calendar.getInstance();
 
+    public enum Priority{VERY_HIGH, HIGH, MEDIUM, LOW, VERY_LOW}
+    private Priority priority;
+
     /**
      * Creates a task with name, duration and deadline
      * @param name the name of the task
@@ -23,6 +27,7 @@ public class Task {
      */
     public Task (String name, int duration, Calendar deadline) {
         this.name = name; hours = 0; minutes = 0;
+        priority = Priority.MEDIUM;
         addMinute(duration);
         setDeadline(deadline);
     }
@@ -151,6 +156,22 @@ public class Task {
 
     public void setDeadline(Calendar deadline) {
         this.deadline.setTimeInMillis( deadline.getTimeInMillis() );
+    }
+
+    /**
+     * Method to access the priority of the task.
+     * @return The priority of the task
+     */
+    public Priority getPriority() {
+        return priority;
+    }
+
+    /**
+     * Modifier for the priority of a task object
+     * @param priority the new priority of the task.
+     */
+    public void setPriority(Priority priority) {
+        this.priority = priority;
     }
 
     /**

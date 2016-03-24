@@ -20,7 +20,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static DBHelper mInstance = null;
 
     //Database Constants, DB_VERSION must be incremented if the schema is changed.
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "Momenta.db";
 
     //Sample Table Name
@@ -31,6 +31,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String ACTIVITY_NAME = "ACTIVITY_NAME";
     public static final String ACTIVITY_DURATION = "ACTIVITY_DURATION";
     public static final String ACTIVITY_DEADLINE = "ACTIVITY_DEADLINE";
+    public static final String ACTIVITY_PRIORITY = "ACTIVITY_PRIORITY";
 
 
     @Override
@@ -38,21 +39,25 @@ public class DBHelper extends SQLiteOpenHelper {
         String CREATE_SAMPLE_TABLE = "CREATE TABLE " + SAMPLE_TABLE +  "("
                 + ACTIVITY_ID + " INTEGER PRIMARY KEY, " + ACTIVITY_NAME
                 + " CHAR(32) NOT NULL, " + ACTIVITY_DURATION + " INTEGER NOT NULL, "
-                + ACTIVITY_DEADLINE + " long default 0)";
+                + ACTIVITY_DEADLINE + " long default 0" + ACTIVITY_PRIORITY
+                + " CHAR(32) NOT NULL )";
         db.execSQL(CREATE_SAMPLE_TABLE);
 
         //Inserting dummy data
         db.execSQL("INSERT INTO " +  SAMPLE_TABLE
-                + " VALUES ( 1, 'Study for law exam', 120, 0);");
+                + " VALUES ( 1, 'Study for law exam', 120, 0, 'MEDIUM');");
         db.execSQL("INSERT INTO " + SAMPLE_TABLE
-                + " VALUES ( 2, 'Go to the gym', 50, 0);");
+                + " VALUES ( 2, 'Go to the gym', 50, 0, 'LOW');");
         db.execSQL("INSERT INTO " + SAMPLE_TABLE
-                + " VALUES ( 3, 'Organize House', 72, 0);");
+                + " VALUES ( 3, 'Organize House', 72, 0, 'VERY_HIGH');");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        //TODO Updating older versions to newer versions
+        if ( oldVersion == 1 ) {
+            db.execSQL("ALTER TABLE " + SAMPLE_TABLE + " ADD COLUMN " + ACTIVITY_PRIORITY
+                    + " CHAR(32) NOT NULL DEFAULT 'MEDIUM'");
+        }
     }
 
     /**
@@ -80,6 +85,7 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(ACTIVITY_NAME, task.getName());
         values.put(ACTIVITY_DURATION, task.getTime());
+        values.put(ACTIVITY_PRIORITY, task.getPriority().name());
         if ( task.getDeadline() != null) {
             values.put(ACTIVITY_DEADLINE, task.getDeadline().getTimeInMillis());
         }
@@ -97,15 +103,19 @@ public class DBHelper extends SQLiteOpenHelper {
         Calendar cal = Calendar.getInstance();
 
         Cursor cursor = db.query(SAMPLE_TABLE,
-                new String[]{ACTIVITY_ID, ACTIVITY_NAME, ACTIVITY_DURATION, ACTIVITY_DEADLINE},
+                new String[]{ACTIVITY_ID, ACTIVITY_NAME, ACTIVITY_DURATION, ACTIVITY_DEADLINE, ACTIVITY_PRIORITY},
                 null, null, null, null, null, null);
         while (cursor != null && cursor.moveToNext()) {
             int id = cursor.getInt(cursor.getColumnIndex(ACTIVITY_ID));
             String name = cursor.getString(cursor.getColumnIndex(ACTIVITY_NAME));
             int duration = cursor.getInt(cursor.getColumnIndex(ACTIVITY_DURATION));
-            cal.setTimeInMillis(cursor.getLong(cursor.getColumnIndex(ACTIVITY_DEADLINE)) );
+            cal.setTimeInMillis(cursor.getLong(cursor.getColumnIndex(ACTIVITY_DEADLINE)));
+            String priority = cursor.getString(cursor.getColumnIndex(ACTIVITY_PRIORITY));
 
-            taskList.add( new Task(id, name, duration, cal) );
+            Task t = new Task(id, name, duration, cal);
+            t.setPriority( Task.Priority.valueOf(priority) );
+
+            taskList.add( t );
         }
         if (cursor != null) {
             cursor.close();
@@ -124,7 +134,7 @@ public class DBHelper extends SQLiteOpenHelper {
         Calendar cal = Calendar.getInstance();
         Task task;
         Cursor cursor = db.query(SAMPLE_TABLE,
-                new String[]{ACTIVITY_ID, ACTIVITY_NAME, ACTIVITY_DURATION, ACTIVITY_DEADLINE},
+                new String[]{ACTIVITY_ID, ACTIVITY_NAME, ACTIVITY_DURATION, ACTIVITY_DEADLINE, ACTIVITY_PRIORITY},
                 ACTIVITY_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null && cursor.moveToNext()) {
             int dbID = cursor.getInt(cursor.getColumnIndex(ACTIVITY_ID));
@@ -132,8 +142,10 @@ public class DBHelper extends SQLiteOpenHelper {
             int duration = cursor.getInt(cursor.getColumnIndex(ACTIVITY_DURATION));
             long along = cursor.getLong(cursor.getColumnIndex(ACTIVITY_DEADLINE));
             cal.setTimeInMillis( along );
+            String priority = cursor.getString(cursor.getColumnIndex(ACTIVITY_PRIORITY));
 
             task = new Task(dbID, name, duration , cal);
+            task.setPriority( Task.Priority.valueOf(priority) );
         } else {
             return null;
         }
@@ -153,6 +165,7 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(ACTIVITY_NAME, task.getName());
         cv.put(ACTIVITY_DURATION, task.getTime());
         cv.put(ACTIVITY_DEADLINE, task.getDeadline().getTimeInMillis());
+        cv.put(ACTIVITY_PRIORITY, task.getPriority().name());
         String[] whereArgs = new String[]{task.getId() + ""};
         int result = 0;
         try {

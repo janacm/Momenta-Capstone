@@ -18,6 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/new_activity_edit_text"
+            android:maxLength="64"
             android:hint="@string/new_activity_hint"
             android:singleLine="true"
             android:layout_weight="1" />
