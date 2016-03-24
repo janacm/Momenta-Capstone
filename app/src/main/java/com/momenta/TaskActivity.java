@@ -31,6 +31,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
     TextView activityGoal;
     Task task;
 
+    //TODO Remove focus from view activity edit text; edit button to edit text
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
