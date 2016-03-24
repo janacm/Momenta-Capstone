@@ -20,17 +20,6 @@ public class TimeDialogBuilder implements View.OnClickListener{
     private EditText timeText;
     private TextView goalTextView;
 
-//    public TimeDialogBuilder(LogFragment fragment, View v, String activity){
-//        time = "";
-//        view = v;
-//        this.activity = activity;
-//
-//        TextView nameTextView = (TextView)v.findViewById(R.id.activity_name_textview);
-//        nameTextView.setText(activity);
-//        setUpButtons(v);
-//        setUpDialogButtons(fragment, v);
-//    }
-
     public TimeDialogBuilder(LogFragment fragment, View v, String activity, EditText edittext){
         view = v;
         timeText = edittext;

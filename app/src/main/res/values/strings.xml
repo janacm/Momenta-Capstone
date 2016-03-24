@@ -8,6 +8,14 @@
     <string name="M_string">M</string>
     <string name="set_goal_String">Set your goal for</string>
     <string name="set_interval_time">Set your interval time</string>
+    <string name="priority_spinner_title">Priority</string>
+    <string-array name="Priorities">
+        <item>Very Low</item>
+        <item>Low</item>
+        <item>Medium</item>
+        <item>High</item>
+        <item>Very High</item>
+    </string-array>
     <!-- Log strings-->
 
     <!-- Button strings-->
@@ -17,6 +25,7 @@
     <string name="dialog_hour_string">00</string>
     <string name="activity_string">Activity</string>
     <string name="goal_string">Goal</string>
+
     <string name="one">1</string>
     <string name="two">2</string>
     <string name="three">3</string>
@@ -46,6 +55,7 @@
     <string name="title_activity_screen_take_over">ScreenTakeOverActivity</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="add_activity_content_description">Add activity button</string>
+>>>>>>> dev
 
 
     <!-- Demo/Sample strings-->
@@ -67,4 +77,18 @@
     <string name="task_name_hint">Activity Name</string>
     <string name="deadline_icon_content_description">Deadline Icon</string>
     <string name="priority_icon_content_description">Priority Icon</string>
+    <string name="title_activity_login">Sign in</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
 </resources>
