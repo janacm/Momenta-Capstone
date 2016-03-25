@@ -72,7 +72,7 @@ public class ViewActivityTest {
         }
 
         //Remove previous values from the dialog
-        onView(withId(R.id.buttonBackspace)).perform(click());
+        onView(withId(R.id.buttonOne)).perform(click());
         onView(withId(R.id.buttonBackspace)).perform(click());
         onView(withId(R.id.buttonBackspace)).perform(click());
         onView(withId(R.id.buttonBackspace)).perform(click());
