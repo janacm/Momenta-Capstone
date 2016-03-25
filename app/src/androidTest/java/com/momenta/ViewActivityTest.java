@@ -18,6 +18,7 @@ import java.util.Locale;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
@@ -66,16 +67,16 @@ public class ViewActivityTest {
         onView(withId(R.id.task_time_layout)).perform(click());
 
         //Remove previous values from the dialog
-        onData(withId(R.id.buttonBackspace)).perform(click());
-        onData(withId(R.id.buttonBackspace)).perform(click());
-        onData(withId(R.id.buttonBackspace)).perform(click());
-        onData(withId(R.id.buttonBackspace)).perform(click());
+        onView(withId(R.id.buttonBackspace)).perform(scrollTo(), click());
+        onView(withId(R.id.buttonBackspace)).perform(scrollTo(), click());
+        onView(withId(R.id.buttonBackspace)).perform(scrollTo(), click());
+        onView(withId(R.id.buttonBackspace)).perform(scrollTo(), click());
 
         //Input new values into the dialog 3H 20M
-        onData(withId(R.id.buttonThree)).perform(click());
-        onData(withId(R.id.buttonTwo)).perform(click());
-        onData(withId(R.id.buttonZero)).perform(click());
-        onData(withId(android.R.id.button1)).perform(click());//click done on the dialog
+        onView(withId(R.id.buttonThree)).perform(scrollTo(), click());
+        onView(withId(R.id.buttonTwo)).perform(scrollTo(), click());
+        onView(withId(R.id.buttonZero)).perform(scrollTo(), click());
+        onView(withId(android.R.id.button1)).perform(scrollTo(), click());//click done on the dialog
 
         restartTaskActivity();
 
