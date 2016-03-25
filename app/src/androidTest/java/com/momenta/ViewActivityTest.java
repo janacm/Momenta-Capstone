@@ -18,7 +18,6 @@ import java.util.Locale;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
@@ -66,17 +65,23 @@ public class ViewActivityTest {
         //Click on the goal time layout
         onView(withId(R.id.task_time_layout)).perform(click());
 
+        try {
+            Thread.sleep(1000);                 //1000 milliseconds is one second.
+        } catch(InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+
         //Remove previous values from the dialog
-        onView(withId(R.id.buttonBackspace)).perform(scrollTo(), click());
-        onView(withId(R.id.buttonBackspace)).perform(scrollTo(), click());
-        onView(withId(R.id.buttonBackspace)).perform(scrollTo(), click());
-        onView(withId(R.id.buttonBackspace)).perform(scrollTo(), click());
+        onView(withId(R.id.buttonBackspace)).perform(click());
+        onView(withId(R.id.buttonBackspace)).perform(click());
+        onView(withId(R.id.buttonBackspace)).perform(click());
+        onView(withId(R.id.buttonBackspace)).perform(click());
 
         //Input new values into the dialog 3H 20M
-        onView(withId(R.id.buttonThree)).perform(scrollTo(), click());
-        onView(withId(R.id.buttonTwo)).perform(scrollTo(), click());
-        onView(withId(R.id.buttonZero)).perform(scrollTo(), click());
-        onView(withId(android.R.id.button1)).perform(scrollTo(), click());//click done on the dialog
+        onView(withId(R.id.buttonThree)).perform(click());
+        onView(withId(R.id.buttonTwo)).perform(click());
+        onView(withId(R.id.buttonZero)).perform(click());
+        onView(withId(android.R.id.button1)).perform(click());//click done on the dialog
 
         restartTaskActivity();
 
