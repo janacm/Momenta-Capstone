@@ -29,6 +29,7 @@ import java.util.Locale;
  * For Momenta
  */
 
+//Todo change placeholder text color for main activity
 public class LogFragment extends Fragment implements View.OnClickListener {
     public static final String ARG_PAGE = "ARG_PAGE";
     private RecyclerView mRecyclerView;

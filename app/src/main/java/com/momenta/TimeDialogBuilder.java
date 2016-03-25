@@ -189,7 +189,7 @@ public class TimeDialogBuilder implements View.OnClickListener{
      * @param minutes Time in minutes to be converted to.
      * @return String representation of time in 0H 00M format.
      */
-    private String getTimeString(int minutes) {
+    public static String getTimeString(int minutes) {
         int hours = 0;
 
         if ( ! (minutes < 60) ) {
