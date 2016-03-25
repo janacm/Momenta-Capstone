@@ -196,7 +196,7 @@ public class Task {
      * @return Integer value of the time in minutes
      */
     public static int convertHourMinuteToMinute(String string) {
-        String temp = "00000" + string;
+        String temp = "00000" + stripNonDigits(string);
         int minutes = Integer.valueOf( temp.substring( temp.length()-2, temp.length() ) );
         int hour = Integer.valueOf( temp.substring( temp.length()-5, temp.length()-2 ) );
         return (hour*60) + minutes;
