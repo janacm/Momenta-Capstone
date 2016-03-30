@@ -1,6 +1,11 @@
 <resources>
+    <!--GENERAL NOTE: E SURE TO DO A REFACTOR WHEN CHANGING STRING NAMES-->
     <!-- General strings-->
     <string name="app_name">Momenta</string>
+    <string name="tab_title_dashboard">Dashboard</string>
+    <string name="tab_title_log">Log</string>
+    <string name="tab_title_awards">Awards</string>
+    <string name="tab_title_trends">Trends</string>
 
     <!-- Text View strings-->
     <string name="ongoing_activity_string">Ongoing activities</string>
@@ -46,6 +51,8 @@
 
     <!-- EditText strings-->
     <string name="new_activity_hint">New Activity</string>
+    <string name="deadline_hint">By March 25th</string>
+    <string name="goal_hint">for 1 hour</string>
 
     <!-- Menu strings-->
     <string name="action_settings">Settings</string>
@@ -91,4 +98,13 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="toast_no_name_activity_added">Please enter an activity name</string>
+    <string name="toast_activity_added">Activity added!</string>
+
+    <!-- Strings related to the Select tasks to add time towards Screen !-->
+    <string name="select_tasks_to_add_time_to_title">Select tasks to add time to</string>
+
+    <!-- Strings related to the Add time to task screen !-->
+    <string name="add_time_to_task_title1">How much time did</string>
+    <string name="add_time_to_task_title2">you put towards</string>
 </resources>

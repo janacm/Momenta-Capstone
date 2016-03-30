@@ -12,7 +12,7 @@ import android.util.Log;
  */
 public class ManagerFragmentPagerAdapter  extends FragmentPagerAdapter {
     final int PAGE_COUNT = 4;
-    private String tabTitles[] = new String[] { "Dashboard","Log", "Awards", "Trends" };
+    private String tabTitles[] = new String[4];// { "Dashboard","Log", "Awards", "Trends" };
     private Context context;
     private DashboardFragment dashboardFragment;
     private LogFragment logFragment;
@@ -22,6 +22,11 @@ public class ManagerFragmentPagerAdapter  extends FragmentPagerAdapter {
     public ManagerFragmentPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
         this.context = context;
+        tabTitles[0] = context.getString(R.string.tab_title_dashboard);
+        tabTitles[1] = context.getString(R.string.tab_title_log);
+        tabTitles[2] = context.getString(R.string.tab_title_awards);
+        tabTitles[3] = context.getString(R.string.tab_title_trends);
+
     }
 
     @Override

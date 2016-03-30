@@ -80,10 +80,10 @@ public class LogFragment extends Fragment implements View.OnClickListener {
 
         newActivity = (EditText) view.findViewById(R.id.new_activity_edit_text);
 
-        activityTime = (EditText)view.findViewById(R.id.new_activity_goal_edit_text);
+        activityTime = (EditText) view.findViewById(R.id.new_activity_goal_edit_text);
         activityTime.setOnClickListener(this);
 
-        activityDeadline =  (EditText) view.findViewById(R.id.new_activity_deadline_edit_text);
+        activityDeadline = (EditText) view.findViewById(R.id.new_activity_deadline_edit_text);
         activityDeadline.setOnClickListener(this);
 
         sortButton = (ImageButton) view.findViewById(R.id.sort_button);
@@ -94,7 +94,7 @@ public class LogFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch ( v.getId() ) {
+        switch (v.getId()) {
             case R.id.new_activity_add_button:
                 addActivity();
                 httpRequest();
@@ -179,7 +179,7 @@ public class LogFragment extends Fragment implements View.OnClickListener {
      */
     private void addActivity() {
         //If the text box is empty do nothing.
-        if ( !newActivity.getText().toString().trim().isEmpty() ) {
+        if (!newActivity.getText().toString().trim().isEmpty()) {
             String timeFieldValue = Task.stripNonDigits(activityTime.getText().toString());
             int timeInMinutes = Task.convertHourMinuteToMinute(timeFieldValue);
 
@@ -208,7 +208,7 @@ public class LogFragment extends Fragment implements View.OnClickListener {
             toast("Activity added!");
             deadlineSet = false;
         } else {
-            toast("Please enter an activity name");
+            toast(getContext().getString(R.string.toast_no_name_activity_added));
         }
     }
 
@@ -245,31 +245,27 @@ public class LogFragment extends Fragment implements View.OnClickListener {
     /**
      * Convience method for toasting messages to the user
      * Toast message is set tot LENGTH_LONG.
+     *
      * @param toToast the string to be displayed to the user
      */
     private void toast(String toToast) {
         Toast.makeText(getContext(), toToast, Toast.LENGTH_LONG).show();
     }
 
-    private void httpRequest(){
+    private void httpRequest() {
         String ping_url = "http://momenta.herokuapp.com/people";
-        new HttpTask(ping_url,"GET") {
+        new HttpTask(ping_url, "GET") {
             @Override
             protected void onPostExecute(JSONObject json) {
                 super.onPostExecute(json);
-                try
-                {
-                    if(json != null) {
+                try {
+                    if (json != null) {
                         JSONArray ping_result = json.getJSONArray("_items");
                         JSONObject status_obj = ping_result.getJSONObject(0);
                         String status = status_obj.getString("_created");
                         toast(status);
-
                     }
-                }
-                catch (JSONException e)
-                {
-
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }

@@ -13,22 +13,12 @@
         android:id="@+id/textView3"
         android:layout_centerHorizontal="true" />
 
-    <NumberPicker
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_below="@id/textView3"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/numberPicker"
-        />
-
     <Button
-        android:id="@+id/alarmButton"
+        android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/numberPicker"
+        android:layout_marginTop="200dp"
         android:layout_centerHorizontal="true"
         android:text="@string/dummy_button"
-        android:onClick="numberPicker"/>
-
+        />
 </RelativeLayout>
