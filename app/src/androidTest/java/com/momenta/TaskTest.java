@@ -118,24 +118,25 @@ public class TaskTest {
     @Test
     public void testDateCreatedAccessModifiers() {
         Calendar cal = Calendar.getInstance();
-        Task task = new Task(TASK_NAME, 198, cal,
-                Calendar.getInstance(), Calendar.getInstance());
+        cal.set(2022, 11, 10);
+        Task task = new Task(TASK_NAME, 198, Calendar.getInstance(),
+                cal, Calendar.getInstance());
+        assertEquals(cal, task.getDateCreated());
 
-        cal.set( 2022, 11, 10);
-        task.setLastModified(cal);
-        assertEquals( cal, task.getDeadline());
-
-        cal.set( 1850, 1, 1);
-        task.setDeadline(cal);
-        assertEquals( cal, task.getDeadline());
+        cal.set(1850, 1, 1);
+        task = new Task(TASK_NAME, 198, Calendar.getInstance(),
+                cal, Calendar.getInstance());
+        assertEquals(cal, task.getDateCreated());
 
         cal.set( 1990, 12, 31);
-        task.setDeadline(cal);
-        assertEquals( cal, task.getDeadline());
+        task = new Task(TASK_NAME, 198, Calendar.getInstance(),
+                cal, Calendar.getInstance());
+        assertEquals(cal, task.getDateCreated());
 
         cal.set( 3098, 6, 30);
-        task.setDeadline(cal);
-        assertEquals( cal, task.getDeadline());
+        task = new Task(TASK_NAME, 198, Calendar.getInstance(),
+                cal, Calendar.getInstance());
+        assertEquals(cal, task.getDateCreated());
     }
 
     @Test
@@ -145,20 +146,20 @@ public class TaskTest {
                 Calendar.getInstance(), Calendar.getInstance());
 
         cal.set( 2022, 11, 10);
-        task.setDeadline(cal);
-        assertEquals( cal, task.getDeadline());
+        task.setLastModified(cal);
+        assertEquals( cal, task.getLastModified());
 
         cal.set( 1850, 1, 1);
-        task.setDeadline(cal);
-        assertEquals( cal, task.getDeadline());
+        task.setLastModified(cal);
+        assertEquals( cal, task.getLastModified());
 
         cal.set( 1990, 12, 31);
-        task.setDeadline(cal);
-        assertEquals( cal, task.getDeadline());
+        task.setLastModified(cal);
+        assertEquals( cal, task.getLastModified());
 
         cal.set( 3098, 6, 30);
-        task.setDeadline(cal);
-        assertEquals( cal, task.getDeadline());
+        task.setLastModified(cal);
+        assertEquals( cal, task.getLastModified());
     }
 
     @Test
