@@ -1,16 +1,19 @@
 package com.momenta;
 
 import android.app.DatePickerDialog;
-import android.content.Intent;
+import android.content.DialogInterface;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -23,6 +26,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Joe on 2016-01-31.
@@ -33,12 +37,15 @@ import java.util.Locale;
 public class LogFragment extends Fragment implements View.OnClickListener {
     public static final String ARG_PAGE = "ARG_PAGE";
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private ActivitiesAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private EditText newActivity;
     private EditText activityTime;
     private EditText activityDeadline;
     private final Calendar deadlineCalendar = Calendar.getInstance();
+    private boolean deadlineSet = false;
+    private ImageButton sortButton;
+    private ActivitiesAdapter.Sort sort;
 
 //    private int mPage;
 
@@ -68,8 +75,8 @@ public class LogFragment extends Fragment implements View.OnClickListener {
         mAdapter = new ActivitiesAdapter(this.getContext());
         mRecyclerView.setAdapter(mAdapter);
 
-        ImageButton button = (ImageButton)view.findViewById(R.id.new_activity_add_button);
-        button.setOnClickListener(this);
+        ImageButton addButton = (ImageButton)view.findViewById(R.id.new_activity_add_button);
+        addButton.setOnClickListener(this);
 
         newActivity = (EditText) view.findViewById(R.id.new_activity_edit_text);
 
@@ -78,6 +85,9 @@ public class LogFragment extends Fragment implements View.OnClickListener {
 
         activityDeadline =  (EditText) view.findViewById(R.id.new_activity_deadline_edit_text);
         activityDeadline.setOnClickListener(this);
+
+        sortButton = (ImageButton) view.findViewById(R.id.sort_button);
+        sortButton.setOnClickListener(this);
 
         return view;
     }
@@ -95,7 +105,73 @@ public class LogFragment extends Fragment implements View.OnClickListener {
             case R.id.new_activity_deadline_edit_text:
                 inputDeadline();
                 break;
+            case R.id.sort_button:
+                sortDialog();
+                break;
         }
+    }
+
+    /**
+     * On click method for the sort button
+     */
+    private void sortDialog() {
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        AlertDialog.Builder sortDialogBuilder = new AlertDialog.Builder(getContext());
+
+        View dialogView =  inflater.inflate(R.layout.sort_dialog, null);
+        sortDialogBuilder.setView(dialogView)
+                .setPositiveButton(R.string.dialog_done, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        ColorStateList colorStateList = new ColorStateList(
+                new int[][]{
+                        new int[]{-android.R.attr.state_checked},
+                        new int[]{android.R.attr.state_checked}
+                },
+                new int[]{
+                        Color.DKGRAY
+                        , Color.rgb(33, 150, 243),
+                }
+        );
+        //Set up radio buttons for filering
+        AppCompatRadioButton radioButtonName = (AppCompatRadioButton)dialogView
+                .findViewById(R.id.radio_button_name);
+        radioButtonName.setSupportButtonTintList(colorStateList);
+        radioButtonName.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mAdapter.sortBy(ActivitiesAdapter.Sort.NAME);
+            }
+        });
+        AppCompatRadioButton radioButtonLastModified = (AppCompatRadioButton)dialogView
+                .findViewById(R.id.radio_button_last_modified);
+        radioButtonLastModified.setSupportButtonTintList(colorStateList);
+        radioButtonLastModified.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mAdapter.sortBy(ActivitiesAdapter.Sort.LAST_MODIFIED);
+            }
+        });
+        AppCompatRadioButton radioButtonCreated = (AppCompatRadioButton)dialogView
+                .findViewById(R.id.radio_button_date_created);
+        radioButtonCreated.setSupportButtonTintList(colorStateList);
+        radioButtonCreated.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mAdapter.sortBy(ActivitiesAdapter.Sort.DATE_CREATED);
+            }
+        });
+
+        sortDialogBuilder.create().show();
     }
 
     /**
@@ -106,7 +182,21 @@ public class LogFragment extends Fragment implements View.OnClickListener {
         if ( !newActivity.getText().toString().trim().isEmpty() ) {
             String timeFieldValue = Task.stripNonDigits(activityTime.getText().toString());
             int timeInMinutes = Task.convertHourMinuteToMinute(timeFieldValue);
-            Task task = new Task(newActivity.getText().toString(), timeInMinutes, deadlineCalendar);
+
+            //If no goal is chosen, default to 2 hours.
+            if (timeInMinutes == 0) {
+                Long tempLongValue = TimeUnit.MINUTES.convert(2, TimeUnit.HOURS);
+                timeInMinutes = tempLongValue.intValue();
+            }
+
+            //If no deadline is chosen, default to one week from now.
+            if (!deadlineSet) {
+                deadlineCalendar.setTimeInMillis( deadlineCalendar.getTimeInMillis()
+                        + TimeUnit.MILLISECONDS.convert(7, TimeUnit.DAYS));
+            }
+
+            Task task = new Task(newActivity.getText().toString(), timeInMinutes,
+                    deadlineCalendar, Calendar.getInstance(), Calendar.getInstance());
             DBHelper.getInstance(getContext()).insertTask(task);
 
             //Reset input fields
@@ -114,8 +204,9 @@ public class LogFragment extends Fragment implements View.OnClickListener {
             activityTime.setText("");
             activityDeadline.setText("");
 
-            ((ActivitiesAdapter) mAdapter).retrieveTasks();
+            mAdapter.retrieveTasks();
             toast("Activity added!");
+            deadlineSet = false;
         } else {
             toast("Please enter an activity name");
         }
@@ -143,7 +234,8 @@ public class LogFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 deadlineCalendar.set(year, monthOfYear, dayOfMonth);
-                activityDeadline.setText( new SimpleDateFormat("MMMM dd, yyyy", Locale.CANADA).format(deadlineCalendar.getTime()) );
+                activityDeadline.setText(new SimpleDateFormat("MMMM dd, yyyy", Locale.CANADA).format(deadlineCalendar.getTime()));
+                deadlineSet = true;
             }
         }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
         dialog.getDatePicker().setMinDate(cal.getTimeInMillis());
