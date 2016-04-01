@@ -9,7 +9,10 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+
+import android.support.test.espresso.Espresso;
 import android.support.test.espresso.contrib.PickerActions;
+
 import static org.hamcrest.Matchers.not;
 
 import android.support.test.espresso.contrib.RecyclerViewActions;
@@ -99,9 +102,10 @@ public class AddActivityTest {
         //check toast is displayed
         onView(withText(ctx.getString(R.string.toast_activity_added))).inRoot(withDecorView(not(main.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed()));
 
+        //close soft keyboard
+        Espresso.closeSoftKeyboard();
         //check new activity is added in listView
-        //onView(withId(R.id.activity_recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-        //onView(withId(R.id.activity_item_name)).check(matches(withText(activityName)));
+        onView(withId(R.id.activity_recycler_view)).check(matches(hasDescendant(withText(activityName))));
     }
 
     @Test
@@ -122,10 +126,13 @@ public class AddActivityTest {
 
         //check toast is displayed
         onView(withText(ctx.getString(R.string.toast_activity_added))).inRoot(withDecorView(not(main.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed()));
+        //close soft keyboard
+        Espresso.closeSoftKeyboard();
+
         //check new activity is added in listView
-        //onView(withId(R.id.activity_recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-        //onView(withId(R.id.activity_item_name)).check(matches(withText(activityName)));
-        //onView(withId(R.id.activity_item_duration)).check(matches(withText("97H 34M")));
+        onView(withId(R.id.activity_recycler_view)).check(matches(hasDescendant(withText(activityName))));
+        onView(withId(R.id.activity_recycler_view)).check(matches(hasDescendant(withText("97H 34M"))));
+
     }
 
     @Test
@@ -133,7 +140,8 @@ public class AddActivityTest {
         String activityName = "Test Activity3";
         //Navigate to Log tab
         onView(withText(ctx.getString(R.string.tab_title_log))).perform(click());
-        //add activity with a name and deadline
+        //Add activity with a name goal and deadline
+
         onView(withId(R.id.new_activity_edit_text)).perform(typeText(activityName));
         onView(withId(R.id.new_activity_deadline_edit_text)).perform(click());
         int year = 2030;
@@ -146,13 +154,52 @@ public class AddActivityTest {
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(year, month + 1, day));
         onView(withId(android.R.id.button1)).perform(click());
 
-        //Verify the date was changed
-        //onView(withId(R.id.activity_recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-        //onView(withId(R.id.activity_item_name)).check(matches(withText(activityName)));
+        onView(withId(R.id.new_activity_add_button)).perform(click());
+
+        //check toast is displayed
+        onView(withText(ctx.getString(R.string.toast_activity_added))).inRoot(withDecorView(not(main.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed()));
+
+        //close soft keyboard
+        Espresso.closeSoftKeyboard();
+
+        //check new activity is added in listView
+        onView(withId(R.id.activity_recycler_view)).check(matches(hasDescendant(withText(activityName))));
+
     }
 
     @Test
     public void addActivityActionNameGoalDeadlineUITests() {
-        //add activity with a name, goal and deadline
+        String activityName = "Test Activity4";
+        //Navigate to Log tab
+        onView(withText(ctx.getString(R.string.tab_title_log))).perform(click());
+        //add activity with a name and deadline
+        onView(withId(R.id.new_activity_edit_text)).perform(typeText(activityName));
+        onView(withId(R.id.new_activity_deadline_edit_text)).perform(click());
+        int year = 2030;
+        int month = 5;//June, for some reason 0 is January
+        int day = 15;
+        Calendar cal = Calendar.getInstance();
+        cal.set(year, month, day);
+        //Set the date of the picker
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(year, month + 1, day));
+        onView(withId(android.R.id.button1)).perform(click());
+
+        onView(withId(R.id.new_activity_goal_edit_text)).perform(click());
+        onView(withId(R.id.buttonNine)).perform(click());
+        onView(withId(R.id.buttonSeven)).perform(click());
+        onView(withId(R.id.buttonThree)).perform(click());
+        onView(withId(R.id.buttonFour)).perform(click());
+        onView(withId(android.R.id.button1)).perform(click());
+        onView(withId(R.id.new_activity_add_button)).perform(click());
+
+        //check toast is displayed
+        onView(withText(ctx.getString(R.string.toast_activity_added))).inRoot(withDecorView(not(main.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed()));
+
+        //close soft keyboard
+        Espresso.closeSoftKeyboard();
+
+        //check new activity is added in listView
+        onView(withId(R.id.activity_recycler_view)).check(matches(hasDescendant(withText(activityName))));
+        onView(withId(R.id.activity_recycler_view)).check(matches(hasDescendant(withText("97H 34M"))));
     }
 }

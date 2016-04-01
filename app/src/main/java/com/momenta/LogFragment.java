@@ -1,6 +1,7 @@
 package com.momenta;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -53,6 +55,7 @@ public class LogFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 //        mPage = getArguments().getInt(ARG_PAGE);
     }
 
@@ -60,6 +63,7 @@ public class LogFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_log, container, false);
+        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.activity_recycler_view);
 
         mLayoutManager = new LinearLayoutManager(getActivity());
@@ -72,6 +76,7 @@ public class LogFragment extends Fragment implements View.OnClickListener {
         button.setOnClickListener(this);
 
         newActivity = (EditText) view.findViewById(R.id.new_activity_edit_text);
+        imm.hideSoftInputFromWindow(newActivity.getWindowToken(), 0);
 
         activityTime = (EditText) view.findViewById(R.id.new_activity_goal_edit_text);
         activityTime.setOnClickListener(this);
