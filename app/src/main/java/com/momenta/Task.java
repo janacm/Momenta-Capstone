@@ -10,13 +10,14 @@ import java.util.Locale;
  */
 public class Task {
 
+    public enum Priority{VERY_HIGH, HIGH, MEDIUM, LOW, VERY_LOW}
     private int id;
     private String name;
     private int hours;
     private int minutes;
     private Calendar deadline = Calendar.getInstance();
-
-    public enum Priority{VERY_HIGH, HIGH, MEDIUM, LOW, VERY_LOW}
+    private Calendar lastModified = Calendar.getInstance();
+    private Calendar dateCreated = Calendar.getInstance(); //Field cannot be change once it has been created.
     private Priority priority;
 
     /**
@@ -24,12 +25,17 @@ public class Task {
      * @param name the name of the task
      * @param duration the duration in minutes of the task
      * @param deadline the deadline of the task
+     * @param dateCreated the time the task was created
+     * @param lastModified the last time the activity was modified
      */
-    public Task (String name, int duration, Calendar deadline) {
+    public Task (String name, int duration, Calendar deadline,
+                 Calendar dateCreated, Calendar lastModified) {
         this.name = name; hours = 0; minutes = 0;
         priority = Priority.MEDIUM;
         addMinute(duration);
         setDeadline(deadline);
+        setDateCreated(dateCreated);
+        setLastModified(lastModified);
     }
 
     /**
@@ -38,9 +44,12 @@ public class Task {
      * @param name the name of the task
      * @param duration the duration in minutes of the task
      * @param deadline the deadline of the task
+     * @param dateCreated the time the task was created
+     * @param lastModified the last time the activity was modified
      */
-    public Task (int id, String name, int duration, Calendar deadline) {
-        this(name, duration, deadline);
+    public Task (int id, String name, int duration, Calendar deadline,
+                 Calendar dateCreated, Calendar lastModified) {
+        this(name, duration, deadline, dateCreated, lastModified);
         this.id = id;
     }
 
@@ -174,6 +183,22 @@ public class Task {
         this.priority = priority;
     }
 
+    public Calendar getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(Calendar lastModified) {
+        this.lastModified.setTimeInMillis( lastModified.getTimeInMillis() );
+    }
+
+    public Calendar getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Calendar created) {
+        this.dateCreated.setTimeInMillis( created.getTimeInMillis() );
+    }
+
     /**
      * Removes none digits from a string
      * @param input the string to remove non digits from
@@ -201,4 +226,6 @@ public class Task {
         int hour = Integer.valueOf( temp.substring( temp.length()-5, temp.length()-2 ) );
         return (hour*60) + minutes;
     }
+
+
 }

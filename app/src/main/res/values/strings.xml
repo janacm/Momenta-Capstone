@@ -101,4 +101,10 @@
     <string name="toast_no_name_activity_added">Please enter an activity name</string>
     <string name="toast_activity_added">Activity added!</string>
 
+    <!-- Strings related to the Select tasks to add time towards Screen !-->
+    <string name="select_tasks_to_add_time_to_title">Select tasks to add time to</string>
+
+    <!-- Strings related to the Add time to task screen !-->
+    <string name="add_time_to_task_title1">How much time did</string>
+    <string name="add_time_to_task_title2">you put towards</string>
 </resources>

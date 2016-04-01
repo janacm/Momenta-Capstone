@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,8 +18,8 @@ public class DBHelper extends SQLiteOpenHelper {
     //DBHelper Instance
     public static DBHelper mInstance = null;
 
-    //Database Constants, DB_VERSION must be incremented if the schema is changed.
-    public static final int DATABASE_VERSION = 2;
+    //Database Constants
+    public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "Momenta.db";
 
     //Sample Table Name
@@ -32,24 +31,30 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String ACTIVITY_DURATION = "ACTIVITY_DURATION";
     public static final String ACTIVITY_DEADLINE = "ACTIVITY_DEADLINE";
     public static final String ACTIVITY_PRIORITY = "ACTIVITY_PRIORITY";
+    public static final String ACTIVITY_LAST_MODIFIED = "ACTIVITY_LAST_MODIFIED";
+    public static final String ACTIVITY_DATE_CREATED = "ACTIVITY_DATE_CREATED";
 
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        /*The DATABASE_VERSION must be incremented if this statement is altered;
+            and the onUpgrade method must be updated
+         */
         String CREATE_SAMPLE_TABLE = "CREATE TABLE " + SAMPLE_TABLE +  "("
                 + ACTIVITY_ID + " INTEGER PRIMARY KEY, " + ACTIVITY_NAME
                 + " CHAR(32) NOT NULL, " + ACTIVITY_DURATION + " INTEGER NOT NULL, "
-                + ACTIVITY_DEADLINE + " long default 0, " + ACTIVITY_PRIORITY
-                + " CHAR(32) NOT NULL )";
+                + ACTIVITY_DEADLINE + " LONG DEFAULT 0, " + ACTIVITY_PRIORITY
+                + " CHAR(32) NOT NULL, " + ACTIVITY_LAST_MODIFIED + " LONG NOT NULL DEFAULT 0, "
+                + ACTIVITY_DATE_CREATED + " LONG NOT NULL DEFAULT 0)";
         db.execSQL(CREATE_SAMPLE_TABLE);
 
         //Inserting dummy data
         db.execSQL("INSERT INTO " +  SAMPLE_TABLE
-                + " VALUES ( 1, 'Study for law exam', 120, 0, 'MEDIUM');");
+                + " VALUES ( 1, 'Study for law exam', 120, 0, 'MEDIUM', 0, 0);");
         db.execSQL("INSERT INTO " + SAMPLE_TABLE
-                + " VALUES ( 2, 'Go to the gym', 50, 0, 'LOW');");
+                + " VALUES ( 2, 'Go to the gym', 50, 0, 'LOW' ,0, 0);");
         db.execSQL("INSERT INTO " + SAMPLE_TABLE
-                + " VALUES ( 3, 'Organize House', 72, 0, 'VERY_HIGH');");
+                + " VALUES ( 3, 'Organize House', 72, 0, 'VERY_HIGH', 0, 0);");
     }
 
     @Override
@@ -57,6 +62,12 @@ public class DBHelper extends SQLiteOpenHelper {
         if ( oldVersion == 1 ) {
             db.execSQL("ALTER TABLE " + SAMPLE_TABLE + " ADD COLUMN " + ACTIVITY_PRIORITY
                     + " CHAR(32) NOT NULL DEFAULT 'MEDIUM'");
+            oldVersion++;
+        } if ( oldVersion == 2 ) {
+            db.execSQL("ALTER TABLE " + SAMPLE_TABLE + " ADD COLUMN "+ ACTIVITY_LAST_MODIFIED
+                    + " LONG NOT NULL DEFAULT 0");
+            db.execSQL("ALTER TABLE " + SAMPLE_TABLE + " ADD COLUMN "+ ACTIVITY_DATE_CREATED
+                    + " LONG NOT NULL DEFAULT 0");
         }
     }
 
@@ -86,9 +97,9 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(ACTIVITY_NAME, task.getName());
         values.put(ACTIVITY_DURATION, task.getTime());
         values.put(ACTIVITY_PRIORITY, task.getPriority().name());
-        if ( task.getDeadline() != null) {
-            values.put(ACTIVITY_DEADLINE, task.getDeadline().getTimeInMillis());
-        }
+        values.put(ACTIVITY_DEADLINE, task.getDeadline().getTimeInMillis());
+        values.put(ACTIVITY_DATE_CREATED, task.getDateCreated().getTimeInMillis());
+        values.put(ACTIVITY_LAST_MODIFIED, task.getLastModified().getTimeInMillis());
 
         return db.insert(SAMPLE_TABLE, null, values);
     }
@@ -100,19 +111,24 @@ public class DBHelper extends SQLiteOpenHelper {
     public List<Task> getAllTasks() {
         SQLiteDatabase db = getReadableDatabase();
         List<Task> taskList = new ArrayList<>();
-        Calendar cal = Calendar.getInstance();
+        Calendar calDue = Calendar.getInstance();
+        Calendar calCreated = Calendar.getInstance();
+        Calendar calModified = Calendar.getInstance();
 
         Cursor cursor = db.query(SAMPLE_TABLE,
-                new String[]{ACTIVITY_ID, ACTIVITY_NAME, ACTIVITY_DURATION, ACTIVITY_DEADLINE, ACTIVITY_PRIORITY},
+                new String[]{ACTIVITY_ID, ACTIVITY_NAME, ACTIVITY_DURATION, ACTIVITY_DEADLINE,
+                        ACTIVITY_PRIORITY, ACTIVITY_DATE_CREATED, ACTIVITY_LAST_MODIFIED},
                 null, null, null, null, null, null);
         while (cursor != null && cursor.moveToNext()) {
             int id = cursor.getInt(cursor.getColumnIndex(ACTIVITY_ID));
             String name = cursor.getString(cursor.getColumnIndex(ACTIVITY_NAME));
             int duration = cursor.getInt(cursor.getColumnIndex(ACTIVITY_DURATION));
-            cal.setTimeInMillis(cursor.getLong(cursor.getColumnIndex(ACTIVITY_DEADLINE)));
+            calDue.setTimeInMillis( cursor.getLong(cursor.getColumnIndex(ACTIVITY_DEADLINE)) );
             String priority = cursor.getString(cursor.getColumnIndex(ACTIVITY_PRIORITY));
+            calCreated.setTimeInMillis( cursor.getLong(cursor.getColumnIndex(ACTIVITY_DATE_CREATED)) );
+            calModified.setTimeInMillis( cursor.getLong(cursor.getColumnIndex(ACTIVITY_LAST_MODIFIED)) );
 
-            Task t = new Task(id, name, duration, cal);
+            Task t = new Task(id, name, duration, calDue, calCreated, calModified);
             t.setPriority( Task.Priority.valueOf(priority) );
 
             taskList.add( t );
@@ -131,20 +147,27 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     public Task getTask(int id) {
         SQLiteDatabase db = getReadableDatabase();
-        Calendar cal = Calendar.getInstance();
+        Calendar calDue = Calendar.getInstance();
+        Calendar calCreated = Calendar.getInstance();
+        Calendar calModified = Calendar.getInstance();
         Task task;
         Cursor cursor = db.query(SAMPLE_TABLE,
-                new String[]{ACTIVITY_ID, ACTIVITY_NAME, ACTIVITY_DURATION, ACTIVITY_DEADLINE, ACTIVITY_PRIORITY},
+                new String[]{ACTIVITY_ID, ACTIVITY_NAME, ACTIVITY_DURATION, ACTIVITY_DEADLINE
+                        , ACTIVITY_PRIORITY, ACTIVITY_DATE_CREATED, ACTIVITY_LAST_MODIFIED},
                 ACTIVITY_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null && cursor.moveToNext()) {
             int dbID = cursor.getInt(cursor.getColumnIndex(ACTIVITY_ID));
             String name = cursor.getString(cursor.getColumnIndex(ACTIVITY_NAME));
             int duration = cursor.getInt(cursor.getColumnIndex(ACTIVITY_DURATION));
             long along = cursor.getLong(cursor.getColumnIndex(ACTIVITY_DEADLINE));
-            cal.setTimeInMillis( along );
-            String priority = cursor.getString(cursor.getColumnIndex(ACTIVITY_PRIORITY));
+            long clong =  cursor.getLong(cursor.getColumnIndex(ACTIVITY_DATE_CREATED));
+            long mlong = cursor.getLong(cursor.getColumnIndex(ACTIVITY_LAST_MODIFIED));
+            calDue.setTimeInMillis( along );
+            calCreated.setTimeInMillis(clong);
+            calModified.setTimeInMillis(mlong);
 
-            task = new Task(dbID, name, duration , cal);
+            task = new Task(dbID, name, duration , calDue, calCreated, calModified);
+            String priority = cursor.getString(cursor.getColumnIndex(ACTIVITY_PRIORITY));
             task.setPriority( Task.Priority.valueOf(priority) );
         } else {
             return null;
@@ -166,6 +189,7 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(ACTIVITY_DURATION, task.getTime());
         cv.put(ACTIVITY_DEADLINE, task.getDeadline().getTimeInMillis());
         cv.put(ACTIVITY_PRIORITY, task.getPriority().name());
+        cv.put(ACTIVITY_LAST_MODIFIED, task.getLastModified().getTimeInMillis());
         String[] whereArgs = new String[]{task.getId() + ""};
         int result = 0;
         try {

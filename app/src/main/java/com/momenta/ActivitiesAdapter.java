@@ -6,9 +6,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Switch;
 import android.widget.TextView;
 
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -18,6 +21,7 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.Vi
 
     private List<Task> tasks;
     private Context context;
+    public enum Sort{DATE_CREATED, NAME, LAST_MODIFIED}
 
     public ActivitiesAdapter(Context context) {
         List<Task> list = DBHelper.getInstance(context).getAllTasks();
@@ -61,8 +65,29 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.Vi
         List<Task> list = DBHelper.getInstance(context).getAllTasks();
         Collections.reverse(list);
         tasks.clear();
-        tasks.addAll( list );
+        tasks.addAll(list);
         notifyDataSetChanged();
+    }
+
+    /**
+     * Method to sort the adapter by the field sort
+     * @param sort The field to sort by,
+     *        Valid options: DATE_CREATED, NAME, LAST_MODIFIED
+     */
+    public void sortBy(Sort sort) {
+        switch(sort) {
+            case DATE_CREATED:
+                Collections.sort(tasks, new TaskDateCreatedSorter());
+                break;
+            case NAME:
+                Collections.sort(tasks, new TaskNameSorter());
+                break;
+            case LAST_MODIFIED:
+                Collections.sort(tasks, new TaskLastModifiedSorter());
+                break;
+        }
+        notifyDataSetChanged();
+
     }
 
     @Override
@@ -85,6 +110,29 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.Vi
 
             activityName = (TextView) itemView.findViewById(R.id.activity_item_name);
             activityDuration = (TextView) itemView.findViewById(R.id.activity_item_duration);
+        }
+    }
+
+    public class TaskNameSorter implements Comparator<Task> {
+        @Override
+        public int compare(Task lhs, Task rhs) {
+            return lhs.getName().compareToIgnoreCase( rhs.getName() );
+        }
+    }
+
+    public class TaskDateCreatedSorter implements Comparator<Task> {
+
+        @Override
+        public int compare(Task lhs, Task rhs) {
+            return lhs.getDateCreated().getTime().compareTo( rhs.getDateCreated().getTime() );
+        }
+    }
+
+    public class TaskLastModifiedSorter implements  Comparator<Task> {
+
+        @Override
+        public int compare(Task lhs, Task rhs) {
+            return lhs.getLastModified().getTime().compareTo( rhs.getLastModified().getTime() );
         }
     }
 }

@@ -60,7 +60,8 @@ public class AddActivityTest {
         String taskName = "TaskName";
         int duration = 12;
         Calendar deadline = Calendar.getInstance();
-        long id = db.insertTask(new Task(taskName, duration, deadline));
+        long id = db.insertTask(new Task(taskName, duration, deadline,
+                Calendar.getInstance(), Calendar.getInstance()));//TODO Update test case: Task constructor modified
 
         Task taskAdded = db.getTask((int) id);
         assertEquals(taskName, taskAdded.getName());

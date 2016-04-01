@@ -122,6 +122,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         int goalInMinutes = Task.convertHourMinuteToMinute( goal );
         task.setName(activityName.getText().toString());
         task.setTimeInMinutes(goalInMinutes);
+        task.setLastModified(Calendar.getInstance());
 //        priority.get
 
         if ( DBHelper.getInstance(this).updateTask(task) ) {
