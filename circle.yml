@@ -27,6 +27,7 @@ test:
     # run tests  against the emulator.
     - ADB_INSTALL_TIMEOUT=10 ./gradlew connectedAndroidTest
     # copy the test results to the test results directory.
-    - cp -r /home/ubuntu/Momenta-Capstone/app/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
+    - cp -r /home/ubuntu/Momenta-Capstone/app/build/reports/androidTests/connected/ $CIRCLE_TEST_REPORTS
+    #- cp -r /home/ubuntu/Momenta-Capstone/app/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
     - cp -r /home/ubuntu/Momenta-Capstone/app/build/outputs/ $CIRCLE_ARTIFACTS
 
