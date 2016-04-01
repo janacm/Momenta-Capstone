@@ -36,7 +36,7 @@ RESOURCE_METHODS = ['GET', 'POST', 'DELETE', 'PATCH']
 
 # Enable reads (GET), edits (PATCH) and deletes of individual items. Also added patch and changed the order of the methods
 # (defaults to read-only item access).
-ITEM_METHODS = ['GET', 'POST', 'DELETE', 'PATCH']
+ITEM_METHODS = ['GET' , 'DELETE']
 
 # We enable standard client cache directives for all resources exposed by the
 # API. We can always override these global settings later.

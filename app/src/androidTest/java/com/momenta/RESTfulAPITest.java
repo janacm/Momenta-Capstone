@@ -93,66 +93,24 @@ public class RESTfulAPITest extends AsyncTask {
     /*
      * DELETE request that deletes a user 121 to the database
      */
-//    @Test
-//    public void DeleteRequestToDBTest(){
-//
-//        try {
-//            String urlParameters = "lastname=test121" + "&firstname=test121";
-//            url = new URL("http://momenta.herokuapp.com/people/");
-//            urlConnection = (HttpURLConnection) url.openConnection();
-//            urlConnection.setRequestMethod("DELETE");
-//            urlConnection.setDoOutput(true);
-//
-//            //Send request
-//            DataOutputStream wr = new DataOutputStream (urlConnection.getOutputStream());
-//            wr.writeBytes (urlParameters);
-//            wr.flush();
-//            wr.close();
-//
-//            responseCode = urlConnection.getResponseCode();
-//            assertEquals(204, responseCode);
-//
-//        } catch (MalformedURLException e) {
-//            e.printStackTrace();
-//        } catch (ProtocolException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } finally {
-//            if (urlConnection != null) {
-//                urlConnection.disconnect();
-//            }
-//        }
-//    }
-
-    /*
-     * Test to the database to verify that Smith (lastname) does exist.
-     */
     @Test
-    public void DatabaseInformationVerifyTest(){
+    public void DeleteRequestToDBTest(){
 
         try {
-            url = new URL("http://momenta.herokuapp.com/people/Smith");
+            String urlParameters = "lastname=test121" + "&firstname=test121";
+            url = new URL("http://momenta.herokuapp.com/people/");
             urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("GET");
+            urlConnection.setRequestMethod("DELETE");
+            urlConnection.setDoOutput(true);
 
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(urlConnection.getInputStream()));
-            String inputLine;
-
-            StringBuffer response = new StringBuffer();
-
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-
-            //print result
-            //System.out.println(response.toString());
+            //Send request
+            DataOutputStream wr = new DataOutputStream (urlConnection.getOutputStream());
+            wr.writeBytes (urlParameters);
+            wr.flush();
+            wr.close();
 
             responseCode = urlConnection.getResponseCode();
-
-            assertEquals("Smith", response.toString());
+            assertEquals(204, responseCode);
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -166,6 +124,48 @@ public class RESTfulAPITest extends AsyncTask {
             }
         }
     }
+
+    /*
+     * Test to the database to verify that Smith (lastname) does exist.
+     */
+//    @Test
+//    public void DatabaseInformationVerifyTest(){
+//
+//        try {
+//            url = new URL("http://momenta.herokuapp.com/people/Smith");
+//            urlConnection = (HttpURLConnection) url.openConnection();
+//            urlConnection.setRequestMethod("GET");
+//
+//            BufferedReader in = new BufferedReader(
+//                    new InputStreamReader(urlConnection.getInputStream()));
+//            String inputLine;
+//
+//            StringBuffer response = new StringBuffer();
+//
+//            while ((inputLine = in.readLine()) != null) {
+//                response.append(inputLine);
+//            }
+//            in.close();
+//
+//            //print result
+//            //System.out.println(response.toString());
+//
+//            responseCode = urlConnection.getResponseCode();
+//
+//            assertEquals("Smith", response.toString());
+//
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        } catch (ProtocolException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } finally {
+//            if (urlConnection != null) {
+//                urlConnection.disconnect();
+//            }
+//        }
+//    }
     /*
      * Test cases are ran in the order below. First do a simple get request to verify the connection
      * to the DB/server.
@@ -177,9 +177,9 @@ public class RESTfulAPITest extends AsyncTask {
     protected Object doInBackground(Object[] params) {
         GetRequestToDBTest();
         PostRequestToDBTest();
-        //DeleteRequestToDBTest();
+        DeleteRequestToDBTest();
 
-        DatabaseInformationVerifyTest();
+        //DatabaseInformationVerifyTest();
         return null;
     }
 
