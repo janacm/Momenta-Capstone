@@ -2,7 +2,6 @@ package com.momenta;
 import android.app.Instrumentation;
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
-import android.support.test.espresso.assertion.ViewAssertions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -14,10 +13,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Calendar;
-
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.*;
-import static android.support.test.espresso.matcher.ViewMatchers.*;
 
 /**
  * Created by joesi on 2016-02-16.
@@ -40,11 +35,11 @@ public class AddActivityTest{
         int duration = 12;
         Calendar deadline = Calendar.getInstance();
         long id = db.insertTask(new Task(taskName, duration, deadline,
-                Calendar.getInstance(), Calendar.getInstance()));//TODO Update test case: Task constructor modified
+                Calendar.getInstance().getTimeInMillis(), Calendar.getInstance()));//TODO Update test case: Task constructor modified
 
         Task taskAdded = db.getTask((int) id);
         assertEquals(taskName,taskAdded.getName());
-        assertEquals(duration,taskAdded.getTime());
+        assertEquals(duration,taskAdded.getDuration());
         assertEquals(deadline,taskAdded.getDeadline());
     }
 

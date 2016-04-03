@@ -20,6 +20,7 @@
             android:id="@+id/new_activity_edit_text"
             android:maxLength="64"
             android:hint="@string/new_activity_hint"
+            android:textColorHint="@color/hint_text"
             android:singleLine="true"
             android:layout_weight="1" />
 
@@ -51,7 +52,7 @@
         android:layout_marginLeft="25dp"
         android:layout_marginStart="25dp"
         android:layout_marginTop="25dp"
-        android:hint="@string/goal_hint"
+        android:hint=""
         android:focusable="false"
         android:inputType="time"
         android:singleLine="true" />
@@ -78,7 +79,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginRight="25dp"
         android:layout_marginTop="25dp"
-        android:hint="@string/deadline_hint"
+        android:hint=""
         android:focusable="false"
         android:layout_marginEnd="25dp"
         android:singleLine="true"
@@ -97,6 +98,33 @@
         android:text="@string/ongoing_activity_string"
         android:textSize="20sp"
         android:textColor="#eeeeee" />
+
+    <LinearLayout
+        android:id="@+id/sort_order_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/new_activity_goal_edit_text"
+        android:layout_toLeftOf="@+id/sort_button"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="24dp">
+
+        <TextView
+            android:id="@+id/asc_desc_name"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_gravity="bottom"
+            android:text="@string/sort_dialog_name"
+            android:textColor="@color/white"
+            android:textSize="15sp"/>
+
+        <ImageView
+            android:id="@+id/asc_desc_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_up_arrow"/>
+    </LinearLayout>
+
 
     <ImageButton
         android:id="@+id/sort_button"

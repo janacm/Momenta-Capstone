@@ -1,33 +1,30 @@
 package com.momenta;
 
-import android.content.Context;
 import android.app.Activity;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.util.Log;
 
 /**
  * Created by Joe on 2016-03-10.
  * For Momenta-Capstone
  */
-public class helperPreferences {
+public class HelperPreferences {
     private static final String PREFS_NAME = "momenta_prefs";
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
-    public helperPreferences(Activity activity) {
+    public HelperPreferences(Activity activity) {
 
         this.sharedPreferences = activity.getSharedPreferences(PREFS_NAME, 0);
         this.editor = sharedPreferences.edit();
     }
 
-    public String GetPreferences(String key) {
-        String getValue = sharedPreferences.getString(key, "0");
+    public String getPreferences(String key, String defaultValue) {
+        String getValue = sharedPreferences.getString(key, defaultValue);
         return getValue;
     }
 
-    public void SavePreferences(String key, String value) {
+    public void savePreferences(String key, String value) {
         editor.putString(key, value);
         editor.commit();
     }

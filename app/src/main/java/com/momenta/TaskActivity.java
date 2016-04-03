@@ -1,22 +1,21 @@
 package com.momenta;
 
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +30,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
     TextView activityGoal;
     Task task;
 
-    //TODO Remove focus from view activity edit text; edit button to edit text
+    //TODO Remove focus from view activity edit text
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +42,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         Bundle bundle = getIntent().getExtras();
         int id = (int) bundle.get(DBHelper.ACTIVITY_ID);
         task = DBHelper.getInstance(this).getTask(id);
+        Log.e("TaskActivity", task.getName());
 
         //Set the text of the view
         activityName = (EditText)findViewById(R.id.task_name_edit_text);
@@ -52,15 +52,11 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         activityGoal.setText( task.getTimeString() );
 
         activityDeadline = (TextView) findViewById(R.id.task_time_set_deadline);
-        if ( !(task.getDeadline()==null) && (task.getDeadline().getTimeInMillis() != 0) ) {
-            activityDeadline.setText( task.getFormattedDeadline() );
-        } else {
-            activityDeadline.setText("Set a deadline");
-        }
+        activityDeadline.setText( task.getFormattedDeadline() );
 
         Spinner spinner = (Spinner)findViewById(R.id.task_priority_spinner);
         spinner.setOnItemSelectedListener(this);
-        spinner.setSelection( spinnerPosition(task.getPriority()) );
+        spinner.setSelection(spinnerPosition(task.getPriority()));
     }
 
     @Override
@@ -79,8 +75,30 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.action_done:
                 save();
                 break;
+            case R.id.action_delete:
+                delete();
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void delete() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getString(R.string.delete_string) + " "
+                + activityName.getText().toString() + "?")
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        DBHelper.getInstance(getApplicationContext()).deleteTask(task.getId());
+                        finish();
+                    }
+                })
+                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+        builder.create().show();
     }
 
     //Handler method for the goal view being clicked
@@ -188,6 +206,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-
+        //Do nothing
     }
+
 }

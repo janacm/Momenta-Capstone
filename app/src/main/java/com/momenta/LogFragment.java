@@ -13,10 +13,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -45,9 +48,11 @@ public class LogFragment extends Fragment implements View.OnClickListener {
     private final Calendar deadlineCalendar = Calendar.getInstance();
     private boolean deadlineSet = false;
     private ImageButton sortButton;
-    private ActivitiesAdapter.Sort sort;
-
-//    private int mPage;
+    private String sortString;
+    private String orderString;
+    private HelperPreferences helperPreferences;
+    private ImageView image;
+    private TextView sortColumnnName;
 
     public static LogFragment newInstance(int page) {
         Bundle args = new Bundle();
@@ -60,7 +65,6 @@ public class LogFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        mPage = getArguments().getInt(ARG_PAGE);
     }
 
     @Override
@@ -72,7 +76,7 @@ public class LogFragment extends Fragment implements View.OnClickListener {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new ActivitiesAdapter(this.getContext());
+        mAdapter = new ActivitiesAdapter(this.getContext(), getActivity());
         mRecyclerView.setAdapter(mAdapter);
 
         ImageButton addButton = (ImageButton)view.findViewById(R.id.new_activity_add_button);
@@ -89,7 +93,27 @@ public class LogFragment extends Fragment implements View.OnClickListener {
         sortButton = (ImageButton) view.findViewById(R.id.sort_button);
         sortButton.setOnClickListener(this);
 
+        helperPreferences = new HelperPreferences(getActivity());
+
+        image = (ImageView)view.findViewById(R.id.asc_desc_image);
+        sortColumnnName = (TextView)view.findViewById(R.id.asc_desc_name);
+        sortColumnnName.setText( getSortLabel() );
+        if ( helperPreferences.getPreferences(DBHelper.ORDER, DBHelper.DESC).equals(DBHelper.ASC) ) {
+            image.setBackgroundResource(R.drawable.ic_up_arrow);
+        } else {
+            image.setBackgroundResource(R.drawable.ic_down_arrow);
+        }
+
+        LinearLayout sortLayout = (LinearLayout)view.findViewById(R.id.sort_order_layout);
+        sortLayout.setOnClickListener(this);
+
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mAdapter.retrieveTasks();
     }
 
     @Override
@@ -108,7 +132,21 @@ public class LogFragment extends Fragment implements View.OnClickListener {
             case R.id.sort_button:
                 sortDialog();
                 break;
+            case R.id.sort_order_layout:
+                orderOnClick();
+                break;
         }
+    }
+
+    private void orderOnClick() {
+        if ( helperPreferences.getPreferences(DBHelper.ORDER, DBHelper.DESC).equals(DBHelper.ASC) ) {
+            helperPreferences.savePreferences(DBHelper.ORDER, DBHelper.DESC);
+            image.setBackgroundResource(R.drawable.ic_down_arrow);
+        } else {
+            helperPreferences.savePreferences(DBHelper.ORDER, DBHelper.ASC);
+            image.setBackgroundResource(R.drawable.ic_up_arrow);
+        }
+        mAdapter.retrieveTasks();
     }
 
     /**
@@ -123,13 +161,20 @@ public class LogFragment extends Fragment implements View.OnClickListener {
                 .setPositiveButton(R.string.dialog_done, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        helperPreferences.savePreferences(DBHelper.COLUMN, sortString);
+                        helperPreferences.savePreferences(DBHelper.ORDER, orderString);
+                        sortColumnnName.setText(getSortLabel());
+                        if ( orderString.equals(DBHelper.ASC) ) {
+                            image.setBackgroundResource(R.drawable.ic_up_arrow);
+                        } else {
+                            image.setBackgroundResource(R.drawable.ic_down_arrow);
+                        }
+                        mAdapter.retrieveTasks();
                     }
                 })
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
                     }
                 });
         ColorStateList colorStateList = new ColorStateList(
@@ -142,36 +187,87 @@ public class LogFragment extends Fragment implements View.OnClickListener {
                         , Color.rgb(33, 150, 243),
                 }
         );
-        //Set up radio buttons for filering
-        AppCompatRadioButton radioButtonName = (AppCompatRadioButton)dialogView
+
+        RadioGroup radioGroup = (RadioGroup)dialogView.findViewById(R.id.sort_dialog_group);
+
+        //Setup for radio buttons to filter.
+        final AppCompatRadioButton radioButtonName = (AppCompatRadioButton)dialogView
                 .findViewById(R.id.radio_button_name);
         radioButtonName.setSupportButtonTintList(colorStateList);
-        radioButtonName.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mAdapter.sortBy(ActivitiesAdapter.Sort.NAME);
-            }
-        });
+
         AppCompatRadioButton radioButtonLastModified = (AppCompatRadioButton)dialogView
                 .findViewById(R.id.radio_button_last_modified);
         radioButtonLastModified.setSupportButtonTintList(colorStateList);
-        radioButtonLastModified.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mAdapter.sortBy(ActivitiesAdapter.Sort.LAST_MODIFIED);
-            }
-        });
+
         AppCompatRadioButton radioButtonCreated = (AppCompatRadioButton)dialogView
                 .findViewById(R.id.radio_button_date_created);
         radioButtonCreated.setSupportButtonTintList(colorStateList);
-        radioButtonCreated.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mAdapter.sortBy(ActivitiesAdapter.Sort.DATE_CREATED);
-            }
-        });
+
+        AppCompatRadioButton radioButtonDeadline = (AppCompatRadioButton)dialogView
+                .findViewById(R.id.radio_button_deadline);
+        radioButtonDeadline.setSupportButtonTintList(colorStateList);
+
+        radioGroup.setOnCheckedChangeListener(
+                new RadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup group, int checkedId) {
+                        switch ( checkedId ) {
+                            case R.id.radio_button_name:
+                                sortString = DBHelper.ACTIVITY_NAME;
+                                orderString = DBHelper.ASC;
+                                break;
+                            case R.id.radio_button_date_created:
+                                sortString = DBHelper.ACTIVITY_DATE_CREATED;
+                                orderString = DBHelper.DESC;
+                                break;
+                            case R.id.radio_button_deadline:
+                                sortString = DBHelper.ACTIVITY_DEADLINE;
+                                orderString = DBHelper.DESC;
+                                break;
+                            case R.id.radio_button_last_modified:
+                                sortString = DBHelper.ACTIVITY_LAST_MODIFIED;
+                                orderString = DBHelper.DESC;
+                                break;
+                        }
+                    }
+                }
+        );
+
+        switch ( helperPreferences.getPreferences(DBHelper.COLUMN, DBHelper.ACTIVITY_LAST_MODIFIED) ) {
+            case DBHelper.ACTIVITY_NAME:
+                radioGroup.check(R.id.radio_button_name);
+                break;
+            case DBHelper.ACTIVITY_LAST_MODIFIED:
+                radioGroup.check(R.id.radio_button_last_modified);
+                break;
+            case DBHelper.ACTIVITY_DATE_CREATED:
+                radioGroup.check(R.id.radio_button_date_created);
+                break;
+            case DBHelper.ACTIVITY_DEADLINE:
+                radioGroup.check(R.id.radio_button_deadline);
+                break;
+        }
 
         sortDialogBuilder.create().show();
+    }
+
+    private String getSortLabel() {
+        String columnName = "";
+        switch ( helperPreferences.getPreferences(DBHelper.COLUMN, DBHelper.ACTIVITY_LAST_MODIFIED) ) {
+            case DBHelper.ACTIVITY_NAME:
+                columnName = getString(R.string.sort_dialog_name);
+                break;
+            case DBHelper.ACTIVITY_LAST_MODIFIED:
+                columnName = getString(R.string.sort_dialog_last_modified);
+                break;
+            case DBHelper.ACTIVITY_DATE_CREATED:
+                columnName = getString(R.string.sort_dialog_date_created);
+                break;
+            case DBHelper.ACTIVITY_DEADLINE:
+                columnName = getString(R.string.sort_dialog_dealine);
+                break;
+        }
+        return columnName;
     }
 
     /**
@@ -196,7 +292,7 @@ public class LogFragment extends Fragment implements View.OnClickListener {
             }
 
             Task task = new Task(newActivity.getText().toString(), timeInMinutes,
-                    deadlineCalendar, Calendar.getInstance(), Calendar.getInstance());
+                    deadlineCalendar, Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
             DBHelper.getInstance(getContext()).insertTask(task);
 
             //Reset input fields
@@ -228,7 +324,7 @@ public class LogFragment extends Fragment implements View.OnClickListener {
     /**
      * Helper method to input the Deadline/Due date if an activity.
      */
-    private void inputDeadline() {
+    private void inputDeadline() {//TODO Date Format string literal
         Calendar cal = Calendar.getInstance();
         DatePickerDialog dialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override

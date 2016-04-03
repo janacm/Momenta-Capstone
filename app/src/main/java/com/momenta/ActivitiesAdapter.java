@@ -1,17 +1,15 @@
 package com.momenta;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Switch;
 import android.widget.TextView;
 
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -21,12 +19,13 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.Vi
 
     private List<Task> tasks;
     private Context context;
-    public enum Sort{DATE_CREATED, NAME, LAST_MODIFIED}
+    private HelperPreferences helperPreferences;
 
-    public ActivitiesAdapter(Context context) {
+    public ActivitiesAdapter(Context context, Activity activity) {
         List<Task> list = DBHelper.getInstance(context).getAllTasks();
         Collections.reverse(list);
         this.tasks = list;
+        helperPreferences = new HelperPreferences(activity);
     }
 
     @Override
@@ -47,15 +46,15 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.Vi
         Task task = tasks.get(position);
 
         //Set the fields of the item_activity layout from the task object
-        holder.activityName.setText( task.getName() );
-        holder.activityDuration.setText( task.getTimeString() );
+        holder.activityName.setText(task.getName());
+        holder.activityDuration.setText(task.getTimeString());
 
         //Set onClick listener for each activity
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, TaskActivity.class);
-                intent.putExtra(DBHelper.ACTIVITY_ID, tasks.get(position).getId() );
+                intent.putExtra(DBHelper.ACTIVITY_ID, tasks.get(position).getId());
                 context.startActivity(intent);
             }
         });
@@ -63,31 +62,9 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.Vi
 
     public void retrieveTasks() {
         List<Task> list = DBHelper.getInstance(context).getAllTasks();
-        Collections.reverse(list);
         tasks.clear();
         tasks.addAll(list);
         notifyDataSetChanged();
-    }
-
-    /**
-     * Method to sort the adapter by the field sort
-     * @param sort The field to sort by,
-     *        Valid options: DATE_CREATED, NAME, LAST_MODIFIED
-     */
-    public void sortBy(Sort sort) {
-        switch(sort) {
-            case DATE_CREATED:
-                Collections.sort(tasks, new TaskDateCreatedSorter());
-                break;
-            case NAME:
-                Collections.sort(tasks, new TaskNameSorter());
-                break;
-            case LAST_MODIFIED:
-                Collections.sort(tasks, new TaskLastModifiedSorter());
-                break;
-        }
-        notifyDataSetChanged();
-
     }
 
     @Override
@@ -113,26 +90,4 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.Vi
         }
     }
 
-    public class TaskNameSorter implements Comparator<Task> {
-        @Override
-        public int compare(Task lhs, Task rhs) {
-            return lhs.getName().compareToIgnoreCase( rhs.getName() );
-        }
-    }
-
-    public class TaskDateCreatedSorter implements Comparator<Task> {
-
-        @Override
-        public int compare(Task lhs, Task rhs) {
-            return lhs.getDateCreated().getTime().compareTo( rhs.getDateCreated().getTime() );
-        }
-    }
-
-    public class TaskLastModifiedSorter implements  Comparator<Task> {
-
-        @Override
-        public int compare(Task lhs, Task rhs) {
-            return lhs.getLastModified().getTime().compareTo( rhs.getLastModified().getTime() );
-        }
-    }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#2196F3</color>
+    <color name="colorPrimary">#3697DB</color>
     <color name="colorPrimaryDark">#1976D2</color>
     <color name="colorAccent">#FFFFFF</color>
     <color name="colorBackground">#FFFFFF</color>
@@ -13,4 +13,5 @@
     <color name="primary_text_default_material_light">#3597dA</color>
     <color name="primary_text">#77BEF5</color>
     <color name="black_overlay">#66000000</color>
+    <color name="hint_text">#BBDEFB</color>
 </resources>

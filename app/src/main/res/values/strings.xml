@@ -7,12 +7,25 @@
     <string name="tab_title_awards">Awards</string>
     <string name="tab_title_trends">Trends</string>
 
+    <!--Sort Dialog Strings-->
+    <string name="sort_dialog_date_created">Date Created</string>
+    <string name="sort_dialog_dealine">Deadline</string>
+    <string name="sort_dialog_name">Name</string>
+    <string name="sort_dialog_last_modified">Last Modified</string>
+
     <!-- Text View strings-->
     <string name="ongoing_activity_string">Ongoing activities</string>
     <string name="H_string">H</string>
     <string name="M_string">M</string>
     <string name="set_goal_String">Set your goal for</string>
     <string name="set_interval_time">Set your interval time</string>
+
+    <!--Task Actiivty -->
+    <string name="delete_string">Delete</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="undo">Undo</string>
+    <string name="actvity_deleted">Activity deleted</string>
     <string name="priority_spinner_title">Priority</string>
     <string-array name="Priorities">
         <item>Very Low</item>
@@ -21,6 +34,7 @@
         <item>High</item>
         <item>Very High</item>
     </string-array>
+
     <!-- Log strings-->
 
     <!-- Button strings-->
@@ -50,7 +64,7 @@
     <string name="interval_time_summary_never_remind">Never remind me</string>
 
     <!-- EditText strings-->
-    <string name="new_activity_hint">New Activity</string>
+    <string name="new_activity_hint"><i>Go to the gym...</i></string>
     <string name="deadline_hint">By March 25th</string>
     <string name="goal_hint">for 1 hour</string>
 
@@ -62,8 +76,6 @@
     <string name="title_activity_screen_take_over">ScreenTakeOverActivity</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="add_activity_content_description">Add activity button</string>
->>>>>>> dev
-
 
     <!-- Demo/Sample strings-->
     <string name="sample_duration_string">1h 45m</string>

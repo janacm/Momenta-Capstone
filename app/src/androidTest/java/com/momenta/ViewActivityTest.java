@@ -1,6 +1,9 @@
 package com.momenta;
 
+import android.app.Instrumentation;
+import android.content.Context;
 import android.content.Intent;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.widget.DatePicker;
@@ -15,6 +18,7 @@ import org.junit.runner.RunWith;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
@@ -43,6 +47,17 @@ public class ViewActivityTest {
 
     @Before
     public void setUp() {
+        Instrumentation instrumentation
+                = InstrumentationRegistry.getInstrumentation();
+        Context ctx = instrumentation.getTargetContext();
+        DBHelper db = DBHelper.getInstance(ctx);
+
+        Calendar deadline = Calendar.getInstance();
+        deadline.setTimeInMillis(deadline.getTimeInMillis() + TimeUnit.MILLISECONDS.convert(30, TimeUnit.HOURS));
+
+        db.insertTask(new Task("Task 1", 400, deadline,
+                Calendar.getInstance().getTimeInMillis(), Calendar.getInstance()));
+
         Intent intent = new Intent();
         intent.putExtra(DBHelper.ACTIVITY_ID, 1);
         rule.launchActivity(intent);
@@ -52,12 +67,12 @@ public class ViewActivityTest {
     public void testUpdateActivityName() {
         //Replace the text in teh textview
         onView(withId(R.id.task_name_edit_text))
-                .perform(replaceText("Jason"), closeSoftKeyboard());
+                .perform(replaceText("Rumpelstiltskin once upon a time"), closeSoftKeyboard());
 
         restartTaskActivity();
 
         //Ensure the change has taken place
-        onView(withId(R.id.task_name_edit_text)).check(matches(withText("Jason")));
+        onView(withId(R.id.task_name_edit_text)).check(matches(withText("Rumpelstiltskin once upon a time")));
     }
 
 //    @Test TODO FIX TEST

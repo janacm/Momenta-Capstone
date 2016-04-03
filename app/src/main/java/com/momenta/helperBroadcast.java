@@ -13,20 +13,20 @@ import java.util.Calendar;
  * Created by Joe on 2016-03-12.
  * For Momenta-Capstone
  */
-public class helperBroadcast {
+public class HelperBroadcast {
 
     private Activity activity;
-    helperPreferences sharedPrefs;
+    HelperPreferences sharedPrefs;
 
-    public helperBroadcast(Activity activity) {
+    public HelperBroadcast(Activity activity) {
         this.activity = activity;
-        sharedPrefs = new helperPreferences(activity);
+        sharedPrefs = new HelperPreferences(activity);
     }
 
     public void sendBroadcast() {
         Log.d("Dashboard", "Setting Alarm.");
-        String minutes = sharedPrefs.GetPreferences(Constants.SHPREF_INTERVAL_MINS);
-        String hours = sharedPrefs.GetPreferences(Constants.SHPREF_INTERVAL_HOURS);
+        String minutes = sharedPrefs.getPreferences(Constants.SHPREF_INTERVAL_MINS, "0");
+        String hours = sharedPrefs.getPreferences(Constants.SHPREF_INTERVAL_HOURS, "0");
         Log.d("Dashboard", "Setting Alarm..." + hours + minutes);
         Calendar cal = Calendar.getInstance();
         int time = Integer.parseInt(hours) * 60 * 60 * 1000 + Integer.parseInt(minutes) * 60 * 1000;

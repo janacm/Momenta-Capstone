@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/activity_task"
     tools:context="com.momenta.TaskActivity">
 
     <LinearLayout
@@ -27,8 +28,8 @@
         <EditText
             android:id="@+id/task_name_edit_text"
             android:layout_width="match_parent"
-            android:text="@string/dummy_content"
-            android:hint="@string/task_name_hint"
+            android:hint="@string/new_activity_hint"
+            android:textColorHint="@color/hint_text"
             android:textColor="@color/white"
             android:textSize="24sp"
             android:maxLength="64"

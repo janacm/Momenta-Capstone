@@ -2,7 +2,6 @@ package com.momenta;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Enumeration;
 import java.util.Locale;
 
 /**
@@ -17,7 +16,7 @@ public class Task {
     private int minutes;
     private Calendar deadline = Calendar.getInstance();
     private Calendar lastModified = Calendar.getInstance();
-    private Calendar dateCreated = Calendar.getInstance(); //Field cannot be change once it has been created.
+    private long dateCreated;
     private Priority priority;
 
     /**
@@ -29,12 +28,12 @@ public class Task {
      * @param lastModified the last time the activity was modified
      */
     public Task (String name, int duration, Calendar deadline,
-                 Calendar dateCreated, Calendar lastModified) {
+                 long dateCreated, Calendar lastModified) {
         this.name = name; hours = 0; minutes = 0;
         priority = Priority.MEDIUM;
         addMinute(duration);
         setDeadline(deadline);
-        setDateCreated(dateCreated);
+        this.dateCreated = dateCreated;
         setLastModified(lastModified);
     }
 
@@ -48,7 +47,7 @@ public class Task {
      * @param lastModified the last time the activity was modified
      */
     public Task (int id, String name, int duration, Calendar deadline,
-                 Calendar dateCreated, Calendar lastModified) {
+                 long dateCreated, Calendar lastModified) {
         this(name, duration, deadline, dateCreated, lastModified);
         this.id = id;
     }
@@ -125,7 +124,7 @@ public class Task {
      * Used to get the time of this task in minutes
      * @return the total time of this task in minutes.
      */
-    public int getTime() {
+    public int getDuration() {
         return (this.hours*60) + minutes;
     }
 
@@ -191,12 +190,8 @@ public class Task {
         this.lastModified.setTimeInMillis( lastModified.getTimeInMillis() );
     }
 
-    public Calendar getDateCreated() {
+    public long getDateCreated() {
         return dateCreated;
-    }
-
-    public void setDateCreated(Calendar created) {
-        this.dateCreated.setTimeInMillis( created.getTimeInMillis() );
     }
 
     /**
@@ -227,5 +222,13 @@ public class Task {
         return (hour*60) + minutes;
     }
 
+    public boolean equals(Task another) {
+        return this.getName().equals(another.getName())
+                && this.getDuration() == another.getDuration()
+                && this.getDeadline().getTimeInMillis() == another.getDeadline().getTimeInMillis()
+                && this.getLastModified().getTimeInMillis() == another.getLastModified().getTimeInMillis()
+                && this.getDateCreated() == another.getDateCreated()
+                && this.getPriority() == another.getPriority();
+    }
 
 }
