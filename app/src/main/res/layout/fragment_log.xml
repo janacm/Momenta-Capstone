@@ -52,7 +52,7 @@
         android:layout_marginLeft="25dp"
         android:layout_marginStart="25dp"
         android:layout_marginTop="25dp"
-        android:hint=""
+        android:hint="@string/goal_hint"
         android:focusable="false"
         android:inputType="time"
         android:singleLine="true" />
@@ -79,7 +79,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginRight="25dp"
         android:layout_marginTop="25dp"
-        android:hint=""
+        android:hint="@string/deadline_hint"
         android:focusable="false"
         android:layout_marginEnd="25dp"
         android:singleLine="true"

@@ -31,12 +31,10 @@ public class IntervalDialogPreference extends DialogPreference {
     }
 
 
-
     @Override
     protected View onCreateDialogView() {
         return super.onCreateDialogView();
     }
-
 
 
     @Override
@@ -51,8 +49,17 @@ public class IntervalDialogPreference extends DialogPreference {
     @Override
     public void onClick(DialogInterface dialog, int button_id) {
         if (button_id == DialogInterface.BUTTON_POSITIVE) {
-            sharedPrefs.savePreferences(Constants.SHPREF_INTERVAL_HOURS, hours_tv.getText().toString());
-            sharedPrefs.savePreferences(Constants.SHPREF_INTERVAL_MINS, mins_tv.getText().toString());
+            String hours = hours_tv.getText().toString();
+            String mins = mins_tv.getText().toString();
+            if (hours.equals("") || hours.equals(null)) {
+                hours = "0";
+            }
+            if (mins.equals("") || mins.equals(null)) {
+                mins = "0";
+            }
+
+            sharedPrefs.savePreferences(Constants.SHPREF_INTERVAL_HOURS, hours);
+            sharedPrefs.savePreferences(Constants.SHPREF_INTERVAL_MINS, mins);
             broadcast.sendBroadcast();
         } else if (button_id == DialogInterface.BUTTON_NEGATIVE) {
             // do your stuff to handle negative button
