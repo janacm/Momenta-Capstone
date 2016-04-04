@@ -10,6 +10,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +45,8 @@ public class LogFragment extends Fragment implements View.OnClickListener {
     private ActivitiesAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private EditText newActivity;
-    private EditText activityTime;
+    private EditText activityHour;
+    private EditText activityMinute;
     private EditText activityDeadline;
     private final Calendar deadlineCalendar = Calendar.getInstance();
     private boolean deadlineSet = false;
@@ -84,8 +87,27 @@ public class LogFragment extends Fragment implements View.OnClickListener {
 
         newActivity = (EditText) view.findViewById(R.id.new_activity_edit_text);
 
-        activityTime = (EditText) view.findViewById(R.id.new_activity_goal_edit_text);
-        activityTime.setOnClickListener(this);
+        activityHour = (EditText) view.findViewById(R.id.new_activity_hour_edit_text);
+        activityMinute = (EditText) view.findViewById(R.id.new_activity_minute_edit_text);
+
+        //Add watcher to move focus to minute text view
+        activityHour.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() == 2) {
+                    activityMinute.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         activityDeadline = (EditText) view.findViewById(R.id.new_activity_deadline_edit_text);
         activityDeadline.setOnClickListener(this);
@@ -122,9 +144,6 @@ public class LogFragment extends Fragment implements View.OnClickListener {
             case R.id.new_activity_add_button:
                 addActivity();
                 httpRequest();
-                return;
-            case R.id.new_activity_goal_edit_text:
-                inputGoal();
                 return;
             case R.id.new_activity_deadline_edit_text:
                 inputDeadline();
@@ -276,28 +295,30 @@ public class LogFragment extends Fragment implements View.OnClickListener {
     private void addActivity() {
         //If the text box is empty do nothing.
         if (!newActivity.getText().toString().trim().isEmpty()) {
-            String timeFieldValue = Task.stripNonDigits(activityTime.getText().toString());
-            int timeInMinutes = Task.convertHourMinuteToMinute(timeFieldValue);
+            long hourField = Long.valueOf( "0" + activityHour.getText().toString() );
+            long minuteField = Long.valueOf( "0" + activityMinute.getText().toString());
+            Long totalMinutes = TimeUnit.MINUTES.convert(hourField, TimeUnit.HOURS)
+                    + minuteField;
 
-            //If no goal is chosen, default to 2 hours.
-            if (timeInMinutes == 0) {
-                Long tempLongValue = TimeUnit.MINUTES.convert(2, TimeUnit.HOURS);
-                timeInMinutes = tempLongValue.intValue();
+            //If no goal is chosen, default to 2 hours. TODO Make default a preference
+            if (totalMinutes == 0l) {
+                totalMinutes = TimeUnit.MINUTES.convert(2, TimeUnit.HOURS);
             }
 
-            //If no deadline is chosen, default to one week from now.
+            //If no deadline is chosen, default to one week from now. TODO Make default a preference
             if (!deadlineSet) {
                 deadlineCalendar.setTimeInMillis( deadlineCalendar.getTimeInMillis()
                         + TimeUnit.MILLISECONDS.convert(7, TimeUnit.DAYS));
             }
 
-            Task task = new Task(newActivity.getText().toString(), timeInMinutes,
+            Task task = new Task(newActivity.getText().toString(), totalMinutes.intValue(),
                     deadlineCalendar, Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
             DBHelper.getInstance(getContext()).insertTask(task);
 
             //Reset input fields
             newActivity.setText("");
-            activityTime.setText("");
+            activityHour.setText("");
+            activityMinute.setText("");
             activityDeadline.setText("");
 
             mAdapter.retrieveTasks();
@@ -308,18 +329,18 @@ public class LogFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    /**
-     * Handler method for the Goal edit text on the log fragment
-     * Used to input goal in time for the edit text.
-     */
-    private void inputGoal() {
-        LayoutInflater inflater = LayoutInflater.from(getContext());
-        View alertView = inflater.inflate(R.layout.activity_alert_dialog, null);
-        TimeDialogBuilder timeDialogBuilder = new TimeDialogBuilder(this, alertView,
-                newActivity.getText().toString().trim(), activityTime);
-        AlertDialog alertDialog = timeDialogBuilder.getAlertDialog();
-        alertDialog.show();
-    }
+//    /**
+//     * Handler method for the Goal edit text on the log fragment
+//     * Used to input goal in time for the edit text.
+//     */
+//    private void inputGoal() {
+//        LayoutInflater inflater = LayoutInflater.from(getContext());
+//        View alertView = inflater.inflate(R.layout.activity_alert_dialog, null);
+//        TimeDialogBuilder timeDialogBuilder = new TimeDialogBuilder(this, alertView,
+//                newActivity.getText().toString().trim(), null);//TODO update
+//        AlertDialog alertDialog = timeDialogBuilder.getAlertDialog();
+//        alertDialog.show();
+//    }
 
     /**
      * Helper method to input the Deadline/Due date if an activity.

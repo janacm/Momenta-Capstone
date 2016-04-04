@@ -6,8 +6,8 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.LayoutInflater;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,12 +22,14 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class TaskActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     EditText activityName;
     TextView activityDeadline;
-    TextView activityGoal;
+    EditText activityHour;
+    EditText activityMinute;
     Task task;
 
     //TODO Remove focus from view activity edit text
@@ -42,14 +44,36 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         Bundle bundle = getIntent().getExtras();
         int id = (int) bundle.get(DBHelper.ACTIVITY_ID);
         task = DBHelper.getInstance(this).getTask(id);
-        Log.e("TaskActivity", task.getName());
 
         //Set the text of the view
         activityName = (EditText)findViewById(R.id.task_name_edit_text);
         activityName.setText( task.getName() );
 
-        activityGoal = (TextView)findViewById(R.id.task_time_set_time);
-        activityGoal.setText( task.getTimeString() );
+        activityHour = (EditText)findViewById(R.id.task_hour_edit_text);
+        activityMinute = (EditText)findViewById(R.id.task_minute_edit_text);
+
+        activityHour.setText( "" + task.getHours() );
+        activityMinute.setText( "" + task.getMinutes() );
+
+        //Add watcher to move focus to minute text view
+        activityHour.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() == 2) {
+                    activityMinute.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
 
         activityDeadline = (TextView) findViewById(R.id.task_time_set_deadline);
         activityDeadline.setText( task.getFormattedDeadline() );
@@ -103,12 +127,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
 
     //Handler method for the goal view being clicked
     public void goalOnClick(View v) {
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View alertView = inflater.inflate(R.layout.activity_alert_dialog, null);
-        TimeDialogBuilder timeDialogBuilder = new TimeDialogBuilder(this, alertView,
-                activityName.getText().toString().trim(), activityGoal);
-        AlertDialog alertDialog = timeDialogBuilder.getAlertDialog();
-        alertDialog.show();
+        activityHour.requestFocus();
     }
 
     //Handler method for the deadline view being clicked
@@ -136,12 +155,15 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
      * Convenience method to save after the user click on done button.
      */
     private void save()  {
-        String goal = Task.stripNonDigits(activityGoal.getText().toString());
-        int goalInMinutes = Task.convertHourMinuteToMinute( goal );
+        long hourField = Long.valueOf( "0" + activityHour.getText().toString() );
+        long minuteField = Long.valueOf("0" + activityMinute.getText().toString());
+        Long totalMinutes = TimeUnit.MINUTES.convert(hourField, TimeUnit.HOURS)
+                + minuteField;
+
+        //Set updated values
         task.setName(activityName.getText().toString());
-        task.setTimeInMinutes(goalInMinutes);
+        task.setTimeInMinutes(totalMinutes.intValue());
         task.setLastModified(Calendar.getInstance());
-//        priority.get
 
         if ( DBHelper.getInstance(this).updateTask(task) ) {
             toast("Activity has been updated");

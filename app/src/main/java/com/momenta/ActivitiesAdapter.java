@@ -19,13 +19,11 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.Vi
 
     private List<Task> tasks;
     private Context context;
-    private HelperPreferences helperPreferences;
 
     public ActivitiesAdapter(Context context, Activity activity) {
         List<Task> list = DBHelper.getInstance(context).getAllTasks();
         Collections.reverse(list);
         this.tasks = list;
-        helperPreferences = new HelperPreferences(activity);
     }
 
     @Override

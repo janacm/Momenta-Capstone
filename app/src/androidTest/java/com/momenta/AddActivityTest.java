@@ -72,8 +72,8 @@ public class AddActivityTest {
 //        onView(withId(R.id.new_activity_edit_text)).check(matches(withHint(ctx.getString(R.string.new_activity_hint))));TODO cannot get string to pass
         onView(withText(ctx.getString(R.string.goal_string))).check(matches(isDisplayed()));
         onView(withText(ctx.getString(R.string.deadline_string))).check(matches(isDisplayed()));
-        onView(withId(R.id.new_activity_goal_edit_text)).check(matches(withHint(ctx.getString(R.string.goal_hint))
-        ));
+        onView(withText(ctx.getString(R.string.activity_hour_label))).check(matches(isDisplayed()));
+        onView(withText(ctx.getString(R.string.activity_minute_label))).check(matches(isDisplayed()));
         onView(withId(R.id.new_activity_deadline_edit_text)).check(matches(withHint(ctx.getString(R.string.deadline_hint))));
     }
 
@@ -112,12 +112,8 @@ public class AddActivityTest {
         onView(withText(ctx.getString(R.string.tab_title_log))).perform(click());
         //Add activity with a name and goal(97H 34M)
         onView(withId(R.id.new_activity_edit_text)).perform(typeText(activityName));
-        onView(withId(R.id.new_activity_goal_edit_text)).perform(click());
-        onView(withId(R.id.buttonNine)).perform(click());
-        onView(withId(R.id.buttonSeven)).perform(click());
-        onView(withId(R.id.buttonThree)).perform(click());
-        onView(withId(R.id.buttonFour)).perform(click());
-        onView(withId(android.R.id.button1)).perform(click());
+        onView(withId(R.id.new_activity_hour_edit_text)).perform(typeText("97"));
+        onView(withId(R.id.new_activity_minute_edit_text)).perform(typeText("34"));
 
         onView(withId(R.id.new_activity_add_button)).perform(click());
 
@@ -181,12 +177,8 @@ public class AddActivityTest {
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(year, month + 1, day));
         onView(withId(android.R.id.button1)).perform(click());
 
-        onView(withId(R.id.new_activity_goal_edit_text)).perform(click());
-        onView(withId(R.id.buttonNine)).perform(click());
-        onView(withId(R.id.buttonSeven)).perform(click());
-        onView(withId(R.id.buttonThree)).perform(click());
-        onView(withId(R.id.buttonFour)).perform(click());
-        onView(withId(android.R.id.button1)).perform(click());
+        onView(withId(R.id.new_activity_hour_edit_text)).perform(typeText("97"));
+        onView(withId(R.id.new_activity_minute_edit_text)).perform(typeText("34"));
         onView(withId(R.id.new_activity_add_button)).perform(click());
 
         //check toast is displayed

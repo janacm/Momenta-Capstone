@@ -22,6 +22,7 @@
             android:hint="@string/new_activity_hint"
             android:textColorHint="@color/hint_text"
             android:singleLine="true"
+            android:nextFocusDown="@+id/new_activity_hour_edit_text"
             android:layout_weight="1" />
 
         <ImageButton
@@ -43,40 +44,87 @@
         android:layout_below="@+id/new_activity_linear_layout"
         android:text="@string/goal_string"/>
 
-
     <EditText
-        android:layout_width="150dp"
+        android:layout_width="50dp"
         android:layout_height="wrap_content"
-        android:id="@+id/new_activity_goal_edit_text"
+        android:id="@+id/new_activity_hour_edit_text"
         android:layout_below="@+id/new_activity_linear_layout"
         android:layout_marginLeft="25dp"
         android:layout_marginStart="25dp"
         android:layout_marginTop="25dp"
-        android:hint="@string/goal_hint"
-        android:focusable="false"
-        android:inputType="time"
-        android:singleLine="true" />
+        android:inputType="number"
+        android:maxLength="2"
+        android:imeOptions="actionNext" />
+
+    <TextView
+        android:id="@+id/new_activity_hour_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/new_activity_linear_layout"
+        android:layout_marginLeft="25dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="25dp"
+        android:layout_alignEnd="@id/new_activity_hour_edit_text"
+        android:layout_alignRight="@id/new_activity_hour_edit_text"
+        android:layout_alignBaseline="@+id/new_activity_hour_edit_text"
+        android:layout_alignBottom="@+id/new_activity_hour_edit_text"
+        android:gravity="end|bottom"
+        android:text="@string/activity_hour_label"
+        android:textSize="18sp"
+        />
+
+    <EditText
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/new_activity_minute_edit_text"
+        android:layout_below="@+id/new_activity_linear_layout"
+        android:layout_toEndOf="@+id/new_activity_hour_label"
+        android:layout_toRightOf="@+id/new_activity_hour_label"
+        android:layout_marginTop="25dp"
+        android:inputType="number"
+        android:maxLength="2"
+        android:imeOptions="actionNext" />
+
+    <TextView
+        android:id="@+id/new_activity_minute_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/new_activity_linear_layout"
+        android:layout_toEndOf="@+id/new_activity_hour_label"
+        android:layout_toRightOf="@+id/new_activity_hour_label"
+        android:layout_alignEnd="@id/new_activity_minute_edit_text"
+        android:layout_alignRight="@id/new_activity_minute_edit_text"
+        android:layout_alignBaseline="@+id/new_activity_minute_edit_text"
+        android:layout_alignBottom="@+id/new_activity_minute_edit_text"
+        android:gravity="end|bottom"
+        android:text="@string/activity_minute_label"
+        android:textSize="18sp"
+        />
+
 
     <TextView
         android:layout_width="wrap_content"
         android:id="@+id/new_activity_by_textview"
         android:layout_below="@+id/new_activity_linear_layout"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginStart="30dp"
         android:layout_marginRight="25dp"
+        android:layout_marginEnd="25dp"
         android:layout_marginTop="5dp"
-        android:layout_toRightOf="@id/new_activity_goal_edit_text"
+        android:layout_toRightOf="@id/new_activity_minute_edit_text"
+        android:layout_toEndOf="@+id/new_activity_minute_edit_text"
         android:text="@string/deadline_string"/>
 
     <EditText
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:id="@+id/new_activity_deadline_edit_text"
-        android:layout_toRightOf="@+id/new_activity_goal_edit_text"
+        android:layout_toRightOf="@+id/new_activity_minute_edit_text"
+        android:layout_toEndOf="@+id/new_activity_minute_edit_text"
         android:layout_below="@+id/new_activity_linear_layout"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginStart="30dp"
         android:layout_marginRight="25dp"
         android:layout_marginTop="25dp"
         android:hint="@string/deadline_hint"
@@ -94,7 +142,7 @@
         android:layout_marginStart="25dp"
         android:layout_marginRight="25dp"
         android:layout_marginEnd="25dp"
-        android:layout_below="@+id/new_activity_goal_edit_text"
+        android:layout_below="@+id/new_activity_hour_edit_text"
         android:text="@string/ongoing_activity_string"
         android:textSize="20sp"
         android:textColor="#eeeeee" />
@@ -103,8 +151,9 @@
         android:id="@+id/sort_order_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/new_activity_goal_edit_text"
+        android:layout_below="@+id/new_activity_hour_edit_text"
         android:layout_toLeftOf="@+id/sort_button"
+        android:layout_toStartOf="@+id/sort_button"
         android:layout_marginEnd="4dp"
         android:layout_marginRight="4dp"
         android:layout_marginTop="24dp">
@@ -122,6 +171,7 @@
             android:id="@+id/asc_desc_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/asc_desc_button_content_description"
             android:background="@drawable/ic_up_arrow"/>
     </LinearLayout>
 
@@ -132,11 +182,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:background="@drawable/ic_sort_action"
-        android:layout_below="@+id/new_activity_goal_edit_text"
+        android:layout_below="@+id/new_activity_hour_edit_text"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_marginRight="25dp"
-        android:layout_marginEnd="25dp"/>
+        android:layout_marginEnd="25dp"
+        android:contentDescription="@string/sort_button_content_description"/>
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"

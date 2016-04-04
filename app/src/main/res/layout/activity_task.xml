@@ -40,7 +40,7 @@
     <RelativeLayout
         android:id="@+id/task_time_layout"
         android:layout_width="match_parent"
-        android:paddingTop="15dp"
+        android:paddingTop="5dp"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:background="?attr/selectableItemBackground"
@@ -63,14 +63,59 @@
             android:textColor="@color/black"
             android:layout_toRightOf="@+id/task_time_image"
             android:layout_toEndOf="@+id/task_time_image"/>
-        <TextView
-            android:id="@+id/task_time_set_time"
-            android:layout_width="match_parent"
+        <EditText
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/task_time_text_view"
+            android:id="@+id/task_hour_edit_text"
             android:layout_toRightOf="@+id/task_time_image"
             android:layout_toEndOf="@+id/task_time_image"
-            android:text="@string/sample_time_string"/>
+            android:layout_below="@+id/task_time_text_view"
+            android:inputType="number"
+            android:maxLength="2"
+            android:imeOptions="actionNext"/>
+
+        <TextView
+            android:id="@+id/task_time_hour_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/task_time_text_view"
+            android:layout_marginLeft="25dp"
+            android:layout_marginStart="25dp"
+            android:layout_alignEnd="@id/task_hour_edit_text"
+            android:layout_alignRight="@id/task_hour_edit_text"
+            android:layout_alignBaseline="@+id/task_hour_edit_text"
+            android:layout_alignBottom="@+id/task_hour_edit_text"
+            android:gravity="end|bottom"
+            android:text="@string/activity_hour_label"
+            android:textSize="18sp"
+            />
+
+        <EditText
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/task_minute_edit_text"
+            android:layout_below="@+id/task_time_text_view"
+            android:layout_toEndOf="@+id/task_time_hour_label"
+            android:layout_toRightOf="@+id/task_time_hour_label"
+            android:inputType="number"
+            android:maxLength="2"
+            android:imeOptions="actionNext" />
+
+        <TextView
+            android:id="@+id/new_activity_minute_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/task_time_text_view"
+            android:layout_toEndOf="@+id/task_time_hour_label"
+            android:layout_toRightOf="@+id/task_time_hour_label"
+            android:layout_alignEnd="@id/task_minute_edit_text"
+            android:layout_alignRight="@id/task_minute_edit_text"
+            android:layout_alignBaseline="@+id/task_minute_edit_text"
+            android:layout_alignBottom="@+id/task_minute_edit_text"
+            android:gravity="end|bottom"
+            android:text="@string/activity_minute_label"
+            android:textSize="18sp"
+            />
 
     </RelativeLayout>
 
