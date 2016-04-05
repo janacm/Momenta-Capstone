@@ -351,7 +351,7 @@ public class LogFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 deadlineCalendar.set(year, monthOfYear, dayOfMonth);
-                activityDeadline.setText(new SimpleDateFormat("MMMM dd, yyyy", Locale.CANADA).format(deadlineCalendar.getTime()));
+                activityDeadline.setText(Task.getDateFormat(deadlineCalendar));
                 deadlineSet = true;
             }
         }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));

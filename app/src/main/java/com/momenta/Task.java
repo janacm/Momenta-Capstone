@@ -10,6 +10,7 @@ import java.util.Locale;
 public class Task {
 
     public enum Priority{VERY_HIGH, HIGH, MEDIUM, LOW, VERY_LOW}
+    public static final String DATE_FORMAT = "MMMM dd, yyyy";
     private int id;
     private String name;
     private int hours;
@@ -156,7 +157,7 @@ public class Task {
      */
     public String getFormattedDeadline() {
         if ( deadline != null ) {
-            return new SimpleDateFormat("MMMM dd, yyyy", Locale.CANADA).format(deadline.getTime());
+            return Task.getDateFormat(deadline);
         } else {
             return "";
         }
@@ -221,6 +222,16 @@ public class Task {
         int hour = Integer.valueOf( temp.substring( temp.length()-5, temp.length()-2 ) );
         return (hour*60) + minutes;
     }
+
+    public static String getDateFormat(Calendar calendar) {
+        return new SimpleDateFormat(DATE_FORMAT, Locale.CANADA).format(calendar.getTime());
+    }
+
+    /**
+     * Equals method for comparing if two tasks are the same.
+     * @param another The task object to be compared with
+     * @return true if the tasks are the same and false otherwise
+     */
 
     public boolean equals(Task another) {
         return this.getName().equals(another.getName())

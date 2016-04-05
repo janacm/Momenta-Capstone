@@ -45,6 +45,7 @@ import static org.hamcrest.Matchers.not;
 public class ViewActivityTest {
 
     private Long taskID;
+    Context context;
     @Rule
     public ActivityTestRule<TaskActivity> rule =
             new ActivityTestRule(TaskActivity.class, true, false);
@@ -53,8 +54,8 @@ public class ViewActivityTest {
     public void setUp() {
         Instrumentation instrumentation
                 = InstrumentationRegistry.getInstrumentation();
-        Context ctx = instrumentation.getTargetContext();
-        DBHelper db = DBHelper.getInstance(ctx);
+        context= instrumentation.getTargetContext();
+        DBHelper db = DBHelper.getInstance(context);
 
         Calendar deadline = Calendar.getInstance();
         deadline.setTimeInMillis(deadline.getTimeInMillis() + TimeUnit.MILLISECONDS.convert(30, TimeUnit.HOURS));
@@ -102,7 +103,7 @@ public class ViewActivityTest {
         int day = 15;
         Calendar cal = Calendar.getInstance();
         cal.set(year, month, day);
-        String expected = new SimpleDateFormat("MMMM dd, yyyy", Locale.CANADA).format(cal.getTime());
+        String expected = Task.getDateFormat(cal);
 
 
         //Click on the deadline layout to popup views

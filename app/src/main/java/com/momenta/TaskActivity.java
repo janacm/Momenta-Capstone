@@ -139,7 +139,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                 Calendar temp = Calendar.getInstance();
                 temp.set(year, monthOfYear, dayOfMonth);
                 task.setDeadline(temp);
-                activityDeadline.setText( new SimpleDateFormat("MMMM dd, yyyy", Locale.CANADA).format(temp.getTime()) );
+                activityDeadline.setText( Task.getDateFormat(temp) );
             }
         }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
         dialog.getDatePicker().setMinDate(cal.getTimeInMillis());
