@@ -14,7 +14,7 @@
     <string name="sort_dialog_last_modified">Last Modified</string>
 
     <!-- Text View strings-->
-    <string name="ongoing_activity_string">Ongoing activities</string>
+    <string name="ongoing_activity_string">Goals</string>
     <string name="H_string">H</string>
     <string name="M_string">M</string>
     <string name="set_goal_String">Set your goal for</string>
