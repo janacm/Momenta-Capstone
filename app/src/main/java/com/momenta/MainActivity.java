@@ -3,13 +3,10 @@ package com.momenta;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -54,21 +51,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    //TODO move this function to the settings section
-    public void numberPicker(View v) {
-        Log.d("MainActivity", "Button Pressed");
-        Fragment fragment = fragmentManager.getItem(0);
-        if (fragment == null || fragment.isVisible() ) {
-            Log.d("MainActivty", "Chai.");
-        }
-        Log.d("MainActivty", "Fragment Retrieved.");
-        if (fragment != null && fragment.isVisible()) {
-            if (fragment instanceof DashboardFragment) {
-            }
-        }
-        Log.d("MainActivty", "Request despatched");
     }
 
 }
