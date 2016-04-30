@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.sign_in_page);
+        setContentView(R.layout.activity_main);
 
 
         // Get the ViewPager and set it's PagerAdapter so that it can display items
