@@ -9,8 +9,6 @@
     <color name="accent_material_light_1">#3597dA</color>
     <color name="accent_material_light_2">#2D756E</color>
     <color name="primary_dark_material_dark_1">#3597dA</color>
-    <color name="primary_material_dark">#3597DA</color>
-    <color name="primary_text_default_material_light">#3597dA</color>
     <color name="primary_text">#77BEF5</color>
     <color name="black_overlay">#66000000</color>
     <color name="hint_text">#BBDEFB</color>
