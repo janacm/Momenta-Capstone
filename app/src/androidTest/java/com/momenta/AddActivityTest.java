@@ -60,7 +60,7 @@ public class AddActivityTest {
 
         Task taskAdded = db.getTask((int) id);
         assertEquals(taskName, taskAdded.getName());
-        assertEquals(duration, taskAdded.getDuration());
+        assertEquals(duration, taskAdded.getTimeInMinutes());
         assertEquals(deadline, taskAdded.getDeadline());
     }
 

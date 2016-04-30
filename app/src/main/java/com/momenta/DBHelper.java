@@ -97,7 +97,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(ACTIVITY_NAME, task.getName());
-        values.put(ACTIVITY_DURATION, task.getDuration());
+        values.put(ACTIVITY_DURATION, task.getTimeInMinutes());
         values.put(ACTIVITY_PRIORITY, task.getPriority().name());
         values.put(ACTIVITY_DEADLINE, task.getDeadline().getTimeInMillis());
         values.put(ACTIVITY_DATE_CREATED, task.getDateCreated());
@@ -189,7 +189,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(ACTIVITY_NAME, task.getName());
-        cv.put(ACTIVITY_DURATION, task.getDuration());
+        cv.put(ACTIVITY_DURATION, task.getTimeInMinutes());
         cv.put(ACTIVITY_DEADLINE, task.getDeadline().getTimeInMillis());
         cv.put(ACTIVITY_PRIORITY, task.getPriority().name());
         cv.put(ACTIVITY_LAST_MODIFIED, task.getLastModified().getTimeInMillis());

@@ -50,8 +50,8 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         activityHour = (EditText)findViewById(R.id.task_hour_edit_text);
         activityMinute = (EditText)findViewById(R.id.task_minute_edit_text);
 
-        activityHour.setText( "" + task.getHours() );
-        activityMinute.setText( "" + task.getMinutes() );
+        activityHour.setText( "" + task.getTaskHours() );
+        activityMinute.setText( "" + task.getTaskMinutes() );
 
         //Add watcher to move focus to minute text view
         activityHour.addTextChangedListener(new TextWatcher() {

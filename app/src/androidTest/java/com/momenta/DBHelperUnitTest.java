@@ -78,7 +78,7 @@ public class DBHelperUnitTest {
         Task taskAdded = db.getTask((int) id);
         assertThat(id, greaterThan(0l));
         assertEquals(taskName, taskAdded.getName());
-        assertEquals(duration,taskAdded.getDuration());
+        assertEquals(duration,taskAdded.getTimeInMinutes());
         assertEquals(deadline,taskAdded.getDeadline());
         assertEquals(dateCreated.getTimeInMillis(), taskAdded.getDateCreated());
         assertEquals(lastModified, taskAdded.getLastModified());
@@ -105,7 +105,7 @@ public class DBHelperUnitTest {
         Task taskActual = db.getTask(taskExpected.getId());
 
         assertEquals(taskExpected.getName(), taskActual.getName());
-        assertEquals(taskExpected.getDuration(), taskActual.getDuration());
+        assertEquals(taskExpected.getTimeInMinutes(), taskActual.getTimeInMinutes());
         assertEquals(taskExpected.getDeadline(), taskActual.getDeadline());
         assertEquals(taskExpected.getLastModified(), taskActual.getLastModified());
     }

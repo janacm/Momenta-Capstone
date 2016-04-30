@@ -13,8 +13,8 @@ public class Task {
     public static final String DATE_FORMAT = "MMMM dd, yyyy";
     private int id;
     private String name;
-    private int hours;
-    private int minutes;
+    private int taskHours;
+    private int taskMinutes;
     private Calendar deadline = Calendar.getInstance();
     private Calendar lastModified = Calendar.getInstance();
     private long dateCreated;
@@ -30,9 +30,9 @@ public class Task {
      */
     public Task (String name, int duration, Calendar deadline,
                  long dateCreated, Calendar lastModified) {
-        this.name = name; hours = 0; minutes = 0;
+        this.name = name; taskHours = 0; taskMinutes = 0;
         priority = Priority.MEDIUM;
-        addMinute(duration);
+        addTimeInMinutes(duration);
         setDeadline(deadline);
         this.dateCreated = dateCreated;
         setLastModified(lastModified);
@@ -70,79 +70,68 @@ public class Task {
     }
 
     /**
-     * Used to get the goalHours and goalMinute values in a string
+     * Used to get the taskHour and taskMinutes values in a string
      * @return String in format 0H 00M
      */
     public String getTimeString() {
-        if ( hours>0 && minutes>0 ) {
-            return hours + "H " + minutes + "M";
-        } else if ( hours==0 && minutes>0 ) {
-            return minutes + "M";
-        } else if ( hours>0 ) {
-            return hours + "H";
+        if ( taskHours >0 && taskMinutes>0 ) {
+            return taskHours + "H " + taskMinutes + "M";
+        } else if ( taskHours ==0 && taskMinutes>0 ) {
+            return taskMinutes + "M";
+        } else if ( taskHours >0 ) {
+            return taskHours + "H";
         } else {
             return "";
         }
     }
 
     /**
-     * Used to set the hours and minutes of the task
-     * @param hours Sets the hour value of this task
-     * @param minutes Sets the minute value of this task
+     * Used the set the time value of this task in minutes.
+     * @param minutes the new value of the task goal in minutes
      */
-    public void setDuration(int hours, int minutes) {
-        //TODO Can either of these values be negative?
-        if ( hours < 0 || minutes < 0 ) {
-            throw new IllegalArgumentException("Duration cannot be negative: " + hours + " " + minutes);
-        }
-        this.hours = hours;
-        this.minutes = minutes;
-    }
-
     public void setTimeInMinutes( int minutes ) {
-        hours = 0; this.minutes = 0;
-        addMinute(minutes);
+        taskHours = 0; this.taskMinutes = 0;
+        addTimeInMinutes(minutes);
     }
 
     /**
-     * Used to add time to task
+     * Used to add time to the task
      * @param minutes the time in minutes to be added to the task
      */
-    public void addMinute(int minutes) {
-        //TODO Can this value be negative?
+    public void addTimeInMinutes(int minutes) {
         if ( minutes < 0 ) {
             throw new IllegalArgumentException("Duration cannot be negative: " + minutes);
         }
 
-        this.minutes += minutes;
-        if ( ! (this.minutes < 60) ) {
-            this.hours += this.minutes/60;
-            this.minutes = this.minutes % 60;
+        this.taskMinutes += minutes;
+        if ( ! (this.taskMinutes < 60) ) {
+            this.taskHours += this.taskMinutes/60;
+            this.taskMinutes = this.taskMinutes % 60;
         }
     }
 
     /**
      * Used to get the time of this task in minutes
-     * @return the total time of this task in minutes.
+     * @return Integer value of the total time of this task in minutes.
      */
-    public int getDuration() {
-        return (this.hours*60) + minutes;
+    public int getTimeInMinutes() {
+        return (this.taskHours *60) + taskMinutes;
     }
 
     /**
      * Getter method for the hour field of the task
      * @return the value of the hour field of the task.
      */
-    public int getHours(){
-        return hours;
+    public int getTaskHours(){
+        return taskHours;
     }
 
     /**
      * Getter method for the minutes field of the task.
      * @return the value of the minute field of the task.
      */
-    public int getMinutes(){
-        return minutes;
+    public int getTaskMinutes(){
+        return taskMinutes;
     }
 
     public Calendar getDeadline() {
@@ -167,18 +156,10 @@ public class Task {
         this.deadline.setTimeInMillis( deadline.getTimeInMillis() );
     }
 
-    /**
-     * Method to access the priority of the task.
-     * @return The priority of the task
-     */
     public Priority getPriority() {
         return priority;
     }
 
-    /**
-     * Modifier for the priority of a task object
-     * @param priority the new priority of the task.
-     */
     public void setPriority(Priority priority) {
         this.priority = priority;
     }
@@ -223,6 +204,11 @@ public class Task {
         return (hour*60) + minutes;
     }
 
+    /**
+     * Convenience method to format Calendar objects to strings.
+     * @param calendar The calendar object with to be formatted
+     * @return The formatted String value for the Calendar.
+     */
     public static String getDateFormat(Calendar calendar) {
         return new SimpleDateFormat(DATE_FORMAT, Locale.CANADA).format(calendar.getTime());
     }
@@ -232,10 +218,9 @@ public class Task {
      * @param another The task object to be compared with
      * @return true if the tasks are the same and false otherwise
      */
-
     public boolean equals(Task another) {
         return this.getName().equals(another.getName())
-                && this.getDuration() == another.getDuration()
+                && this.getTimeInMinutes() == another.getTimeInMinutes()
                 && this.getDeadline().getTimeInMillis() == another.getDeadline().getTimeInMillis()
                 && this.getLastModified().getTimeInMillis() == another.getLastModified().getTimeInMillis()
                 && this.getDateCreated() == another.getDateCreated()
