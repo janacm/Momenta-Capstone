@@ -20,6 +20,7 @@
             android:id="@+id/new_activity_edit_text"
             android:maxLength="64"
             android:hint="@string/new_activity_hint"
+            android:textColor="@color/black"
             android:textColorHint="@color/hint_text"
             android:singleLine="true"
             android:nextFocusDown="@+id/new_activity_hour_edit_text"
@@ -52,6 +53,7 @@
         android:layout_marginLeft="25dp"
         android:layout_marginStart="25dp"
         android:layout_marginTop="25dp"
+        android:textColor="@color/black"
         android:inputType="number"
         android:maxLength="2"
         android:imeOptions="actionNext" />
@@ -83,6 +85,7 @@
         android:layout_marginTop="25dp"
         android:inputType="number"
         android:maxLength="2"
+        android:textColor="@color/black"
         android:imeOptions="actionNext" />
 
     <TextView
@@ -128,6 +131,7 @@
         android:layout_marginRight="25dp"
         android:layout_marginTop="25dp"
         android:hint="@string/deadline_hint"
+        android:textColor="@color/black"
         android:focusable="false"
         android:layout_marginEnd="25dp"
         android:singleLine="true"

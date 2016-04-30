@@ -327,19 +327,6 @@ public class LogFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-//    /**
-//     * Handler method for the Goal edit text on the log fragment
-//     * Used to input goal in time for the edit text.
-//     */
-//    private void inputGoal() {
-//        LayoutInflater inflater = LayoutInflater.from(getContext());
-//        View alertView = inflater.inflate(R.layout.activity_alert_dialog, null);
-//        TimeDialogBuilder timeDialogBuilder = new TimeDialogBuilder(this, alertView,
-//                newActivity.getText().toString().trim(), null);//TODO update
-//        AlertDialog alertDialog = timeDialogBuilder.getAlertDialog();
-//        alertDialog.show();
-//    }
-
     /**
      * Helper method to input the Deadline/Due date if an activity.
      */

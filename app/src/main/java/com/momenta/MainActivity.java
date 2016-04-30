@@ -13,7 +13,7 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
-    ManagerFragmentPagerAdapter fragementManager;
+    ManagerFragmentPagerAdapter fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,9 +22,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        fragementManager = new ManagerFragmentPagerAdapter(getSupportFragmentManager(),
+        fragmentManager = new ManagerFragmentPagerAdapter(getSupportFragmentManager(),
                 MainActivity.this);
-        viewPager.setAdapter(fragementManager);
+        viewPager.setAdapter(fragmentManager);
 
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     //TODO move this function to the settings section
     public void numberPicker(View v) {
         Log.d("MainActivity", "Button Pressed");
-        Fragment fragment = fragementManager.getItem(0);
+        Fragment fragment = fragmentManager.getItem(0);
         if (fragment == null || fragment.isVisible() ) {
             Log.d("MainActivty", "Chai.");
         }

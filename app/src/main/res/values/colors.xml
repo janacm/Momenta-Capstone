@@ -14,4 +14,5 @@
     <color name="primary_text">#77BEF5</color>
     <color name="black_overlay">#66000000</color>
     <color name="hint_text">#BBDEFB</color>
+    <color name="dialogAccent">#2196F3</color>
 </resources>
