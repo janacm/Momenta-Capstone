@@ -144,11 +144,6 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         dialog.show();
     }
 
-    //TODO handle priority being clicked
-    public void priorityOnClick(View v) {
-
-    }
-
     /**
      * Convenience method to save after the user click on done button.
      */

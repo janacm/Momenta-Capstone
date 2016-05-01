@@ -165,7 +165,6 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:background="?attr/selectableItemBackground"
-        android:onClick="priorityOnClick"
         android:layout_height="wrap_content">
 
         <ImageView

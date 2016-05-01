@@ -31,7 +31,8 @@
             android:layout_height="45dp"
             android:id="@+id/new_activity_add_button"
             android:contentDescription="@string/add_activity_content_description"
-            android:background="@drawable/ic_add_circle_white"
+            android:src="@drawable/ic_add_circle_white"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_weight="0" />
 
     </LinearLayout>
@@ -160,7 +161,8 @@
         android:layout_toStartOf="@+id/sort_button"
         android:layout_marginEnd="4dp"
         android:layout_marginRight="4dp"
-        android:layout_marginTop="24dp">
+        android:layout_marginTop="24dp"
+        android:background="?attr/selectableItemBackground">
 
         <TextView
             android:id="@+id/asc_desc_name"
@@ -176,7 +178,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/asc_desc_button_content_description"
-            android:background="@drawable/ic_up_arrow"/>
+            android:background="@drawable/ic_up_arrow"
+            />
     </LinearLayout>
 
 
@@ -185,7 +188,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:background="@drawable/ic_sort_action"
+        android:src="@drawable/ic_sort_action"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:layout_below="@+id/new_activity_hour_edit_text"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
