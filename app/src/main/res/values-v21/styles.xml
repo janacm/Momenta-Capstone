@@ -28,4 +28,9 @@
         <item name="android:headerBackground">@color/colorPrimary</item>
     </style>
 
+    <style name="SettingsStyle" parent="momentaTheme">
+        <item name="android:colorAccent">@color/colorPrimary</item>
+    </style>
+
+
 </resources>

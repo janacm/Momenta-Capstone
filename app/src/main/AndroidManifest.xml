@@ -31,7 +31,8 @@
         <activity
             android:name=".SettingsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_settings"/>
+            android:label="@string/title_activity_settings"
+            android:theme="@style/SettingsStyle"/>
         <activity android:name=".TaskActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".SelectTasksActivity"

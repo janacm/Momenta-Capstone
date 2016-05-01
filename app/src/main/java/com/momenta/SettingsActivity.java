@@ -35,6 +35,10 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         PreferenceManager.setDefaultValues(this, R.xml.settings,
                 false);
         initSummary(getPreferenceScreen());
+        Preference versionPreference = findPreference("version_name");
+         if ( versionPreference != null ) {
+             versionPreference.setSummary(BuildConfig.VERSION_NAME);
+         }
     }
 
     @Override

@@ -36,4 +36,7 @@
         <item name="actionMenuTextColor">@android:color/white</item>
     </style>
 
+    <style name="SettingsStyle" parent="momentaTheme">
+    </style>
+
 </resources>

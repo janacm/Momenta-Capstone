@@ -62,6 +62,7 @@
     <string name="interval_time_summary_hours">hours</string>
     <string name="interval_time_summary_minutes"> minutes</string>
     <string name="interval_time_summary_never_remind">Never remind me</string>
+    <string name="version_name_title">Version</string>
 
     <!-- EditText strings-->
     <string name="new_activity_hint"><i>Go to the gym...</i></string>
