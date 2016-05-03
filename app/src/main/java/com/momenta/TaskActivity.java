@@ -140,7 +140,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                 activityDeadline.setText( Task.getDateFormat(temp) );
             }
         }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
-        dialog.getDatePicker().setMinDate(cal.getTimeInMillis());
+        dialog.getDatePicker().setMinDate(Calendar.getInstance().getTimeInMillis());
         dialog.show();
     }
 
