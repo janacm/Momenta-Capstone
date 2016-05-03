@@ -36,19 +36,15 @@ import java.util.concurrent.TimeUnit;
  * For Momenta
  */
 
-//Todo change placeholder text color for main activity
 public class LogFragment extends Fragment implements View.OnClickListener {
     public static final String ARG_PAGE = "ARG_PAGE";
-    private RecyclerView mRecyclerView;
     private ActivitiesAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
     private EditText newActivity;
     private EditText activityHour;
     private EditText activityMinute;
     private EditText activityDeadline;
     private final Calendar deadlineCalendar = Calendar.getInstance();
     private boolean deadlineSet = false;
-    private ImageButton sortButton;
     private String sortString;
     private String orderString;
     private HelperPreferences helperPreferences;
@@ -72,9 +68,9 @@ public class LogFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_log, container, false);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.activity_recycler_view);
+        RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.activity_recycler_view);
 
-        mLayoutManager = new LinearLayoutManager(getActivity());
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         mAdapter = new ActivitiesAdapter(this.getContext(), getActivity());
@@ -110,7 +106,7 @@ public class LogFragment extends Fragment implements View.OnClickListener {
         activityDeadline = (EditText) view.findViewById(R.id.new_activity_deadline_edit_text);
         activityDeadline.setOnClickListener(this);
 
-        sortButton = (ImageButton) view.findViewById(R.id.sort_button);
+        ImageButton sortButton = (ImageButton) view.findViewById(R.id.sort_button);
         sortButton.setOnClickListener(this);
 
         helperPreferences = new HelperPreferences(getActivity());

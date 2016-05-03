@@ -36,7 +36,9 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         //Get the id of the activity and retrieve it from the DB
         Bundle bundle = getIntent().getExtras();
@@ -50,8 +52,10 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         activityHour = (EditText)findViewById(R.id.task_hour_edit_text);
         activityMinute = (EditText)findViewById(R.id.task_minute_edit_text);
 
-        activityHour.setText( "" + task.getTaskHours() );
-        activityMinute.setText( "" + task.getTaskMinutes() );
+        String taskHours = "" + task.getTaskHours();
+        String taskMinutes = "" + task.getTaskMinutes();
+        activityHour.setText( taskHours );
+        activityMinute.setText( taskMinutes );
 
         //Add watcher to move focus to minute text view
         activityHour.addTextChangedListener(new TextWatcher() {
