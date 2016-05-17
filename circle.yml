@@ -9,7 +9,10 @@ dependencies:
     #- ./install-dependencies.sh
     # - VERSION=`perl -ne '/VERSION_NAME=(.*)/ && print "$1\n"' <  gradle.properties`.jar && cd Branch-SDK && jar -cf $VERSION src/
     - cd && wget https://services.gradle.org/distributions/gradle-2.4-bin.zip && unzip gradle-2.4-bin.zip
-
+  
+  cache_directories:
+	     - ~/.android
+  - ~/android
 test:
   override:
     - chmod +x gradlew
