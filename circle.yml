@@ -11,8 +11,8 @@ dependencies:
     - cd && wget https://services.gradle.org/distributions/gradle-2.4-bin.zip && unzip gradle-2.4-bin.zip
   
    cache_directories:
-		- ~/.android
-        - ~/android
+    - ~/.android
+    
 test:
   override:
     - chmod +x gradlew
