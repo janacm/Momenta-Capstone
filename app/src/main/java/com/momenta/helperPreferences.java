@@ -7,13 +7,13 @@ import android.content.SharedPreferences;
  * Created by Joe on 2016-03-10.
  * For Momenta-Capstone
  */
-public class HelperPreferences {
+public class helperPreferences {
     private static final String PREFS_NAME = "momenta_prefs";
 
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
-    public HelperPreferences(Activity activity) {
+    public helperPreferences(Activity activity) {
 
         this.sharedPreferences = activity.getSharedPreferences(PREFS_NAME, 0);
         this.editor = sharedPreferences.edit();

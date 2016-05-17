@@ -34,7 +34,7 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
     private static final int UI_ANIMATION_DELAY = 300;
     private final Handler mHideHandler = new Handler();
     private View mContentView;
-    private HelperBroadcast broadcast;
+    private helperBroadcast broadcast;
 
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
@@ -146,7 +146,7 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
     @Override
     protected void onStop(){
         super.onStop();
-        HelperBroadcast brdcst = new HelperBroadcast(this);
+        helperBroadcast brdcst = new helperBroadcast(this);
         brdcst.sendBroadcast();
     }
 }

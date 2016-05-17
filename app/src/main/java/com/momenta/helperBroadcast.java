@@ -13,14 +13,14 @@ import java.util.Calendar;
  * Created by Joe on 2016-03-12.
  * For Momenta-Capstone
  */
-public class HelperBroadcast {
+public class helperBroadcast {
 
     private Activity activity;
-    HelperPreferences sharedPrefs;
+    helperPreferences sharedPrefs;
 
-    public HelperBroadcast(Activity activity) {
+    public helperBroadcast(Activity activity) {
         this.activity = activity;
-        sharedPrefs = new HelperPreferences(activity);
+        sharedPrefs = new helperPreferences(activity);
     }
 
     public void sendBroadcast() {
