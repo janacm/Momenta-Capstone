@@ -100,6 +100,7 @@
     <string name="deadline_icon_content_description">Deadline Icon</string>
     <string name="priority_icon_content_description">Priority Icon</string>
     <string name="title_activity_login">Sign in</string>
+    <string name="_1h_45m">1H 45M</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

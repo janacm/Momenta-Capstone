@@ -30,7 +30,6 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
     EditText activityMinute;
     Task task;
 
-    //TODO Remove focus from view activity edit text
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,8 +51,14 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         activityHour = (EditText)findViewById(R.id.task_hour_edit_text);
         activityMinute = (EditText)findViewById(R.id.task_minute_edit_text);
 
-        String taskHours = "" + task.getTaskHours();
-        String taskMinutes = "" + task.getTaskMinutes();
+        int minutes = task.getGoalInMinutes(), hours = 0;
+        if ( ! (minutes < 60) ) {
+            hours = minutes/60;
+            minutes = minutes % 60;
+        }
+
+        String taskHours = "" + hours;
+        String taskMinutes = "" + minutes;
         activityHour.setText( taskHours );
         activityMinute.setText( taskMinutes );
 
@@ -158,6 +163,14 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                 + minuteField;
 
         //Set updated values
+        String name = activityName.getText().toString();
+        if ( name.isEmpty() ) {
+            toast("Please enter a name");
+            return;
+        } else if ( totalMinutes == 0 ) {
+            toast("Please enter a goal");
+            return;
+        }
         task.setName(activityName.getText().toString());
         task.setTimeInMinutes(totalMinutes.intValue());
         task.setLastModified(Calendar.getInstance());

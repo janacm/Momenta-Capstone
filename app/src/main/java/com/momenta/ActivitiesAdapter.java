@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.Collections;
@@ -32,7 +33,7 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.Vi
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the item_activity layout
-        View activity = inflater.inflate(R.layout.item_activity, parent, false);
+        View activity = inflater.inflate(R.layout.list_item, parent, false);
 
         // Return a new holder instance
         return new ViewHolder(activity);
@@ -44,8 +45,11 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.Vi
         Task task = tasks.get(position);
 
         //Set the fields of the item_activity layout from the task object
-        holder.activityName.setText(task.getName());
-        holder.activityDuration.setText(task.getTimeString());
+        holder.name.setText(task.getName());
+        holder.timeSpent.setText(task.getFormattedGoal());
+        holder.progressBar.setProgress(100);
+        holder.progressBar.setMax(task.getGoalInMinutes());
+
 
         //Set onClick listener for each activity
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -73,8 +77,10 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.Vi
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
-        public TextView activityName;
-        public TextView activityDuration;
+        public TextView name;
+        public TextView timeSpent;
+//        public TextView timePercentage;
+        public ProgressBar progressBar;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -83,8 +89,10 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.Vi
             // to access the context from any ViewHolder instance.
             super(itemView);
 
-            activityName = (TextView) itemView.findViewById(R.id.activity_item_name);
-            activityDuration = (TextView) itemView.findViewById(R.id.activity_item_duration);
+            name = (TextView) itemView.findViewById(R.id.list_item_name);
+            timeSpent = (TextView) itemView.findViewById(R.id.list_item_time_spent);
+//            timePercentage = (TextView) itemView.findViewById(R.id.list_item_time_percentage);
+            progressBar = (ProgressBar) itemView.findViewById(R.id.progressBar);
         }
     }
 

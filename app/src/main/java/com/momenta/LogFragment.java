@@ -99,7 +99,6 @@ public class LogFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
         });
 

@@ -18,21 +18,18 @@ public class TaskTest {
     public final String TASK_NAME = "TASK_NAME";
 
     @Test
-    public void testTaskDuration() {
+    public void testTaskGoal() {
         Task task = new Task(TASK_NAME, 60, Calendar.getInstance(),
                 Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
-        assertEquals(1, task.getTaskHours());
-        assertEquals(0, task.getTaskMinutes());
+        assertEquals("1H", task.getFormattedGoal());
 
         task = new Task(TASK_NAME, 0, Calendar.getInstance(),
                 Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
-        assertEquals(0, task.getTaskHours());
-        assertEquals(0, task.getTaskMinutes());
+        assertEquals("0M", task.getFormattedGoal());
 
         task = new Task("Test task", 61, Calendar.getInstance(),
                 Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
-        assertEquals(1, task.getTaskHours());
-        assertEquals(1, task.getTaskMinutes());
+        assertEquals("1H 1M", task.getFormattedGoal());
     }
 
     @Test
@@ -40,20 +37,17 @@ public class TaskTest {
         Task task = new Task(TASK_NAME, 0, Calendar.getInstance(),
                 Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
         task.addTimeInMinutes(310);
-        assertEquals(5, task.getTaskHours());
-        assertEquals(10, task.getTaskMinutes());
+        assertEquals("5H 10M", task.getFormattedGoal());
 
         task = new Task(TASK_NAME, 30, Calendar.getInstance(),
                 Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
         task.addTimeInMinutes(30);
-        assertEquals(1, task.getTaskHours());
-        assertEquals(0, task.getTaskMinutes());
+        assertEquals("1H 0M", task.getFormattedGoal());
 
         task = new Task(TASK_NAME, 61, Calendar.getInstance(),
                 Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
         task.addTimeInMinutes(25);
-        assertEquals(1, task.getTaskHours());
-        assertEquals(26, task.getTaskMinutes());
+        assertEquals("1H 26M", task.getFormattedGoal());
     }
 
     @Test
@@ -73,13 +67,12 @@ public class TaskTest {
         Task task = new Task(TASK_NAME, 198, Calendar.getInstance(),
                 Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
         task.setTimeInMinutes(434);
-        assertEquals(434, task.getTimeInMinutes());
+        assertEquals(434, task.getGoalInMinutes());
 
         task.addTimeInMinutes(60);
-        assertEquals(494, task.getTimeInMinutes());
+        assertEquals(494, task.getGoalInMinutes());
 
-        assertEquals(8, task.getTaskHours());
-        assertEquals(14, task.getTaskMinutes());
+        assertEquals("8H 14M", task.getFormattedGoal());
     }
 
     @Test
@@ -171,16 +164,6 @@ public class TaskTest {
 
         task.setPriority(Task.Priority.VERY_HIGH);
         assertEquals(Task.Priority.VERY_HIGH, task.getPriority());
-    }
-
-    @Test
-    public void testconvertHourMinuteToMinute() {
-        assertEquals(440, Task.convertHourMinuteToMinute("720"));
-        assertEquals(0, Task.convertHourMinuteToMinute("00000"));
-        assertEquals(6039, Task.convertHourMinuteToMinute("10039"));
-        assertEquals(6039, Task.convertHourMinuteToMinute("-10039"));
-        assertEquals(639, Task.convertHourMinuteToMinute("-10a39"));
-        assertEquals(0, Task.convertHourMinuteToMinute("asafafsf"));
     }
 
     @Test
