@@ -25,7 +25,7 @@ public class TaskTest {
 
         task = new Task(TASK_NAME, 0, Calendar.getInstance(),
                 Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
-        assertEquals("0M", task.getFormattedGoal());
+        assertEquals("", task.getFormattedGoal());
 
         task = new Task("Test task", 61, Calendar.getInstance(),
                 Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
@@ -42,7 +42,7 @@ public class TaskTest {
         task = new Task(TASK_NAME, 30, Calendar.getInstance(),
                 Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
         task.addTimeInMinutes(30);
-        assertEquals("1H 0M", task.getFormattedGoal());
+        assertEquals("1H", task.getFormattedGoal());
 
         task = new Task(TASK_NAME, 61, Calendar.getInstance(),
                 Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
