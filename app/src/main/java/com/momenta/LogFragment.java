@@ -47,7 +47,7 @@ public class LogFragment extends Fragment implements View.OnClickListener {
     private boolean deadlineSet = false;
     private String sortString;
     private String orderString;
-    private HelperPreferences helperPreferences;
+    private helperPreferences helperPreferences;
     private ImageView image;
     private TextView sortColumnnName;
 
@@ -108,7 +108,7 @@ public class LogFragment extends Fragment implements View.OnClickListener {
         ImageButton sortButton = (ImageButton) view.findViewById(R.id.sort_button);
         sortButton.setOnClickListener(this);
 
-        helperPreferences = new HelperPreferences(getActivity());
+        helperPreferences = new helperPreferences(getActivity());
 
         image = (ImageView)view.findViewById(R.id.asc_desc_image);
         sortColumnnName = (TextView)view.findViewById(R.id.asc_desc_name);

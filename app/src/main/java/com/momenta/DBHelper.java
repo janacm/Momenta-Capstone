@@ -42,7 +42,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String ASC = "ASC";
     public static final String DESC = "DESC";
 
-    private HelperPreferences helperPreferences;
+    private helperPreferences helperPreferences;
 
 
     @Override
@@ -79,7 +79,7 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     private DBHelper(Context context) {
         super(context.getApplicationContext(), DATABASE_NAME, null, DATABASE_VERSION );
-        this.helperPreferences = new HelperPreferences((Activity) context);
+        this.helperPreferences = new helperPreferences((Activity) context);
     }
 
     public static DBHelper getInstance(Context context) {
