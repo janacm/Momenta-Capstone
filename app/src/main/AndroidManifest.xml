@@ -3,29 +3,42 @@
     package="com.momenta">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!--android:theme="@style/momentaTheme"-->
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/momenta_icon"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/momentaTheme">
         <activity
             android:name=".MainActivity"
+            android:windowSoftInputMode="stateHidden"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".Reciever">
+        <receiver android:name=".Receiver">
         </receiver>
         <activity
             android:name=".ScreenTakeOverActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_screen_take_over"
-            android:theme="@style/FullscreenTheme"></activity>
+            android:theme="@style/FullscreenTheme" />
+        <activity
+            android:name=".SettingsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_settings"
+            android:theme="@style/SettingsStyle"/>
+        <activity android:name=".TaskActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".SelectTasksActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".AddTaskTimeActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

@@ -1,17 +1,128 @@
 <resources>
+    <!--GENERAL NOTE: E SURE TO DO A REFACTOR WHEN CHANGING STRING NAMES-->
+    <!-- General strings-->
     <string name="app_name">Momenta</string>
+    <string name="tab_title_dashboard">Dashboard</string>
+    <string name="tab_title_log">Log</string>
+    <string name="tab_title_awards">Awards</string>
+    <string name="tab_title_trends">Trends</string>
+
+    <!--Sort Dialog Strings-->
+    <string name="sort_dialog_date_created">Date Created</string>
+    <string name="sort_dialog_dealine">Deadline</string>
+    <string name="sort_dialog_name">Name</string>
+    <string name="sort_dialog_last_modified">Last Modified</string>
+
+    <!-- Text View strings-->
+    <string name="ongoing_activity_string">Goals</string>
+    <string name="H_string">H</string>
+    <string name="M_string">M</string>
+    <string name="set_goal_String">Set your goal for</string>
+    <string name="set_interval_time">Set your interval time</string>
+
+    <!--Task Actiivty -->
+    <string name="delete_string">Delete</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="undo">Undo</string>
+    <string name="actvity_deleted">Activity deleted</string>
+    <string name="priority_spinner_title">Priority</string>
+    <string-array name="Priorities">
+        <item>Very Low</item>
+        <item>Low</item>
+        <item>Medium</item>
+        <item>High</item>
+        <item>Very High</item>
+    </string-array>
+
+    <!-- Log strings-->
+
+    <!-- Button strings-->
+    <string name="dialog_done">Done</string>
+    <string name="dialog_more">More</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_hour_string">00</string>
+    <string name="activity_string">Activity</string>
+    <string name="goal_string">Goal</string>
+
+    <string name="one">1</string>
+    <string name="two">2</string>
+    <string name="three">3</string>
+    <string name="four">4</string>
+    <string name="five">5</string>
+    <string name="six">6</string>
+    <string name="seven">7</string>
+    <string name="eight">8</string>
+    <string name="nine">9</string>
+    <string name="zero">0</string>
+
+    <!-- Settings strings-->
+    <string name="interval_time_title">Notification Interval Time</string>
+    <string name="interval_time_summary">Remind me every</string>
+    <string name="interval_time_summary_hours">hours</string>
+    <string name="interval_time_summary_minutes"> minutes</string>
+    <string name="interval_time_summary_never_remind">Never remind me</string>
+    <string name="version_name_title">Version</string>
+
+    <!-- EditText strings-->
+    <string name="new_activity_hint"><i>Go to the gym...</i></string>
+    <string name="deadline_hint"></string>
+    <string name="goal_hint"></string>
+    <string name="activity_hour_label">hr</string>
+    <string name="activity_minute_label">min</string>
+
+    <!-- Menu strings-->
     <string name="action_settings">Settings</string>
-    <string name="new_activity_hint">New Activity</string>
+
+    <!-- Screen take over activity strings-->
     <string name="dashboard_demo_select_time">Select time</string>
-
-    <string name="title_activity_fullscreen">FullscreenActivity</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
-
     <string name="title_activity_screen_take_over">ScreenTakeOverActivity</string>
-    <string name="demo_button">NOO!!</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="add_activity_content_description">Add activity button</string>
 
+    <!-- Demo/Sample strings-->
+    <string name="sample_duration_string">1h 45m</string>
+    <string name="dummy_button">GO!</string>
+    <string name="demo_activty">Go swimming</string>
+    <string name="later">Later</string>
     <string name="sampleQuote">\"It does not matter how slowly you go as long as you do not stop.\"</string>
     <string name="quoteCredit">- Confucius</string>
-    <string name="later">Later</string>
-    <string name="dummy_button">GO!</string>
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_content">DUMMY CONTENT</string>
+    <string name="title_activity_task">TaskActivity</string>
+    <string name="deadline_string">Deadline</string>
+    <string name="sample_time_string">50 hours</string>
+    <string name="priority_string">Priority</string>
+    <string name="sample_deadline_string">March 12 5PM</string>
+    <string name="sample_priority_string">Priority 1</string>
+    <string name="goal_icon_content_description">Icon for Goal</string>
+    <string name="task_name_hint">Activity Name</string>
+    <string name="deadline_icon_content_description">Deadline Icon</string>
+    <string name="priority_icon_content_description">Priority Icon</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="_1h_45m">1H 45M</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="toast_no_name_activity_added">Please enter an activity name</string>
+    <string name="toast_activity_added">Activity added!</string>
+
+    <!-- Strings related to the Select tasks to add time towards Screen !-->
+    <string name="select_tasks_to_add_time_to_title">Select tasks to add time to</string>
+
+    <!-- Strings related to the Add time to task screen !-->
+    <string name="add_time_to_task_title1">How much time did</string>
+    <string name="add_time_to_task_title2">you put towards</string>
+    <string name="sort_button_content_description">Sort Button</string>
+    <string name="asc_desc_button_content_description">Ascending/descending button</string>
 </resources>

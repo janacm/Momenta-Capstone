@@ -1,23 +1,26 @@
 package com.momenta;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.NumberPicker;
 
 /**
  * Created by Joe on 2016-02-01.
  * For Momenta
  */
-public class DashboardFragment extends Fragment {
+public class DashboardFragment extends Fragment implements View.OnClickListener{
     public static final String ARG_PAGE = "ARG_PAGE";
 
     private int mPage;
     private View activityView;
     private NumberPicker numberPicker;
+    private Button button;
 
     public static DashboardFragment newInstance(int page) {
         Bundle args = new Bundle();
@@ -36,24 +39,29 @@ public class DashboardFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        activityView= inflater.inflate(R.layout.fragment_dashboard, container, false);
+//        activityView= inflater.inflate(R.layout.fragment_dashboard, container, false);
+//        TextView textView = (TextView) activityView.findViewById(R.id.textView3);
+//        textView.setText("Fragment #" + mPage);
+//        numberPicker = (NumberPicker) activityView.findViewById(R.id.numberPicker);
+//        numberPicker.setMinValue(1);
+//        numberPicker.setMaxValue(15);
+//        return activityView;
+
+        activityView = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        button = (Button)activityView.findViewById(R.id.button1);
+        button.setOnClickListener(this);
+        super.onCreate(savedInstanceState);
+
         return activityView;
     }
 
-//    public void sendBroadcast(View v){
-//        Log.d("Dashboard", "Setting Alarm.");
-//
-//        int time = numberPicker.getValue() * 1000;
-//        Log.d("Dashboard", "Setting Alarm..." + time);
-//        Calendar cal = Calendar.getInstance();
-//        cal.setTimeInMillis( cal.getTimeInMillis() + time );
-//
-//        Intent intentAlarm = new Intent(getContext(), Reciever.class);
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
-//        AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
-//        alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
-//        Log.d("Dashboard", "Alarm Set.");
-//
-//
-//    }
+    @Override
+    public void onClick(View v) {
+        switch ( v.getId() ) {
+            case R.id.button1:
+                Intent intent = new Intent(this.getContext(), SelectTasksActivity.class);
+                startActivity(intent);
+                break;
+        }
+    }
 }

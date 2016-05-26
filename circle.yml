@@ -1,15 +1,25 @@
+machine:
+  environment:
+    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
+
 dependencies:
+  
+  cache_directories:
+    - ~/.android
+  
   pre:
     - echo y | android update sdk --no-ui --all --filter "tools,platform-tools,android-23,android-21,sys-img-armeabi-v7a-android-21,android-19,sys-img-armeabi-v7a-android-19,extra-android-support,extra-google-google_play_services,extra-google-m2repository,extra-android-m2repository"
     - echo y | android update sdk --no-ui --all --filter "build-tools-23.0.2"
 
-    - echo n | android create avd -n testing -f -t android-23
+    - echo n | android create avd -n testing -f -t android-23 -b default/armeabi-v7a 
 
   override:
     #- ./install-dependencies.sh
     # - VERSION=`perl -ne '/VERSION_NAME=(.*)/ && print "$1\n"' <  gradle.properties`.jar && cd Branch-SDK && jar -cf $VERSION src/
     - cd && wget https://services.gradle.org/distributions/gradle-2.4-bin.zip && unzip gradle-2.4-bin.zip
-
+  
+  
+    
 test:
   override:
     - chmod +x gradlew
@@ -25,9 +35,8 @@ test:
     #- adb install path/to/build.apk
     # ru- adb shell input keyevent 82
     # run tests  against the emulator.
-    - ADB_INSTALL_TIMEOUT=10 ./gradlew connectedAndroidTest
+    - ADB_INSTALL_TIMEOUT=15 ./gradlew connectedAndroidTest
     # copy the test results to the test results directory.
     - cp -r /home/ubuntu/Momenta-Capstone/app/build/reports/androidTests/connected/ $CIRCLE_TEST_REPORTS
-    #- cp -r /home/ubuntu/Momenta-Capstone/app/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
     - cp -r /home/ubuntu/Momenta-Capstone/app/build/outputs/ $CIRCLE_ARTIFACTS
 

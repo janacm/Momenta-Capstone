@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <com.momenta.IntervalDialogPreference
+        android:defaultValue="0"
+        android:inputType="number"
+        android:key="interval_time"
+        android:title="@string/interval_time_title" />
+
+    <PreferenceCategory android:title="About">
+
+        <Preference
+            android:key="version_name"
+            android:title="@string/version_name_title"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

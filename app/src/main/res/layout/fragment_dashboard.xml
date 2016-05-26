@@ -1,87 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:tag="dashboard" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/dashboard_demo_select_time"
+        android:id="@+id/textView3"
+        android:layout_centerHorizontal="true" />
 
-        <android.support.v7.widget.CardView xmlns:userCV="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/userCV"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
-            userCV:cardBackgroundColor="#AACFD0"
-            userCV:cardCornerRadius="8dp">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp">
-
-                <TextView
-                    android:id="@+id/userDataCVTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="15dp"
-                    android:layout_alignParentTop="true"
-                    android:text="User Data"
-                    android:textSize="15sp" />
-            </RelativeLayout>
-
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView xmlns:badgesCV="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/badgesCV"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
-            badgesCV:cardBackgroundColor="#7045FF"
-            badgesCV:cardCornerRadius="8dp">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp">
-
-                <TextView
-                    android:id="@+id/badgesCVTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="15dp"
-                    android:layout_alignParentTop="true"
-                    android:text="Badges"
-                    android:textSize="15sp" />
-            </RelativeLayout>
-
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView xmlns:analyticsCV="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/analyticsCV"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
-            analyticsCV:cardBackgroundColor="#ED6D54"
-            analyticsCV:cardCornerRadius="8dp">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp">
-
-                <TextView
-                    android:id="@+id/analyticsCVTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="15dp"
-                    android:layout_alignParentTop="true"
-                    android:text="Analytics"
-                    android:textSize="15sp" />
-            </RelativeLayout>
-
-        </android.support.v7.widget.CardView>
-    </LinearLayout>
-</ScrollView>
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
+        android:layout_centerHorizontal="true"
+        android:text="@string/dummy_button"
+        />
+</RelativeLayout>

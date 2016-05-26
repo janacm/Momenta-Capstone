@@ -3,9 +3,9 @@
 """
     eve-demo settings
     ~~~~~~~~~~~~~~~~~
-
+    
     Settings file for our little demo.
-
+    
     PLEASE NOTE: We don't need to create the two collections in MongoDB.
     Actually, we don't even need to create the database: GET requests on an
     empty/non-existant DB will be served correctly ('200' OK with an empty
@@ -13,10 +13,10 @@
     Found), and POST requests will create database and collections when needed.
     Keep in mind however that such an auto-managed database will most likely
     perform poorly since it lacks any sort of optimized index.
-
+    
     :copyright: (c) 2016 by Nicola Iarocci.
     :license: BSD, see LICENSE for more details.
-"""
+    """
 
 import os
 
@@ -29,14 +29,14 @@ MONGO_PASSWORD = os.environ.get('MONGO_PASSWORD', 'test')
 MONGO_DBNAME = os.environ.get('MONGO_DBNAME', 'momenta-sandbox')
 
 
-# Enable reads (GET), inserts (POST) and DELETE for resources/collections
+# Enable reads (GET), inserts (POST) and DELETE for resources/collections. Also added patch
 # (if you omit this line, the API will default to ['GET'] and provide
 # read-only access to the endpoint).
-RESOURCE_METHODS = ['GET', 'POST', 'DELETE']
+RESOURCE_METHODS = ['GET', 'POST', 'DELETE', 'PATCH']
 
-# Enable reads (GET), edits (PATCH) and deletes of individual items
+# Enable reads (GET), edits (PATCH) and deletes of individual items. Also added patch and changed the order of the methods
 # (defaults to read-only item access).
-ITEM_METHODS = ['GET', 'PATCH', 'DELETE']
+ITEM_METHODS = ['GET' , 'DELETE']
 
 # We enable standard client cache directives for all resources exposed by the
 # API. We can always override these global settings later.
@@ -49,7 +49,7 @@ CACHE_EXPIRES = 20
 people = {
     # 'title' tag used in item links.
     'item_title': 'person',
-
+    
     # by default the standard item entry point is defined as
     # '/people/<ObjectId>/'. We leave it untouched, and we also enable an
     # additional read-only entry point. This way consumers can also perform GET
@@ -58,7 +58,7 @@ people = {
         'url': 'regex("[\w]+")',
         'field': 'lastname'
     },
-
+    
     # Schema definition, based on Cerberus grammar. Check the Cerberus project
     # (https://github.com/nicolaiarocci/cerberus) for details.
     'schema': {
@@ -76,18 +76,18 @@ people = {
             # 'lastname' is an API entry-point, so we need it to be unique.
             'unique': True,
         },
-    }
+}
 }
 
 works = {
     # if 'item_title' is not provided Eve will just strip the final
     # 's' from resource name, and use it as the item_title.
     #'item_title': 'work',
-
+    
     # We choose to override global cache-control directives for this resource.
     'cache_control': 'max-age=10,must-revalidate',
     'cache_expires': 10,
-
+    
     'schema': {
         'title': {
             'type': 'string',
@@ -109,17 +109,17 @@ works = {
                 'embeddable': True
             },
         },
-    }
+}
 }
 momenta = {
     # if 'item_title' is not provided Eve will just strip the final
     # 's' from resource name, and use it as the item_title.
     #'item_title': 'work',
-
+    
     # We choose to override global cache-control directives for this resource.
     'cache_control': 'max-age=10,must-revalidate',
     'cache_expires': 10,
-
+    
     'schema': {
         'title': {
             'type': 'string',
@@ -141,8 +141,8 @@ momenta = {
                 'embeddable': True
             },
         },
-    }
-    }
+}
+}
 
 
 # The DOMAIN dict explains which resources will be available and how they will
