@@ -16,6 +16,7 @@
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:text="@string/_1h_45m"
+        android:textColor="@color/primary_text"
         android:textSize="15sp"
         android:gravity="center_vertical|center_horizontal"
         />
@@ -45,7 +46,6 @@
             android:id="@+id/progressBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:progressTint="@color/colorPrimary"
             style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
 
     </LinearLayout>

@@ -5,8 +5,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:datePickerDialogTheme">@style/MomentaDatePickerDialogTheme</item>
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
     </style>
 
     <style name="momentaTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -16,21 +15,11 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowBackground">@color/colorBackground</item>
         <item name="android:statusBarColor">@color/colorPrimaryDark</item>
-        <item name="android:datePickerDialogTheme">@style/MomentaDatePickerDialogTheme</item>
     </style>
 
-    <style name="MomentaDatePickerDialogTheme" parent="Theme.AppCompat.Light.Dialog">
-        <item name="colorAccent">@color/colorPrimary</item>
-        <item name="android:datePickerStyle">@style/MomentaDatePickerStyle</item>
+    <style name="SecondaryEditTextTheme">
+        <item name="android:colorControlActivated">@color/colorPrimary</item>
+        <item name="android:colorControlHighlight">#212121</item>
     </style>
-
-    <style name="MomentaDatePickerStyle" parent="@android:style/Widget.Material.Light.DatePicker">
-        <item name="android:headerBackground">@color/colorPrimary</item>
-    </style>
-
-    <style name="SettingsStyle" parent="momentaTheme">
-        <item name="android:colorAccent">@color/colorPrimary</item>
-    </style>
-
 
 </resources>

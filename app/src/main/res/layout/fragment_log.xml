@@ -45,7 +45,8 @@
         android:layout_marginLeft="25dp"
         android:layout_marginStart="25dp"
         android:layout_below="@+id/new_activity_linear_layout"
-        android:text="@string/goal_string"/>
+        android:text="@string/goal_string"
+        android:textColor="@color/primary_text"/>
 
     <EditText
         android:layout_width="50dp"
@@ -119,7 +120,8 @@
         android:layout_marginTop="5dp"
         android:layout_toRightOf="@id/new_activity_minute_edit_text"
         android:layout_toEndOf="@+id/new_activity_minute_edit_text"
-        android:text="@string/deadline_string"/>
+        android:text="@string/deadline_string"
+        android:textColor="@color/primary_text"/>
 
     <EditText
         android:layout_width="150dp"
@@ -151,7 +153,7 @@
         android:layout_below="@+id/new_activity_hour_edit_text"
         android:text="@string/ongoing_activity_string"
         android:textSize="20sp"
-        android:textColor="#eeeeee" />
+        android:textColor="@color/colorAccent" />
 
     <LinearLayout
         android:id="@+id/sort_order_layout"
@@ -171,7 +173,7 @@
             android:layout_height="25dp"
             android:layout_gravity="bottom"
             android:text="@string/sort_dialog_name"
-            android:textColor="@color/white"
+            android:textColor="@color/primary_text"
             android:textSize="15sp"/>
 
         <ImageView

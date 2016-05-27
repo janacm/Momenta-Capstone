@@ -29,14 +29,9 @@
     <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
         <item name="android:background">@color/black_overlay</item>
     </style>
-    <!-- ToolBar -->
-    <style name="ToolBarStyle" parent="Theme.AppCompat">
-        <item name="android:textColorPrimary">@android:color/white</item>
-        <item name="android:textColorSecondary">@android:color/white</item>
-        <item name="actionMenuTextColor">@android:color/white</item>
-    </style>
 
-    <style name="SettingsStyle" parent="momentaTheme">
+    <style name="MomentaEditTextTheme">
+        <item name="colorControlNormal">#9e9e9e</item>
     </style>
 
 </resources>

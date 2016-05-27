@@ -6,6 +6,11 @@
     android:id="@+id/activity_task"
     tools:context="com.momenta.TaskActivity">
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar"/>
+
+
     <LinearLayout
         android:id="@+id/task_top_layout"
         android:orientation="vertical"
@@ -13,8 +18,9 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="50dp"
+        android:layout_below="@+id/toolbar"
         android:layout_width="match_parent"
-        android:background="@color/colorPrimary"
+        android:background="@color/colorAccent"
         android:layout_height="wrap_content">
 
 
@@ -30,9 +36,10 @@
             android:layout_width="match_parent"
             android:hint="@string/new_activity_hint"
             android:textColorHint="@color/hint_text"
-            android:textColor="@color/white"
+            android:textColor="@color/colorPrimary"
             android:textSize="24sp"
             android:maxLength="64"
+            android:theme="@style/SecondaryEditTextTheme"
             android:layout_height="wrap_content" />
 
     </LinearLayout>
@@ -50,8 +57,8 @@
 
         <ImageView
             android:id="@+id/task_time_image"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/goal_icon_content_description"
             android:src="@drawable/ic_time_lapse"/>
         <TextView
@@ -133,8 +140,8 @@
 
         <ImageView
             android:id="@+id/task_deadline_image"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/deadline_icon_content_description"
             android:src="@drawable/ic_deadline"/>
         <TextView
@@ -169,8 +176,8 @@
 
         <ImageView
             android:id="@+id/task_priority_image"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/priority_icon_content_description"
             android:src="@drawable/ic_priority"/>
 
