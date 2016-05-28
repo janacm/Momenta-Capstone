@@ -168,10 +168,10 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         //Set updated values
         String name = activityName.getText().toString();
         if ( name.isEmpty() ) {
-            toast("Please enter a name");
+            toast(getString(R.string.toast_no_name_activity_added));
             return;
         } else if ( totalMinutes == 0 ) {
-            toast("Please enter a goal");
+            toast(getString(R.string.toast_enter_goal));
             return;
         }
         task.setName(activityName.getText().toString());
@@ -179,9 +179,9 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         task.setLastModified(Calendar.getInstance());
 
         if ( DBHelper.getInstance(this).updateTask(task) ) {
-            toast("Activity has been updated");
+            toast(getString(R.string.toast_activity_updated));
         } else {
-            toast("There was a problem updating your activity");
+            toast(getString(R.string.toast_problem_updating_activity));
         }
         finish();
     }

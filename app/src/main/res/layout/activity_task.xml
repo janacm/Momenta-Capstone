@@ -59,6 +59,8 @@
             android:id="@+id/task_time_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
+            android:layout_marginEnd="15dp"
             android:contentDescription="@string/goal_icon_content_description"
             android:src="@drawable/ic_time_lapse"/>
         <TextView
@@ -142,6 +144,8 @@
             android:id="@+id/task_deadline_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
+            android:layout_marginEnd="15dp"
             android:contentDescription="@string/deadline_icon_content_description"
             android:src="@drawable/ic_deadline"/>
         <TextView
@@ -178,6 +182,8 @@
             android:id="@+id/task_priority_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
+            android:layout_marginEnd="15dp"
             android:contentDescription="@string/priority_icon_content_description"
             android:src="@drawable/ic_priority"/>
 

@@ -114,8 +114,11 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="toast_no_name_activity_added">Please enter an activity name</string>
+    <string name="toast_no_name_activity_added">Please enter a name</string>
     <string name="toast_activity_added">Activity added!</string>
+    <string name="toast_enter_goal">Please enter a goal</string>
+    <string name="toast_activity_updated">Activity has been updated</string>
+    <string name="toast_problem_updating_activity">There was a problem updating your activity</string>
 
     <!-- Strings related to the Select tasks to add time towards Screen !-->
     <string name="select_tasks_to_add_time_to_title">Select tasks to add time to</string>
