@@ -2,7 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0099cc"
     tools:context="com.momenta.ScreenTakeOverActivity">
 
     <LinearLayout
@@ -10,7 +9,7 @@
         style="?metaButtonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimary"
+        android:background="@color/colorAccent"
         android:orientation="vertical"
         tools:ignore="UselessParent"
         android:gravity="center_vertical|center_horizontal">
@@ -59,7 +58,7 @@
             android:layout_marginTop="40dp"
             android:layout_width="140dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/colorAccent"
             android:onClick="go_button_click"
             android:text="@string/dummy_button" />
 
@@ -69,6 +68,7 @@
             android:layout_width="140dp"
             android:layout_height="wrap_content"
             android:onClick="later_button_click"
+            android:textColor="@color/white"
             android:text="@string/later" />
 
     </LinearLayout>
