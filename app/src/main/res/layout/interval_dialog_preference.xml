@@ -1,36 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:grid="http://schemas.android.com/tools"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <LinearLayout
-        android:id="@+id/dialog_header"
-        android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_height="wrap_content"
-        android:padding="24dp"
-        android:background="@color/colorPrimary">
-
-        <TextView
-            android:id="@+id/set_goal_textview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:text="@string/set_interval_time"
-            android:textColor="@color/colorAccent"
-            android:layout_marginBottom="8dp"/>
-
-        <LinearLayout
-            android:id="@+id/activity_time_linearlayout"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_marginTop="7dp"
-            android:layout_marginBottom="7dp"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal">
+    android:layout_height="match_parent"
+    android:layout_marginTop="7dp"
+    android:layout_marginBottom="7dp"
+    android:gravity="center_horizontal">
 
             <EditText
                 android:id="@+id/pref_hour_textview"
@@ -38,18 +13,16 @@
                 android:layout_height="wrap_content"
                 android:text="@string/dialog_hour_string"
                 android:inputType="number"
-                android:gravity="right"
+                android:gravity="end"
                 android:selectAllOnFocus="true"
                 android:maxLength="2"
-                android:textColor="@color/colorAccent"
                 android:textSize="@dimen/dialog_time_text_size"/>
             <TextView
                 android:id="@+id/activity_H_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="bottom"
-                android:text="@string/H_string"
-                android:textColor="@color/colorAccent"/>
+                android:text="@string/H_string"/>
             <EditText
                 android:id="@+id/pref_minute_textview"
                 android:layout_width="@dimen/time_dialog_edit_text_width"
@@ -58,19 +31,13 @@
                 android:inputType="number"
                 android:maxLength="2"
                 android:selectAllOnFocus="true"
-                android:gravity="right"
-                android:textSize="@dimen/dialog_time_text_size"
-                android:textColor="@color/colorAccent"/>
+                android:gravity="end"
+                android:textSize="@dimen/dialog_time_text_size"/>
             <TextView
                 android:id="@+id/activity_M_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="bottom"
-                android:text="@string/M_string"
-                android:textColor="@color/colorAccent"/>
-
-        </LinearLayout>
-
-    </LinearLayout>
+                android:text="@string/M_string"/>
 
 </LinearLayout>
