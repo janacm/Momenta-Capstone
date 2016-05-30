@@ -64,10 +64,10 @@ public class SelectTasksAdapter extends RecyclerView.Adapter<SelectTasksAdapter.
             @Override
             public void onClick(View v) {
                 if(holder.activityCheckbox.isChecked() == false) {
-                        holder.activityCheckbox.setChecked(true);
-                        //When clicked and the checkbox is checked, insert into itemClickedMap
-                        itemClickedMap.put(position, true);
-                        System.out.println(position + " true");
+                    holder.activityCheckbox.setChecked(true);
+                    //When clicked and the checkbox is checked, insert into itemClickedMap
+                    itemClickedMap.put(position, true);
+                    System.out.println(position + " true");
                 }
                 else{
                     holder.activityCheckbox.setChecked(false);
@@ -81,7 +81,7 @@ public class SelectTasksAdapter extends RecyclerView.Adapter<SelectTasksAdapter.
         /**
          * Set onClick listener for each checkbox to correspond with the behaviour of the entire
          * list item
-        **/
+         **/
         holder.activityCheckbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

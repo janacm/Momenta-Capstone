@@ -66,7 +66,7 @@ public class TaskTest {
     public void testGetTime() {
         Task task = new Task(TASK_NAME, 198, Calendar.getInstance(),
                 Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
-        task.setTimeInMinutes(434);
+        task.setGoalInMinutes(434);
         assertEquals(434, task.getGoalInMinutes());
 
         task.addTimeInMinutes(60);

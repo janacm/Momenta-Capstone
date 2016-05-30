@@ -20,7 +20,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static DBHelper mInstance = null;
 
     //Database Constants
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "Momenta.db";
 
     //Sample Table Name
@@ -34,7 +34,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String ACTIVITY_PRIORITY = "ACTIVITY_PRIORITY";
     public static final String ACTIVITY_LAST_MODIFIED = "ACTIVITY_LAST_MODIFIED";
     public static final String ACTIVITY_DATE_CREATED = "ACTIVITY_DATE_CREATED";
-    public static final String ACTIVITY_TIME_TOWARDS_GOAL = "ACTIVITY_TIME_TOWARDS_GOAL";
+    public static final String ACTIVITY_TIME_SPENT = "ACTIVITY_TIME_SPENT";
 
     //Fields to specify the column & order to sort the result by
     public static final String COLUMN = "COLUMN";
@@ -55,21 +55,16 @@ public class DBHelper extends SQLiteOpenHelper {
                 + " CHAR(32) NOT NULL, " + ACTIVITY_DURATION + " INTEGER NOT NULL, "
                 + ACTIVITY_DEADLINE + " LONG DEFAULT 0, " + ACTIVITY_PRIORITY
                 + " CHAR(32) NOT NULL, " + ACTIVITY_LAST_MODIFIED + " LONG NOT NULL DEFAULT 0, "
-                + ACTIVITY_DATE_CREATED + " LONG NOT NULL DEFAULT 0)";
+                + ACTIVITY_DATE_CREATED + " LONG NOT NULL DEFAULT 0, "
+                + ACTIVITY_TIME_SPENT + " INTEGER NOT NULL DEFAULT 0)";
         db.execSQL(CREATE_SAMPLE_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if ( oldVersion == 1 ) {
-            db.execSQL("ALTER TABLE " + SAMPLE_TABLE + " ADD COLUMN " + ACTIVITY_PRIORITY
-                    + " CHAR(32) NOT NULL DEFAULT 'MEDIUM'");
-            oldVersion++;
-        } if ( oldVersion == 2 ) {
-            db.execSQL("ALTER TABLE " + SAMPLE_TABLE + " ADD COLUMN "+ ACTIVITY_LAST_MODIFIED
-                    + " LONG NOT NULL DEFAULT 0");
-            db.execSQL("ALTER TABLE " + SAMPLE_TABLE + " ADD COLUMN "+ ACTIVITY_DATE_CREATED
-                    + " LONG NOT NULL DEFAULT 0");
+            db.execSQL("ALTER TABLE " + SAMPLE_TABLE + " ADD COLUMN " + ACTIVITY_TIME_SPENT
+                    + " INTEGER NOT NULL DEFAULT 0");
         }
     }
 
@@ -103,7 +98,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(ACTIVITY_DEADLINE, task.getDeadline().getTimeInMillis());
         values.put(ACTIVITY_DATE_CREATED, task.getDateCreated());
         values.put(ACTIVITY_LAST_MODIFIED, task.getLastModified().getTimeInMillis());
-
+        values.put(ACTIVITY_TIME_SPENT,0);
         return db.insert(SAMPLE_TABLE, null, values);
     }
 
@@ -123,7 +118,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
         Cursor cursor = db.query(SAMPLE_TABLE,
                 new String[]{ACTIVITY_ID, ACTIVITY_NAME, ACTIVITY_DURATION, ACTIVITY_DEADLINE,
-                        ACTIVITY_PRIORITY, ACTIVITY_DATE_CREATED, ACTIVITY_LAST_MODIFIED},
+                        ACTIVITY_PRIORITY, ACTIVITY_DATE_CREATED, ACTIVITY_LAST_MODIFIED,
+                        ACTIVITY_TIME_SPENT},
                 null, null, null, null, column, null);
         while (cursor != null && cursor.moveToNext()) {
             int id = cursor.getInt(cursor.getColumnIndex(ACTIVITY_ID));
@@ -133,8 +129,9 @@ public class DBHelper extends SQLiteOpenHelper {
             String priority = cursor.getString(cursor.getColumnIndex(ACTIVITY_PRIORITY));
             long dateCreated = cursor.getLong(cursor.getColumnIndex(ACTIVITY_DATE_CREATED));
             calModified.setTimeInMillis( cursor.getLong(cursor.getColumnIndex(ACTIVITY_LAST_MODIFIED)) );
+            int timeSpent = cursor.getInt(cursor.getColumnIndex(ACTIVITY_TIME_SPENT));
 
-            Task t = new Task(id, name, duration, calDue, dateCreated, calModified);
+            Task t = new Task(id, name, duration, calDue, dateCreated, calModified, timeSpent);
             t.setPriority( Task.Priority.valueOf(priority) );
 
             taskList.add( t );
@@ -158,7 +155,8 @@ public class DBHelper extends SQLiteOpenHelper {
         Task task;
         Cursor cursor = db.query(SAMPLE_TABLE,
                 new String[]{ACTIVITY_ID, ACTIVITY_NAME, ACTIVITY_DURATION, ACTIVITY_DEADLINE
-                        , ACTIVITY_PRIORITY, ACTIVITY_DATE_CREATED, ACTIVITY_LAST_MODIFIED},
+                        , ACTIVITY_PRIORITY, ACTIVITY_DATE_CREATED, ACTIVITY_LAST_MODIFIED,
+                        ACTIVITY_TIME_SPENT},
                 ACTIVITY_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null && cursor.moveToNext()) {
             int dbID = cursor.getInt(cursor.getColumnIndex(ACTIVITY_ID));
@@ -167,10 +165,11 @@ public class DBHelper extends SQLiteOpenHelper {
             long deadlineLong = cursor.getLong(cursor.getColumnIndex(ACTIVITY_DEADLINE));
             long dateCreated =  cursor.getLong(cursor.getColumnIndex(ACTIVITY_DATE_CREATED));
             long lastModified = cursor.getLong(cursor.getColumnIndex(ACTIVITY_LAST_MODIFIED));
+            int timeSpent = cursor.getInt(cursor.getColumnIndex(ACTIVITY_TIME_SPENT));
             calDue.setTimeInMillis( deadlineLong );
             calModified.setTimeInMillis(lastModified);
 
-            task = new Task(dbID, name, duration , calDue, dateCreated, calModified);
+            task = new Task(dbID, name, duration , calDue, dateCreated, calModified, timeSpent);
             String priority = cursor.getString(cursor.getColumnIndex(ACTIVITY_PRIORITY));
             task.setPriority( Task.Priority.valueOf(priority) );
         } else {
@@ -194,6 +193,7 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(ACTIVITY_DEADLINE, task.getDeadline().getTimeInMillis());
         cv.put(ACTIVITY_PRIORITY, task.getPriority().name());
         cv.put(ACTIVITY_LAST_MODIFIED, task.getLastModified().getTimeInMillis());
+        cv.put(ACTIVITY_TIME_SPENT, task.getTimeSpent());
         String[] whereArgs = new String[]{task.getId() + ""};
         int result = 0;
         try {

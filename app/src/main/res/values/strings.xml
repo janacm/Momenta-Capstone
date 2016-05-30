@@ -36,6 +36,8 @@
     </string-array>
 
     <!-- Log strings-->
+    <string name="sort_button_content_description">Sort Button</string>
+    <string name="asc_desc_button_content_description">Ascending/descending button</string>
 
     <!-- Button strings-->
     <string name="dialog_done">Done</string>
@@ -79,6 +81,8 @@
     <string name="title_activity_screen_take_over">ScreenTakeOverActivity</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="add_activity_content_description">Add activity button</string>
+    <string name="log_your_progess">Log your progess!</string>
+    <string name="screen_take_over_m">M</string>
 
     <!-- Demo/Sample strings-->
     <string name="sample_duration_string">1h 45m</string>
@@ -126,6 +130,10 @@
     <!-- Strings related to the Add time to task screen !-->
     <string name="add_time_to_task_title1">How much time did</string>
     <string name="add_time_to_task_title2">you put towards</string>
-    <string name="sort_button_content_description">Sort Button</string>
-    <string name="asc_desc_button_content_description">Ascending/descending button</string>
+    <string name="no_tasks_available">Seems like you don\'t have any tasks</string>
+    <string name="dummy_button_add_new_task">Add a new task</string>
+    <string name="add_time_to_task_minutes"> m </string>
+    <string name="add_time_to_task_hours"> h </string>
+    <string name="add_time_to_task_min">0m</string>
+    <string name="add_time_to_task_next">Next</string>
 </resources>

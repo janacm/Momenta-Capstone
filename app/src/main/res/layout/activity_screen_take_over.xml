@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:textSize="36sp"
             android:textColor="#FFFFFF"
-            android:text="M"
+            android:text="@string/screen_take_over_m"
             android:layout_gravity="center" />
 
         <TextView
@@ -28,7 +28,7 @@
             android:paddingBottom="30dp"
             android:textSize="14sp"
             android:textColor="#FFFFFF"
-            android:text="Log your progess!"
+            android:text="@string/log_your_progess"
             android:layout_gravity="center" />
 
         <TextView
@@ -50,6 +50,16 @@
             android:textColor="#FFFFFF"
             android:text="@string/quoteCredit"
             />
+
+        <TextView
+            android:id="@+id/no_tasks_available_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_tasks_available"
+            android:layout_marginTop="20dp"
+            android:textSize="15sp"
+            android:textColor="#FFFFFF"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/dummy_button"
