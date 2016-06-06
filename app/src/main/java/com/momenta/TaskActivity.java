@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -91,6 +92,8 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         Spinner spinner = (Spinner)findViewById(R.id.task_priority_spinner);
         spinner.setOnItemSelectedListener(this);
         spinner.setSelection(spinnerPosition(task.getPriority()));
+        Log.e("Activity Details", task.getName() +"'s Goal: " +task.getGoalInMinutes());
+        Log.e("Activity Details", "Time Spent on " + task.getName() +": " +task.getTimeSpent());
     }
 
     @Override
@@ -175,7 +178,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
             return;
         }
         task.setName(activityName.getText().toString());
-        task.setTimeInMinutes(totalMinutes.intValue());
+        task.setGoalInMinutes(totalMinutes.intValue());
         task.setLastModified(Calendar.getInstance());
 
         if ( DBHelper.getInstance(this).updateTask(task) ) {
