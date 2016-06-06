@@ -169,8 +169,10 @@ public class AddTaskTimeActivity extends AppCompatActivity {
 
         if ((intervalTime % 2) == 0) {
             seekbar.setProgress(intervalTime / 2);
+            seekbarValue = intervalTime/2;
         } else {
             seekbar.setProgress((intervalTime / 2) + 1);
+            seekbarValue = (intervalTime/2) + 1;
         }
 
         intervalHours = intervalTime / 60;
@@ -270,32 +272,39 @@ public class AddTaskTimeActivity extends AppCompatActivity {
     // Method for handling the clicking of the next button
     public void moveNext() {
         int temp = intervalTime;
-        if (position < numofTasks - 1 && (temp - seekbarValue) != temp) {
+        if ((position < numofTasks - 1) && ((temp - seekbarValue) != temp)) {
             //Checking to see if user uses all time on a task while other tasks remain to be filled
-            if ((temp - seekbarValue) > 0) {
+            if (timeToSpare(numofTasks, position, temp, seekbarValue)) {
                 intervalTime = intervalTime - seekbarValue;
                 intervalValues[position] = seekbarValue;
                 store.push(taskIDs.pop());
                 position++;
                 setUpScreen(taskIDs);
             } else {
-                toast("Error: Invalid interval time");
+                if(!timeToSpare(numofTasks, position, temp, seekbarValue))
+                    toast("Error: Not enough time left for remaining tasks");
+                if((temp - seekbarValue) == temp)
+                    toast("Error: Must add a time value to the task");
             }
 
-        } else if (position == (numofTasks - 1) && (temp - seekbarValue) != temp) {
-            //When we've completed adding time for the last task, go to the main activity
-            storeInDB();
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-
-            if (numofTasks > 1)
-                toast("Successfully added time to your tasks");
-            else
-                toast("Successfully added time to your task");
-
         } else {
-            toast("Error: Invalid interval time");
+            if ((position == (numofTasks - 1)) && ((temp - seekbarValue) != temp)) {
+                //When we've completed adding time for the last task, go to the main activity
+                intervalTime = intervalTime - seekbarValue;
+                intervalValues[position] = seekbarValue;
+                store.push(taskIDs.pop());
+                storeInDB();
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+
+                if (numofTasks > 1)
+                    toast("Successfully added time to your tasks");
+                else
+                    toast("Successfully added time to your task");
+
+            }
         }
+
     }
 
 
@@ -316,14 +325,15 @@ public class AddTaskTimeActivity extends AppCompatActivity {
     //Method used to store interval values for each task in the DB
     public void storeInDB() {
         Collections.reverse(store);
-        for (int i = 0; i < store.size(); i++) {
+        int storeSize = store.size();
+        for (int i = 0; i < storeSize;  i++) {
             int taskID = store.pop();
             task = DBHelper.getInstance(this).getTask(taskID);
             //FIXME Do you wanna set time spent here? or add time?
 //            task.setTimeSpent(intervalValues[i]);
             Log.e("Adding-Time-to-task", "Adding " + intervalValues[i] +" minute(s) to " + task.getName());
             Log.e("Adding-Time-to-task", "Before time spent " + task.getTimeSpent());
-            task.setTimeSpent(intervalValues[i]);
+            task.addTimeInMinutes(intervalValues[i]);
             Log.e("Adding-Time-to-task", "After time spent " + task.getTimeSpent());
 
             DBHelper.getInstance(this).updateTask(task);
@@ -331,6 +341,32 @@ public class AddTaskTimeActivity extends AppCompatActivity {
             //int timeSpent = DBHelper.getInstance(this).getTask(taskID).getTimeSpent();
             //System.out.println(timeSpent);
         }
+    }
+
+    /**
+     * Method for determining if there is time to spare for other tasks after time is deducted for a task
+     * @param numTasks is the number of tasks selected to insert time into
+     * @param pos current task that time is being inserted into
+     * @param timeLeft time remaining after time is deducted for each task
+     * @param seekvalue time value to be added to each task selected by the user
+     * @return either true or false depending on if there is enough time to be equally divided for remaining tasks.
+     */
+    //TODO Set up method for blocking user from selecting a greater # of tasks from the select tasks screen than # of mins available
+    private boolean timeToSpare(int numTasks, int pos, int timeLeft, int seekvalue){
+        boolean flag = false;
+        int remTasks, remTime;
+        remTasks = numTasks - (pos + 1);
+        remTime = timeLeft - seekvalue;
+
+        if(pos + 1 < numTasks){
+            flag = (remTime / remTasks) >= 1;
+        }
+        else{
+            if((timeLeft - seekvalue) >=0){
+                flag = true;
+            }
+        }
+        return flag;
     }
 
     /**

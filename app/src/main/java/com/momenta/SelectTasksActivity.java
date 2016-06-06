@@ -24,6 +24,10 @@ public class SelectTasksActivity extends AppCompatActivity {
     public RecyclerView mRecyclerView;
     private SelectTasksAdapter mAdapter;
 
+    helperPreferences hp;
+
+    int intervalHours, intervalMins;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +47,10 @@ public class SelectTasksActivity extends AppCompatActivity {
 
         mAdapter = new SelectTasksAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
+
+        hp = new helperPreferences(this);
+        intervalHours = Integer.parseInt(hp.getPreferences(Constants.SHPREF_INTERVAL_HOURS, "0"));
+        intervalMins = Integer.parseInt(hp.getPreferences(Constants.SHPREF_INTERVAL_MINS, "0"));
     }
 
     @Override
@@ -68,9 +76,10 @@ public class SelectTasksActivity extends AppCompatActivity {
     //Method for extracting the task IDs and position from the tasks in the list and passing
     //them to the AddTimeToTaskActivity in the form of a stack.
     public void prepareItems() {
-        boolean flag = false;
         Map<Integer, Integer> temp = new TreeMap<>(mAdapter.getItemsClickedIDs());
-        if (temp.size() != 0) {
+        int size = temp.size();
+        int intervalTime = (intervalHours * 60) + intervalMins;
+        if ((size > 0) && ((intervalTime/size) >= 1)){
             Stack<Integer> taskIDs = new Stack<>();
             Set set = temp.entrySet();
             for (Object aSet : set) {
@@ -85,7 +94,11 @@ public class SelectTasksActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         } else {
-            toast("Error: No task(s) selected");
+            if((size > 0) && (intervalTime/size) < 1)
+                toast("Error: Cannot divide tasks evenly within time interval");
+            else{
+                toast("Error: No task(s) selected");
+            }
         }
     }
 
