@@ -92,8 +92,6 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         Spinner spinner = (Spinner)findViewById(R.id.task_priority_spinner);
         spinner.setOnItemSelectedListener(this);
         spinner.setSelection(spinnerPosition(task.getPriority()));
-        Log.e("Activity Details", task.getName() +"'s Goal: " +task.getGoalInMinutes());
-        Log.e("Activity Details", "Time Spent on " + task.getName() +": " +task.getTimeSpent());
     }
 
     @Override

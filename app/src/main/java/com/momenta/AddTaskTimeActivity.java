@@ -329,12 +329,7 @@ public class AddTaskTimeActivity extends AppCompatActivity {
         for (int i = 0; i < storeSize;  i++) {
             int taskID = store.pop();
             task = DBHelper.getInstance(this).getTask(taskID);
-            //FIXME Do you wanna set time spent here? or add time?
-//            task.setTimeSpent(intervalValues[i]);
-            Log.e("Adding-Time-to-task", "Adding " + intervalValues[i] +" minute(s) to " + task.getName());
-            Log.e("Adding-Time-to-task", "Before time spent " + task.getTimeSpent());
             task.addTimeInMinutes(intervalValues[i]);
-            Log.e("Adding-Time-to-task", "After time spent " + task.getTimeSpent());
 
             DBHelper.getInstance(this).updateTask(task);
 
