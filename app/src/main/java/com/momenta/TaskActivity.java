@@ -25,8 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 public class TaskActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    AutoCompleteTextView activityName;
-    //EditText activityName;
+    EditText activityName;
     TextView activityDeadline;
     EditText activityHour;
     EditText activityMinute;
@@ -49,14 +48,8 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         task = DBHelper.getInstance(this).getTask(id);
 
         //Set the text of the view
-        textView = (AutoCompleteTextView) findViewById(R.id.task_name_edit_text);
-        // Get the string array
-        String[] suggestions = getResources().getStringArray(R.array.suggestions);
-        // Create the adapter and set it to the AutoCompleteTextView
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, suggestions);
-        textView.setAdapter(adapter);
-        //activityName = (EditText)findViewById(R.id.task_name_edit_text);
-        //activityName.setText( task.getName() );
+        activityName = (EditText)findViewById(R.id.task_name_edit_text);
+        activityName.setText( task.getName() );
 
         activityHour = (EditText)findViewById(R.id.task_hour_edit_text);
         activityMinute = (EditText)findViewById(R.id.task_minute_edit_text);

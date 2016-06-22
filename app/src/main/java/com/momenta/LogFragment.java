@@ -15,6 +15,8 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -67,8 +69,18 @@ public class LogFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        AutoCompleteTextView actv;
+
+
+
         View view = inflater.inflate(R.layout.fragment_log, container, false);
         RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.activity_recycler_view);
+
+        actv = (AutoCompleteTextView) view.findViewById(R.id.new_activity_edit_text);
+        String[] suggestions = getResources().getStringArray(R.array.suggestions);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, suggestions);
+        actv.setAdapter(adapter);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
