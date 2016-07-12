@@ -53,11 +53,8 @@ public class HelperNetwork {
     }
 
     /**
-     * ***********************************************************************
-     *
-     * @param
-     * @return ************************************************************************
-     * @brief
+     * @param db - reference to the local database
+     * @return A JSONArray of all the tasks contained in the local DB
      */
     public static JSONArray getTasksJSONArray(DBHelper db) {
         JSONArray json_tasks = new JSONArray();
@@ -82,13 +79,11 @@ public class HelperNetwork {
     }
 
     /**
-     * ***********************************************************************
-     *
-     * @param
-     * @return ************************************************************************
-     * @brief
+     * @param activity - current activity
+     * @brief Sends an HTTP Post request to the server containing all the tasks in the local DB and sends feedback to the user
+     * base on the server's response
      */
-    public static void uploadTaskToServer(Activity activity) {
+    public static void uploadTasksToServer(Activity activity) {
 
         context = (Context) activity;
 
