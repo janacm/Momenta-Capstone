@@ -131,6 +131,8 @@
 
     <string-array name="suggestions">
         <item>Go To The Gym</item>
+        <item>Go Running</item>
+        <item>Go Catch Pokemon</item>
         <item>Eat alot of food</item>
         <item>Explore</item>
         <item>Code in Java</item>

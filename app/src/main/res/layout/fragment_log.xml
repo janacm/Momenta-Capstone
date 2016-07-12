@@ -25,6 +25,7 @@
             android:textColorHint="@color/hint_text"
             android:singleLine="true"
             android:nextFocusDown="@+id/new_activity_hour_edit_text"
+            android:completionThreshold="1"
             android:layout_weight="1" />
 
         <ImageButton
