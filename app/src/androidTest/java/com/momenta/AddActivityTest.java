@@ -97,7 +97,8 @@ public class AddActivityTest {
         onView(withId(R.id.new_activity_add_button)).perform(click());
 
         //check toast is displayed
-        onView(withText(ctx.getString(R.string.toast_activity_added))).inRoot(withDecorView(not(main.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed()));
+        onView(withText(ctx.getString(R.string.toast_activity_added))).inRoot(withDecorView(not(main.getActivity().getWindow().getDecorView())))
+                .check(matches(isDisplayed()));
 
         //close soft keyboard
         Espresso.closeSoftKeyboard();

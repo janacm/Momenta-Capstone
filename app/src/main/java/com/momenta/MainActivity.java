@@ -1,23 +1,28 @@
 package com.momenta;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NetworkStateReceiver.NetworkStateReceiverListener {
 
-    ManagerFragmentPagerAdapter fragmentManager;
-
+    private ManagerFragmentPagerAdapter fragmentManager;
+    private NetworkStateReceiver networkStateReceiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        networkStateReceiver = new NetworkStateReceiver();
+        networkStateReceiver.addListener(this);
+        this.registerReceiver(networkStateReceiver, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
 
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -57,4 +62,16 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void networkAvailable() {
+        Log.d("MAINACTIVITY", "Network Available");
+        //TODO: When network connectivity becomes available, upload all tasks to server. UNCOMMENT next line to do so
+        //HelperNetwork.uploadTasksToServer(this);
+    }
+
+    @Override
+    public void networkUnavailable() {
+        Log.d("MAINACTIVITY", "Network Unavailable");
+        //Show networ unavailable status
+    }
 }
