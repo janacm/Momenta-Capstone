@@ -128,4 +128,14 @@
     <string name="add_time_to_task_title2">you put towards</string>
     <string name="sort_button_content_description">Sort Button</string>
     <string name="asc_desc_button_content_description">Ascending/descending button</string>
+
+    <string-array name="suggestions">
+        <item>Go To The Gym</item>
+        <item>Go Running</item>
+        <item>Go Catch Pokemon</item>
+        <item>Eat alot of food</item>
+        <item>Explore</item>
+        <item>Code in Java</item>
+        <item>Work on this android project</item>
+    </string-array>
 </resources>
