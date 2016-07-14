@@ -136,4 +136,14 @@
     <string name="add_time_to_task_hours"> h </string>
     <string name="add_time_to_task_min">0m</string>
     <string name="add_time_to_task_next">Next</string>
+
+    <string-array name="suggestions">
+        <item>Go To The Gym</item>
+        <item>Go Running</item>
+        <item>Go Catch Pokemon</item>
+        <item>Eat alot of food</item>
+        <item>Explore</item>
+        <item>Code in Java</item>
+        <item>Work on this android project</item>
+    </string-array>
 </resources>
