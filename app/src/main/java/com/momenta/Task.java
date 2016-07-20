@@ -6,6 +6,7 @@ import java.util.Locale;
 
 /**
  * Blueprint of a user activity.
+ * TODO Format class & look at naming.
  */
 public class Task {
 
@@ -73,6 +74,7 @@ public class Task {
     /**
      * Used to get the taskHour and taskMinutes values in a string
      * @return String in format 0H 00M
+     * TODO is method useful?
      */
     public String getFormattedGoal() {
         int taskMinutes = goal, taskHours = 0;
@@ -96,9 +98,14 @@ public class Task {
     /**
      * Used to get the taskHour and taskMinutes values in a string
      * @return String in format 0H 00M
+     * TODO Write test cases for this method
      */
     public String getFormattedTimeSpent() {
         int taskMinutes = timeSpent, taskHours = 0;
+
+        if ( taskMinutes == 0 ) {
+            return "0M";
+        }
 
         if ( ! (taskMinutes < 60) ) {
             taskHours = taskMinutes/60;
