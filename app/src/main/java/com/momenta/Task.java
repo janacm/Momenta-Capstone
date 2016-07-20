@@ -94,11 +94,42 @@ public class Task {
     }
 
     /**
+     * Used to get the taskHour and taskMinutes values in a string
+     * @return String in format 0H 00M
+     */
+    public String getFormattedTimeSpent() {
+        int taskMinutes = timeSpent, taskHours = 0;
+
+        if ( ! (taskMinutes < 60) ) {
+            taskHours = taskMinutes/60;
+            taskMinutes = taskMinutes % 60;
+        }
+
+        if ( taskHours >0 && taskMinutes>0 ) {
+            return taskHours + "H " + taskMinutes + "M";
+        } else if ( taskHours ==0 && taskMinutes>0 ) {
+            return taskMinutes + "M";
+        } else if ( taskHours >0 ) {
+            return taskHours + "H";
+        } else {
+            return "";
+        }
+    }
+
+    /**
      * Used the set the goal of this task in minutes.
      * @param minutes the new value of the task goal in minutes
      */
     public void setGoalInMinutes(int minutes ) {
         goal = minutes;
+    }
+
+    /**
+     * Used to get the goal of this task in minutes
+     * @return Integer value of the total time of this task in minutes.
+     */
+    public int getGoalInMinutes() {
+        return goal;
     }
 
     /**
@@ -110,14 +141,6 @@ public class Task {
             throw new IllegalArgumentException("Goal cannot be negative: " + minutes);
         }
         timeSpent += minutes;
-    }
-
-    /**
-     * Used to get the goal of this task in minutes
-     * @return Integer value of the total time of this task in minutes.
-     */
-    public int getGoalInMinutes() {
-        return goal;
     }
 
     public Calendar getDeadline() {
