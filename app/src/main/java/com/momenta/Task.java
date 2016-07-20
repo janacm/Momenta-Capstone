@@ -166,6 +166,7 @@ public class Task {
     public void setTimeSpent(int timeSpent){
         this.timeSpent = timeSpent;
     }
+
     /**
      * Used to get the time spent on a task in minutes
      * @return the time spent on a task in minutes
