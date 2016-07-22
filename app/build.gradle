@@ -10,7 +10,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
-        versionName "0.1.1"
+        versionName "0.1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -34,6 +34,7 @@ dependencies {
     compile 'me.grantland:autofittextview:0.2.1'
     compile 'org.apache.httpcomponents:httpcore:4.4.1'
     compile 'org.apache.httpcomponents:httpclient:4.5'
+    compile 'com.github.PhilJay:MPAndroidChart:v3.0.0-beta1'
 
     // Testing-only dependencies
     // Force usage of support annotations in the test app, since it is internally used by the runner module.

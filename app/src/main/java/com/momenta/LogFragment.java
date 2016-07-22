@@ -371,8 +371,9 @@ public class LogFragment extends Fragment implements View.OnClickListener {
                     if (json != null) {
                         JSONArray ping_result = json.getJSONArray("_items");
                         JSONObject status_obj = ping_result.getJSONObject(0);
-                        String status = status_obj.getString("_created");
-                        toast(status);
+                        //TODO: Removed toast, T'was causing the build to fail on older devices
+//                        String status = status_obj.getString("_created");
+//                        toast(status);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

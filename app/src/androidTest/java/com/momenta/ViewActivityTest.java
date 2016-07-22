@@ -24,6 +24,8 @@ import java.util.concurrent.TimeUnit;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.clearText;
+import static android.support.test.espresso.action.ViewActions.scrollTo;
+import static android.support.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -105,9 +107,13 @@ public class ViewActivityTest {
         cal.set(year, month, day);
         String expected = Task.getDateFormat(cal);
 
+        //Perform scroll for smaller screens
+        onView(allOf(withId(R.id.task_deadline_layout),
+                isDescendantOfA(withId(R.id.scrollable_relative_laytout)))).perform(scrollTo());
 
         //Click on the deadline layout to popup views
-        onView(withId(R.id.task_deadline_layout)).perform(click());
+        onView(allOf(withId(R.id.task_deadline_layout),
+                isDescendantOfA(withId(R.id.scrollable_relative_laytout)))).perform(click());
 
         //Set the date of the picker
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(year, month + 1, day));
@@ -124,8 +130,13 @@ public class ViewActivityTest {
         long id = taskID;
         String priority = "Very High";
 
+        //Perform scroll for smaller screens
+        onView(allOf(withId(R.id.task_priority_spinner),
+                isDescendantOfA(withId(R.id.scrollable_relative_laytout)))).perform(scrollTo());
+
         //Click on the spinner
-        onView(withId(R.id.task_priority_spinner)).perform(click());
+        onView(allOf(withId(R.id.task_priority_spinner),
+                isDescendantOfA(withId(R.id.scrollable_relative_laytout)))).perform(click());
 
         // Select a priority from the spinner
         onData(allOf(is(instanceOf(String.class)), is(priority))).perform(click());
@@ -133,7 +144,9 @@ public class ViewActivityTest {
         restartTaskActivity(id);
 
         //Verify the value of the spinner
-        onView(withId(R.id.task_priority_spinner)).check(matches(withSpinnerText(containsString(priority))));
+        onView(allOf(withId(R.id.task_priority_spinner),
+                isDescendantOfA(withId(R.id.scrollable_relative_laytout))))
+                .check(matches(withSpinnerText(containsString(priority))));
     }
 
     /**
