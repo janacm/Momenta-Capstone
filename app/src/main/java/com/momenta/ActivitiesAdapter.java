@@ -46,7 +46,7 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.Vi
 
         //Set the fields of the item_activity layout from the task object
         holder.name.setText(task.getName());
-        holder.timeSpent.setText(task.getFormattedGoal());
+        holder.timeSpent.setText(task.getFormattedTimeSpent());
         holder.progressBar.setProgress(task.getTimeSpent());
         holder.progressBar.setMax(task.getGoalInMinutes());
 
