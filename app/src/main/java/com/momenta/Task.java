@@ -148,6 +148,7 @@ public class Task {
             throw new IllegalArgumentException("Goal cannot be negative: " + minutes);
         }
         timeSpent += minutes;
+        lastModified = Calendar.getInstance();
     }
 
     public Calendar getDeadline() {

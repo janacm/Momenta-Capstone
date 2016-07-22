@@ -124,6 +124,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
 
         //Initialize the Pie data
         PieData data = new PieData(dataSet);
+        data.setDrawValues(false);
         pieChart.setData(data);
 
     }
