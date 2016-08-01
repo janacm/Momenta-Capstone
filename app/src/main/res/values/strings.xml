@@ -136,6 +136,8 @@
     <string name="add_time_to_task_hours"> h </string>
     <string name="add_time_to_task_min">0m</string>
     <string name="add_time_to_task_next">Next</string>
+    <string name="settings_about">About</string>
+    <string name="settings_notification">Notifiaction</string>
 
     <string-array name="suggestions">
         <item>Go To The Gym</item>
