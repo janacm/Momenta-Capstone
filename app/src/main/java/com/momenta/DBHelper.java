@@ -27,6 +27,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String SAMPLE_TABLE = "SAMPLE_TABLE";
 
     //Sample Table Columns
+    public static final String USER_ID = "USER_ID";
     public static final String ACTIVITY_ID = "ACTIVITY_ID";
     public static final String ACTIVITY_NAME = "ACTIVITY_NAME";
     public static final String ACTIVITY_DURATION = "ACTIVITY_DURATION";
