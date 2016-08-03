@@ -148,6 +148,9 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
             if ((hours.equals("0") || hours.equals("00")) && (minutes.equals("0") || minutes.equals("00"))) {
                 summary = getString(R.string.interval_time_summary_never_remind);
+                helperBroadcast helperBroadcast = new helperBroadcast(this);
+                helperBroadcast.cancelAlarm();
+                Log.d("SettingsActivity", "Cancelling alarm");
             } else if (hours.equals("0") || hours.equals("00")) {
                 summary = getString(R.string.interval_time_summary) + " " + minutes + " " + getString(R.string.interval_time_summary_minutes);
             } else if (minutes.equals("0") || minutes.equals("00")) {
@@ -206,13 +209,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 //Save time in preferences.
                 String timeSet = hourOfDay + ":" + minute;
-                Date timeSetDate = Calendar.getInstance().getTime();
-                try {
-                    SimpleDateFormat tempFormat = new SimpleDateFormat(TWENTY_FOUR_HOUR_FORMAT);
-                    timeSetDate = tempFormat.parse(timeSet);
-                } catch (ParseException e) {
-                    Log.e("SettingsActivity", "Error parsing date time from TimePickerDialog");
-                }
+                Date timeSetDate = parseTimeString(timeSet, TWENTY_FOUR_HOUR_FORMAT);
                 helperPreferences.savePreferences(TIME.toString(), simpleDateFormat.format(timeSetDate));
                 if (TIME == NOTIFICATION_TIME.START_TIME) {
                     Preference notificationStartTime = findPreference("notification_start_time");
@@ -224,5 +221,23 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
             }
         }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false);
         timePickerDialog.show();
+    }
+
+    /**
+     * Helper method to parse a string to a date object
+     * @param time the string to be parser in the format
+     * @param format the format of the string e.g hh:mm a
+     * @return Date value of the string
+     */
+    public static Date parseTimeString(String time, String format) {
+        Date date = Calendar.getInstance().getTime();
+        try {
+            SimpleDateFormat tempFormat = new SimpleDateFormat(format);
+            date = tempFormat.parse(time);
+        } catch (ParseException e) {
+            Log.e("SettingsActivity", "Error parsing time");
+            Log.e("SettingsActivity", Log.getStackTraceString(e));
+        }
+        return date;
     }
 }

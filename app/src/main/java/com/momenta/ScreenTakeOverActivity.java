@@ -174,7 +174,7 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        helperBroadcast brdcst = new helperBroadcast(this);
-        brdcst.sendBroadcast();
+//        helperBroadcast brdcst = new helperBroadcast(this);
+//        brdcst.sendBroadcast();
     }
 }
