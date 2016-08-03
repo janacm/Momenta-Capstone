@@ -1,6 +1,7 @@
 package com.momenta;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 
 /**
@@ -13,9 +14,9 @@ public class helperPreferences {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
 
-    public helperPreferences(Activity activity) {
+    public helperPreferences(Context context) {
 
-        this.sharedPreferences = activity.getSharedPreferences(PREFS_NAME, 0);
+        this.sharedPreferences = context.getSharedPreferences(PREFS_NAME, 0);
         this.editor = sharedPreferences.edit();
     }
 

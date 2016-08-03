@@ -7,16 +7,16 @@
             android:defaultValue="0"
             android:inputType="number"
             android:key="interval_time"
-            android:title="@string/interval_time_title" />
+            android:title= "@string/interval_time_title" />
 
         <Preference
             android:key="notification_start_time"
-            android:title="Notification Start time"
+            android:title="@string/start_time_title"
             />
 
         <Preference
             android:key="notification_end_time"
-            android:title="Notification End time"
+            android:title="@string/end_time_title"
             />
 
     </PreferenceCategory>

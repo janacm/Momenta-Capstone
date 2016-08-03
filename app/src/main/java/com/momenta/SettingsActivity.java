@@ -1,6 +1,7 @@
 package com.momenta;
 
 
+import android.annotation.SuppressLint;
 import android.app.TimePickerDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -29,9 +30,10 @@ import java.util.Date;
 public class SettingsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String PREFS_NAME = "momenta_prefs";
-    private enum NOTIFICATION_TIME{START_TIME, END_TIME};
-    private static final String TIME_FORMAT = "HH:mm";
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(TIME_FORMAT);
+    public enum NOTIFICATION_TIME{START_TIME, END_TIME};
+    public static final String TIME_FORMAT = "hh:mm a";
+    public static final String TWENTY_FOUR_HOUR_FORMAT = "HH:mm";
+    SimpleDateFormat simpleDateFormat;
     helperPreferences helperPreferences;
 
     /**
@@ -44,6 +46,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         addPreferencesFromResource(R.xml.settings);
         this.getSharedPreferences(PREFS_NAME, 0).registerOnSharedPreferenceChangeListener(this);
         helperPreferences = new helperPreferences(this);
+        simpleDateFormat = new SimpleDateFormat(TIME_FORMAT);
 
         PreferenceManager.setDefaultValues(this, R.xml.settings,
                 false);
@@ -63,7 +66,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
                     return true;
                 }
             });
-            notificationStartTime.setSummary( helperPreferences.getPreferences(NOTIFICATION_TIME.START_TIME.toString(), "8:30") );
+            notificationStartTime.setSummary( helperPreferences.getPreferences(NOTIFICATION_TIME.START_TIME.toString(), "08:30 AM") );
         }
 
         Preference notificationEndTime = findPreference("notification_end_time");
@@ -75,7 +78,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
                     return true;
                 }
             });
-            notificationEndTime.setSummary( helperPreferences.getPreferences(NOTIFICATION_TIME.END_TIME.toString(), "20:30") );
+            notificationEndTime.setSummary( helperPreferences.getPreferences(NOTIFICATION_TIME.END_TIME.toString(), "08:30 PM") );
         }
     }
 
@@ -178,26 +181,23 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     /**
      * Helper method to show the time picker dialog
      * @param TIME the start time or end time
-     *        TODO remove hardcoded values e.g."8:30"
+     *
      */
     private void showTimePickerDialog(final NOTIFICATION_TIME TIME) {
         //Get the previous time from preferences
         String time = "";
         Calendar cal = Calendar.getInstance();
-        if (TIME == NOTIFICATION_TIME.START_TIME) { //TODO seperate for start and end time
-            time = helperPreferences.getPreferences(TIME.toString(),
-                    simpleDateFormat.format(new Date()));
+        if (TIME == NOTIFICATION_TIME.START_TIME) {
+            time = helperPreferences.getPreferences(TIME.toString(), "08:30 AM");
         } else {
-            time = helperPreferences.getPreferences(TIME.toString(),
-                    simpleDateFormat.format(new Date()));
+            time = helperPreferences.getPreferences(TIME.toString(), "08:30 PM");
         }
-        if (!time.isEmpty()) {
-            try {
-                Date date = simpleDateFormat.parse(time);
-                cal.setTime(date);
-            } catch (ParseException e) {
-                Log.e("SettingsActivity", "Error parsing date time from preferences");
-            }
+
+        try {
+            Date date = simpleDateFormat.parse(time);
+            cal.setTime(date);
+        } catch (ParseException e) {
+            Log.e("SettingsActivity", "Error parsing date time from preferences");
         }
 
         //Build time picker dialog with the time value from preferences.
@@ -208,20 +208,21 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
                 String timeSet = hourOfDay + ":" + minute;
                 Date timeSetDate = Calendar.getInstance().getTime();
                 try {
-                    timeSetDate = simpleDateFormat.parse(timeSet);
+                    SimpleDateFormat tempFormat = new SimpleDateFormat(TWENTY_FOUR_HOUR_FORMAT);
+                    timeSetDate = tempFormat.parse(timeSet);
                 } catch (ParseException e) {
                     Log.e("SettingsActivity", "Error parsing date time from TimePickerDialog");
                 }
                 helperPreferences.savePreferences(TIME.toString(), simpleDateFormat.format(timeSetDate));
-                if (TIME == NOTIFICATION_TIME.START_TIME) { //TODO seperate for start and end time
+                if (TIME == NOTIFICATION_TIME.START_TIME) {
                     Preference notificationStartTime = findPreference("notification_start_time");
-                    notificationStartTime.setSummary( helperPreferences.getPreferences(NOTIFICATION_TIME.START_TIME.toString(), "8:30") );
+                    notificationStartTime.setSummary( helperPreferences.getPreferences(NOTIFICATION_TIME.START_TIME.toString(), "08:30 AM") );
                 } else {
                     Preference notificationEndTime = findPreference("notification_end_time");
-                    notificationEndTime.setSummary( helperPreferences.getPreferences(NOTIFICATION_TIME.END_TIME.toString(), "20:30") );
+                    notificationEndTime.setSummary( helperPreferences.getPreferences(NOTIFICATION_TIME.END_TIME.toString(), "08:30 PM") );
                 }
             }
-        }, cal.get(Calendar.HOUR), cal.get(Calendar.MINUTE), false);
+        }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false);
         timePickerDialog.show();
     }
 }
