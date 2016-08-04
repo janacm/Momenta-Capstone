@@ -1,6 +1,5 @@
 package com.momenta;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -8,7 +7,6 @@ import android.content.Intent;
 import android.util.Log;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -62,7 +60,7 @@ public class helperBroadcast {
             alarmEndCal.set(Calendar.MINUTE, tempCal.get(Calendar.MINUTE));
 
             Calendar triggerCal = Calendar.getInstance();
-            //If current time is greater than start time, then start the alarm tomorow
+            //If current time is greater than start time, then start the alarm tomorrow
             if ( currentCal.getTimeInMillis() > alarmStartCal.getTimeInMillis() ) {
 
                 if ( currentCal.getTimeInMillis() >= alarmEndCal.getTimeInMillis() ) {
