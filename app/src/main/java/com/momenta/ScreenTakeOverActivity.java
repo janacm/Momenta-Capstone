@@ -2,6 +2,9 @@ package com.momenta;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
@@ -116,6 +119,11 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
             TextView noTasksAvailable = (TextView)findViewById(R.id.no_tasks_available_text);
             noTasksAvailable.setVisibility(View.VISIBLE);
         }
+
+        //Ring the device
+        Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Ringtone ringtone = RingtoneManager.getRingtone(this.getApplicationContext(), uri);
+        ringtone.play();
     }
 
     @Override
