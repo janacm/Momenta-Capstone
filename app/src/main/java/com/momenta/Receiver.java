@@ -37,6 +37,8 @@ public class Receiver extends WakefulBroadcastReceiver {
         if ( (cHourOfDay < nHourOfDay) ||
                 ( (cHourOfDay==nHourOfDay) && (cMinute < nMinute) ) ) {
             Log.d("Receiver", "Skipping notification, to early to notify");
+            helperBroadcast helperBroadcast = new helperBroadcast(context);
+            helperBroadcast.sendBroadcast();
             return;
         }
 
@@ -52,6 +54,8 @@ public class Receiver extends WakefulBroadcastReceiver {
         if ( (cHourOfDay > nHourOfDay) ||
                 ( (cHourOfDay==nHourOfDay) && (cMinute > nMinute) ) ) {
             Log.d("Receiver", "Skipping notification, to late to notify");
+            helperBroadcast helperBroadcast = new helperBroadcast(context);
+            helperBroadcast.sendBroadcast();
             return;
         }
 

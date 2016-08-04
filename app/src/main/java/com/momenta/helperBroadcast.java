@@ -17,18 +17,18 @@ import java.util.concurrent.TimeUnit;
  */
 public class helperBroadcast {
 
-    private Activity activity;
+    private Context context;
     helperPreferences sharedPrefs;
     PendingIntent pendingIntent;
     helperPreferences helperPreferences;
 
 
-    public helperBroadcast(Activity activity) {
-        this.activity = activity;
-        sharedPrefs = new helperPreferences(activity);
-        Intent intentAlarm = new Intent(activity, Receiver.class);
-        pendingIntent = PendingIntent.getBroadcast(activity, 0, intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
-        helperPreferences = new helperPreferences(activity);
+    public helperBroadcast(Context context) {
+        this.context = context;
+        sharedPrefs = new helperPreferences(context);
+        Intent intentAlarm = new Intent(context, Receiver.class);
+        pendingIntent = PendingIntent.getBroadcast(context, 0, intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
+        helperPreferences = new helperPreferences(context);
     }
 
     public void sendBroadcast() {
@@ -85,15 +85,14 @@ public class helperBroadcast {
                 Log.d("helperBroadcast", "Setting alarm at start time: " + triggerCal.getTimeInMillis());
             }
 
-            AlarmManager alarmManager = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, triggerCal.getTimeInMillis(),
                     time, pendingIntent);
-            Log.d("Dashboard", "Alarm Set to ring in " + String.valueOf(time) + "milliseconds");
         }
     }
 
     public void cancelAlarm() {
-        AlarmManager alarmManager = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
 
     }
