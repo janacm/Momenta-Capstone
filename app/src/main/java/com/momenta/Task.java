@@ -1,5 +1,7 @@
 package com.momenta;
 
+import android.content.Context;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -142,13 +144,18 @@ public class Task {
     /**
      * Used to add time to the task
      * @param minutes the time in minutes to be added to the task
+     * @param context
      */
-    public void addTimeInMinutes(int minutes) {
+    public void addTimeInMinutes(int minutes, Context context) {
         if ( minutes < 0 ) {
             throw new IllegalArgumentException("Goal cannot be negative: " + minutes);
         }
         timeSpent += minutes;
         lastModified = Calendar.getInstance();
+
+        if (context != null) {
+            DBHelper.getInstance(context).logTimeSpent(getId(), minutes);
+        }
     }
 
     public Calendar getDeadline() {

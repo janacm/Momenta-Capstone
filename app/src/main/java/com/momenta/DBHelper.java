@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -20,11 +21,12 @@ public class DBHelper extends SQLiteOpenHelper {
     public static DBHelper mInstance = null;
 
     //Database Constants
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
     public static final String DATABASE_NAME = "Momenta.db";
 
     //Table Names
     public static final String SAMPLE_TABLE = "SAMPLE_TABLE";
+    public static final String TIME_SPENT_TABLE = "TIME_SPENT_TABLE";
 
     //Sample Table Columns
     public static final String ACTIVITY_ID = "ACTIVITY_ID";
@@ -36,6 +38,10 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String ACTIVITY_DATE_CREATED = "ACTIVITY_DATE_CREATED";
     public static final String ACTIVITY_TIME_SPENT = "ACTIVITY_TIME_SPENT";
 
+    //Time spent table columns
+    public static final String TIME_SPENT_DATE = "TIME_SPENT_DATE";
+    public static final String TIME_SPENT_TIME_SPENT = "TIME_SPENT_TIME_SPENT";
+
     //Fields to specify the column & order to sort the result by
     public static final String COLUMN = "COLUMN";
     public static final String ORDER = "ORDER";
@@ -43,6 +49,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String DESC = "DESC";
 
     private helperPreferences helperPreferences;
+    String CREATE_TIME_SPENT_TABLE;
 
 
     @Override
@@ -57,7 +64,16 @@ public class DBHelper extends SQLiteOpenHelper {
                 + " CHAR(32) NOT NULL, " + ACTIVITY_LAST_MODIFIED + " LONG NOT NULL DEFAULT 0, "
                 + ACTIVITY_DATE_CREATED + " LONG NOT NULL DEFAULT 0, "
                 + ACTIVITY_TIME_SPENT + " INTEGER NOT NULL DEFAULT 0)";
+
+        CREATE_TIME_SPENT_TABLE = "CREATE TABLE " + TIME_SPENT_TABLE + "("
+                + TIME_SPENT_DATE + " DATE NOT NULL, "
+                + ACTIVITY_ID + " INTEGER NOT NULL, "
+                + TIME_SPENT_TIME_SPENT + " INTEGER NOT NULL, "
+                + "FOREIGN KEY (" + ACTIVITY_ID + ") references " + SAMPLE_TABLE + "(" + ACTIVITY_ID + "), "
+                + "PRIMARY KEY (" + TIME_SPENT_DATE + "," + ACTIVITY_ID + ") )";
+
         db.execSQL(CREATE_SAMPLE_TABLE);
+        db.execSQL(CREATE_TIME_SPENT_TABLE);
     }
 
     @Override
@@ -65,6 +81,9 @@ public class DBHelper extends SQLiteOpenHelper {
         if ( oldVersion == 1 ) {
             db.execSQL("ALTER TABLE " + SAMPLE_TABLE + " ADD COLUMN " + ACTIVITY_TIME_SPENT
                     + " INTEGER NOT NULL DEFAULT 0");
+            oldVersion++;
+        } if ( oldVersion == 2 ) {
+            db.execSQL(CREATE_TIME_SPENT_TABLE);
         }
     }
 
@@ -211,5 +230,43 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         db.delete(SAMPLE_TABLE, ACTIVITY_ID + " = ?", new String[]{String.valueOf(id)});
         db.close();
+    }
+
+    /**
+     * Helper method to log time spent in the time spent table
+     * first check with primary key to see if already exist, if so
+     * an update query is run, else an insert query is run
+     * @param id the id of the task
+     * @param timeSpent the amount of time spent on the task
+     */
+    public void logTimeSpent(int id, int timeSpent) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String date = sdf.format(Calendar.getInstance().getTime());
+        Integer currentTimeSpent = 0;
+        ContentValues values = new ContentValues();
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String whereClause = TIME_SPENT_DATE + " =? AND " + ACTIVITY_ID + " =?";
+        String[] whereArgs = new String[]{date, id + ""};
+        Cursor cursor = db.query(TIME_SPENT_TABLE,
+                new String[]{TIME_SPENT_TIME_SPENT},
+                whereClause,
+                whereArgs,
+                null, null, null, null);
+
+        if (cursor != null && cursor.moveToNext()) {
+            currentTimeSpent = cursor.getInt(cursor.getColumnIndex(TIME_SPENT_TIME_SPENT));
+            timeSpent += currentTimeSpent;
+
+            values.put(TIME_SPENT_TIME_SPENT, timeSpent);
+            db.update(TIME_SPENT_TABLE, values, whereClause ,whereArgs);
+            return;
+        }
+
+        values.put(TIME_SPENT_DATE, date);
+        values.put(ACTIVITY_ID, id);
+        values.put(TIME_SPENT_TIME_SPENT, timeSpent);
+
+        db.insert(TIME_SPENT_TABLE, null, values);
     }
 }
