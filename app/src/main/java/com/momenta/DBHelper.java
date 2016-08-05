@@ -23,7 +23,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "Momenta.db";
 
-    //Sample Table Name
+    //Table Names
     public static final String SAMPLE_TABLE = "SAMPLE_TABLE";
 
     //Sample Table Columns
