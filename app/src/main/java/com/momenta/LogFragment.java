@@ -337,7 +337,7 @@ public class LogFragment extends Fragment implements View.OnClickListener {
     /**
      * Helper method to input the Deadline/Due date if an activity.
      */
-    private void inputDeadline() {//TODO Date Format string literal
+    private void inputDeadline() {
         Calendar cal = Calendar.getInstance();
         DatePickerDialog dialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override

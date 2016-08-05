@@ -59,12 +59,16 @@
     <string name="zero">0</string>
 
     <!-- Settings strings-->
-    <string name="interval_time_title">Notification Interval Time</string>
+    <string name="interval_time_title">Interval Time</string>
     <string name="interval_time_summary">Remind me every</string>
     <string name="interval_time_summary_hours">hours</string>
     <string name="interval_time_summary_minutes"> minutes</string>
     <string name="interval_time_summary_never_remind">Never remind me</string>
     <string name="version_name_title">Version</string>
+    <string name="settings_about">About</string>
+    <string name="settings_notification">Notifications</string>
+    <string name="start_time_title">Start Time</string>
+    <string name="end_time_title">End Time</string>
 
     <!-- EditText strings-->
     <string name="new_activity_hint"><i>Go to the gym...</i></string>
