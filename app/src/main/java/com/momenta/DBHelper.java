@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -268,5 +269,31 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(TIME_SPENT_TIME_SPENT, timeSpent);
 
         db.insert(TIME_SPENT_TABLE, null, values);
+    }
+
+    /**
+     * Helper method to get time logged data grouped by day
+     * @return
+     */
+    public HashMap<Integer, Integer> getDayData() {
+        SQLiteDatabase db = getReadableDatabase();
+
+        HashMap<Integer, Integer> data = new HashMap<>();
+
+        String rawQuery = "SELECT " + ACTIVITY_ID + ", " + " SUM(" + TIME_SPENT_TIME_SPENT+ ")" +
+                " FROM " + TIME_SPENT_TABLE + " GROUP BY " + TIME_SPENT_DATE;
+        Cursor cursor = db.rawQuery(rawQuery, null);
+
+        while (cursor != null && cursor.moveToNext()) {
+            int id = cursor.getInt( cursor.getColumnIndex(ACTIVITY_ID));
+            int timeSpent = cursor.getInt( cursor.getColumnIndex(TIME_SPENT_TIME_SPENT) );
+            data.put( id, timeSpent);
+        }
+
+        if ( cursor != null ) {
+            cursor.close();
+        }
+
+        return data;
     }
 }
