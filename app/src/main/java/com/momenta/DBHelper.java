@@ -24,6 +24,7 @@ public class DBHelper extends SQLiteOpenHelper {
     //Database Constants
     public static final int DATABASE_VERSION = 3;
     public static final String DATABASE_NAME = "Momenta.db";
+    public static final String TIME_SPENT_DATE_FORMAT = "yyyy-MM-dd";
 
     //Table Names
     public static final String SAMPLE_TABLE = "SAMPLE_TABLE";
@@ -43,6 +44,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String TIME_SPENT_DATE = "TIME_SPENT_DATE";
     public static final String TIME_SPENT_TIME_SPENT = "TIME_SPENT_TIME_SPENT";
 
+
     //Fields to specify the column & order to sort the result by
     public static final String COLUMN = "COLUMN";
     public static final String ORDER = "ORDER";
@@ -50,7 +52,12 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String DESC = "DESC";
 
     private helperPreferences helperPreferences;
-    String CREATE_TIME_SPENT_TABLE;
+    String CREATE_TIME_SPENT_TABLE = "CREATE TABLE " + TIME_SPENT_TABLE + "("
+            + TIME_SPENT_DATE + " DATE NOT NULL, "
+            + ACTIVITY_ID + " INTEGER NOT NULL, "
+            + TIME_SPENT_TIME_SPENT + " INTEGER NOT NULL, "
+            + "FOREIGN KEY (" + ACTIVITY_ID + ") references " + SAMPLE_TABLE + "(" + ACTIVITY_ID + "), "
+            + "PRIMARY KEY (" + TIME_SPENT_DATE + "," + ACTIVITY_ID + ") )";
 
 
     @Override
@@ -65,13 +72,6 @@ public class DBHelper extends SQLiteOpenHelper {
                 + " CHAR(32) NOT NULL, " + ACTIVITY_LAST_MODIFIED + " LONG NOT NULL DEFAULT 0, "
                 + ACTIVITY_DATE_CREATED + " LONG NOT NULL DEFAULT 0, "
                 + ACTIVITY_TIME_SPENT + " INTEGER NOT NULL DEFAULT 0)";
-
-        CREATE_TIME_SPENT_TABLE = "CREATE TABLE " + TIME_SPENT_TABLE + "("
-                + TIME_SPENT_DATE + " DATE NOT NULL, "
-                + ACTIVITY_ID + " INTEGER NOT NULL, "
-                + TIME_SPENT_TIME_SPENT + " INTEGER NOT NULL, "
-                + "FOREIGN KEY (" + ACTIVITY_ID + ") references " + SAMPLE_TABLE + "(" + ACTIVITY_ID + "), "
-                + "PRIMARY KEY (" + TIME_SPENT_DATE + "," + ACTIVITY_ID + ") )";
 
         db.execSQL(CREATE_SAMPLE_TABLE);
         db.execSQL(CREATE_TIME_SPENT_TABLE);
@@ -241,7 +241,7 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param timeSpent the amount of time spent on the task
      */
     public void logTimeSpent(int id, int timeSpent) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat(TIME_SPENT_DATE_FORMAT);
         String date = sdf.format(Calendar.getInstance().getTime());
         Integer currentTimeSpent = 0;
         ContentValues values = new ContentValues();
@@ -273,21 +273,23 @@ public class DBHelper extends SQLiteOpenHelper {
 
     /**
      * Helper method to get time logged data grouped by day
-     * @return
+     * @return a HashMap<String, Integer> with the Date(yyyy-MM-dd)
+     * as the key and the amount of time spent in minutes as the value(Integer).
      */
-    public HashMap<Integer, Integer> getDayData() {
+    public HashMap<String, Integer> getDayData() {
         SQLiteDatabase db = getReadableDatabase();
 
-        HashMap<Integer, Integer> data = new HashMap<>();
+        HashMap<String, Integer> data = new HashMap<>();
 
-        String rawQuery = "SELECT " + ACTIVITY_ID + ", " + " SUM(" + TIME_SPENT_TIME_SPENT+ ")" +
+        String rawQuery = "SELECT " + TIME_SPENT_DATE + ", " + " SUM( " + TIME_SPENT_TIME_SPENT + " )" +
+                " AS " + TIME_SPENT_TIME_SPENT +
                 " FROM " + TIME_SPENT_TABLE + " GROUP BY " + TIME_SPENT_DATE;
         Cursor cursor = db.rawQuery(rawQuery, null);
 
         while (cursor != null && cursor.moveToNext()) {
-            int id = cursor.getInt( cursor.getColumnIndex(ACTIVITY_ID));
-            int timeSpent = cursor.getInt( cursor.getColumnIndex(TIME_SPENT_TIME_SPENT) );
-            data.put( id, timeSpent);
+            String date = cursor.getString( cursor.getColumnIndex(TIME_SPENT_DATE));
+            int timeSpent = cursor.getInt(cursor.getColumnIndex(TIME_SPENT_TIME_SPENT));
+            data.put( date, timeSpent);
         }
 
         if ( cursor != null ) {
