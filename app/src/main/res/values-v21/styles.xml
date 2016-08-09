@@ -22,4 +22,9 @@
         <item name="android:colorControlHighlight">#212121</item>
     </style>
 
+    <style name="AlertDialogCustom" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
+
+    </style>
 </resources>

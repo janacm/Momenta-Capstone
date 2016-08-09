@@ -13,6 +13,18 @@
     <string name="sort_dialog_name">Name</string>
     <string name="sort_dialog_last_modified">Last Modified</string>
 
+    <!--Time Entry Dialog (Used for Goal and Time Spent entry) Strings-->
+    <string name="timeentry_dialog_goal_title">What\'s your goal?</string>
+    <string name="timeentry_dialog_timespent_title">How much time have you spent?</string>
+    <string name="timeentry_dialog_hours_label">hours</string>
+    <string name="timeentry_dialog_minutes_label">minutes</string>
+    <string name="timeentry_dialog_hour_label">hour</string>
+    <string name="timeentry_dialog_minute_label">minute</string>
+    <string name="timeentry_dialog_title">Set a goal time</string>
+    <string name="timeentry_dialog_positive">OK</string>
+    <string name="timeentry_dialog_negative">Cancel</string>
+    <string name="timeentry_dialog_and">and</string>
+
     <!-- Text View strings-->
     <string name="ongoing_activity_string">Goals</string>
     <string name="H_string">H</string>
@@ -68,8 +80,6 @@
 
     <!-- EditText strings-->
     <string name="new_activity_hint"><i>Go to the gym...</i></string>
-    <string name="deadline_hint"></string>
-    <string name="goal_hint"></string>
     <string name="activity_hour_label">hr</string>
     <string name="activity_minute_label">min</string>
 
@@ -86,7 +96,7 @@
 
     <!-- Demo/Sample strings-->
     <string name="sample_duration_string">1h 45m</string>
-    <string name="dummy_button">GO!</string>
+    <string name="dummy_button">Dummy Button</string>
     <string name="demo_activty">Go swimming</string>
     <string name="later">Later</string>
     <string name="sampleQuote">\"It does not matter how slowly you go as long as you do not stop.\"</string>
@@ -97,12 +107,14 @@
     <string name="deadline_string">Deadline</string>
     <string name="sample_time_string">50 hours</string>
     <string name="priority_string">Priority</string>
+    <string name="timespent_string">Time Spent</string>
     <string name="sample_deadline_string">March 12 5PM</string>
     <string name="sample_priority_string">Priority 1</string>
     <string name="goal_icon_content_description">Icon for Goal</string>
     <string name="task_name_hint">Activity Name</string>
     <string name="deadline_icon_content_description">Deadline Icon</string>
     <string name="priority_icon_content_description">Priority Icon</string>
+    <string name="timespent_icon_content_description">Time Spent Icon</string>
     <string name="title_activity_login">Sign in</string>
     <string name="_1h_45m">1H 45M</string>
 
@@ -126,6 +138,8 @@
 
     <!-- Strings related to the Select tasks to add time towards Screen !-->
     <string name="select_tasks_to_add_time_to_title">Select tasks to add time to</string>
+    <string name="select_tasks_no_tasks_selected">No task(s) selected</string>
+    <string name="select_tasks_cannot_divide_tasks">Cannot divide tasks evenly within time interval</string>
 
     <!-- Strings related to the Add time to task screen !-->
     <string name="add_time_to_task_title1">How much time did</string>
@@ -136,4 +150,9 @@
     <string name="add_time_to_task_hours"> h </string>
     <string name="add_time_to_task_min">0m</string>
     <string name="add_time_to_task_next">Next</string>
+    <string name="add_time_to_task_done">Done</string>
+
+    <!--String related to New Task screen-->
+    <string name="new_task_title">Add New Task</string>
+    <string name="new_task_submit_button">D O N E</string>
 </resources>

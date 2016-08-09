@@ -40,6 +40,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".AddTaskTimeActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".AddNewTaskActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/momentaTheme.NoActionBar"/>
     </application>
-
 </manifest>

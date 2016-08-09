@@ -12,19 +12,16 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 
 /**
  * Adapter to handle the task data in the SelectTasksActivity and serve the recycler view
  */
 public class SelectTasksAdapter extends RecyclerView.Adapter<SelectTasksAdapter.ViewHolder> {
 
-    private List<Task> tasks;
-    private Stack<Integer> taskPositions;
-    private Context context;
+    private final List<Task> tasks;
 
     //A map of all the task items and positions that have been selected from the list of tasks.
-    private HashMap<Integer,Boolean> itemClickedMap;
+    private final HashMap<Integer,Boolean> itemClickedMap;
 
 
     public SelectTasksAdapter(Context context) {
@@ -33,7 +30,7 @@ public class SelectTasksAdapter extends RecyclerView.Adapter<SelectTasksAdapter.
         this.tasks = list;
 
         //Initializing the itemClickedMap for all positions to be false
-        itemClickedMap = new HashMap<Integer,Boolean>();
+        itemClickedMap = new HashMap<>();
         for(int i = 0; i < list.size(); i++ ){
             itemClickedMap.put(i, false);
         }
@@ -41,7 +38,7 @@ public class SelectTasksAdapter extends RecyclerView.Adapter<SelectTasksAdapter.
 
     @Override
     public SelectTasksAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        context = parent.getContext();
+        Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the item_activity layout
@@ -63,7 +60,7 @@ public class SelectTasksAdapter extends RecyclerView.Adapter<SelectTasksAdapter.
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(holder.activityCheckbox.isChecked() == false) {
+                if(!holder.activityCheckbox.isChecked()) {
                     holder.activityCheckbox.setChecked(true);
                     //When clicked and the checkbox is checked, insert into itemClickedMap
                     itemClickedMap.put(position, true);
@@ -74,7 +71,6 @@ public class SelectTasksAdapter extends RecyclerView.Adapter<SelectTasksAdapter.
                     itemClickedMap.put(position, false);
                     System.out.println(position + " false");
                 }
-
             }
         });
 
@@ -85,7 +81,7 @@ public class SelectTasksAdapter extends RecyclerView.Adapter<SelectTasksAdapter.
         holder.activityCheckbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(holder.activityCheckbox.isChecked() == true) {
+                if(holder.activityCheckbox.isChecked()) {
                     itemClickedMap.put(position, true);
                     System.out.println(position + " true");
                 }
@@ -102,9 +98,9 @@ public class SelectTasksAdapter extends RecyclerView.Adapter<SelectTasksAdapter.
      * them in another HashMap to be used by the AddTimeToTaskActivity.
      */
     public HashMap<Integer,Integer> getItemsClickedIDs(){
-        HashMap<Integer,Integer> itemIDs = new HashMap<Integer,Integer>();
+        HashMap<Integer,Integer> itemIDs = new HashMap<>();
         for (Map.Entry<Integer, Boolean> entry : itemClickedMap.entrySet()){
-            if(entry.getValue() == true){
+            if(entry.getValue()){
                 itemIDs.put(entry.getKey(), tasks.get(entry.getKey()).getId());
                 //System.out.println(tasks.get(entry.getKey()).getId());
             }
@@ -120,8 +116,8 @@ public class SelectTasksAdapter extends RecyclerView.Adapter<SelectTasksAdapter.
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
-        public TextView activityName;
-        public CheckBox activityCheckbox;
+        public final TextView activityName;
+        public final CheckBox activityCheckbox;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview

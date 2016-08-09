@@ -98,7 +98,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(ACTIVITY_DEADLINE, task.getDeadline().getTimeInMillis());
         values.put(ACTIVITY_DATE_CREATED, task.getDateCreated());
         values.put(ACTIVITY_LAST_MODIFIED, task.getLastModified().getTimeInMillis());
-        values.put(ACTIVITY_TIME_SPENT,0);
+        values.put(ACTIVITY_TIME_SPENT,task.getTimeSpent());
         return db.insert(SAMPLE_TABLE, null, values);
     }
 

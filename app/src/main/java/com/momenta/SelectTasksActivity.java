@@ -38,7 +38,7 @@ public class SelectTasksActivity extends AppCompatActivity {
 
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
-        actionbar.setTitle("Select tasks to add time to");
+        actionbar.setTitle(R.string.select_tasks_to_add_time_to_title);
         actionbar.setElevation(0);
 
         //Display the task items in a recyclerview
@@ -95,9 +95,9 @@ public class SelectTasksActivity extends AppCompatActivity {
             finish();
         } else {
             if((size > 0) && (intervalTime/size) < 1)
-                toast("Error: Cannot divide tasks evenly within time interval");
+                toast(getResources().getString(R.string.select_tasks_cannot_divide_tasks));
             else{
-                toast("Error: No task(s) selected");
+                toast(getResources().getString(R.string.select_tasks_no_tasks_selected));
             }
         }
     }

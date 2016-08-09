@@ -59,7 +59,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
     public void onClick(View v) {
         switch ( v.getId() ) {
             case R.id.button1:
-                Intent intent = new Intent(this.getContext(), SelectTasksActivity.class);
+                Intent intent = new Intent(this.getContext(), AddNewTaskActivity.class);
                 startActivity(intent);
                 break;
         }

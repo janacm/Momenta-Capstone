@@ -22,11 +22,11 @@ public class AddTaskTimeActivity extends AppCompatActivity {
     helperPreferences hp;
 
     //SeekBar values
-    int intervalTime;
-    int intervalHours;
-    int intervalMins;
-    int stepValue;
-    int seekbarValue;
+    private int intervalTime;
+    private int intervalHours;
+    private int intervalMins;
+    private int stepValue;
+    private int seekbarValue;
 
     //UI elements
     TextView taskName;
@@ -37,19 +37,19 @@ public class AddTaskTimeActivity extends AppCompatActivity {
     Button nextBtn;
 
     //Data structures to store Task IDs
-    ArrayList<Integer> tempIDs;
-    Stack<Integer> taskIDs;
-    Stack<Integer> store;
-    Task task;
+    public ArrayList<Integer> tempIDs;
+    private Stack<Integer> taskIDs;
+    private Stack<Integer> store;
+    private Task task;
 
     //Array to store time spent for each task
-    int intervalValues[];
+    private int intervalValues[];
 
     //Counter for indicating current activity position. I.e current activity is activity #1
-    int position;
+    private int position;
 
     //Integer for storing the number of tasks
-    int numofTasks;
+    private int numofTasks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,6 +160,14 @@ public class AddTaskTimeActivity extends AppCompatActivity {
         //Animate the TextView displaying its text name
         animate(taskName, task.getName(), 300);
         setUpSeekbar();
+
+        //If last or only task, set the text of the next button to be "Done"
+        if(taskIDs.size() == 1){
+            nextBtn.setText(R.string.add_time_to_task_done);
+        }
+        else{
+            nextBtn.setText(R.string.add_time_to_task_next);
+        }
     }
 
     //Method for setting up the seekbar intervals for a given task
@@ -227,7 +235,7 @@ public class AddTaskTimeActivity extends AppCompatActivity {
                     stepValue = 1;
                 }
 
-                value = (value / stepValue) * stepValue;
+                value = Math.round((value / stepValue) * stepValue);
                 seekBar.setProgress(value);
 
                 //Store seekbar progress globally to to be used by other methods.
@@ -282,9 +290,9 @@ public class AddTaskTimeActivity extends AppCompatActivity {
                 setUpScreen(taskIDs);
             } else {
                 if(!timeToSpare(numofTasks, position, temp, seekbarValue))
-                    toast("Error: Not enough time left for remaining tasks");
+                    toast("Not enough time left for remaining tasks");
                 if((temp - seekbarValue) == temp)
-                    toast("Error: Must add a time value to the task");
+                    toast("Must add a time value to the task");
             }
 
         } else {
@@ -295,7 +303,12 @@ public class AddTaskTimeActivity extends AppCompatActivity {
                 store.push(taskIDs.pop());
                 storeInDB();
                 Intent intent = new Intent(this, MainActivity.class);
+
+                //Clear activity stack
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
                 startActivity(intent);
+
 
                 if (numofTasks > 1)
                     toast("Successfully added time to your tasks");
@@ -308,7 +321,7 @@ public class AddTaskTimeActivity extends AppCompatActivity {
     }
 
 
-    // Method for handling the clicking of the next button
+    // Method for handling the clicking of the back button
     public void moveBack() {
         if (position > 0) {
             taskIDs.push(store.pop());
@@ -337,9 +350,6 @@ public class AddTaskTimeActivity extends AppCompatActivity {
             Log.e("Adding-Time-to-task", "After time spent " + task.getTimeSpent());
 
             DBHelper.getInstance(this).updateTask(task);
-
-            //int timeSpent = DBHelper.getInstance(this).getTask(taskID).getTimeSpent();
-            //System.out.println(timeSpent);
         }
     }
 
