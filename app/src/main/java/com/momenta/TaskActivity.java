@@ -111,13 +111,18 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         pieChart.setDescription("");
 
         ArrayList<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry(task.getGoalInMinutes() - task.getTimeSpent(), 0));
+        int goalDiff = task.getGoalInMinutes() - task.getTimeSpent();
+        if ( goalDiff > 0) {
+            entries.add(new PieEntry(goalDiff, 0));
+        } else {
+            entries.add(new PieEntry(0, 0));
+        }
         entries.add(new PieEntry(task.getTimeSpent(), 1));
 
         PieDataSet dataSet = new PieDataSet(entries, "Percentage");
 
         ArrayList<Integer> colors = new ArrayList<Integer>();
-        colors.add( ContextCompat.getColor(this, R.color.grey) );
+        colors.add( ContextCompat.getColor(this, R.color.hint_text) );
         colors.add( ContextCompat.getColor(this, R.color.colorAccent) );
 
         dataSet.setColors(colors);
