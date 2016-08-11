@@ -1,23 +1,34 @@
 package com.momenta;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.AxisValueFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -51,16 +62,14 @@ public class StatsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_stats, container, false);
 
-        LineChart chart = (LineChart) view.findViewById(R.id.chart);
-        List<Entry> entries = new ArrayList<Entry>();
+        LineChart lineChart = (LineChart) view.findViewById(R.id.trends_linechart);
+        List<Entry> lineEntries = new ArrayList<>();
 
         //Retrieve data from db
         DBHelper dbHelper = DBHelper.getInstance(getContext());
-        HashMap<String, Integer> data = dbHelper.getDayData();
+        HashMap<String, Integer> lineMap = dbHelper.getTimeSpentByDay();
         final HashMap<Integer, String> xLabels = new HashMap<>();
 
-
-        SimpleDateFormat sdf = new SimpleDateFormat(DBHelper.TIME_SPENT_DATE_FORMAT);
 
         Calendar tempCal = Calendar.getInstance();
 
@@ -70,31 +79,29 @@ public class StatsFragment extends Fragment {
 
         //Check if the data from each day is in the map
         while ( tempCal.getTimeInMillis() < Calendar.getInstance().getTimeInMillis() ) {
-            String date = sdf.format( tempCal.getTime() );
-            if ( data.get(date) == null ) {
+            String date = formatDate( tempCal.getTime(), DBHelper.TIME_SPENT_DATE_FORMAT );
+            if ( lineMap.get(date) == null ) {
                 //If no time was logged on the day, set time to 0;
-                data.put(date, 0);
+                lineMap.put(date, 0);
             }
 
-            int yAxis = data.get(date);
-            entries.add(new Entry(count, yAxis));
+            int yAxis = lineMap.get(date);
+            lineEntries.add(new Entry(count, yAxis));
 
-            SimpleDateFormat dayFormat = new SimpleDateFormat("EEE");
-            String xAxisDate = dayFormat.format(tempCal.getTime());
+            String xAxisDate = formatDate(tempCal.getTime(), "EEE");
             xLabels.put(count, xAxisDate);
-
 
             //Incrementing day by one for next iteration
             tempCal.setTimeInMillis( tempCal.getTimeInMillis() + TimeUnit.MILLISECONDS.convert(1L, TimeUnit.DAYS) );
             count++;
         }
 
-        LineDataSet dataSet = new LineDataSet(entries, "Label");
-        dataSet.setColor(getResources().getColor(R.color.colorPrimaryDark));
-        dataSet.setDrawFilled(true);
+        LineDataSet lineDataSet = new LineDataSet(lineEntries, "Label");
+        lineDataSet.setColor(getResources().getColor(R.color.colorPrimaryDark));
+        lineDataSet.setDrawFilled(true);
 
         //Setting labels for X & Y axis
-        XAxis xAxis = chart.getXAxis();
+        XAxis xAxis = lineChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setAxisMinValue(0f);
         xAxis.setDrawGridLines(false);
@@ -113,12 +120,12 @@ public class StatsFragment extends Fragment {
         });
 
 
-        YAxis leftAxis = chart.getAxisLeft();
+        YAxis leftAxis = lineChart.getAxisLeft();
         leftAxis.setDrawGridLines(false);
         leftAxis.setDrawAxisLine(true);
         leftAxis.setAxisMinValue(0);
 
-        YAxis rightAxis = chart.getAxisRight();
+        YAxis rightAxis = lineChart.getAxisRight();
         rightAxis.setAxisMinValue(0);
         rightAxis.setDrawGridLines(true);
         rightAxis.setDrawZeroLine(true);
@@ -126,15 +133,69 @@ public class StatsFragment extends Fragment {
         rightAxis.setDrawLabels(false);
 
 
-        LineData lineData = new LineData(dataSet);
+        LineData lineData = new LineData(lineDataSet);
         lineData.setDrawValues(false);
 
-        chart.setData(lineData);
-        chart.setDescription("");
-        chart.invalidate();
+        lineChart.setData(lineData);
+        lineChart.setDescription("");
+        lineChart.invalidate();
 
 
+        /****************************Setting up the Pie Chart****************************/
+        TextView pieTextView = (TextView) view.findViewById(R.id.trends_day_pie_textview);
+        PieChart pieChart = (PieChart) view.findViewById(R.id.trends_piechart);
+        pieChart.setRotationEnabled(false);
+        pieChart.setDrawHoleEnabled(false);
+        pieChart.setDescription("");
+
+        Legend l = pieChart.getLegend();
+        l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
+        l.setXEntrySpace(7);
+        l.setYEntrySpace(5);
+
+        ArrayList<PieEntry> pieEntries = new ArrayList<>();
+
+
+        tempCal.setTimeInMillis( Calendar.getInstance().getTimeInMillis() );
+
+        String pieDate = formatDate(tempCal.getTime(), "EEE, MMM d");
+        pieTextView.setText(pieDate);
+
+        pieDate = formatDate(tempCal.getTime(), DBHelper.TIME_SPENT_DATE_FORMAT);
+        Log.d("Stats", "Getting data for " + pieDate);
+        HashMap<String, Integer> pieMap = dbHelper.getTimeSpentForDay(pieDate);
+        Log.d("Stats", "Size of map for " + pieDate + " is: " + pieMap.size());
+
+        for ( String key : pieMap.keySet()) {
+            Integer integer = pieMap.get(key);
+            float value = integer.floatValue();
+            pieEntries.add(new PieEntry(value,key));
+        }
+
+        PieDataSet pieDataSet = new PieDataSet(pieEntries, "Time spent");
+
+        ArrayList<Integer> colors = new ArrayList<>();
+        for (int c : ColorTemplate.MATERIAL_COLORS)
+            colors.add(c);
+        for (int c : ColorTemplate.COLORFUL_COLORS)
+            colors.add(c);
+        colors.add( ContextCompat.getColor(getContext(), R.color.deep_purple) );
+
+        pieDataSet.setColors(colors);
+
+        //Initialize the Pie data
+        PieData pieData = new PieData(pieDataSet);
+        pieData.setDrawValues(true);
+        pieData.setValueTextSize(11f);
+        pieData.setValueTextColor(Color.WHITE);
+        pieChart.setData(pieData);
+        pieChart.invalidate();
 
         return view;
+    }
+
+    private String formatDate(Date date, String format) {
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        return sdf.format(date);
     }
 }

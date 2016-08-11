@@ -276,7 +276,7 @@ public class DBHelper extends SQLiteOpenHelper {
      * @return a HashMap<String, Integer> with the Date(yyyy-MM-dd)
      * as the key and the amount of time spent in minutes as the value(Integer).
      */
-    public HashMap<String, Integer> getDayData() {
+    public HashMap<String, Integer> getTimeSpentByDay() {
         SQLiteDatabase db = getReadableDatabase();
 
         HashMap<String, Integer> data = new HashMap<>();
@@ -287,12 +287,46 @@ public class DBHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(rawQuery, null);
 
         while (cursor != null && cursor.moveToNext()) {
-            String date = cursor.getString( cursor.getColumnIndex(TIME_SPENT_DATE));
+            String date = cursor.getString(cursor.getColumnIndex(TIME_SPENT_DATE));
             int timeSpent = cursor.getInt(cursor.getColumnIndex(TIME_SPENT_TIME_SPENT));
             data.put( date, timeSpent);
         }
 
         if ( cursor != null ) {
+            cursor.close();
+        }
+
+        return data;
+    }
+
+    public HashMap<String, Integer> getTimeSpentForDay(String date) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        HashMap<String, Integer> data = new HashMap<>();
+        String rawQuery = "SELECT " + ACTIVITY_ID + "," + TIME_SPENT_TIME_SPENT
+                + " FROM " + TIME_SPENT_TABLE + " WHERE  " + TIME_SPENT_DATE
+                + "= '" + date + "'";
+
+        Cursor cursor = db.rawQuery(rawQuery, null);
+
+        while (cursor != null && cursor.moveToNext()) {
+            int activityId = cursor.getInt(cursor.getColumnIndex(ACTIVITY_ID));
+            String activityName = "";
+            int timeSpent = cursor.getInt(cursor.getColumnIndex(TIME_SPENT_TIME_SPENT));
+
+
+            String getNameQuery = "SELECT " + ACTIVITY_NAME + " FROM " + SAMPLE_TABLE
+                    + " WHERE  " + ACTIVITY_ID + "= '" + activityId + "'";
+            Cursor nameCursor = db.rawQuery(getNameQuery, null);
+
+            if (nameCursor != null && nameCursor.moveToNext()) {
+                activityName = nameCursor.getString(nameCursor.getColumnIndex(ACTIVITY_NAME));
+            }
+
+            data.put( activityName, timeSpent);
+        }
+
+        if (cursor != null) {
             cursor.close();
         }
 
