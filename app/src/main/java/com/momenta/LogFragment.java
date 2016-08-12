@@ -15,6 +15,8 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -67,8 +69,18 @@ public class LogFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        AutoCompleteTextView actv;
+
+
+
         View view = inflater.inflate(R.layout.fragment_log, container, false);
         RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.activity_recycler_view);
+
+        actv = (AutoCompleteTextView) view.findViewById(R.id.new_activity_edit_text);
+        String[] suggestions = getResources().getStringArray(R.array.suggestions);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, suggestions);
+        actv.setAdapter(adapter);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -325,7 +337,7 @@ public class LogFragment extends Fragment implements View.OnClickListener {
     /**
      * Helper method to input the Deadline/Due date if an activity.
      */
-    private void inputDeadline() {//TODO Date Format string literal
+    private void inputDeadline() {
         Calendar cal = Calendar.getInstance();
         DatePickerDialog dialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -359,8 +371,9 @@ public class LogFragment extends Fragment implements View.OnClickListener {
                     if (json != null) {
                         JSONArray ping_result = json.getJSONArray("_items");
                         JSONObject status_obj = ping_result.getJSONObject(0);
-                        String status = status_obj.getString("_created");
-                        toast(status);
+                        //TODO: Removed toast, T'was causing the build to fail on older devices
+//                        String status = status_obj.getString("_created");
+//                        toast(status);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

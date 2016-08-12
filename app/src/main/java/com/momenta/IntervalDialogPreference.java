@@ -21,9 +21,8 @@ public class IntervalDialogPreference extends DialogPreference {
 
     public IntervalDialogPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
-        Activity activity = (Activity) context;
-        sharedPrefs = new helperPreferences(activity);
-        broadcast = new helperBroadcast(activity);
+        sharedPrefs = new helperPreferences(context);
+        broadcast = new helperBroadcast(context);
         setDialogLayoutResource(R.layout.interval_dialog_preference);
         setPositiveButtonText(android.R.string.ok);
         setNegativeButtonText(android.R.string.cancel);

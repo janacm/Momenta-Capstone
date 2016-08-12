@@ -128,7 +128,7 @@ public class AddActivityTest {
 
         //check new activity is added in listView
         onView(withId(R.id.activity_recycler_view)).check(matches(hasDescendant(withText(activityName))));
-        onView(withId(R.id.activity_recycler_view)).check(matches(hasDescendant(withText("97H 34M"))));
+        onView(withId(R.id.activity_recycler_view)).check(matches(hasDescendant(withText("0M"))));
 
     }
 
@@ -193,6 +193,6 @@ public class AddActivityTest {
 
         //check new activity is added in listView
         onView(withId(R.id.activity_recycler_view)).check(matches(hasDescendant(withText(activityName))));
-        onView(withId(R.id.activity_recycler_view)).check(matches(hasDescendant(withText("97H 34M"))));
+        onView(withId(R.id.activity_recycler_view)).check(matches(hasDescendant(withText("0M"))));
     }
 }

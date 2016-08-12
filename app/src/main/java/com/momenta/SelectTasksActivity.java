@@ -6,12 +6,13 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
@@ -20,32 +21,42 @@ import java.util.TreeMap;
 public class SelectTasksActivity extends AppCompatActivity {
 
     //UI items
-    private RecyclerView mRecyclerView;
+    public RecyclerView mRecyclerView;
     private SelectTasksAdapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+
+    helperPreferences hp;
+
+    int intervalHours, intervalMins;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_tasks);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setTitle("Select tasks to add time to");
         actionbar.setElevation(0);
 
-       //Display the task items in a recyclerview
+        //Display the task items in a recyclerview
         mRecyclerView = (RecyclerView) findViewById(R.id.select_tasks_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         mAdapter = new SelectTasksAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
+
+        hp = new helperPreferences(this);
+        intervalHours = Integer.parseInt(hp.getPreferences(Constants.SHPREF_INTERVAL_HOURS, "0"));
+        intervalMins = Integer.parseInt(hp.getPreferences(Constants.SHPREF_INTERVAL_MINS, "0"));
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.done, menu);
+        inflater.inflate(R.menu.menu_select_activity, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -57,30 +68,49 @@ public class SelectTasksActivity extends AppCompatActivity {
                 break;
             case R.id.action_done:
                 prepareItems();
-                finish();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Method for extracting the task IDs and position from the tasks in the list and passing
-     * them to the AddTimeToTaskActivity in the form of a stack.
-    **/
+    //Method for extracting the task IDs and position from the tasks in the list and passing
+    //them to the AddTimeToTaskActivity in the form of a stack.
     public void prepareItems() {
-        Map<Integer, Integer> temp = new TreeMap<Integer, Integer>(mAdapter.getItemsClickedIDs());
-        Stack<Integer> stack = new Stack<Integer>();
-        Set set = temp.entrySet();
-        Iterator iterator = set.iterator();
-        while (iterator.hasNext()) {
-            Map.Entry me = (Map.Entry) iterator.next();
-            stack.push((Integer)me.getValue());
-            //System.out.println(me.getKey());
-        }
+        Map<Integer, Integer> temp = new TreeMap<>(mAdapter.getItemsClickedIDs());
+        int size = temp.size();
+        int intervalTime = (intervalHours * 60) + intervalMins;
+        if ((size > 0) && ((intervalTime/size) >= 1)){
+            Stack<Integer> taskIDs = new Stack<>();
+            Set set = temp.entrySet();
+            for (Object aSet : set) {
+                Map.Entry me = (Map.Entry) aSet;
+                taskIDs.push((Integer) me.getValue());
+            }
 
-        Collections.reverse(stack);
-        Intent intent = new Intent(this, AddTaskTimeActivity.class);
-        intent.putExtra("Item IDs",stack);
-        startActivity(intent);
+            Collections.reverse(taskIDs);
+
+            Intent intent = new Intent(this, AddTaskTimeActivity.class);
+            intent.putExtra("Task IDs", taskIDs);
+            startActivity(intent);
+            finish();
+        } else {
+            if((size > 0) && (intervalTime/size) < 1)
+                toast("Error: Cannot divide tasks evenly within time interval");
+            else{
+                toast("Error: No task(s) selected");
+            }
+        }
+    }
+
+    /**
+     * Convenience method for toasting messages to the user
+     * Toast message is set tot LENGTH_LONG.
+     *
+     * @param toToast the string to be displayed to the user
+     */
+    private void toast(String toToast) {
+        Toast.makeText(this, toToast, Toast.LENGTH_LONG).show();
     }
 }
+
+

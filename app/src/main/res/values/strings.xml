@@ -36,6 +36,8 @@
     </string-array>
 
     <!-- Log strings-->
+    <string name="sort_button_content_description">Sort Button</string>
+    <string name="asc_desc_button_content_description">Ascending/descending button</string>
 
     <!-- Button strings-->
     <string name="dialog_done">Done</string>
@@ -57,12 +59,16 @@
     <string name="zero">0</string>
 
     <!-- Settings strings-->
-    <string name="interval_time_title">Notification Interval Time</string>
+    <string name="interval_time_title">Interval Time</string>
     <string name="interval_time_summary">Remind me every</string>
     <string name="interval_time_summary_hours">hours</string>
     <string name="interval_time_summary_minutes"> minutes</string>
     <string name="interval_time_summary_never_remind">Never remind me</string>
     <string name="version_name_title">Version</string>
+    <string name="settings_about">About</string>
+    <string name="settings_notification">Notifications</string>
+    <string name="start_time_title">Start Time</string>
+    <string name="end_time_title">End Time</string>
 
     <!-- EditText strings-->
     <string name="new_activity_hint"><i>Go to the gym...</i></string>
@@ -79,6 +85,8 @@
     <string name="title_activity_screen_take_over">ScreenTakeOverActivity</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="add_activity_content_description">Add activity button</string>
+    <string name="log_your_progess">Log your progess!</string>
+    <string name="screen_take_over_m">M</string>
 
     <!-- Demo/Sample strings-->
     <string name="sample_duration_string">1h 45m</string>
@@ -126,7 +134,20 @@
     <!-- Strings related to the Add time to task screen !-->
     <string name="add_time_to_task_title1">How much time did</string>
     <string name="add_time_to_task_title2">you put towards</string>
-    <string name="sort_button_content_description">Sort Button</string>
-    <string name="asc_desc_button_content_description">Ascending/descending button</string>
-    <string name="action_signout">Sign Out</string>
+    <string name="no_tasks_available">Seems like you don\'t have any tasks</string>
+    <string name="dummy_button_add_new_task">Add a new task</string>
+    <string name="add_time_to_task_minutes"> m </string>
+    <string name="add_time_to_task_hours"> h </string>
+    <string name="add_time_to_task_min">0m</string>
+    <string name="add_time_to_task_next">Next</string>
+
+    <string-array name="suggestions">
+        <item>Go To The Gym</item>
+        <item>Go Running</item>
+        <item>Go Catch Pokemon</item>
+        <item>Eat alot of food</item>
+        <item>Explore</item>
+        <item>Code in Java</item>
+        <item>Work on this android project</item>
+    </string-array>
 </resources>

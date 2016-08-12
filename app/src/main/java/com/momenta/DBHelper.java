@@ -43,6 +43,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String ACTIVITY_PRIORITY = "ACTIVITY_PRIORITY";
     public static final String ACTIVITY_LAST_MODIFIED = "ACTIVITY_LAST_MODIFIED";
     public static final String ACTIVITY_DATE_CREATED = "ACTIVITY_DATE_CREATED";
+    public static final String ACTIVITY_TIME_SPENT = "ACTIVITY_TIME_SPENT";
 
     //Activities Table Columns
     private static final String AWARD_ID = "AWARD_ID";
@@ -157,6 +158,8 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(ACTIVITY_LAST_MODIFIED, task.getLastModified().getTimeInMillis());
 
         return db.insert(ACTIVITIES_TABLE, null, values);
+        values.put(ACTIVITY_TIME_SPENT,0);
+        return db.insert(SAMPLE_TABLE, null, values);
     }
 
     /**
@@ -176,7 +179,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
         Cursor cursor = db.query(ACTIVITIES_TABLE,
                 new String[]{ACTIVITY_ID, ACTIVITY_NAME, ACTIVITY_DURATION, ACTIVITY_DEADLINE,
-                        ACTIVITY_PRIORITY, ACTIVITY_DATE_CREATED, ACTIVITY_LAST_MODIFIED},
+                        ACTIVITY_PRIORITY, ACTIVITY_DATE_CREATED, ACTIVITY_LAST_MODIFIED,
+                        ACTIVITY_TIME_SPENT},
                 null, null, null, null, column, null);
         while (cursor != null && cursor.moveToNext()) {
             int id = cursor.getInt(cursor.getColumnIndex(ACTIVITY_ID));
@@ -186,9 +190,11 @@ public class DBHelper extends SQLiteOpenHelper {
             String priority = cursor.getString(cursor.getColumnIndex(ACTIVITY_PRIORITY));
             long dateCreated = cursor.getLong(cursor.getColumnIndex(ACTIVITY_DATE_CREATED));
             calModified.setTimeInMillis(cursor.getLong(cursor.getColumnIndex(ACTIVITY_LAST_MODIFIED)));
+            calModified.setTimeInMillis( cursor.getLong(cursor.getColumnIndex(ACTIVITY_LAST_MODIFIED)) );
+            int timeSpent = cursor.getInt(cursor.getColumnIndex(ACTIVITY_TIME_SPENT));
 
-            Task t = new Task(id, name, duration, calDue, dateCreated, calModified);
-            t.setPriority(Task.Priority.valueOf(priority));
+            Task t = new Task(id, name, duration, calDue, dateCreated, calModified, timeSpent);
+            t.setPriority( Task.Priority.valueOf(priority) );
 
             taskList.add(t);
         }
@@ -212,7 +218,8 @@ public class DBHelper extends SQLiteOpenHelper {
         Task task;
         Cursor cursor = db.query(ACTIVITIES_TABLE,
                 new String[]{ACTIVITY_ID, ACTIVITY_NAME, ACTIVITY_DURATION, ACTIVITY_DEADLINE
-                        , ACTIVITY_PRIORITY, ACTIVITY_DATE_CREATED, ACTIVITY_LAST_MODIFIED},
+                        , ACTIVITY_PRIORITY, ACTIVITY_DATE_CREATED, ACTIVITY_LAST_MODIFIED,
+                        ACTIVITY_TIME_SPENT},
                 ACTIVITY_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null && cursor.moveToNext()) {
             int dbID = cursor.getInt(cursor.getColumnIndex(ACTIVITY_ID));
@@ -222,9 +229,11 @@ public class DBHelper extends SQLiteOpenHelper {
             long dateCreated = cursor.getLong(cursor.getColumnIndex(ACTIVITY_DATE_CREATED));
             long lastModified = cursor.getLong(cursor.getColumnIndex(ACTIVITY_LAST_MODIFIED));
             calDue.setTimeInMillis(deadlineLong);
+            int timeSpent = cursor.getInt(cursor.getColumnIndex(ACTIVITY_TIME_SPENT));
+            calDue.setTimeInMillis( deadlineLong );
             calModified.setTimeInMillis(lastModified);
 
-            task = new Task(dbID, name, duration, calDue, dateCreated, calModified);
+            task = new Task(dbID, name, duration , calDue, dateCreated, calModified, timeSpent);
             String priority = cursor.getString(cursor.getColumnIndex(ACTIVITY_PRIORITY));
             task.setPriority(Task.Priority.valueOf(priority));
         } else {
@@ -237,7 +246,6 @@ public class DBHelper extends SQLiteOpenHelper {
     /**
      * Used to update the fields of a task in the DB matching the id of
      * the provided task, with its fields.
-     *
      * @param task the updated task fields to be matched
      * @return true if the operation was successful and false otherwise.
      */
@@ -249,6 +257,7 @@ public class DBHelper extends SQLiteOpenHelper {
         cv.put(ACTIVITY_DEADLINE, task.getDeadline().getTimeInMillis());
         cv.put(ACTIVITY_PRIORITY, task.getPriority().name());
         cv.put(ACTIVITY_LAST_MODIFIED, task.getLastModified().getTimeInMillis());
+        cv.put(ACTIVITY_TIME_SPENT, task.getTimeSpent());
         String[] whereArgs = new String[]{task.getId() + ""};
         int result = 0;
         try {

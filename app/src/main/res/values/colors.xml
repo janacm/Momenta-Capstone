@@ -12,5 +12,7 @@
     <color name="primary_text">#77BEF5</color>
     <color name="black_overlay">#66000000</color>
     <color name="hint_text">#BBDEFB</color>
-    <color name="dialogAccent">#2196F3</color>
+    <color name="error_red">#d81919</color>
+    <color name="success_green">#4CAF50</color>
+    <color name="grey">#DDDDDD</color>
 </resources>

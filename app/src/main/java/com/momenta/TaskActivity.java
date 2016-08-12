@@ -2,13 +2,16 @@ package com.momenta;
 
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,6 +23,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
+
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
@@ -91,6 +101,37 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         Spinner spinner = (Spinner)findViewById(R.id.task_priority_spinner);
         spinner.setOnItemSelectedListener(this);
         spinner.setSelection(spinnerPosition(task.getPriority()));
+
+
+        //Setting up the Pie Chart
+        PieChart pieChart = (PieChart) findViewById(R.id.task_activity_chart);
+        pieChart.setCenterText(task.getTimeSpent() + " minutes spent");
+        pieChart.setRotationEnabled(false);
+        pieChart.setHoleRadius(75);
+        pieChart.setDescription("");
+
+        ArrayList<PieEntry> entries = new ArrayList<>();
+        int goalDiff = task.getGoalInMinutes() - task.getTimeSpent();
+        if ( goalDiff > 0) {
+            entries.add(new PieEntry(goalDiff, 0));
+        } else {
+            entries.add(new PieEntry(0, 0));
+        }
+        entries.add(new PieEntry(task.getTimeSpent(), 1));
+
+        PieDataSet dataSet = new PieDataSet(entries, "Percentage");
+
+        ArrayList<Integer> colors = new ArrayList<Integer>();
+        colors.add( ContextCompat.getColor(this, R.color.hint_text) );
+        colors.add( ContextCompat.getColor(this, R.color.colorAccent) );
+
+        dataSet.setColors(colors);
+
+        //Initialize the Pie data
+        PieData data = new PieData(dataSet);
+        data.setDrawValues(false);
+        pieChart.setData(data);
+
     }
 
     @Override
@@ -175,7 +216,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
             return;
         }
         task.setName(activityName.getText().toString());
-        task.setTimeInMinutes(totalMinutes.intValue());
+        task.setGoalInMinutes(totalMinutes.intValue());
         task.setLastModified(Calendar.getInstance());
 
         if ( DBHelper.getInstance(this).updateTask(task) ) {

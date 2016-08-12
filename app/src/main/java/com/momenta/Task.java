@@ -6,6 +6,7 @@ import java.util.Locale;
 
 /**
  * Blueprint of a user activity.
+ * TODO Format class & look at naming.
  */
 public class Task {
 
@@ -15,8 +16,6 @@ public class Task {
     private String name;
     private int goal;
     private int timeSpent;
-//    private int taskHours;
-//    private int taskMinutes;
     private Calendar deadline = Calendar.getInstance();
     private Calendar lastModified = Calendar.getInstance();
     private long dateCreated;
@@ -32,14 +31,12 @@ public class Task {
      */
     public Task (String name, int duration, Calendar deadline,
                  long dateCreated, Calendar lastModified) {
-        this.name = name; goal = 0;
-//        taskHours = 0; this.taskMinutes = 0;
+        this.name = name; goal = 0; timeSpent =0;
         priority = Priority.MEDIUM;
-        addTimeInMinutes(duration);
+        setGoalInMinutes(duration);
         setDeadline(deadline);
         this.dateCreated = dateCreated;
         setLastModified(lastModified);
-        timeSpent = 100;
     }
 
     /**
@@ -52,9 +49,10 @@ public class Task {
      * @param lastModified the last time the activity was modified
      */
     public Task (int id, String name, int goal, Calendar deadline,
-                 long dateCreated, Calendar lastModified) {
+                 long dateCreated, Calendar lastModified, int timeSpent) {
         this(name, goal, deadline, dateCreated, lastModified);
         this.id = id;
+        this.timeSpent = timeSpent;
     }
 
     public int getId() {
@@ -76,6 +74,7 @@ public class Task {
     /**
      * Used to get the taskHour and taskMinutes values in a string
      * @return String in format 0H 00M
+     * TODO is method useful?
      */
     public String getFormattedGoal() {
         int taskMinutes = goal, taskHours = 0;
@@ -97,13 +96,47 @@ public class Task {
     }
 
     /**
-     * Used the set the time value of this task in minutes.
+     * Used to get the taskHour and taskMinutes values in a string
+     * @return String in format 0H 00M
+     * TODO Write test cases for this method
+     */
+    public String getFormattedTimeSpent() {
+        int taskMinutes = timeSpent, taskHours = 0;
+
+        if ( taskMinutes == 0 ) {
+            return "0M";
+        }
+
+        if ( ! (taskMinutes < 60) ) {
+            taskHours = taskMinutes/60;
+            taskMinutes = taskMinutes % 60;
+        }
+
+        if ( taskHours >0 && taskMinutes>0 ) {
+            return taskHours + "H " + taskMinutes + "M";
+        } else if ( taskHours ==0 && taskMinutes>0 ) {
+            return taskMinutes + "M";
+        } else if ( taskHours >0 ) {
+            return taskHours + "H";
+        } else {
+            return "";
+        }
+    }
+
+    /**
+     * Used the set the goal of this task in minutes.
      * @param minutes the new value of the task goal in minutes
      */
-    public void setTimeInMinutes( int minutes ) {
-//        taskHours = 0; this.taskMinutes = 0;
-        goal =0;
-        addTimeInMinutes(minutes);
+    public void setGoalInMinutes(int minutes ) {
+        goal = minutes;
+    }
+
+    /**
+     * Used to get the goal of this task in minutes
+     * @return Integer value of the total time of this task in minutes.
+     */
+    public int getGoalInMinutes() {
+        return goal;
     }
 
     /**
@@ -114,38 +147,9 @@ public class Task {
         if ( minutes < 0 ) {
             throw new IllegalArgumentException("Goal cannot be negative: " + minutes);
         }
-//        this.taskMinutes += minutes;
-//        if ( ! (this.taskMinutes < 60) ) {
-//            this.taskHours += this.taskMinutes/60;
-//            this.taskMinutes = this.taskMinutes % 60;
-//        }
-        goal += minutes;
+        timeSpent += minutes;
+        lastModified = Calendar.getInstance();
     }
-
-    /**
-     * Used to get the goal of this task in minutes
-     * @return Integer value of the total time of this task in minutes.
-     */
-    public int getGoalInMinutes() {
-//        return (this.taskHours *60) + taskMinutes;
-        return goal;
-    }
-
-//    /**
-//     * Getter method for the hour field of the task
-//     * @return the value of the hour field of the task.
-//     */
-//    public int getTaskHours(){
-//        return taskHours;
-//    }
-
-//    /**
-//     * Getter method for the minutes field of the task.
-//     * @return the value of the minute field of the task.
-//     */
-//    public int getTaskMinutes(){
-//        return taskMinutes;
-//    }
 
     public Calendar getDeadline() {
         return deadline;
@@ -189,6 +193,19 @@ public class Task {
         return dateCreated;
     }
 
+    //Method used to set time spent on a task
+    public void setTimeSpent(int timeSpent){
+        this.timeSpent = timeSpent;
+    }
+
+    /**
+     * Used to get the time spent on a task in minutes
+     * @return the time spent on a task in minutes
+     */
+    public int getTimeSpent(){
+        return timeSpent;
+    }
+
     /**
      * Removes none digits from a string
      * @param input the string to remove non digits from
@@ -204,22 +221,6 @@ public class Task {
         }
         return sb.toString();
     }
-
-    public int getProgressPercentage() {
-        return (timeSpent / getGoalInMinutes()) * 100;
-    }
-
-//    /**
-//     * Helper method to convert HHMM string to minutes
-//     * @param string the time in HHMM format, should not only contain strings.
-//     * @return Integer value of the time in minutes
-//     */
-//    public static int convertHourMinuteToMinute(String string) {
-//        String temp = "00000" + stripNonDigits(string);
-//        int minutes = Integer.valueOf( temp.substring( temp.length()-2, temp.length() ) );
-//        int hour = Integer.valueOf( temp.substring( temp.length()-5, temp.length()-2 ) );
-//        return (hour*60) + minutes;
-//    }
 
     /**
      * Convenience method to format Calendar objects to strings.

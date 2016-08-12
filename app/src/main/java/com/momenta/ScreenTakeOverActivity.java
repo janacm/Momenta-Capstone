@@ -2,13 +2,21 @@ package com.momenta;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -35,6 +43,10 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
     private final Handler mHideHandler = new Handler();
     private View mContentView;
     private helperBroadcast broadcast;
+    private final String ARG_PAGE = "Arg_Page";
+
+    public Button goButton;
+    List<Task> taskList = DBHelper.getInstance(this).getAllTasks();
 
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
@@ -94,12 +106,24 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
         mVisible = true;
         mContentView = findViewById(R.id.st_fullscreen_content);
 
-        findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+        goButton = (Button)findViewById(R.id.dummy_button);
+        goButton.setOnTouchListener(mDelayHideTouchListener);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
                 WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+
+        if(taskList.size() == 0){
+            goButton.setText(getString(R.string.dummy_button_add_new_task));
+            TextView noTasksAvailable = (TextView)findViewById(R.id.no_tasks_available_text);
+            noTasksAvailable.setVisibility(View.VISIBLE);
+        }
+
+        //Ring the device
+        Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Ringtone ringtone = RingtoneManager.getRingtone(this.getApplicationContext(), uri);
+        ringtone.play();
     }
 
     @Override
@@ -135,8 +159,20 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
     }
 
     public void go_button_click(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        if (taskList.size() > 1) {
+            Intent intent = new Intent(this, SelectTasksActivity.class);
+            startActivity(intent);
+        } else if (taskList.size() == 1) {
+            ArrayList<Integer> taskID = new ArrayList<>();
+            taskID.add(taskList.get(0).getId());
+            Intent intent = new Intent(this, AddTaskTimeActivity.class);
+            intent.putExtra("Task IDs", taskID);
+            startActivity(intent);
+        } else {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra(ARG_PAGE, 1);
+            startActivity(intent);
+        }
     }
 
     public void later_button_click(View view) {
@@ -144,9 +180,7 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop(){
+    protected void onStop() {
         super.onStop();
-        helperBroadcast brdcst = new helperBroadcast(this);
-        brdcst.sendBroadcast();
     }
 }

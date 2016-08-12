@@ -18,6 +18,7 @@
         android:theme="@style/momentaTheme">
         <activity
             android:name=".MainActivity"
+            android:windowSoftInputMode="stateHidden"
             android:label="@string/app_name"
             android:theme="@style/momentaTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden">
