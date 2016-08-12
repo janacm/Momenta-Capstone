@@ -15,10 +15,13 @@ public class MainActivity extends AppCompatActivity implements NetworkStateRecei
 
     private ManagerFragmentPagerAdapter fragmentManager;
     private NetworkStateReceiver networkStateReceiver;
+    private SessionManager sm;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        sm = SessionManager.getInstance(this);
 
         networkStateReceiver = new NetworkStateReceiver();
         networkStateReceiver.addListener(this);
@@ -58,6 +61,9 @@ public class MainActivity extends AppCompatActivity implements NetworkStateRecei
             startActivity(intent);
             return true;
         }
+        if(id == R.id.action_signout){
+            sm.signOut();
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -73,5 +79,12 @@ public class MainActivity extends AppCompatActivity implements NetworkStateRecei
     public void networkUnavailable() {
         Log.d("MAINACTIVITY", "Network Unavailable");
         //Show networ unavailable status
+    }
+    @Override
+    protected void onStop()
+    {
+        sm.getGoogleApiClient().disconnect();
+        unregisterReceiver(networkStateReceiver);
+        super.onStop();
     }
 }

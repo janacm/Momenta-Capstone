@@ -1,5 +1,6 @@
 package com.momenta;
 
+import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -40,6 +41,7 @@ public class AddActivityTest {
     public final ActivityTestRule<MainActivity> main = new ActivityTestRule<>(MainActivity.class);
     DBHelper db;
     Context ctx;
+    helperPreferences helperPreferences;
 
     @Before
     public void before() {
@@ -47,6 +49,7 @@ public class AddActivityTest {
                 = InstrumentationRegistry.getInstrumentation();
         ctx = instrumentation.getTargetContext();
         db = DBHelper.getInstance(ctx);
+        helperPreferences = new helperPreferences((Activity) ctx);
 
     }
 
@@ -56,7 +59,7 @@ public class AddActivityTest {
         int duration = 12;
         Calendar deadline = Calendar.getInstance();
         long id = db.insertTask(new Task(taskName, duration, deadline,
-                Calendar.getInstance().getTimeInMillis(), Calendar.getInstance()));
+                Calendar.getInstance().getTimeInMillis(), Calendar.getInstance()),helperPreferences.getPreferences(Constants.USER_ID,"0"));
 
         Task taskAdded = db.getTask((int) id);
         assertEquals(taskName, taskAdded.getName());

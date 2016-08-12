@@ -12,6 +12,9 @@ public class Award {
     private String name;
     private String description;
     private int currentProgress;
+
+
+
     private int currentLevel;
     private int maxLevel;
     private List<Integer> progressLimitForEachLevel;
@@ -69,6 +72,10 @@ public class Award {
         this.description = description;
     }
 
+    public void setCurrentLevel(int currentLevel) {this.currentLevel = currentLevel;}
+
+    public void setCurrentProgress(int currentProgress) {this.currentProgress = currentProgress; }
+
     public int getCurrentProgress() {
         return currentProgress;
     }
@@ -84,6 +91,11 @@ public class Award {
     public void levelUp() {
         this.currentLevel ++;
     }
+
+    public int getMaxLevel() {  return maxLevel; }
+
+    public List<Integer> getProgressLimitForEachLevel() { return progressLimitForEachLevel; }
+
 
 
 

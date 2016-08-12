@@ -1,49 +1,42 @@
 {
   "project_info": {
-    "project_id": "momenta-b350e",
-    "project_number": "1074550145165",
-    "name": "Momenta"
+    "project_number": "535683212174",
+    "project_id": "momenta-1370"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1074550145165:android:54a168c714488144",
-        "client_id": "android:com.momenta",
-        "client_type": 1,
+        "mobilesdk_app_id": "1:535683212174:android:54a168c714488144",
         "android_client_info": {
-          "package_name": "com.momenta",
-          "certificate_hash": []
+          "package_name": "com.momenta"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1074550145165-tcc7806t0ar9bhl2f78b752am28hdro8.apps.googleusercontent.com",
+          "client_id": "535683212174-d1tql20msn00rnainu12iaitg99l7r5a.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.momenta",
-            "certificate_hash": "7A5F4C14826346CF5ED7078659008F83F54A9C68"
+            "certificate_hash": "85908FF288F50A235BE91CA66E7DDBA62D1AC3AB"
           }
         },
         {
-          "client_id": "1074550145165-dffqna61ek3rbgj47b8q36g05skpjuut.apps.googleusercontent.com",
+          "client_id": "535683212174-3c37kk14n5dfj7m5a4muqop0fr05aslh.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
-      "api_key": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-Cmlg1lcR6l8dVIgq75cUf77rdt4QCv0"
+        }
+      ],
       "services": {
         "analytics_service": {
           "status": 1
         },
-        "cloud_messaging_service": {
-          "status": 1,
-          "apns_config": []
-        },
         "appinvite_service": {
           "status": 1,
           "other_platform_oauth_client": []
-        },
-        "google_signin_service": {
-          "status": 2
         },
         "ads_service": {
           "status": 1
@@ -51,6 +44,5 @@
       }
     }
   ],
-  "client_info": [],
-  "ARTIFACT_VERSION": "1"
+  "configuration_version": "1"
 }
