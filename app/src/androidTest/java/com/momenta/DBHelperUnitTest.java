@@ -1,5 +1,6 @@
 package com.momenta;
 
+import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -31,7 +32,7 @@ public class DBHelperUnitTest {
     private final static Calendar constantCalendar = Calendar.getInstance();
     ArrayList<Task> setupTaskList = new ArrayList<>();
     ArrayList<Long> setupIdList = new ArrayList<>();
-
+    helperPreferences helperPreferences;
     @Before
     public void before() {
         Instrumentation instrumentation
@@ -39,6 +40,7 @@ public class DBHelperUnitTest {
         Context ctx = instrumentation.getTargetContext();
         db = DBHelper.getInstance(ctx);
 
+        helperPreferences = new helperPreferences((Activity) ctx);
         tearDown();
         Calendar deadline = Calendar.getInstance();
         deadline.setTimeInMillis(constantCalendar.getTimeInMillis() + TimeUnit.MILLISECONDS.convert(30, TimeUnit.HOURS));
@@ -52,13 +54,13 @@ public class DBHelperUnitTest {
                 constantCalendar.getTimeInMillis(), constantCalendar));
 
         for (Task t : setupTaskList) {
-            setupIdList.add( db.insertTask(t) );
+            setupIdList.add( db.insertTask(t,helperPreferences.getPreferences(Constants.USER_ID,"0")) );
         }
     }
 
     @After
     public void tearDown() {
-        db.getReadableDatabase().delete(DBHelper.SAMPLE_TABLE, null, null);
+        db.getReadableDatabase().delete(DBHelper.ACTIVITIES_TABLE, null, null);
     }
 
     @Test
@@ -73,7 +75,7 @@ public class DBHelperUnitTest {
 
 
         long id = db.insertTask(new Task(taskName, duration, deadline,
-                dateCreated.getTimeInMillis(), lastModified));
+                dateCreated.getTimeInMillis(), lastModified),helperPreferences.getPreferences(Constants.USER_ID,"0"));
 
         Task taskAdded = db.getTask((int) id);
         assertThat(id, greaterThan(0l));
@@ -92,7 +94,7 @@ public class DBHelperUnitTest {
         Calendar lastModified = Calendar.getInstance();
 
         Task taskExpected = new Task(taskName, duration, deadline, dateCreated.getTimeInMillis(), lastModified);
-        Long id = db.insertTask(taskExpected);
+        Long id = db.insertTask(taskExpected,helperPreferences.getPreferences(Constants.USER_ID,"0"));
         taskExpected.setId(id.intValue());
 
         deadline.setTimeInMillis(deadline.getTimeInMillis() + TimeUnit.MILLISECONDS.convert(30, TimeUnit.HOURS));

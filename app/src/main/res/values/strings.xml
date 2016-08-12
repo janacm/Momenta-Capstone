@@ -128,4 +128,5 @@
     <string name="add_time_to_task_title2">you put towards</string>
     <string name="sort_button_content_description">Sort Button</string>
     <string name="asc_desc_button_content_description">Ascending/descending button</string>
+    <string name="action_signout">Sign Out</string>
 </resources>

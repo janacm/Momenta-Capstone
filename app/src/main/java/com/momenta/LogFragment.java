@@ -306,7 +306,7 @@ public class LogFragment extends Fragment implements View.OnClickListener {
 
             Task task = new Task(newActivity.getText().toString(), totalMinutes.intValue(),
                     deadlineCalendar, Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
-            DBHelper.getInstance(getContext()).insertTask(task);
+            DBHelper.getInstance(getContext()).insertTask(task,helperPreferences.getPreferences(Constants.USER_ID,"0"));
 
             //Reset input fields
             newActivity.setText("");
