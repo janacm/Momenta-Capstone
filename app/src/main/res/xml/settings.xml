@@ -1,13 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <com.momenta.IntervalDialogPreference
-        android:defaultValue="0"
-        android:inputType="number"
-        android:key="interval_time"
-        android:title="@string/interval_time_title" />
+    <PreferenceCategory android:title="@string/settings_notification">
 
-    <PreferenceCategory android:title="About">
+        <com.momenta.IntervalDialogPreference
+            android:defaultValue="0"
+            android:inputType="number"
+            android:key="interval_time"
+            android:title= "@string/interval_time_title" />
+
+        <Preference
+            android:key="notification_start_time"
+            android:title="@string/start_time_title"
+            />
+
+        <Preference
+            android:key="notification_end_time"
+            android:title="@string/end_time_title"
+            />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/settings_about">
 
         <Preference
             android:key="version_name"

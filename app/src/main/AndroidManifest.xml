@@ -33,6 +33,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_settings"/>
         <activity android:name=".TaskActivity"
+            android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait"
             android:theme="@style/momentaTheme.NoActionBar"/>
         <activity android:name=".SelectTasksActivity"

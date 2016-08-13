@@ -71,12 +71,16 @@
     <string name="zero">0</string>
 
     <!-- Settings strings-->
-    <string name="interval_time_title">Notification Interval Time</string>
+    <string name="interval_time_title">Interval Time</string>
     <string name="interval_time_summary">Remind me every</string>
     <string name="interval_time_summary_hours">hours</string>
     <string name="interval_time_summary_minutes"> minutes</string>
     <string name="interval_time_summary_never_remind">Never remind me</string>
     <string name="version_name_title">Version</string>
+    <string name="settings_about">About</string>
+    <string name="settings_notification">Notifications</string>
+    <string name="start_time_title">Start Time</string>
+    <string name="end_time_title">End Time</string>
 
     <!-- EditText strings-->
     <string name="new_activity_hint"><i>Go to the gym...</i></string>
@@ -155,4 +159,14 @@
     <!--String related to New Task screen-->
     <string name="new_task_title">Add New Task</string>
     <string name="new_task_submit_button">D O N E</string>
+
+    <string-array name="suggestions">
+        <item>Go To The Gym</item>
+        <item>Go Running</item>
+        <item>Go Catch Pokemon</item>
+        <item>Eat alot of food</item>
+        <item>Explore</item>
+        <item>Code in Java</item>
+        <item>Work on this android project</item>
+    </string-array>
 </resources>

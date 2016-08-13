@@ -6,6 +6,7 @@ import java.util.Locale;
 
 /**
  * Blueprint of a user activity.
+ * TODO Format class & look at naming.
  */
 public class Task {
 
@@ -73,9 +74,38 @@ public class Task {
     /**
      * Used to get the taskHour and taskMinutes values in a string
      * @return String in format 0H 00M
+     * TODO is method useful?
      */
     public String getFormattedGoal() {
         int taskMinutes = goal, taskHours = 0;
+
+        if ( ! (taskMinutes < 60) ) {
+            taskHours = taskMinutes/60;
+            taskMinutes = taskMinutes % 60;
+        }
+
+        if ( taskHours >0 && taskMinutes>0 ) {
+            return taskHours + "H " + taskMinutes + "M";
+        } else if ( taskHours ==0 && taskMinutes>0 ) {
+            return taskMinutes + "M";
+        } else if ( taskHours >0 ) {
+            return taskHours + "H";
+        } else {
+            return "";
+        }
+    }
+
+    /**
+     * Used to get the taskHour and taskMinutes values in a string
+     * @return String in format 0H 00M
+     * TODO Write test cases for this method
+     */
+    public String getFormattedTimeSpent() {
+        int taskMinutes = timeSpent, taskHours = 0;
+
+        if ( taskMinutes == 0 ) {
+            return "0M";
+        }
 
         if ( ! (taskMinutes < 60) ) {
             taskHours = taskMinutes/60;
@@ -102,6 +132,14 @@ public class Task {
     }
 
     /**
+     * Used to get the goal of this task in minutes
+     * @return Integer value of the total time of this task in minutes.
+     */
+    public int getGoalInMinutes() {
+        return goal;
+    }
+
+    /**
      * Used to add time to the task
      * @param minutes the time in minutes to be added to the task
      */
@@ -110,14 +148,7 @@ public class Task {
             throw new IllegalArgumentException("Goal cannot be negative: " + minutes);
         }
         timeSpent += minutes;
-    }
-
-    /**
-     * Used to get the goal of this task in minutes
-     * @return Integer value of the total time of this task in minutes.
-     */
-    public int getGoalInMinutes() {
-        return goal;
+        lastModified = Calendar.getInstance();
     }
 
     public Calendar getDeadline() {
@@ -166,6 +197,7 @@ public class Task {
     public void setTimeSpent(int timeSpent){
         this.timeSpent = timeSpent;
     }
+
     /**
      * Used to get the time spent on a task in minutes
      * @return the time spent on a task in minutes
