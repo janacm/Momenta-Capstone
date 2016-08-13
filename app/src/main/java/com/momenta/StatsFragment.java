@@ -23,8 +23,11 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.AxisValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,10 +40,20 @@ import java.util.concurrent.TimeUnit;
  * Created by Joe on 2016-02-01.
  * For Momenta
  */
-public class StatsFragment extends Fragment {
+public class StatsFragment extends Fragment implements OnChartValueSelectedListener {
     public static final String ARG_PAGE = "ARG_PAGE";
 
-    private int mPage;
+    //Line Chart Fields
+    private HashMap<Integer,String> countMapping;
+
+    //Pie Chart fields
+    private PieChart pieChart;
+    private TextView pieTextView;
+    private ArrayList<PieEntry> pieEntries;
+
+    //Other fields
+    DBHelper dbHelper;
+
 
     public static StatsFragment newInstance(int page) {
         Bundle args = new Bundle();
@@ -53,7 +66,6 @@ public class StatsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPage = getArguments().getInt(ARG_PAGE);
 
     }
 
@@ -66,9 +78,10 @@ public class StatsFragment extends Fragment {
         List<Entry> lineEntries = new ArrayList<>();
 
         //Retrieve data from db
-        DBHelper dbHelper = DBHelper.getInstance(getContext());
+        dbHelper = DBHelper.getInstance(getContext());
         HashMap<String, Integer> lineMap = dbHelper.getTimeSpentByDay();
-        final HashMap<Integer, String> xLabels = new HashMap<>();
+        final HashMap<Integer, String> weekdayLabels = new HashMap<>();
+        countMapping = new HashMap<>();
 
 
         Calendar tempCal = Calendar.getInstance();
@@ -89,16 +102,18 @@ public class StatsFragment extends Fragment {
             lineEntries.add(new Entry(count, yAxis));
 
             String xAxisDate = formatDate(tempCal.getTime(), "EEE");
-            xLabels.put(count, xAxisDate);
+            weekdayLabels.put(count, xAxisDate);
 
             //Incrementing day by one for next iteration
+            countMapping.put(count, date);
             tempCal.setTimeInMillis( tempCal.getTimeInMillis() + TimeUnit.MILLISECONDS.convert(1L, TimeUnit.DAYS) );
             count++;
         }
 
         LineDataSet lineDataSet = new LineDataSet(lineEntries, "Label");
-        lineDataSet.setColor(getResources().getColor(R.color.colorPrimaryDark));
+        lineDataSet.setColor( ContextCompat.getColor(getContext(), R.color.colorPrimary) );
         lineDataSet.setDrawFilled(true);
+        lineDataSet.setHighLightColor( ContextCompat.getColor(getContext(), R.color.deep_purple) );
 
         //Setting labels for X & Y axis
         XAxis xAxis = lineChart.getXAxis();
@@ -110,7 +125,7 @@ public class StatsFragment extends Fragment {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
                 int count = (int) value;
-                return xLabels.get(count);
+                return weekdayLabels.get(count);
             }
 
             @Override
@@ -138,12 +153,13 @@ public class StatsFragment extends Fragment {
 
         lineChart.setData(lineData);
         lineChart.setDescription("");
+        lineChart.setOnChartValueSelectedListener(this);
         lineChart.invalidate();
 
 
         /****************************Setting up the Pie Chart****************************/
-        TextView pieTextView = (TextView) view.findViewById(R.id.trends_day_pie_textview);
-        PieChart pieChart = (PieChart) view.findViewById(R.id.trends_piechart);
+        pieTextView = (TextView) view.findViewById(R.id.trends_day_pie_textview);
+        pieChart = (PieChart) view.findViewById(R.id.trends_piechart);
         pieChart.setRotationEnabled(false);
         pieChart.setDrawHoleEnabled(false);
         pieChart.setDescription("");
@@ -153,8 +169,7 @@ public class StatsFragment extends Fragment {
         l.setXEntrySpace(7);
         l.setYEntrySpace(5);
 
-        ArrayList<PieEntry> pieEntries = new ArrayList<>();
-
+        pieEntries = new ArrayList<>();
 
         tempCal.setTimeInMillis( Calendar.getInstance().getTimeInMillis() );
 
@@ -194,8 +209,67 @@ public class StatsFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Convenience method to format a Date object into a String
+     * @param date the date object to be formatted
+     * @param format the desired format e.g yyyy-MM-dd
+     * @return the formatted String
+     */
     private String formatDate(Date date, String format) {
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         return sdf.format(date);
+    }
+
+    /**
+     * Convenience method to parse a string into a Date object
+     * @param date the string to be parse
+     * @param format the format of the string to be parsed e.g yyyy-MM-dd
+     * @return Equivalent date object of the string, null if there was a parsing error
+     */
+    private Date parseStringToDate(String date, String format) {
+        Date result;
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        try {
+            result = sdf.parse(date);
+        } catch (ParseException e) {
+            result = null;
+            Log.e("StatsFragment", Log.getStackTraceString(e));
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    private void setPieDayData(String dateString){
+        Date date = parseStringToDate(dateString, DBHelper.TIME_SPENT_DATE_FORMAT);
+        pieTextView.setText( formatDate(date, "EEE, MMM d") );
+
+        Log.d("Stats", "Getting data for " + dateString);
+        HashMap<String, Integer> pieMap = dbHelper.getTimeSpentForDay(dateString);
+        Log.d("Stats", "Size of map for " + dateString + " is: " + pieMap.size());
+
+        pieEntries.clear();
+
+        for ( String key : pieMap.keySet()) {
+            Integer integer = pieMap.get(key);
+            float value = integer.floatValue();
+            pieEntries.add(new PieEntry(value,key));
+        }
+
+        pieChart.notifyDataSetChanged();
+        pieChart.invalidate();
+    }
+
+    @Override
+    public void onValueSelected(Entry e, Highlight h) {
+        Float countInFloat = e.getX();
+        Integer count = countInFloat.intValue();
+
+        String countDate = countMapping.get(count);
+        setPieDayData( countDate );
+    }
+
+    @Override
+    public void onNothingSelected() {
+
     }
 }

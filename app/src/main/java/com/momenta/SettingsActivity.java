@@ -1,7 +1,6 @@
 package com.momenta;
 
 
-import android.annotation.SuppressLint;
 import android.app.TimePickerDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -31,7 +30,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
     //Constants
     private static final String PREFS_NAME = "momenta_prefs";
-    public static final String TIME_FORMAT = "hh:mm a";
+    public static final String AM_TIME_FORMAT = "hh:mm a";
     public static final String TWENTY_FOUR_HOUR_FORMAT = "HH:mm";
 
     //Enumeration for referencing start and end time.
@@ -51,7 +50,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         addPreferencesFromResource(R.xml.settings);
         this.getSharedPreferences(PREFS_NAME, 0).registerOnSharedPreferenceChangeListener(this);
         helperPreferences = new helperPreferences(this);
-        simpleDateFormat = new SimpleDateFormat(TIME_FORMAT);
+        simpleDateFormat = new SimpleDateFormat(AM_TIME_FORMAT);
 
         PreferenceManager.setDefaultValues(this, R.xml.settings,
                 false);
