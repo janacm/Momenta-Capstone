@@ -247,15 +247,6 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
     }
 
     /**
-     * Convenience method for toasting messages to the user
-     * Toast message is set tot LENGTH_LONG.
-     * @param toToast the string to be displayed to the user
-     */
-    private void toast(String toToast) {
-        Toast.makeText(this, toToast, Toast.LENGTH_LONG).show();
-    }
-
-    /**
      * Method for saving a task into the database upon entering the fields.
      */
     private void save(){
@@ -264,7 +255,7 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
         Long totalTimeSpentMinutes = TimeUnit.MINUTES.convert(timespentHours.longValue(), TimeUnit.HOURS) + timespentMins.longValue();
 
         if (name.isEmpty()) {
-            toast(getString(R.string.toast_no_name_activity_added));
+            activityName.setError(getResources().getString(R.string.toast_no_name_activity_added));
             return;
         }
 

@@ -134,7 +134,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="toast_no_name_activity_added">Please enter a name</string>
+    <string name="toast_no_name_activity_added">Please enter an activity name</string>
     <string name="toast_activity_added">Activity added!</string>
     <string name="toast_enter_goal">Please enter a goal</string>
     <string name="toast_activity_updated">Activity has been updated</string>
@@ -148,23 +148,23 @@
     <!-- Strings related to the Add time to task screen !-->
     <string name="add_time_to_task_title1">How much time did</string>
     <string name="add_time_to_task_title2">you put towards</string>
-    <string name="no_tasks_available">Seems like you don\'t have any tasks</string>
-    <string name="dummy_button_add_new_task">Add a new task</string>
+    <string name="no_tasks_available">Seems like you don\'t have any activities</string>
+    <string name="dummy_button_add_new_task">Add a new activity</string>
     <string name="add_time_to_task_minutes"> m </string>
     <string name="add_time_to_task_hours"> h </string>
     <string name="add_time_to_task_min">0m</string>
     <string name="add_time_to_task_next">Next</string>
+    <string name="deadline_hint"></string>
     <string name="add_time_to_task_done">Done</string>
-
     <!--String related to New Task screen-->
-    <string name="new_task_title">Add New Task</string>
+    <string name="new_task_title">Add New Activity</string>
     <string name="new_task_submit_button">D O N E</string>
 
     <string-array name="suggestions">
         <item>Go To The Gym</item>
         <item>Go Running</item>
         <item>Go Catch Pokemon</item>
-        <item>Eat alot of food</item>
+        <item>Eat a lot of food</item>
         <item>Explore</item>
         <item>Code in Java</item>
         <item>Work on this android project</item>
