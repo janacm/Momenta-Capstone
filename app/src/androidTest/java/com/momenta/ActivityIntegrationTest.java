@@ -47,7 +47,7 @@ public class ActivityIntegrationTest {
                 = InstrumentationRegistry.getInstrumentation();
         context = instrumentation.getTargetContext();
         db = DBHelper.getInstance(context);
-        helperPreferences = new helperPreferences((Activity) context);
+        helperPreferences = new helperPreferences(context);
         Calendar deadline = Calendar.getInstance();
         deadline.setTimeInMillis(deadline.getTimeInMillis() + TimeUnit.MILLISECONDS.convert(30, TimeUnit.HOURS));
         db.insertTask(new Task("Initial Task Name", 400, deadline,

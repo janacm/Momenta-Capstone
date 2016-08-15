@@ -84,7 +84,11 @@ public class MainActivity extends AppCompatActivity implements NetworkStateRecei
     protected void onStop()
     {
         sm.getGoogleApiClient().disconnect();
-        unregisterReceiver(networkStateReceiver);
+        try{
+            unregisterReceiver(networkStateReceiver);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
         super.onStop();
     }
 }

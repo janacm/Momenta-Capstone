@@ -60,7 +60,7 @@ public class ViewActivityTest {
                 = InstrumentationRegistry.getInstrumentation();
         context= instrumentation.getTargetContext();
         DBHelper db = DBHelper.getInstance(context);
-        helperPreferences = new helperPreferences((Activity) context);
+        helperPreferences = new helperPreferences(context);
 
         Calendar deadline = Calendar.getInstance();
         deadline.setTimeInMillis(deadline.getTimeInMillis() + TimeUnit.MILLISECONDS.convert(30, TimeUnit.HOURS));

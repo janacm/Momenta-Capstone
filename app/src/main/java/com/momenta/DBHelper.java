@@ -79,7 +79,8 @@ public class DBHelper extends SQLiteOpenHelper {
             + ACTIVITY_DEADLINE + " LONG DEFAULT 0, "
             + ACTIVITY_PRIORITY + " CHAR(32) NOT NULL, "
             + ACTIVITY_LAST_MODIFIED + " LONG NOT NULL DEFAULT 0, "
-            + ACTIVITY_DATE_CREATED + " LONG NOT NULL DEFAULT 0)";
+            + ACTIVITY_DATE_CREATED + " LONG NOT NULL DEFAULT 0, "
+            + ACTIVITY_TIME_SPENT + " INTEGER NOT NULL)";
 
     // AWARDS table create statement
     private static final String CREATE_AWARDS_TABLE = "CREATE TABLE "
@@ -130,7 +131,7 @@ public class DBHelper extends SQLiteOpenHelper {
      */
     private DBHelper(Context context) {
         super(context.getApplicationContext(), DATABASE_NAME, null, DATABASE_VERSION);
-        this.helperPreferences = new helperPreferences((Activity) context);
+        this.helperPreferences = new helperPreferences(context);
     }
 
     public static DBHelper getInstance(Context context) {
@@ -290,8 +291,8 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put(AWARD_CURRENT_LEVEL, award.getCurrentLevel());
         values.put(AWARD_CURRENT_PROGRESS, award.getCurrentProgress());
         values.put(AWARD_MAX_LEVEL, award.getMaxLevel());
-        for (int i: award.getProgressLimitForEachLevel()) {
-            values.put("AWARD_LEVEL_"+i+"_PROGRESS_LIMIT", i);
+        for (int i = 0; i<award.getProgressLimitForEachLevel().size();i++ ) {
+            values.put("AWARD_LEVEL_"+i+"_PROGRESS_LIMIT", award.getProgressLimitForEachLevel().get(i));
         }
         return db.insert(AWARDS_TABLE, null, values);
     }

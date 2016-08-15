@@ -49,7 +49,7 @@ public class AddActivityTest {
                 = InstrumentationRegistry.getInstrumentation();
         ctx = instrumentation.getTargetContext();
         db = DBHelper.getInstance(ctx);
-        helperPreferences = new helperPreferences((Activity) ctx);
+        helperPreferences = new helperPreferences(ctx);
 
     }
 
