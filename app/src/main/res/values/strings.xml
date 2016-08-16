@@ -141,6 +141,7 @@
     <string name="add_time_to_task_hours"> h </string>
     <string name="add_time_to_task_min">0m</string>
     <string name="add_time_to_task_next">Next</string>
+    <string name="welcome_to_momenta">Welcome To Momenta</string>
 
     <string-array name="suggestions">
         <item>Go To The Gym</item>
