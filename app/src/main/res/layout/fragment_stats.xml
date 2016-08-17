@@ -27,7 +27,7 @@
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/trends_linechart"
                 android:layout_width="match_parent"
-                android:layout_height="250dp"/>
+                android:layout_height="200dp"/>
 
         </LinearLayout>
 
@@ -48,7 +48,7 @@
         android:id="@+id/trends_piechart"
         android:layout_height="300dp"
         android:layout_width="match_parent"
-        android:layout_below="@+id/stats_card"/>
+        android:layout_below="@+id/trends_day_pie_textview"/>
 
 
 </RelativeLayout>

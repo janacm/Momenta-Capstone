@@ -137,7 +137,7 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
 
         YAxis leftAxis = lineChart.getAxisLeft();
         leftAxis.setDrawGridLines(false);
-        leftAxis.setDrawAxisLine(true);
+        leftAxis.setDrawAxisLine(false);
         leftAxis.setAxisMinValue(0);
 
         YAxis rightAxis = lineChart.getAxisRight();
