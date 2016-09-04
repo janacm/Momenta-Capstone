@@ -2,11 +2,8 @@ package com.momenta;
 
 import android.app.Activity;
 import android.content.Context;
-import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
-import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -64,10 +61,10 @@ public class HelperNetwork {
             try {
                 jObj.put(Constants.JSONTAG_ACTIVITY_ID, tasks.get(i).getId());
                 jObj.put(Constants.JSONTAG_ACTIVITY_NAME, tasks.get(i).getName());
-                jObj.put(Constants.JSONTAG_ACTIVITY_DURATION, tasks.get(i).getGoalInMinutes());
-                jObj.put(Constants.JSONTAG_ACTIVITY_DEADLINE, tasks.get(i).getDeadline().getTimeInMillis());
-                jObj.put(Constants.JSONTAG_ACTIVITY_PRIORITY, tasks.get(i).getPriority().name());
-                jObj.put(Constants.JSONTAG_ACTIVITY_LAST_MODIFIED, tasks.get(i).getLastModified().getTimeInMillis());
+                jObj.put(Constants.JSONTAG_ACTIVITY_DURATION, tasks.get(i).getGoal());
+                jObj.put(Constants.JSONTAG_ACTIVITY_DEADLINE, tasks.get(i).getDeadlineValue().getTimeInMillis());
+                jObj.put(Constants.JSONTAG_ACTIVITY_PRIORITY, tasks.get(i).getPriorityValue().name());
+                jObj.put(Constants.JSONTAG_ACTIVITY_LAST_MODIFIED, tasks.get(i).getLastModifiedValue().getTimeInMillis());
                 jObj.put(Constants.JSONTAG_ACTIVITY_DATE_CREATED, tasks.get(i).getDateCreated());
 
             } catch (JSONException e) {
@@ -139,10 +136,10 @@ public class HelperNetwork {
         try {
             jObj.put(Constants.JSONTAG_ACTIVITY_ID, task.getId());
             jObj.put(Constants.JSONTAG_ACTIVITY_NAME, task.getName());
-            jObj.put(Constants.JSONTAG_ACTIVITY_DURATION, task.getGoalInMinutes());
-            jObj.put(Constants.JSONTAG_ACTIVITY_DEADLINE, task.getDeadline().getTimeInMillis());
-            jObj.put(Constants.JSONTAG_ACTIVITY_PRIORITY, task.getPriority().name());
-            jObj.put(Constants.JSONTAG_ACTIVITY_LAST_MODIFIED, task.getLastModified().getTimeInMillis());
+            jObj.put(Constants.JSONTAG_ACTIVITY_DURATION, task.getGoal());
+            jObj.put(Constants.JSONTAG_ACTIVITY_DEADLINE, task.getDeadlineValue().getTimeInMillis());
+            jObj.put(Constants.JSONTAG_ACTIVITY_PRIORITY, task.getPriorityValue().name());
+            jObj.put(Constants.JSONTAG_ACTIVITY_LAST_MODIFIED, task.getLastModifiedValue().getTimeInMillis());
             jObj.put(Constants.JSONTAG_ACTIVITY_DATE_CREATED, task.getDateCreated());
 
         } catch (JSONException e) {

@@ -1,6 +1,5 @@
 package com.momenta;
 
-import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -80,10 +79,10 @@ public class DBHelperUnitTest {
         Task taskAdded = db.getTask((int) id);
         assertThat(id, greaterThan(0l));
         assertEquals(taskName, taskAdded.getName());
-        assertEquals(duration,taskAdded.getGoalInMinutes());
-        assertEquals(deadline,taskAdded.getDeadline());
+        assertEquals(duration,taskAdded.getGoal());
+        assertEquals(deadline,taskAdded.getDeadlineValue());
         assertEquals(dateCreated.getTimeInMillis(), taskAdded.getDateCreated());
-        assertEquals(lastModified, taskAdded.getLastModified());
+        assertEquals(lastModified, taskAdded.getLastModifiedValue());
     }
 
     @Test
@@ -98,18 +97,18 @@ public class DBHelperUnitTest {
         taskExpected.setId(id.intValue());
 
         deadline.setTimeInMillis(deadline.getTimeInMillis() + TimeUnit.MILLISECONDS.convert(30, TimeUnit.HOURS));
-        taskExpected.setDeadline(deadline);
+        taskExpected.setDeadlineValue(deadline);
         lastModified.setTimeInMillis(lastModified.getTimeInMillis() + TimeUnit.MILLISECONDS.convert(50, TimeUnit.DAYS));
-        taskExpected.setLastModified(lastModified);
+        taskExpected.setLastModifiedValue(lastModified);
 
 
         db.updateTask(taskExpected);
         Task taskActual = db.getTask(taskExpected.getId());
 
         assertEquals(taskExpected.getName(), taskActual.getName());
-        assertEquals(taskExpected.getGoalInMinutes(), taskActual.getGoalInMinutes());
-        assertEquals(taskExpected.getDeadline(), taskActual.getDeadline());
-        assertEquals(taskExpected.getLastModified(), taskActual.getLastModified());
+        assertEquals(taskExpected.getGoal(), taskActual.getGoal());
+        assertEquals(taskExpected.getDeadlineValue(), taskActual.getDeadlineValue());
+        assertEquals(taskExpected.getLastModifiedValue(), taskActual.getLastModifiedValue());
     }
 
     @Test

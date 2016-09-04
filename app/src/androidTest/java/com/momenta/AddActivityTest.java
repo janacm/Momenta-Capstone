@@ -1,6 +1,5 @@
 package com.momenta;
 
-import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -63,8 +62,8 @@ public class AddActivityTest {
 
         Task taskAdded = db.getTask((int) id);
         assertEquals(taskName, taskAdded.getName());
-        assertEquals(duration, taskAdded.getGoalInMinutes());
-        assertEquals(deadline, taskAdded.getDeadline());
+        assertEquals(duration, taskAdded.getGoal());
+        assertEquals(deadline, taskAdded.getDeadlineValue());
     }
 
     @Test

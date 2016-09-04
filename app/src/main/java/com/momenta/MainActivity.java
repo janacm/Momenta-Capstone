@@ -13,9 +13,11 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity implements NetworkStateReceiver.NetworkStateReceiverListener {
 
+    private static final String TAG = "MainActivity";
     private ManagerFragmentPagerAdapter fragmentManager;
     private NetworkStateReceiver networkStateReceiver;
     private SessionManager sm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,14 +72,14 @@ public class MainActivity extends AppCompatActivity implements NetworkStateRecei
 
     @Override
     public void networkAvailable() {
-        Log.d("MAINACTIVITY", "Network Available");
+        Log.d(TAG, "Network Available");
         //TODO: When network connectivity becomes available, upload all tasks to server. UNCOMMENT next line to do so
         //HelperNetwork.uploadTasksToServer(this);
     }
 
     @Override
     public void networkUnavailable() {
-        Log.d("MAINACTIVITY", "Network Unavailable");
+        Log.d(TAG, "Network Unavailable");
         //Show networ unavailable status
     }
     @Override

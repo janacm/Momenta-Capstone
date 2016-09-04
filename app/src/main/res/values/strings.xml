@@ -8,6 +8,10 @@
     <string name="tab_title_trends">Trends</string>
 
     <!--Sort Dialog Strings-->
+    <string name="sort_by">Sort by</string>
+    <string name="order">Order</string>
+    <string name="ascending">Ascending</string>
+    <string name="descending">Descending</string>
     <string name="sort_dialog_date_created">Date Created</string>
     <string name="sort_dialog_dealine">Deadline</string>
     <string name="sort_dialog_name">Name</string>

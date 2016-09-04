@@ -1,21 +1,16 @@
 package com.momenta;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
  * Provides a connection to android local database.
@@ -105,7 +100,7 @@ public class DBHelper extends SQLiteOpenHelper {
          */
         db.execSQL(CREATE_ACTIVITIES_TABLE);
         db.execSQL(CREATE_AWARDS_TABLE);
-        fillAwardsTable(db);
+//        fillAwardsTable(db);
     }
 
     @Override
@@ -152,11 +147,11 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(ACTIVITY_NAME, task.getName());
         values.put(USER_ID, user_id);
-        values.put(ACTIVITY_DURATION, task.getGoalInMinutes());
-        values.put(ACTIVITY_PRIORITY, task.getPriority().name());
-        values.put(ACTIVITY_DEADLINE, task.getDeadline().getTimeInMillis());
+        values.put(ACTIVITY_DURATION, task.getGoal());
+        values.put(ACTIVITY_PRIORITY, task.getPriorityValue().name());
+        values.put(ACTIVITY_DEADLINE, task.getDeadlineValue().getTimeInMillis());
         values.put(ACTIVITY_DATE_CREATED, task.getDateCreated());
-        values.put(ACTIVITY_LAST_MODIFIED, task.getLastModified().getTimeInMillis());
+        values.put(ACTIVITY_LAST_MODIFIED, task.getLastModifiedValue().getTimeInMillis());
         values.put(ACTIVITY_TIME_SPENT,0);
 
         return db.insert(ACTIVITIES_TABLE, null, values);
@@ -194,7 +189,7 @@ public class DBHelper extends SQLiteOpenHelper {
             int timeSpent = cursor.getInt(cursor.getColumnIndex(ACTIVITY_TIME_SPENT));
 
             Task t = new Task(id, name, duration, calDue, dateCreated, calModified, timeSpent);
-            t.setPriority( Task.Priority.valueOf(priority) );
+            t.setPriorityValue( Task.Priority.valueOf(priority) );
 
             taskList.add(t);
         }
@@ -235,7 +230,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
             task = new Task(dbID, name, duration , calDue, dateCreated, calModified, timeSpent);
             String priority = cursor.getString(cursor.getColumnIndex(ACTIVITY_PRIORITY));
-            task.setPriority(Task.Priority.valueOf(priority));
+            task.setPriorityValue(Task.Priority.valueOf(priority));
         } else {
             return null;
         }
@@ -253,10 +248,10 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(ACTIVITY_NAME, task.getName());
-        cv.put(ACTIVITY_DURATION, task.getGoalInMinutes());
-        cv.put(ACTIVITY_DEADLINE, task.getDeadline().getTimeInMillis());
-        cv.put(ACTIVITY_PRIORITY, task.getPriority().name());
-        cv.put(ACTIVITY_LAST_MODIFIED, task.getLastModified().getTimeInMillis());
+        cv.put(ACTIVITY_DURATION, task.getGoal());
+        cv.put(ACTIVITY_DEADLINE, task.getDeadlineValue().getTimeInMillis());
+        cv.put(ACTIVITY_PRIORITY, task.getPriorityValue().name());
+        cv.put(ACTIVITY_LAST_MODIFIED, task.getLastModifiedValue().getTimeInMillis());
         cv.put(ACTIVITY_TIME_SPENT, task.getTimeSpent());
         String[] whereArgs = new String[]{task.getId() + ""};
         int result = 0;

@@ -1,33 +1,35 @@
 {
   "project_info": {
-    "project_number": "535683212174",
-    "project_id": "momenta-1370"
+    "project_number": "847781900553",
+    "firebase_url": "https://momenta-74fad.firebaseio.com",
+    "project_id": "momenta-74fad",
+    "storage_bucket": "momenta-74fad.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:535683212174:android:54a168c714488144",
+        "mobilesdk_app_id": "1:847781900553:android:54a168c714488144",
         "android_client_info": {
           "package_name": "com.momenta"
         }
       },
       "oauth_client": [
         {
-          "client_id": "535683212174-d1tql20msn00rnainu12iaitg99l7r5a.apps.googleusercontent.com",
+          "client_id": "847781900553-gsh4bvmmn9ak7h5ln6rdf2csgik3d1og.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.momenta",
-            "certificate_hash": "85908FF288F50A235BE91CA66E7DDBA62D1AC3AB"
+            "certificate_hash": "CA99D7CCA0E471469F2EEFDD6E1A1B167FF5DA71"
           }
         },
         {
-          "client_id": "535683212174-3c37kk14n5dfj7m5a4muqop0fr05aslh.apps.googleusercontent.com",
+          "client_id": "847781900553-eb75imprflj7hovn1rqm3tfga8ps7qb2.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyC-Cmlg1lcR6l8dVIgq75cUf77rdt4QCv0"
+          "current_key": "AIzaSyBcF6T8K799cTnowUIlAdXiZcZiLgaWF3U"
         }
       ],
       "services": {
@@ -35,11 +37,16 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "847781900553-eb75imprflj7hovn1rqm3tfga8ps7qb2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }

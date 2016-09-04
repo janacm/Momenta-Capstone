@@ -48,7 +48,7 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.Vi
         holder.name.setText(task.getName());
         holder.timeSpent.setText(task.getFormattedTimeSpent());
         holder.progressBar.setProgress(task.getTimeSpent());
-        holder.progressBar.setMax(task.getGoalInMinutes());
+        holder.progressBar.setMax(task.getGoal());
 
 
         //Set onClick listener for each activity

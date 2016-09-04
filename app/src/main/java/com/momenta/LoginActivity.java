@@ -3,9 +3,12 @@ package com.momenta;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
+import com.google.android.gms.tasks.Task;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -15,6 +18,11 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 /**
  * Created by joesi on 2016-07-12.
@@ -30,6 +38,9 @@ public class LoginActivity extends FragmentActivity implements
     private helperPreferences helperPreferences;
     private ProgressDialog mProgressDialog;
     private SessionManager sm;
+
+    private FirebaseAuth mFirebaseAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +62,7 @@ public class LoginActivity extends FragmentActivity implements
         signInButton.setSize(SignInButton.SIZE_STANDARD);
         signInButton.setScopes(sm.getGoogleServicesObject().getScopeArray());
 
+        mFirebaseAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -95,13 +107,38 @@ public class LoginActivity extends FragmentActivity implements
         if (result.isSuccess()) { //Sign in successful
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
             helperPreferences.savePreferences(Constants.USER_ID,acct.getId());
+            firebaseAuthWithGoogle(acct);
         } else {
             // Signed out, show unauthenticated UI.
 
         }
+    }
+
+    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        showProgressDialog();
+        mFirebaseAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        hideProgressDialog();
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "signInWithCredential", task.getException());
+                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                            finish();
+                        }
+                    }
+                });
     }
 
     // [END revokeAccess]
@@ -125,7 +162,7 @@ public class LoginActivity extends FragmentActivity implements
 
     private void hideProgressDialog() {
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.hide();
+            mProgressDialog.dismiss();
         }
     }
     private void signIn() {
