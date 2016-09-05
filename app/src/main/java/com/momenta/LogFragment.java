@@ -69,7 +69,6 @@ public class LogFragment extends Fragment implements View.OnClickListener {
 
     // Firebase instance variables
     private String directory = "tests";
-    private static final String GOALS = "/goals";
     private DatabaseReference mFirebaseDatabaseReference;
     private FirebaseRecyclerAdapter<Task, TaskViewHolder> mFirebaseAdapter;
 
@@ -88,7 +87,7 @@ public class LogFragment extends Fragment implements View.OnClickListener {
 
         FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (mFirebaseUser != null) {
-            directory = mFirebaseUser.getUid();
+            directory = mFirebaseUser.getUid() + "/goals";
         }
 
         // New child entries
@@ -144,19 +143,13 @@ public class LogFragment extends Fragment implements View.OnClickListener {
         activityDeadline = (EditText) view.findViewById(R.id.new_activity_deadline_edit_text);
         activityDeadline.setOnClickListener(this);
 
-        ImageButton sortButton = (ImageButton) view.findViewById(R.id.sort_button);
-        sortButton.setOnClickListener(this);
-
-        LinearLayout sortLayout = (LinearLayout)view.findViewById(R.id.sort_order_layout);
-        sortLayout.setOnClickListener(this);
-
         return view;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        MenuItem item = menu.add("Sort by");
+        MenuItem item = menu.add(getString(R.string.sort_by));
         item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
@@ -303,7 +296,9 @@ public class LogFragment extends Fragment implements View.OnClickListener {
 
             Task task = new Task(newActivity.getText().toString(), totalMinutes.intValue(),
                     deadlineCalendar, Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
-            mFirebaseDatabaseReference.child(directory + GOALS + "/" +task.getId()).setValue(task);
+            String id = mFirebaseDatabaseReference.child(directory).push().getKey();
+            task.setId(id);
+            mFirebaseDatabaseReference.child(directory + "/" + id).setValue(task);
 
             //Reset input fields
             newActivity.setText("");
@@ -377,7 +372,7 @@ public class LogFragment extends Fragment implements View.OnClickListener {
                 Task.class,
                 R.layout.list_item,
                 TaskViewHolder.class,
-                mFirebaseDatabaseReference.child(directory + GOALS).orderByChild(sortBy)) {
+                mFirebaseDatabaseReference.child(directory).orderByChild(sortBy)) {
 
             @Override
             protected void populateViewHolder(TaskViewHolder viewHolder,

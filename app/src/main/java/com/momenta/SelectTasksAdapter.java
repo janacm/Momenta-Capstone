@@ -101,8 +101,8 @@ public class SelectTasksAdapter extends RecyclerView.Adapter<SelectTasksAdapter.
      * Method for extracting the items that selected as well as their task ID and storing
      * them in another HashMap to be used by the AddTimeToTaskActivity.
      */
-    public HashMap<Integer,Integer> getItemsClickedIDs(){
-        HashMap<Integer,Integer> itemIDs = new HashMap<Integer,Integer>();
+    public HashMap<Integer,String> getItemsClickedIDs(){
+        HashMap<Integer,String> itemIDs = new HashMap<Integer,String>();
         for (Map.Entry<Integer, Boolean> entry : itemClickedMap.entrySet()){
             if(entry.getValue() == true){
                 itemIDs.put(entry.getKey(), tasks.get(entry.getKey()).getId());

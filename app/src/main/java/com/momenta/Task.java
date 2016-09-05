@@ -16,7 +16,7 @@ public class Task {
 
     public enum Priority{VERY_HIGH, HIGH, MEDIUM, LOW, VERY_LOW}
     public static final String DATE_FORMAT = "MMMM dd, yyyy";
-    private int id;
+    private String id;
     private String name;
     private int goal;
     private int timeSpent;
@@ -24,8 +24,6 @@ public class Task {
     private Calendar lastModified = Calendar.getInstance();
     private long dateCreated;
     private Priority priority;
-
-    private static int numberOfTasks = 0;
 
     //Firebase fields
     public static final String ID = "id";
@@ -53,7 +51,6 @@ public class Task {
      */
     public Task (String name, int goal, Calendar deadline,
                  long dateCreated, Calendar lastModified) {
-        id = numberOfTasks++;
         this.name = name; this.goal = 0; timeSpent =0;
         priority = Priority.MEDIUM;
         setGoal(goal);
@@ -71,18 +68,18 @@ public class Task {
      * @param dateCreated the time the task was created
      * @param lastModified the last time the activity was modified
      */
-    public Task (int id, String name, int goal, Calendar deadline,
+    public Task (String id, String name, int goal, Calendar deadline,
                  long dateCreated, Calendar lastModified, int timeSpent) {
         this(name, goal, deadline, dateCreated, lastModified);
         this.id = id;
         this.timeSpent = timeSpent;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

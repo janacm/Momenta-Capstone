@@ -163,7 +163,7 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
             Intent intent = new Intent(this, SelectTasksActivity.class);
             startActivity(intent);
         } else if (taskList.size() == 1) {
-            ArrayList<Integer> taskID = new ArrayList<>();
+            ArrayList<String> taskID = new ArrayList<>();
             taskID.add(taskList.get(0).getId());
             Intent intent = new Intent(this, AddTaskTimeActivity.class);
             intent.putExtra("Task IDs", taskID);

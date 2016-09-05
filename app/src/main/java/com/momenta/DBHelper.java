@@ -188,7 +188,7 @@ public class DBHelper extends SQLiteOpenHelper {
             calModified.setTimeInMillis( cursor.getLong(cursor.getColumnIndex(ACTIVITY_LAST_MODIFIED)) );
             int timeSpent = cursor.getInt(cursor.getColumnIndex(ACTIVITY_TIME_SPENT));
 
-            Task t = new Task(id, name, duration, calDue, dateCreated, calModified, timeSpent);
+            Task t = new Task(null, name, duration, calDue, dateCreated, calModified, timeSpent);
             t.setPriorityValue( Task.Priority.valueOf(priority) );
 
             taskList.add(t);
@@ -228,7 +228,7 @@ public class DBHelper extends SQLiteOpenHelper {
             calDue.setTimeInMillis( deadlineLong );
             calModified.setTimeInMillis(lastModified);
 
-            task = new Task(dbID, name, duration , calDue, dateCreated, calModified, timeSpent);
+            task = new Task(null, name, duration , calDue, dateCreated, calModified, timeSpent);
             String priority = cursor.getString(cursor.getColumnIndex(ACTIVITY_PRIORITY));
             task.setPriorityValue(Task.Priority.valueOf(priority));
         } else {

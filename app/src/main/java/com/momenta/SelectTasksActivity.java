@@ -76,7 +76,7 @@ public class SelectTasksActivity extends AppCompatActivity {
     //Method for extracting the task IDs and position from the tasks in the list and passing
     //them to the AddTimeToTaskActivity in the form of a stack.
     public void prepareItems() {
-        Map<Integer, Integer> temp = new TreeMap<>(mAdapter.getItemsClickedIDs());
+        Map<Integer, String> temp = new TreeMap<>(mAdapter.getItemsClickedIDs());
         int size = temp.size();
         int intervalTime = (intervalHours * 60) + intervalMins;
         if ((size > 0) && ((intervalTime/size) >= 1)){

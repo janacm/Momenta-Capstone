@@ -72,14 +72,13 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
 
         //Get the id of the activity and retrieve it from the DB
         Bundle bundle = getIntent().getExtras();
-        final int id = (int) bundle.get(DBHelper.ACTIVITY_ID);
+        final String id = (String) bundle.get(DBHelper.ACTIVITY_ID);
 
         mFirebaseDatabaseReference.child(directory + "/" + id).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        Long id = (long)dataSnapshot.child("id").getValue();
-                        task.setId( id.intValue() );
+                        task.setId( (String)dataSnapshot.child("id").getValue() );
                         task.setName( (String)dataSnapshot.child("name").getValue() );
                         Long goal = (long)dataSnapshot.child("goal").getValue();
                         task.setGoal( goal.intValue() );
