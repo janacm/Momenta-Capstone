@@ -11,10 +11,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class MainActivity extends AppCompatActivity implements NetworkStateReceiver.NetworkStateReceiverListener {
 
     private static final String TAG = "MainActivity";
-    private ManagerFragmentPagerAdapter fragmentManager;
     private NetworkStateReceiver networkStateReceiver;
     private SessionManager sm;
 
@@ -24,6 +26,16 @@ public class MainActivity extends AppCompatActivity implements NetworkStateRecei
         setContentView(R.layout.activity_main);
 
         sm = SessionManager.getInstance(this);
+        // Initialize Firebase Auth
+        FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser mFirebaseUser = mFirebaseAuth.getCurrentUser();
+
+        if (mFirebaseUser == null) {
+            // Not signed in, launch Sign in anonymously
+            startActivity(new Intent(this, EmailPasswordActivity.class));
+            finish();
+            return;
+        }
 
         networkStateReceiver = new NetworkStateReceiver();
         networkStateReceiver.addListener(this);
@@ -31,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements NetworkStateRecei
 
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        fragmentManager = new ManagerFragmentPagerAdapter(getSupportFragmentManager(),
+        ManagerFragmentPagerAdapter fragmentManager = new ManagerFragmentPagerAdapter(getSupportFragmentManager(),
                 MainActivity.this);
         viewPager.setAdapter(fragmentManager);
 

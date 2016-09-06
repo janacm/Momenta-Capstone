@@ -314,22 +314,6 @@ public class Task {
     }
 
     /**
-     * Removes none digits from a string
-     * @param input the string to remove non digits from
-     * @return input string with all the none digits removed.
-     */
-    public static String stripNonDigits(final String input ){
-        final StringBuilder sb = new StringBuilder( input.length() );
-        for(int i = 0; i < input.length(); i++){
-            final char c = input.charAt(i);
-            if(c > 47 && c < 58){
-                sb.append(c);
-            }
-        }
-        return sb.toString();
-    }
-
-    /**
      * Convenience method to format Calendar objects to strings.
      * @param calendar The calendar object with to be formatted
      * @return The formatted String value for the Calendar.

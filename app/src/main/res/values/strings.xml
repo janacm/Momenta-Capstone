@@ -155,4 +155,8 @@
         <item>Code in Java</item>
         <item>Work on this android project</item>
     </string-array>
+
+    <!--Sign in credentials for Integration testing with Firebase-->
+    <string name="email">digging62@yahoo.com</string>
+    <string name="password">MomentaFirebase</string>
 </resources>

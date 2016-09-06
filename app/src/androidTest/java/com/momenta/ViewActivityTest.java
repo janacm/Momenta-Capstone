@@ -1,39 +1,38 @@
 package com.momenta;
 
-import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.util.Log;
 import android.widget.DatePicker;
-import android.support.test.espresso.contrib.PickerActions;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.clearText;
-import static android.support.test.espresso.action.ViewActions.scrollTo;
-import static android.support.test.espresso.matcher.ViewMatchers.isDescendantOfA;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.replaceText;
-import static android.support.test.espresso.action.ViewActions.typeText;
+import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isDescendantOfA;
+import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withSpinnerText;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
@@ -41,15 +40,17 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.not;
 
 
 @RunWith(AndroidJUnit4.class)
 public class ViewActivityTest {
 
-    private Long taskID;
+    private static final String TAG = "ViewActivityTest";
+    String id;
     Context context;
     helperPreferences helperPreferences;
+    DatabaseReference reference;
+    String directory;
     @Rule
     public ActivityTestRule<TaskActivity> rule =
             new ActivityTestRule(TaskActivity.class, true, false);
@@ -59,18 +60,36 @@ public class ViewActivityTest {
         Instrumentation instrumentation
                 = InstrumentationRegistry.getInstrumentation();
         context= instrumentation.getTargetContext();
-        DBHelper db = DBHelper.getInstance(context);
         helperPreferences = new helperPreferences(context);
 
         Calendar deadline = Calendar.getInstance();
         deadline.setTimeInMillis(deadline.getTimeInMillis() + TimeUnit.MILLISECONDS.convert(30, TimeUnit.HOURS));
 
-        taskID = db.insertTask(new Task("Initial Task Name", 400, deadline,
-                Calendar.getInstance().getTimeInMillis(), Calendar.getInstance()),helperPreferences.getPreferences(Constants.USER_ID,"0"));
+        Task task = new Task("Initial Task Name", 400, deadline,
+                Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
+        task.setTimeSpent(200);
+
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (mFirebaseUser != null) {
+            directory = mFirebaseUser.getUid() + "/goals";
+            Log.w(TAG, "Not logged in");
+        } else {
+            Log.w(TAG, "Not logged in");
+        }
+        reference = firebaseDatabase.getReference();
+        id = reference.child(directory).push().getKey();
+        task.setId(id);
+        reference.child(directory + "/" + id).setValue(task);
 
         Intent intent = new Intent();
-        intent.putExtra(DBHelper.ACTIVITY_ID, taskID.intValue());
+        intent.putExtra(Task.ID, id);
         rule.launchActivity(intent);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -80,7 +99,7 @@ public class ViewActivityTest {
         onView(withId(R.id.task_name_edit_text))
                 .perform(replaceText(name), closeSoftKeyboard());
 
-        restartTaskActivity(taskID);
+        restartTaskActivity();
 
         //Ensure the change has taken place
         onView(withId(R.id.task_name_edit_text)).check(matches(withText(name)));
@@ -88,12 +107,11 @@ public class ViewActivityTest {
 
     @Test
     public void testUpdateActivityGoal() {
-        long id = taskID;
         //Input new values into the dialog 3H 20M
         onView(withId(R.id.task_hour_edit_text)).perform(replaceText("3"));
         onView(withId(R.id.task_minute_edit_text)).perform(replaceText("20"));
 
-        restartTaskActivity(id);
+        restartTaskActivity();
 
         //Verify time value was saved (3H 20M)
         onView(withId(R.id.task_hour_edit_text)).check(matches(withText("3")));
@@ -102,7 +120,6 @@ public class ViewActivityTest {
 
     @Test
     public void testUpdateActivityDeadline() {
-        long id = taskID;
         int year = 2030;
         int month = 5;//June, for some reason 0 is January
         int day = 15;
@@ -122,7 +139,7 @@ public class ViewActivityTest {
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(year, month + 1, day));
         onView(withId(android.R.id.button1)).perform(click());
 
-        restartTaskActivity(id);
+        restartTaskActivity();
 
         //Verify the date was changed
         onView(withId(R.id.task_time_set_deadline)).check(matches(withText(expected)));
@@ -130,7 +147,7 @@ public class ViewActivityTest {
 
     @Test
     public void testUpdateActivityPriority(){
-        long id = taskID;
+//        long id = taskID;
         String priority = "Very High";
 
         //Perform scroll for smaller screens
@@ -144,7 +161,7 @@ public class ViewActivityTest {
         // Select a priority from the spinner
         onData(allOf(is(instanceOf(String.class)), is(priority))).perform(click());
 
-        restartTaskActivity(id);
+        restartTaskActivity();
 
         //Verify the value of the spinner
         onView(allOf(withId(R.id.task_priority_spinner),
@@ -156,12 +173,13 @@ public class ViewActivityTest {
      * Convenience method to restart the TaskActivity.
      * Clicks on the done button and then calls the setup method.
      */
-    public void restartTaskActivity(Long id) {
+    public void restartTaskActivity() {
         //Click on the back button and restart the TaskActivity.
         onView(withId(R.id.action_done)).perform(click());
 
         Intent intent = new Intent();
-        intent.putExtra(DBHelper.ACTIVITY_ID, id.intValue());
+        intent.putExtra(DBHelper.ACTIVITY_ID, id);
         rule.launchActivity(intent);
     }
+
 }

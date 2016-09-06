@@ -393,7 +393,7 @@ public class LogFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(getContext(), TaskActivity.class);
-                        intent.putExtra(DBHelper.ACTIVITY_ID, task.getId());
+                        intent.putExtra(Task.ID, task.getId());
                         getContext().startActivity(intent);
                     }
                 });

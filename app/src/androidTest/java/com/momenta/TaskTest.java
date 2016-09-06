@@ -18,7 +18,7 @@ public class TaskTest {
     public final String TASK_NAME = "TASK_NAME";
 
     @Test
-    public void testTaskGoal() {
+    public void testTaskFormattedGoal() {
         Task task = new Task(TASK_NAME, 60, Calendar.getInstance(),
                 Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
         assertEquals("1H", task.getFormattedGoal());
@@ -63,7 +63,7 @@ public class TaskTest {
     }
 
     @Test
-    public void testGetTime() {
+    public void testGetGoalTime() {
         Task task = new Task(TASK_NAME, 198, Calendar.getInstance(),
                 Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
         task.setGoal(434);
@@ -159,14 +159,6 @@ public class TaskTest {
 
         task.setPriorityValue(Task.Priority.VERY_HIGH);
         assertEquals(Task.Priority.VERY_HIGH, task.getPriorityValue());
-    }
-
-    @Test
-    public void testStripNonDigits() {
-        assertEquals("232221322302382",Task.stripNonDigits("232idfdbld22132ldifdbf2302382ldffib"));
-        assertEquals("10030", Task.stripNonDigits("100H30M"));
-        assertEquals("2082", Task.stripNonDigits("Rea2082RE"));
-        assertEquals( "000030", Task.stripNonDigits("-00H0030M"));
     }
 
 }

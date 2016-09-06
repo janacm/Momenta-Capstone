@@ -42,6 +42,7 @@ import java.util.concurrent.TimeUnit;
 
 public class TaskActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
+    private static final String TAG = "TaskActivity";
     EditText activityName;
     TextView activityDeadline;
     EditText activityHour;
@@ -72,12 +73,13 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
 
         //Get the id of the activity and retrieve it from the DB
         Bundle bundle = getIntent().getExtras();
-        final String id = (String) bundle.get(DBHelper.ACTIVITY_ID);
+        final String id = (String) bundle.get(Task.ID);
 
         mFirebaseDatabaseReference.child(directory + "/" + id).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.w(TAG, "Getting fields...");
                         task.setId( (String)dataSnapshot.child("id").getValue() );
                         task.setName( (String)dataSnapshot.child("name").getValue() );
                         Long goal = (long)dataSnapshot.child("goal").getValue();
@@ -87,11 +89,11 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                         task.setLastModified( (Long)dataSnapshot.child("lastModified").getValue() );
                         Long timeSpent = (long)dataSnapshot.child("timeSpent").getValue();
                         task.setTimeSpent( timeSpent.intValue() );
-                        Log.d("TaskActivity", "About to run priority setter");
                         task.setPriority( (String)dataSnapshot.child("priority").getValue() );
-                        Log.d("TaskActivity", "onDataChange finished");
+                        Log.w(TAG, "Initializing fields...");
                         initializeFields();
                         initializePieChart();
+                        Log.w(TAG, "Finished initializing fields");
                     }
 
                     @Override

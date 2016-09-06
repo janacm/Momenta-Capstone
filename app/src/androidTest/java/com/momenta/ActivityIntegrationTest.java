@@ -1,22 +1,28 @@
 package com.momenta;
 
-import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
+import android.util.Log;
 import android.widget.DatePicker;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import org.hamcrest.Matchers;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import static android.support.test.espresso.Espresso.closeSoftKeyboard;
@@ -38,20 +44,32 @@ public class ActivityIntegrationTest {
 
     @Rule
     public final ActivityTestRule<MainActivity> main = new ActivityTestRule<>(MainActivity.class);
-    DBHelper db;
+    private static final String TAG = "ActivityIntegrationTest";
     Context context;
     helperPreferences helperPreferences;
+    DatabaseReference reference;
+
     @Before
     public void before() {
-        Instrumentation instrumentation
-                = InstrumentationRegistry.getInstrumentation();
+        Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         context = instrumentation.getTargetContext();
-        db = DBHelper.getInstance(context);
+
         helperPreferences = new helperPreferences(context);
-        Calendar deadline = Calendar.getInstance();
-        deadline.setTimeInMillis(deadline.getTimeInMillis() + TimeUnit.MILLISECONDS.convert(30, TimeUnit.HOURS));
-        db.insertTask(new Task("Initial Task Name", 400, deadline,
-                Calendar.getInstance().getTimeInMillis(), Calendar.getInstance()),helperPreferences.getPreferences(Constants.USER_ID,"0"));
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        firebaseDatabase.goOffline();
+        reference = firebaseDatabase.getReference();
+
+//        Calendar deadline = Calendar.getInstance();
+//        deadline.setTimeInMillis(deadline.getTimeInMillis() + TimeUnit.MILLISECONDS.convert(30, TimeUnit.HOURS));
+//        Task task = new Task("Initial Task Name", 400, deadline,
+//                Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
+//
+//        reference.child(directory).push().setValue(task);
+        try {
+            Thread.sleep(750);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test

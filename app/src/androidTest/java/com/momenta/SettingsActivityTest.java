@@ -40,7 +40,11 @@ public class SettingsActivityTest {
         onView(withId(R.id.pref_minute_textview)).perform(clearText());
         onView(withId(R.id.pref_hour_textview)).perform(clearText());
         onView(withId(android.R.id.button1)).perform(click());
-
+        try {
+            Thread.sleep(750);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 
