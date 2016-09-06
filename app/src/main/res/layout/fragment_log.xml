@@ -210,6 +210,4 @@
         android:layout_below="@+id/ongoing_activity_label"
        />
 
-
-
 </RelativeLayout>
