@@ -255,7 +255,8 @@
             android:textColor="@color/white"
             android:textStyle="bold"
             android:text="@string/new_task_submit_button"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:layout_marginBottom="5dp"/>
     </RelativeLayout>
 </RelativeLayout>
 

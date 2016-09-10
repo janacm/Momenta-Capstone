@@ -114,10 +114,10 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
         LayoutInflater inflater = this.getLayoutInflater();
 
         final View alertView = inflater.inflate(R.layout.dialog_timeentry, null);
-        final EditText editTextHours  = (EditText) alertView.findViewById(R.id.dialog_hour_textview);
+        final EditText editTextHours  = (EditText) alertView.findViewById(R.id.dialog_hour_edittext);
         editTextHours.setText(Integer.toString(goalHours));
 
-        final EditText editTextMinutes = (EditText) alertView.findViewById(R.id.dialog_minute_textview);
+        final EditText editTextMinutes = (EditText) alertView.findViewById(R.id.dialog_minute_edittext);
         editTextMinutes.setText(Integer.toString(goalMins));
 
         final TextView dialogTitle = (TextView) alertView.findViewById(R.id.dialog_title);
@@ -153,10 +153,10 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
         LayoutInflater inflater = this.getLayoutInflater();
 
         final View alertView = inflater.inflate(R.layout.dialog_timeentry, null);
-        final EditText editTextHours  = (EditText) alertView.findViewById(R.id.dialog_hour_textview);
+        final EditText editTextHours  = (EditText) alertView.findViewById(R.id.dialog_hour_edittext);
         editTextHours.setText(Integer.toString(timespentHours));
 
-        final EditText editTextMinutes = (EditText) alertView.findViewById(R.id.dialog_minute_textview);
+        final EditText editTextMinutes = (EditText) alertView.findViewById(R.id.dialog_minute_edittext);
         editTextMinutes.setText(Integer.toString(timespentMins));
 
         final TextView dialogTitle = (TextView) alertView.findViewById(R.id.dialog_title);
@@ -198,7 +198,7 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
         }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
         dialog.getDatePicker().setMinDate(cal.getTimeInMillis());
         dialog.show();
-        }
+    }
 
     /**
      * Event handler for when the done button is clicked

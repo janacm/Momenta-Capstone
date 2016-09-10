@@ -1,6 +1,5 @@
 package com.momenta;
 
-import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -10,28 +9,14 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Calendar;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Joe on 2016-01-31.
@@ -41,12 +26,6 @@ import java.util.concurrent.TimeUnit;
 public class LogFragment extends Fragment implements View.OnClickListener {
     public static final String ARG_PAGE = "ARG_PAGE";
     private ActivitiesAdapter mAdapter;
-    private EditText newActivity;
-    private EditText activityHour;
-    private EditText activityMinute;
-    private EditText activityDeadline;
-    private final Calendar deadlineCalendar = Calendar.getInstance();
-    private boolean deadlineSet = false;
     private String sortString;
     private String orderString;
     private helperPreferences helperPreferences;
@@ -70,52 +49,50 @@ public class LogFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        AutoCompleteTextView actv;
-
-
+        //AutoCompleteTextView actv;
 
         View view = inflater.inflate(R.layout.fragment_log, container, false);
         RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.activity_recycler_view);
 
-        actv = (AutoCompleteTextView) view.findViewById(R.id.new_activity_edit_text);
-        String[] suggestions = getResources().getStringArray(R.array.suggestions);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, suggestions);
-        actv.setAdapter(adapter);
-
+//        //actv = (AutoCompleteTextView) view.findViewById(R.id.new_activity_edit_text);
+//        String[] suggestions = getResources().getStringArray(R.array.suggestions);
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, suggestions);
+//        //actv.setAdapter(adapter);
+//
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         mAdapter = new ActivitiesAdapter(this.getContext(), getActivity());
         mRecyclerView.setAdapter(mAdapter);
-
-        ImageButton addButton = (ImageButton)view.findViewById(R.id.new_activity_add_button);
-        addButton.setOnClickListener(this);
-
-        newActivity = (EditText) view.findViewById(R.id.new_activity_edit_text);
-
-        activityHour = (EditText) view.findViewById(R.id.new_activity_hour_edit_text);
-        activityMinute = (EditText) view.findViewById(R.id.new_activity_minute_edit_text);
-
-        //Add watcher to move focus to minute text view
-        activityHour.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() == 2) {
-                    activityMinute.requestFocus();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-
-        activityDeadline = (EditText) view.findViewById(R.id.new_activity_deadline_edit_text);
-        activityDeadline.setOnClickListener(this);
+//
+//        ImageButton addButton = (ImageButton)view.findViewById(R.id.new_activity_add_button);
+//        addButton.setOnClickListener(this);
+//
+//        newActivity = (EditText) view.findViewById(R.id.new_activity_edit_text);
+//
+//        activityHour = (EditText) view.findViewById(R.id.new_activity_hour_edit_text);
+//        activityMinute = (EditText) view.findViewById(R.id.new_activity_minute_edit_text);
+//
+//        //Add watcher to move focus to minute text view
+//        activityHour.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                if (s.length() == 2) {
+//                    activityMinute.requestFocus();
+//                }
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable s) {
+//            }
+//        });
+//
+//        activityDeadline = (EditText) view.findViewById(R.id.new_activity_deadline_edit_text);
+//        activityDeadline.setOnClickListener(this);
 
         ImageButton sortButton = (ImageButton) view.findViewById(R.id.sort_button);
         sortButton.setOnClickListener(this);
@@ -146,13 +123,13 @@ public class LogFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.new_activity_add_button:
-                addActivity();
-                httpRequest();
-                return;
-            case R.id.new_activity_deadline_edit_text:
-                inputDeadline();
-                break;
+//            case R.id.new_activity_add_button:
+//                addActivity();
+//                httpRequest();
+//                return;
+//            case R.id.new_activity_deadline_edit_text:
+//                inputDeadline();
+//                break;
             case R.id.sort_button:
                 sortDialog();
                 break;
@@ -294,93 +271,93 @@ public class LogFragment extends Fragment implements View.OnClickListener {
         return columnName;
     }
 
-    /**
-     * Handler method for the add activity button on log fragment.
-     */
-    private void addActivity() {
-        //If the text box is empty do nothing.
-        if (!newActivity.getText().toString().trim().isEmpty()) {
-            long hourField = Long.valueOf( "0" + activityHour.getText().toString() );
-            long minuteField = Long.valueOf( "0" + activityMinute.getText().toString());
-            Long totalMinutes = TimeUnit.MINUTES.convert(hourField, TimeUnit.HOURS)
-                    + minuteField;
-
-            //If no goal is chosen, default to 2 hours. TODO Make default a preference
-            if (totalMinutes == 0l) {
-                totalMinutes = TimeUnit.MINUTES.convert(2, TimeUnit.HOURS);
-            }
-
-            //If no deadline is chosen, default to one week from now. TODO Make default a preference
-            if (!deadlineSet) {
-                deadlineCalendar.setTimeInMillis( deadlineCalendar.getTimeInMillis()
-                        + TimeUnit.MILLISECONDS.convert(7, TimeUnit.DAYS));
-            }
-
-            Task task = new Task(newActivity.getText().toString(), totalMinutes.intValue(),
-                    deadlineCalendar, Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
-            DBHelper.getInstance(getContext()).insertTask(task);
-
-            //Reset input fields
-            newActivity.setText("");
-            activityHour.setText("");
-            activityMinute.setText("");
-            activityDeadline.setText("");
-
-            mAdapter.retrieveTasks();
-            toast("Activity added!");
-            deadlineSet = false;
-        } else {
-            toast(getContext().getString(R.string.toast_no_name_activity_added));
-        }
-    }
+//    /**
+//     * Handler method for the add activity button on log fragment.
+//     */
+//    private void addActivity() {
+//        //If the text box is empty do nothing.
+//        if (!newActivity.getText().toString().trim().isEmpty()) {
+//            long hourField = Long.valueOf( "0" + activityHour.getText().toString() );
+//            long minuteField = Long.valueOf( "0" + activityMinute.getText().toString());
+//            Long totalMinutes = TimeUnit.MINUTES.convert(hourField, TimeUnit.HOURS)
+//                    + minuteField;
+//
+//            //If no goal is chosen, default to 2 hours. TODO Make default a preference
+//            if (totalMinutes == 0l) {
+//                totalMinutes = TimeUnit.MINUTES.convert(2, TimeUnit.HOURS);
+//            }
+//
+//            //If no deadline is chosen, default to one week from now. TODO Make default a preference
+//            if (!deadlineSet) {
+//                deadlineCalendar.setTimeInMillis( deadlineCalendar.getTimeInMillis()
+//                        + TimeUnit.MILLISECONDS.convert(7, TimeUnit.DAYS));
+//            }
+//
+//            Task task = new Task(newActivity.getText().toString(), totalMinutes.intValue(),
+//                    deadlineCalendar, Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
+//            DBHelper.getInstance(getContext()).insertTask(task);
+//
+//            //Reset input fields
+//            newActivity.setText("");
+//            activityHour.setText("");
+//            activityMinute.setText("");
+//            activityDeadline.setText("");
+//
+//            mAdapter.retrieveTasks();
+//            toast("Activity added!");
+//            deadlineSet = false;
+//        } else {
+//            toast(getContext().getString(R.string.toast_no_name_activity_added));
+//        }
+//    }
 
     /**
      * Helper method to input the Deadline/Due date if an activity.
      */
-    private void inputDeadline() {
-        Calendar cal = Calendar.getInstance();
-        DatePickerDialog dialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                deadlineCalendar.set(year, monthOfYear, dayOfMonth);
-                activityDeadline.setText(Task.getDateFormat(deadlineCalendar));
-                deadlineSet = true;
-            }
-        }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
-        dialog.getDatePicker().setMinDate(cal.getTimeInMillis());
-        dialog.show();
-    }
+//    private void inputDeadline() {
+//        Calendar cal = Calendar.getInstance();
+//        DatePickerDialog dialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+//            @Override
+//            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+//                deadlineCalendar.set(year, monthOfYear, dayOfMonth);
+//                activityDeadline.setText(Task.getDateFormat(deadlineCalendar));
+//                deadlineSet = true;
+//            }
+//        }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+//        dialog.getDatePicker().setMinDate(cal.getTimeInMillis());
+//        dialog.show();
+//    }
 
-    /**
-     * Convience method for toasting messages to the user
-     * Toast message is set tot LENGTH_LONG.
-     *
-     * @param toToast the string to be displayed to the user
-     */
-    private void toast(String toToast) {
-        Toast.makeText(getContext(), toToast, Toast.LENGTH_LONG).show();
-    }
-
-    private void httpRequest() {
-        String ping_url = "http://momenta.herokuapp.com/people";
-        new HttpTask(ping_url, "GET") {
-            @Override
-            protected void onPostExecute(JSONObject json) {
-                super.onPostExecute(json);
-                try {
-                    if (json != null) {
-                        JSONArray ping_result = json.getJSONArray("_items");
-                        JSONObject status_obj = ping_result.getJSONObject(0);
-                        //TODO: Removed toast, T'was causing the build to fail on older devices
-//                        String status = status_obj.getString("_created");
-//                        toast(status);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }.execute();
-
-    }
+//    /**
+//     * Convience method for toasting messages to the user
+//     * Toast message is set tot LENGTH_LONG.
+//     *
+//     * @param toToast the string to be displayed to the user
+//     */
+//    private void toast(String toToast) {
+//        Toast.makeText(getContext(), toToast, Toast.LENGTH_LONG).show();
+//    }
+//
+//    private void httpRequest() {
+//        String ping_url = "http://momenta.herokuapp.com/people";
+//        new HttpTask(ping_url, "GET") {
+//            @Override
+//            protected void onPostExecute(JSONObject json) {
+//                super.onPostExecute(json);
+//                try {
+//                    if (json != null) {
+//                        JSONArray ping_result = json.getJSONArray("_items");
+//                        JSONObject status_obj = ping_result.getJSONObject(0);
+//                        //TODO: Removed toast, T'was causing the build to fail on older devices
+////                        String status = status_obj.getString("_created");
+////                        toast(status);
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }.execute();
+//
+//    }
 
 }

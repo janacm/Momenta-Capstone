@@ -27,7 +27,7 @@
         android:gravity="center_horizontal">
 
         <EditText
-            android:id="@+id/dialog_hour_textview"
+            android:id="@+id/dialog_hour_edittext"
             android:layout_width="@dimen/time_dialog_edit_text_width"
             android:layout_height="wrap_content"
             android:text="@string/dialog_hour_string"
@@ -43,7 +43,7 @@
             android:gravity="bottom"
             android:text="@string/H_string"/>
         <EditText
-            android:id="@+id/dialog_minute_textview"
+            android:id="@+id/dialog_minute_edittext"
             android:layout_width="@dimen/time_dialog_edit_text_width"
             android:layout_height="wrap_content"
             android:text="@string/dialog_hour_string"

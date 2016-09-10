@@ -3,144 +3,144 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/new_activity_linear_layout"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_marginLeft="25dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginRight="25dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginEnd="25dp"
-        android:layout_height="wrap_content">
+    <!--<LinearLayout-->
+        <!--android:id="@+id/new_activity_linear_layout"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_marginLeft="25dp"-->
+        <!--android:layout_marginStart="25dp"-->
+        <!--android:layout_marginRight="25dp"-->
+        <!--android:layout_marginTop="25dp"-->
+        <!--android:layout_marginEnd="25dp"-->
+        <!--android:layout_height="wrap_content">-->
 
-        <AutoCompleteTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/new_activity_edit_text"
-            android:maxLength="64"
-            android:hint="@string/new_activity_hint"
-            android:textColor="@color/black"
-            android:inputType="textCapSentences"
-            android:textColorHint="@color/hint_text"
-            android:singleLine="true"
-            android:nextFocusDown="@+id/new_activity_hour_edit_text"
-            android:completionThreshold="1"
-            android:layout_weight="1" />
+        <!--<AutoCompleteTextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/new_activity_edit_text"-->
+            <!--android:maxLength="64"-->
+            <!--android:hint="@string/new_activity_hint"-->
+            <!--android:textColor="@color/black"-->
+            <!--android:inputType="textCapSentences"-->
+            <!--android:textColorHint="@color/hint_text"-->
+            <!--android:singleLine="true"-->
+            <!--android:nextFocusDown="@+id/new_activity_hour_edit_text"-->
+            <!--android:completionThreshold="1"-->
+            <!--android:layout_weight="1" />-->
 
-        <ImageButton
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:id="@+id/new_activity_add_button"
-            android:contentDescription="@string/add_activity_content_description"
-            android:src="@drawable/ic_add_circle_white"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:layout_weight="0" />
+        <!--<ImageButton-->
+            <!--android:layout_width="45dp"-->
+            <!--android:layout_height="45dp"-->
+            <!--android:id="@+id/new_activity_add_button"-->
+            <!--android:contentDescription="@string/add_activity_content_description"-->
+            <!--android:src="@drawable/ic_add_circle_white"-->
+            <!--android:background="?attr/selectableItemBackgroundBorderless"-->
+            <!--android:layout_weight="0" />-->
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="25dp"
-        android:layout_marginStart="25dp"
-        android:layout_below="@+id/new_activity_linear_layout"
-        android:text="@string/goal_string"
-        android:textColor="@color/primary_text"/>
+    <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="5dp"-->
+        <!--android:layout_marginLeft="25dp"-->
+        <!--android:layout_marginStart="25dp"-->
+        <!--android:layout_below="@+id/new_activity_linear_layout"-->
+        <!--android:text="@string/goal_string"-->
+        <!--android:textColor="@color/primary_text"/>-->
 
-    <EditText
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/new_activity_hour_edit_text"
-        android:layout_below="@+id/new_activity_linear_layout"
-        android:layout_marginLeft="25dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="25dp"
-        android:textColor="@color/black"
-        android:inputType="number"
-        android:maxLength="2"
-        android:imeOptions="actionNext" />
+    <!--<EditText-->
+        <!--android:layout_width="50dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/new_activity_hour_edit_text"-->
+        <!--android:layout_below="@+id/new_activity_linear_layout"-->
+        <!--android:layout_marginLeft="25dp"-->
+        <!--android:layout_marginStart="25dp"-->
+        <!--android:layout_marginTop="25dp"-->
+        <!--android:textColor="@color/black"-->
+        <!--android:inputType="number"-->
+        <!--android:maxLength="2"-->
+        <!--android:imeOptions="actionNext" />-->
 
-    <TextView
-        android:id="@+id/new_activity_hour_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/new_activity_linear_layout"
-        android:layout_marginLeft="25dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="25dp"
-        android:layout_alignEnd="@id/new_activity_hour_edit_text"
-        android:layout_alignRight="@id/new_activity_hour_edit_text"
-        android:layout_alignBaseline="@+id/new_activity_hour_edit_text"
-        android:layout_alignBottom="@+id/new_activity_hour_edit_text"
-        android:gravity="end|bottom"
-        android:text="@string/activity_hour_label"
-        android:textSize="18sp"
-        />
+    <!--<TextView-->
+        <!--android:id="@+id/new_activity_hour_label"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/new_activity_linear_layout"-->
+        <!--android:layout_marginLeft="25dp"-->
+        <!--android:layout_marginStart="25dp"-->
+        <!--android:layout_marginTop="25dp"-->
+        <!--android:layout_alignEnd="@id/new_activity_hour_edit_text"-->
+        <!--android:layout_alignRight="@id/new_activity_hour_edit_text"-->
+        <!--android:layout_alignBaseline="@+id/new_activity_hour_edit_text"-->
+        <!--android:layout_alignBottom="@+id/new_activity_hour_edit_text"-->
+        <!--android:gravity="end|bottom"-->
+        <!--android:text="@string/activity_hour_label"-->
+        <!--android:textSize="18sp"-->
+        <!--/>-->
 
-    <EditText
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/new_activity_minute_edit_text"
-        android:layout_below="@+id/new_activity_linear_layout"
-        android:layout_toEndOf="@+id/new_activity_hour_label"
-        android:layout_toRightOf="@+id/new_activity_hour_label"
-        android:layout_marginTop="25dp"
-        android:inputType="number"
-        android:maxLength="2"
-        android:textColor="@color/black"
-        android:imeOptions="actionNext" />
+    <!--<EditText-->
+        <!--android:layout_width="60dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/new_activity_minute_edit_text"-->
+        <!--android:layout_below="@+id/new_activity_linear_layout"-->
+        <!--android:layout_toEndOf="@+id/new_activity_hour_label"-->
+        <!--android:layout_toRightOf="@+id/new_activity_hour_label"-->
+        <!--android:layout_marginTop="25dp"-->
+        <!--android:inputType="number"-->
+        <!--android:maxLength="2"-->
+        <!--android:textColor="@color/black"-->
+        <!--android:imeOptions="actionNext" />-->
 
-    <TextView
-        android:id="@+id/new_activity_minute_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/new_activity_linear_layout"
-        android:layout_toEndOf="@+id/new_activity_hour_label"
-        android:layout_toRightOf="@+id/new_activity_hour_label"
-        android:layout_alignEnd="@id/new_activity_minute_edit_text"
-        android:layout_alignRight="@id/new_activity_minute_edit_text"
-        android:layout_alignBaseline="@+id/new_activity_minute_edit_text"
-        android:layout_alignBottom="@+id/new_activity_minute_edit_text"
-        android:gravity="end|bottom"
-        android:text="@string/activity_minute_label"
-        android:textSize="18sp"
-        />
+    <!--<TextView-->
+        <!--android:id="@+id/new_activity_minute_label"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/new_activity_linear_layout"-->
+        <!--android:layout_toEndOf="@+id/new_activity_hour_label"-->
+        <!--android:layout_toRightOf="@+id/new_activity_hour_label"-->
+        <!--android:layout_alignEnd="@id/new_activity_minute_edit_text"-->
+        <!--android:layout_alignRight="@id/new_activity_minute_edit_text"-->
+        <!--android:layout_alignBaseline="@+id/new_activity_minute_edit_text"-->
+        <!--android:layout_alignBottom="@+id/new_activity_minute_edit_text"-->
+        <!--android:gravity="end|bottom"-->
+        <!--android:text="@string/activity_minute_label"-->
+        <!--android:textSize="18sp"-->
+        <!--/>-->
 
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:id="@+id/new_activity_by_textview"
-        android:layout_below="@+id/new_activity_linear_layout"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginRight="25dp"
-        android:layout_marginEnd="25dp"
-        android:layout_marginTop="5dp"
-        android:layout_toRightOf="@id/new_activity_minute_edit_text"
-        android:layout_toEndOf="@+id/new_activity_minute_edit_text"
-        android:text="@string/deadline_string"
-        android:textColor="@color/primary_text"/>
+    <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:id="@+id/new_activity_by_textview"-->
+        <!--android:layout_below="@+id/new_activity_linear_layout"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="30dp"-->
+        <!--android:layout_marginStart="30dp"-->
+        <!--android:layout_marginRight="25dp"-->
+        <!--android:layout_marginEnd="25dp"-->
+        <!--android:layout_marginTop="5dp"-->
+        <!--android:layout_toRightOf="@id/new_activity_minute_edit_text"-->
+        <!--android:layout_toEndOf="@+id/new_activity_minute_edit_text"-->
+        <!--android:text="@string/deadline_string"-->
+        <!--android:textColor="@color/primary_text"/>-->
 
-    <EditText
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/new_activity_deadline_edit_text"
-        android:layout_toRightOf="@+id/new_activity_minute_edit_text"
-        android:layout_toEndOf="@+id/new_activity_minute_edit_text"
-        android:layout_below="@+id/new_activity_linear_layout"
-        android:layout_marginLeft="30dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginRight="25dp"
-        android:layout_marginTop="25dp"
-        android:hint="@string/deadline_hint"
-        android:textColor="@color/black"
-        android:focusable="false"
-        android:layout_marginEnd="25dp"
-        android:singleLine="true"
-        android:inputType="time" />
+    <!--<EditText-->
+        <!--android:layout_width="150dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/new_activity_deadline_edit_text"-->
+        <!--android:layout_toRightOf="@+id/new_activity_minute_edit_text"-->
+        <!--android:layout_toEndOf="@+id/new_activity_minute_edit_text"-->
+        <!--android:layout_below="@+id/new_activity_linear_layout"-->
+        <!--android:layout_marginLeft="30dp"-->
+        <!--android:layout_marginStart="30dp"-->
+        <!--android:layout_marginRight="25dp"-->
+        <!--android:layout_marginTop="25dp"-->
+        <!--android:hint="@string/deadline_hint"-->
+        <!--android:textColor="@color/black"-->
+        <!--android:focusable="false"-->
+        <!--android:layout_marginEnd="25dp"-->
+        <!--android:singleLine="true"-->
+        <!--android:inputType="time" />-->
 
     <TextView
         android:layout_width="wrap_content"
@@ -151,7 +151,6 @@
         android:layout_marginStart="25dp"
         android:layout_marginRight="25dp"
         android:layout_marginEnd="25dp"
-        android:layout_below="@+id/new_activity_hour_edit_text"
         android:text="@string/ongoing_activity_string"
         android:textSize="20sp"
         android:textColor="@color/colorAccent" />
@@ -160,7 +159,6 @@
         android:id="@+id/sort_order_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/new_activity_hour_edit_text"
         android:layout_toLeftOf="@+id/sort_button"
         android:layout_toStartOf="@+id/sort_button"
         android:layout_marginEnd="4dp"
@@ -194,7 +192,6 @@
         android:layout_marginTop="24dp"
         android:src="@drawable/ic_sort_action"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:layout_below="@+id/new_activity_hour_edit_text"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_marginRight="25dp"
