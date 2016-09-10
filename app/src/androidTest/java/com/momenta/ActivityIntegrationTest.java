@@ -3,6 +3,7 @@ package com.momenta;
 import android.app.Instrumentation;
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.Espresso;
 import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
@@ -13,12 +14,9 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-import static android.support.test.espresso.Espresso.closeSoftKeyboard;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -68,8 +66,8 @@ public class ActivityIntegrationTest {
         Calendar cal = Calendar.getInstance();
         cal.set(year, month, day);
         insertActivity(name, hours, minutes, year, month, day);
-        closeSoftKeyboard();
 
+        onView(withText(R.string.tab_title_log)).perform(click());
         onView(withId(R.id.activity_recycler_view)).perform(
                 RecyclerViewActions.actionOnItemAtPosition(0, click()));
 
@@ -83,16 +81,26 @@ public class ActivityIntegrationTest {
 
     private void insertActivity(String activityName, String hours, String minutes,
                                 int year, int month, int day) {
-        onView(withText(context.getString(R.string.tab_title_log))).perform(click());
-        onView(withId(R.id.new_activity_edit_text)).perform(typeText(activityName));
-        onView(withId(R.id.new_activity_deadline_edit_text)).perform(click());
-
+        onView(withId(R.id.fab)).perform(click());
+        //Delay for a few secs while reveal animation plays
+        try {
+            Thread.sleep(1200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        onView(withId(R.id.newtask_name_edit_text)).perform(typeText(activityName));
+        onView(withId(R.id.newtask_deadline_layout)).perform(click());
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(year, month + 1, day));
         onView(withId(android.R.id.button1)).perform(click());
 
-        onView(withId(R.id.new_activity_hour_edit_text)).perform(typeText(hours));
-        onView(withId(R.id.new_activity_minute_edit_text)).perform(typeText(minutes));
-        onView(withId(R.id.new_activity_add_button)).perform(click());
+        onView(withId(R.id.newtask_goal_layout)).perform(click());
+        onView(withId(R.id.dialog_hour_edittext)).perform(replaceText(hours));
+        onView(withId(R.id.dialog_minute_edittext)).perform(replaceText(minutes));
+        //close soft keyboard
+        Espresso.closeSoftKeyboard();
+        onView(withText(R.string.yes)).perform(click());
+
+        onView(withId(R.id.add_task_done_button)).perform(click());
     }
 
     private void insertInterval(String hours, String mins) {
