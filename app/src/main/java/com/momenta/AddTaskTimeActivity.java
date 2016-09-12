@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -329,7 +328,7 @@ public class AddTaskTimeActivity extends AppCompatActivity {
         for (int i = 0; i < storeSize;  i++) {
             int taskID = store.pop();
             task = DBHelper.getInstance(this).getTask(taskID);
-            task.addTimeInMinutes(intervalValues[i]);
+            task.logTimeSpent(intervalValues[i], this);
 
             DBHelper.getInstance(this).updateTask(task);
 

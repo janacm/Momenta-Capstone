@@ -6,10 +6,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -23,11 +25,11 @@ public class DBHelper extends SQLiteOpenHelper {
     //Database Constants
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "Momenta.db";
+    public static final String TIME_SPENT_DATE_FORMAT = "yyyy-MM-dd";
 
-    //Activity Table Name
+    //Table Names
     public static final String ACTIVITIES_TABLE = "ACTIVITIES_TABLE";
-
-    //Awards Table Name
+    public static final String TIME_SPENT_TABLE = "TIME_SPENT_TABLE";
     public static final String AWARDS_TABLE = "AWARDS_TABLE";
 
     //Activities Table Columns
@@ -55,6 +57,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
     //Common Table Columns
     public static final String USER_ID = "USER_ID";
+    //Time spent table columns
+    public static final String TIME_SPENT_DATE = "TIME_SPENT_DATE";
+    public static final String TIME_SPENT_TIME_SPENT = "TIME_SPENT_TIME_SPENT";
+
 
     //Fields to specify the column & order to sort the result by
     public static final String COLUMN = "COLUMN";
@@ -63,6 +69,14 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String DESC = "DESC";
 
     private helperPreferences helperPreferences;
+
+    private static final String CREATE_TIME_SPENT_TABLE = "CREATE TABLE "
+            + TIME_SPENT_TABLE + "("
+            + TIME_SPENT_DATE + " DATE NOT NULL, "
+            + ACTIVITY_ID + " INTEGER NOT NULL, "
+            + TIME_SPENT_TIME_SPENT + " INTEGER NOT NULL, "
+            + "FOREIGN KEY (" + ACTIVITY_ID + ") references " + ACTIVITIES_TABLE + "(" + ACTIVITY_ID + "), "
+            + "PRIMARY KEY (" + TIME_SPENT_DATE + "," + ACTIVITY_ID + ") )";
 
     // ACTIVITIES table create statement
     private static final String CREATE_ACTIVITIES_TABLE = "CREATE TABLE "
@@ -101,22 +115,11 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_ACTIVITIES_TABLE);
         db.execSQL(CREATE_AWARDS_TABLE);
 //        fillAwardsTable(db);
+        db.execSQL(CREATE_TIME_SPENT_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion == 1) {
-            db.execSQL("ALTER TABLE " + ACTIVITIES_TABLE
-                    + " ADD COLUMN "
-                    + ACTIVITY_PRIORITY + " CHAR(32) NOT NULL DEFAULT 'MEDIUM'");
-            oldVersion++;
-        }
-        if (oldVersion == 2) {
-            db.execSQL("ALTER TABLE " + ACTIVITIES_TABLE + " ADD COLUMN " + ACTIVITY_LAST_MODIFIED
-                    + " LONG NOT NULL DEFAULT 0");
-            db.execSQL("ALTER TABLE " + ACTIVITIES_TABLE + " ADD COLUMN " + ACTIVITY_DATE_CREATED
-                    + " LONG NOT NULL DEFAULT 0");
-        }
     }
 
     /**
@@ -418,42 +421,140 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     //Fill the awrds table with the defined awrds we want in our application
-    private void fillAwardsTable(SQLiteDatabase db){
-        Award commitedAward = new Award("Committed","Logged time towards an activity you previously committed to.", new ArrayList<>(Collections.singletonList(1)));
+    private void fillAwardsTable(SQLiteDatabase db) {
+        Award commitedAward = new Award("Committed", "Logged time towards an activity you previously committed to.", new ArrayList<>(Collections.singletonList(1)));
         commitedAward.setCurrentLevel(0);
         commitedAward.setCurrentProgress(0);
-        insertAward(commitedAward,db);
+        insertAward(commitedAward, db);
 
-        Award neophyteAward = new Award("Neophyte","Logged time for the first time towards an activity.", new ArrayList<>(Collections.singletonList(1)));
+        Award neophyteAward = new Award("Neophyte", "Logged time for the first time towards an activity.", new ArrayList<>(Collections.singletonList(1)));
         neophyteAward.setCurrentLevel(0);
         neophyteAward.setCurrentProgress(0);
-        insertAward(neophyteAward,db);
+        insertAward(neophyteAward, db);
 
-        Award trendSetterAward = new Award("Trend Setter","Completed 5 hours towards a productive activity.", new ArrayList<>(Arrays.asList(1,5,10,50,200)));
+        Award trendSetterAward = new Award("Trend Setter", "Completed 5 hours towards a productive activity.", new ArrayList<>(Arrays.asList(1, 5, 10, 50, 200)));
         trendSetterAward.setCurrentLevel(0);
         trendSetterAward.setCurrentProgress(0);
-        insertAward(trendSetterAward,db);
+        insertAward(trendSetterAward, db);
 
-        Award multiTaskerAward = new Award("Mulit-Tasker","Log time in X different activities.", new ArrayList<>(Arrays.asList(5,10,25,100,200)));
+        Award multiTaskerAward = new Award("Mulit-Tasker", "Log time in X different activities.", new ArrayList<>(Arrays.asList(5, 10, 25, 100, 200)));
         multiTaskerAward.setCurrentLevel(0);
         multiTaskerAward.setCurrentProgress(0);
-        insertAward(multiTaskerAward,db);
+        insertAward(multiTaskerAward, db);
 
-        Award productiveAward = new Award("Productive","Successfully log time towards an activity after seeing the notification X times.", new ArrayList<>(Arrays.asList(10,50,100,500,2000)));
+        Award productiveAward = new Award("Productive", "Successfully log time towards an activity after seeing the notification X times.", new ArrayList<>(Arrays.asList(10, 50, 100, 500, 2000)));
         productiveAward.setCurrentLevel(0);
         productiveAward.setCurrentProgress(0);
-        insertAward(productiveAward,db);
+        insertAward(productiveAward, db);
 
-        Award perfectionnistAward = new Award("Perfectionnist","Spend more than X hours towards an activity.", new ArrayList<>(Arrays.asList(10,20,50,200,500)));
+        Award perfectionnistAward = new Award("Perfectionnist", "Spend more than X hours towards an activity.", new ArrayList<>(Arrays.asList(10, 20, 50, 200, 500)));
         perfectionnistAward.setCurrentLevel(0);
         perfectionnistAward.setCurrentProgress(0);
-        insertAward(perfectionnistAward,db);
+        insertAward(perfectionnistAward, db);
 
-        Award ponctualAward = new Award("Ponctual","Achieve time goal before deadline on X activities.", new ArrayList<>(Arrays.asList(5,10,25,100,200)));
+        Award ponctualAward = new Award("Ponctual", "Achieve time goal before deadline on X activities.", new ArrayList<>(Arrays.asList(5, 10, 25, 100, 200)));
         ponctualAward.setCurrentLevel(0);
         ponctualAward.setCurrentProgress(0);
-        insertAward(ponctualAward,db);
+        insertAward(ponctualAward, db);
+    }
+
+    /**
+     * Helper method to log time spent in the time spent table
+     * first check with primary key to see if already exist, if so
+     * an update query is run, else an insert query is run
+     * @param id the id of the task
+     * @param timeSpent the amount of time spent on the task
+     */
+    public void logTimeSpent(int id, int timeSpent) {
+        SimpleDateFormat sdf = new SimpleDateFormat(TIME_SPENT_DATE_FORMAT);
+        String date = sdf.format(Calendar.getInstance().getTime());
+        Integer currentTimeSpent = 0;
+        ContentValues values = new ContentValues();
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String whereClause = TIME_SPENT_DATE + " =? AND " + ACTIVITY_ID + " =?";
+        String[] whereArgs = new String[]{date, id + ""};
+        Cursor cursor = db.query(TIME_SPENT_TABLE,
+                new String[]{TIME_SPENT_TIME_SPENT},
+                whereClause,
+                whereArgs,
+                null, null, null, null);
+
+        if (cursor != null && cursor.moveToNext()) {
+            currentTimeSpent = cursor.getInt(cursor.getColumnIndex(TIME_SPENT_TIME_SPENT));
+            timeSpent += currentTimeSpent;
+
+            values.put(TIME_SPENT_TIME_SPENT, timeSpent);
+            db.update(TIME_SPENT_TABLE, values, whereClause ,whereArgs);
+            return;
+        }
+
+        values.put(TIME_SPENT_DATE, date);
+        values.put(ACTIVITY_ID, id);
+        values.put(TIME_SPENT_TIME_SPENT, timeSpent);
+
+        db.insert(TIME_SPENT_TABLE, null, values);
+    }
+
+    /**
+     * Helper method to get time logged data grouped by day
+     * @return a HashMap<String, Integer> with the Date(yyyy-MM-dd)
+     * as the key and the amount of time spent in minutes as the value(Integer).
+     */
+    public HashMap<String, Integer> getTimeSpentByDay() {
+        SQLiteDatabase db = getReadableDatabase();
+
+        HashMap<String, Integer> data = new HashMap<>();
+
+        String rawQuery = "SELECT " + TIME_SPENT_DATE + ", " + " SUM( " + TIME_SPENT_TIME_SPENT + " )" +
+                " AS " + TIME_SPENT_TIME_SPENT +
+                " FROM " + TIME_SPENT_TABLE + " GROUP BY " + TIME_SPENT_DATE;
+        Cursor cursor = db.rawQuery(rawQuery, null);
+
+        while (cursor != null && cursor.moveToNext()) {
+            String date = cursor.getString(cursor.getColumnIndex(TIME_SPENT_DATE));
+            int timeSpent = cursor.getInt(cursor.getColumnIndex(TIME_SPENT_TIME_SPENT));
+            data.put( date, timeSpent);
+        }
+
+        if ( cursor != null ) {
+            cursor.close();
+        }
+
+        return data;
+    }
+
+    public HashMap<String, Integer> getTimeSpentForDay(String date) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        HashMap<String, Integer> data = new HashMap<>();
+        String rawQuery = "SELECT " + ACTIVITY_ID + "," + TIME_SPENT_TIME_SPENT
+                + " FROM " + TIME_SPENT_TABLE + " WHERE  " + TIME_SPENT_DATE
+                + "= '" + date + "'";
+
+        Cursor cursor = db.rawQuery(rawQuery, null);
+
+        while (cursor != null && cursor.moveToNext()) {
+            int activityId = cursor.getInt(cursor.getColumnIndex(ACTIVITY_ID));
+            String activityName = "";
+            int timeSpent = cursor.getInt(cursor.getColumnIndex(TIME_SPENT_TIME_SPENT));
 
 
+            String getNameQuery = "SELECT " + ACTIVITY_NAME + " FROM " + ACTIVITIES_TABLE
+                    + " WHERE  " + ACTIVITY_ID + "= '" + activityId + "'";
+            Cursor nameCursor = db.rawQuery(getNameQuery, null);
+
+            if (nameCursor != null && nameCursor.moveToNext()) {
+                activityName = nameCursor.getString(nameCursor.getColumnIndex(ACTIVITY_NAME));
+            }
+
+            data.put( activityName, timeSpent);
+        }
+
+        if (cursor != null) {
+            cursor.close();
+        }
+
+        return data;
     }
 }

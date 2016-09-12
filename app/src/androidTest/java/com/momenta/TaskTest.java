@@ -36,17 +36,17 @@ public class TaskTest {
     public void testAddMinute() {
         Task task = new Task(TASK_NAME, 0, Calendar.getInstance(),
                 Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
-        task.addTimeInMinutes(310);
+        task.logTimeSpent(310, null);
         assertEquals(310, task.getTimeSpent());
 
         task = new Task(TASK_NAME, 30, Calendar.getInstance(),
                 Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
-        task.addTimeInMinutes(30);
+        task.logTimeSpent(30, null);
         assertEquals(30, task.getTimeSpent());
 
         task = new Task(TASK_NAME, 61, Calendar.getInstance(),
                 Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
-        task.addTimeInMinutes(25);
+        task.logTimeSpent(25, null);
         assertEquals(25, task.getTimeSpent());
     }
 
@@ -59,7 +59,7 @@ public class TaskTest {
         Task task = new Task(TASK_NAME, -0, Calendar.getInstance(),
                 Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
         exception.expect(IllegalArgumentException.class);
-        task.addTimeInMinutes(-30);
+        task.logTimeSpent(-30, null);
     }
 
     @Test

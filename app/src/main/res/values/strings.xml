@@ -147,13 +147,16 @@
     <string name="add_time_to_task_next">Next</string>
 
     <string-array name="suggestions">
-        <item>Go To The Gym</item>
+        <item>Go to the gym </item>
         <item>Go Running</item>
-        <item>Go Catch Pokemon</item>
-        <item>Eat alot of food</item>
-        <item>Explore</item>
-        <item>Code in Java</item>
-        <item>Work on this android project</item>
+        <item>Explore </item>
+        <item>Learn to </item>
+        <item>Work on </item>
+    </string-array>
+
+    <string-array name="trends_spinner">
+        <item>Past Week</item>
+        <item>Past Month</item>
     </string-array>
 
     <!--Sign in credentials for Integration testing with Firebase-->
