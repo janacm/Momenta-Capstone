@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
+ * Full-screen activity that pops up at user defined intervals,
+ * prompting the user to log time
  */
 public class ScreenTakeOverActivity extends AppCompatActivity {
     /**
@@ -42,8 +42,6 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
     private static final int UI_ANIMATION_DELAY = 300;
     private final Handler mHideHandler = new Handler();
     private View mContentView;
-    private helperBroadcast broadcast;
-    private final String ARG_PAGE = "Arg_Page";
 
     public Button goButton;
     List<Task> taskList = DBHelper.getInstance(this).getAllTasks();
@@ -170,7 +168,6 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
             startActivity(intent);
         } else {
             Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra(ARG_PAGE, 1);
             startActivity(intent);
         }
     }

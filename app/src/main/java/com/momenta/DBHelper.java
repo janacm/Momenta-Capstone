@@ -5,6 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,7 +18,9 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 /**
  * Provides a connection to android local database.
@@ -557,4 +565,58 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return data;
     }
+
+    //Firebase instances
+    private DatabaseReference mFirebaseDatabaseReference;
+    private String goalDirectory = "";
+    private String timespentDirectory = "";
+
+    /**
+     * Helper method to retrieve all the tasks.
+     * @return ArrayList containing all tasks.
+     */
+    public List<Task> getActiveTasks() {
+        final List<Task> activeTasks = new ArrayList<Task>();
+        final Semaphore semaphore = new Semaphore(0);
+
+        mFirebaseDatabaseReference.child(goalDirectory).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        // Iterate over all tasks
+                        for (DataSnapshot snapshot: dataSnapshot.getChildren() ){
+
+                            Task task = new Task();
+                            task.setId( (String)snapshot.child("id").getValue() );
+                            task.setName( (String)snapshot.child("name").getValue() );
+                            Long goal = (long)snapshot.child("goal").getValue();
+                            task.setGoal( goal.intValue() );
+                            task.setDeadline( (Long)snapshot.child("deadline").getValue() );
+                            task.setDateCreated( (Long)snapshot.child("dateCreated").getValue() );
+                            task.setLastModified( (Long)snapshot.child("lastModified").getValue() );
+                            Long timeSpent = (long)snapshot.child("timeSpent").getValue();
+                            task.setTimeSpent( timeSpent.intValue() );
+                            task.setPriority( (String)snapshot.child("priority").getValue() );
+
+                            // Add task to the list
+                            activeTasks.add(task);
+                        }
+                        semaphore.release();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                }
+        );
+
+        try {
+            semaphore.acquire();
+        } catch (InterruptedException e) {
+            Log.e("DBHelper", Log.getStackTraceString(e));
+        }
+        return activeTasks;
+    }
+
 }

@@ -168,7 +168,6 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
     }
 
-    //TODO should these be else if?
     private void updatePrefSummary(Preference p) {
         if (p instanceof ListPreference) {
             ListPreference listPref = (ListPreference) p;
@@ -213,7 +212,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 //Save time in preferences.
                 String timeSet = hourOfDay + ":" + minute;
-                Date timeSetDate = parseTimeString(timeSet, TWENTY_FOUR_HOUR_FORMAT);
+                Date timeSetDate = parseStringToDate(timeSet, TWENTY_FOUR_HOUR_FORMAT);
                 helperPreferences.savePreferences(TIME.toString(), simpleDateFormat.format(timeSetDate));
                 if (TIME == NOTIFICATION_TIME.START_TIME) {
                     Preference notificationStartTime = findPreference("notification_start_time");
@@ -228,20 +227,32 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     }
 
     /**
-     * Helper method to parse a string to a date object
-     * @param time the string to be parser in the format
-     * @param format the format of the string e.g hh:mm a
-     * @return Date value of the string
+     * Convenience method to format a Date object into a String
+     * @param date the date object to be formatted
+     * @param format the desired format e.g yyyy-MM-dd
+     * @return the formatted String
      */
-    public static Date parseTimeString(String time, String format) {
-        Date date = Calendar.getInstance().getTime();
-        try {
-            SimpleDateFormat tempFormat = new SimpleDateFormat(format);
-            date = tempFormat.parse(time);
-        } catch (ParseException e) {
-            Log.e("SettingsActivity", "Error parsing time");
-            Log.e("SettingsActivity", Log.getStackTraceString(e));
-        }
-        return date;
+    public static String formatDate(Date date, String format) {
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        return sdf.format(date);
     }
+
+    /**
+     * Convenience method to parse a string into a Date object
+     * @param date the string to be parse
+     * @param format the format of the string to be parsed e.g yyyy-MM-dd
+     * @return Equivalent date object of the string, null if there was a parsing error
+     */
+    public static Date parseStringToDate(String date, String format) {
+        Date result;
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        try {
+            result = sdf.parse(date);
+        } catch (ParseException e) {
+            result = null;
+            Log.e("StatsFragment", Log.getStackTraceString(e));
+        }
+        return result;
+    }
+
 }

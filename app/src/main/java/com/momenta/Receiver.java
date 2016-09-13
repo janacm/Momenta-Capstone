@@ -24,7 +24,7 @@ public class Receiver extends WakefulBroadcastReceiver {
 
         //Check to see if current time is earlier than the start time
         String startTimeString = helperPreferences.getPreferences(START_TIME.toString(), "08:30 AM");
-        Date tempDate = SettingsActivity.parseTimeString(startTimeString, SettingsActivity.AM_TIME_FORMAT);
+        Date tempDate = SettingsActivity.parseStringToDate(startTimeString, SettingsActivity.AM_TIME_FORMAT);
         notifCal.setTime(tempDate);
 
         int cHourOfDay = currentCal.get(Calendar.HOUR_OF_DAY);
@@ -44,7 +44,7 @@ public class Receiver extends WakefulBroadcastReceiver {
 
         //Check to see if current time is later than end time
         String endTimeString = helperPreferences.getPreferences(END_TIME.toString(), "08:30 PM");
-        tempDate = SettingsActivity.parseTimeString(endTimeString, SettingsActivity.AM_TIME_FORMAT);
+        tempDate = SettingsActivity.parseStringToDate(endTimeString, SettingsActivity.AM_TIME_FORMAT);
         notifCal.setTime(tempDate);
 
         nHourOfDay = notifCal.get(Calendar.HOUR_OF_DAY);
