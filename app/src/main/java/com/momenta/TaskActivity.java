@@ -79,21 +79,16 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        Log.w(TAG, "Getting fields...");
                         task.setId( (String)dataSnapshot.child("id").getValue() );
                         task.setName( (String)dataSnapshot.child("name").getValue() );
-                        Long goal = (long)dataSnapshot.child("goal").getValue();
-                        task.setGoal( goal.intValue() );
+                        task.setGoal( dataSnapshot.child("goal").getValue(Integer.class) );
                         task.setDeadline( (Long)dataSnapshot.child("deadline").getValue() );
                         task.setDateCreated( (Long)dataSnapshot.child("dateCreated").getValue() );
                         task.setLastModified( (Long)dataSnapshot.child("lastModified").getValue() );
-                        Long timeSpent = (long)dataSnapshot.child("timeSpent").getValue();
-                        task.setTimeSpent( timeSpent.intValue() );
+                        task.setTimeSpent( dataSnapshot.child("timeSpent").getValue(Integer.class) );
                         task.setPriority( (String)dataSnapshot.child("priority").getValue() );
-                        Log.w(TAG, "Initializing fields...");
                         initializeFields();
                         initializePieChart();
-                        Log.w(TAG, "Finished initializing fields");
                     }
 
                     @Override

@@ -15,6 +15,14 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,8 +51,11 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
     private final Handler mHideHandler = new Handler();
     private View mContentView;
 
+    // Firebase Instance
+    private DatabaseReference databaseReference;
+
     public Button goButton;
-    List<Task> taskList = DBHelper.getInstance(this).getAllTasks();
+    List<Task> taskList;
 
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
@@ -106,17 +117,52 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
 
         goButton = (Button)findViewById(R.id.dummy_button);
         goButton.setOnTouchListener(mDelayHideTouchListener);
+        taskList = new ArrayList<>();
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
                 WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
-        if(taskList.size() == 0){
-            goButton.setText(getString(R.string.dummy_button_add_new_task));
-            TextView noTasksAvailable = (TextView)findViewById(R.id.no_tasks_available_text);
-            noTasksAvailable.setVisibility(View.VISIBLE);
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user == null) {
+            return;
         }
+        DatabaseReference databaseReference = firebaseDatabase.getReference();
+        databaseReference.child( user.getUid() + "/goals").addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot wholeData) {
+                        for (DataSnapshot dataSnapshot: wholeData.getChildren()) {
+                            Task task = new Task();
+                            task.setId( (String)dataSnapshot.child("id").getValue() );
+                            task.setName( (String)dataSnapshot.child("name").getValue() );
+                            task.setGoal( dataSnapshot.child("goal").getValue(Integer.class) );
+                            task.setDeadline( (Long)dataSnapshot.child("deadline").getValue() );
+                            task.setDateCreated( (Long)dataSnapshot.child("dateCreated").getValue() );
+                            task.setLastModified( (Long)dataSnapshot.child("lastModified").getValue() );
+                            task.setTimeSpent( dataSnapshot.child("timeSpent").getValue(Integer.class) );
+                            task.setPriority( (String)dataSnapshot.child("priority").getValue() );
+
+                            taskList.add(task);
+                        }
+
+                        if(taskList.size() == 0){
+                            goButton.setText(getString(R.string.dummy_button_add_new_task));
+                            TextView noTasksAvailable = (TextView)findViewById(R.id.no_tasks_available_text);
+                            noTasksAvailable.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                }
+        );
+
 
         //Ring the device
         Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);

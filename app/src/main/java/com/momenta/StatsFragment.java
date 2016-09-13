@@ -51,19 +51,18 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
     /******************  Line Chart Fields  ******************/
     // Holds the data for the line graph: <Date, TIME_SPENT>
     private HashMap<String, Integer> lineGraphData;
-    private HashMap<String, Integer> goalGraphData;
 
-    // Maps the dates to integers: <Count, Date>
-    // i.e 6 days ago =0; 5 days =1,..., today = 6;
+    // Maps the integers to dates: <Count, Date>
     private HashMap<Integer,String> countMapping;
 
     /****************** Pie Chart fields  ******************/
     private PieChart pieChart;
     private TextView pieTextView;
+
+    // Entries to the pie chart
     private ArrayList<PieEntry> pieEntries;
-    // Holds the data for the pie chart.
-    // Key: Date
-    // Value: List containg the names & ids of time spent
+
+    // Holds the data for the pie chart. <Date, List<Task>>
     private HashMap<String, ArrayList> pieGraphData;
 
     /******************  Firebase fields  ******************/
@@ -82,6 +81,7 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Initializing the graph data
         lineGraphData = new HashMap<>();
         pieGraphData = new HashMap<>();
         FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -134,15 +134,11 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
                         drawPieChart();
                     }
 
-
-
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                     }
                 }
         );
-
-
         return view;
     }
 
@@ -153,6 +149,7 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
         if (getView() == null) {
             return;
         }
+
         LineChart lineChart = (LineChart) getView().findViewById(R.id.trends_linechart);
         List<Entry> lineEntries = new ArrayList<>();
         pieTextView = (TextView) getView().findViewById(R.id.trends_day_pie_textview);
@@ -257,17 +254,17 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
 
         tempCal.setTimeInMillis( Calendar.getInstance().getTimeInMillis() );
 
-        String pieDate = SettingsActivity.formatDate(tempCal.getTime(), "EEE, MMM d");
-        pieTextView.setText(pieDate);
-
-        pieDate = SettingsActivity.formatDate(tempCal.getTime(), DBHelper.TIME_SPENT_DATE_FORMAT);
-        Log.d("Stats", "Getting data for " + pieDate);
-        ArrayList<Task> pieDateList = pieGraphData.get(pieDate);
-        Log.d("Stats", "Size of map for " + pieDate + " is: " + pieDateList.size());
-
-        for (Task t: pieDateList) {
-            pieEntries.add(new PieEntry(t.getTimeSpent(), t.getName()));
-        }
+//        String pieDate = SettingsActivity.formatDate(tempCal.getTime(), "EEE, MMM d");
+//        pieTextView.setText(pieDate);
+//
+//        pieDate = SettingsActivity.formatDate(tempCal.getTime(), DBHelper.TIME_SPENT_DATE_FORMAT);
+//        Log.d("Stats", "Getting data for " + pieDate);
+//        ArrayList<Task> pieDateList = pieGraphData.get(pieDate);
+//        Log.d("Stats", "Size of map for " + pieDate + " is: " + pieDateList.size());
+//
+//        for (Task t: pieDateList) {
+//            pieEntries.add(new PieEntry(t.getTimeSpent(), t.getName()));
+//        }
 
         PieDataSet pieDataSet = new PieDataSet(pieEntries, "Time spent");
 
@@ -286,7 +283,10 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
         pieData.setValueTextSize(11f);
         pieData.setValueTextColor(Color.WHITE);
         pieChart.setData(pieData);
-        pieChart.invalidate();
+//        pieChart.invalidate();
+
+        String pieDate = SettingsActivity.formatDate(tempCal.getTime(), DBHelper.TIME_SPENT_DATE_FORMAT);
+        setPieDayData(pieDate);
     }
 
     private void setPieDayData(String dateString){
