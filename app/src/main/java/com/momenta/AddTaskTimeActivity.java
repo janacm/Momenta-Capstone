@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -14,12 +13,25 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
 public class AddTaskTimeActivity extends AppCompatActivity {
     helperPreferences hp;
+
+    private static final String TAG = "AddTaskTimeActivity";
 
     //SeekBar values
     private int intervalTime;
@@ -27,6 +39,7 @@ public class AddTaskTimeActivity extends AppCompatActivity {
     private int intervalMins;
     private int stepValue;
     private int seekbarValue;
+    private Long currTimeSpent;
 
     //UI elements
     TextView taskName;
@@ -36,11 +49,23 @@ public class AddTaskTimeActivity extends AppCompatActivity {
     SeekBar seekbar;
     Button nextBtn;
 
+//<<<<<<< HEAD
     //Data structures to store Task IDs
-    public ArrayList<Integer> tempIDs;
-    private Stack<Integer> taskIDs;
-    private Stack<Integer> store;
+//    public ArrayList<Integer> tempIDs;
+//    private Stack<Integer> taskIDs;
+//    private Stack<Integer> store;
+//    private Task task;
+//=======
+//    private Stack<Integer> taskIDs;
+    private Stack<Map.Entry<String, String>> store;
+    private Stack<Map.Entry<String, String>> taskStask;
     private Task task;
+//>>>>>>> firetrends
+
+    //Firebase instances
+    private DatabaseReference mFirebaseDatabaseReference;
+    private String goalDirectory = "";
+    private String timespentDirectory = "";
 
     //Array to store time spent for each task
     private int intervalValues[];
@@ -59,6 +84,16 @@ public class AddTaskTimeActivity extends AppCompatActivity {
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setElevation(0);
+
+        String date = SettingsActivity.formatDate(Calendar.getInstance().getTime(),
+                DBHelper.TIME_SPENT_DATE_FORMAT);
+        FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (mFirebaseUser != null) {
+            goalDirectory = mFirebaseUser.getUid() + "/goals";
+            timespentDirectory = mFirebaseUser.getUid() + "/" + Task.TIME_SPENT + "/" + date;
+        }
+        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+
 
         taskName = (TextView) findViewById(R.id.add_time_to_task_taskname);
         seekbar = (SeekBar) findViewById(R.id.add_time_to_task_seekbar);
@@ -80,24 +115,33 @@ public class AddTaskTimeActivity extends AppCompatActivity {
         //Retrieve the Task ID stack from previous activity
         Bundle bundle = getIntent().getExtras();
 
+        HashMap<String, String> selectedTasks;
+        if ( bundle!= null ) {
+            selectedTasks = (HashMap<String, String>) bundle.getSerializable("HASH_MAP");
+            taskStask = new Stack<>();
+            for (Map.Entry<String, String> entry : selectedTasks.entrySet()) {
+                taskStask.push(entry);
+            }
+        }
+
         //Set an arraylist to hold the task id's temporarily (stacks cannot be inserted into bundle)
-        tempIDs = (ArrayList<Integer>) bundle.get("Task IDs");
-        taskIDs = new Stack<>();
+        ArrayList<Integer> tempIDs = (ArrayList<Integer>) bundle.get("Task IDs");
+//        taskIDs = new Stack<>();
 
         //Initialize a store stack, which will be used for moving backward.
         store = new Stack<>();
 
         //Contents from the tempIDs arraylist are copied into the item IDs stack
-        for (int i = 0; i < tempIDs.size(); i++) {
-            taskIDs.push(tempIDs.get(i));
-        }
+//        for (int i = 0; i < tempIDs.size(); i++) {
+//            taskIDs.push(tempIDs.get(i));
+//        }
 
         //Initialize the interval values array to store the time intervals for each task
-        intervalValues = new int[taskIDs.size()];
-        numofTasks = taskIDs.size();
+        intervalValues = new int[taskStask.size()];
+        numofTasks = taskStask.size();
 
         //Initially set up the screen for first use
-        setUpScreen(taskIDs);
+        setUpScreen(taskStask);
 
         nextBtn.setOnClickListener(new Button.OnClickListener() {
             @Override
@@ -150,19 +194,20 @@ public class AddTaskTimeActivity extends AppCompatActivity {
     /**
      * Method for setting up the activity to display information for a particular task
      *
-     * @param taskIDs Stack containing the remaining activities left require a time interval to be
+     * @param stack Stack containing the remaining activities left require a time interval to be
      *                set.
      */
-    public void setUpScreen(Stack<Integer> taskIDs) {
+    public void setUpScreen(Stack<Map.Entry<String, String>> stack) {
         //Obtain the ID of the next task
-        task = DBHelper.getInstance(this).getTask(taskIDs.peek());
+//        task = DBHelper.getInstance(this).getTask(taskIDs.peek());
+        Map.Entry<String, String> entry = stack.peek();
 
         //Animate the TextView displaying its text name
-        animate(taskName, task.getName(), 300);
+        animate(taskName, entry.getValue(), 300);
         setUpSeekbar();
 
         //If last or only task, set the text of the next button to be "Done"
-        if(taskIDs.size() == 1){
+        if(taskStask.size() == 1){
             nextBtn.setText(R.string.add_time_to_task_done);
         }
         else{
@@ -285,22 +330,21 @@ public class AddTaskTimeActivity extends AppCompatActivity {
             if (timeToSpare(numofTasks, position, temp, seekbarValue)) {
                 intervalTime = intervalTime - seekbarValue;
                 intervalValues[position] = seekbarValue;
-                store.push(taskIDs.pop());
+                store.push(taskStask.pop());
                 position++;
-                setUpScreen(taskIDs);
+                setUpScreen(taskStask);
             } else {
                 if(!timeToSpare(numofTasks, position, temp, seekbarValue))
                     toast("Not enough time left for remaining tasks");
                 if((temp - seekbarValue) == temp)
                     toast("Must add a time value to the task");
             }
-
         } else {
             if ((position == (numofTasks - 1)) && ((temp - seekbarValue) != temp)) {
                 //When we've completed adding time for the last task, go to the main activity
                 intervalTime = intervalTime - seekbarValue;
                 intervalValues[position] = seekbarValue;
-                store.push(taskIDs.pop());
+                store.push(taskStask.pop());
                 storeInDB();
                 Intent intent = new Intent(this, MainActivity.class);
 
@@ -317,16 +361,15 @@ public class AddTaskTimeActivity extends AppCompatActivity {
 
             }
         }
-
     }
 
 
     // Method for handling the clicking of the back button
     public void moveBack() {
         if (position > 0) {
-            taskIDs.push(store.pop());
+            taskStask.push(store.pop());
             intervalTime = intervalTime + intervalValues[position - 1];
-            setUpScreen(taskIDs);
+            setUpScreen(taskStask);
             position--;
         } else if (position == 0 && store.isEmpty()) {
             finish();
@@ -340,11 +383,58 @@ public class AddTaskTimeActivity extends AppCompatActivity {
         Collections.reverse(store);
         int storeSize = store.size();
         for (int i = 0; i < storeSize;  i++) {
-            int taskID = store.pop();
-            task = DBHelper.getInstance(this).getTask(taskID);
-            task.addTimeInMinutes(intervalValues[i]);
+            final String taskID = store.pop().getKey();
+            final int index = i; // Save final index to be used in anonymous class
+            final String tempTimeDir = timespentDirectory + "/" + taskID;
+            final String tempGoalDir = goalDirectory + "/" + taskID;
 
-            DBHelper.getInstance(this).updateTask(task);
+
+            //Update the timeSpent directory
+            mFirebaseDatabaseReference.child(tempTimeDir).addListenerForSingleValueEvent(
+                    new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            currTimeSpent = 0L;  // Reset the value of current time spent
+                            Long updatedTimeSpent = (long)intervalValues[index];
+                            if ( snapshot.exists() ) {
+                                // If exists update current time spent
+                                currTimeSpent = (long)snapshot.child(Task.TIME_SPENT).getValue();
+                                updatedTimeSpent += currTimeSpent;
+                            }
+
+                            // Update time spent in both places
+                            mFirebaseDatabaseReference.child(tempTimeDir + "/" + Task.TIME_SPENT)
+                                    .setValue(updatedTimeSpent);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+                    }
+            );
+
+            //Update the goal directory
+            mFirebaseDatabaseReference.child(tempGoalDir).addListenerForSingleValueEvent(
+                    new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            currTimeSpent = 0L;  // Reset the value of current time spent
+                            Long updatedTimeSpent = (long)intervalValues[index];
+                            if ( snapshot.exists() ) {
+                                // If exists update current time spent
+                                currTimeSpent = (long)snapshot.child(Task.TIME_SPENT).getValue();
+                                updatedTimeSpent += currTimeSpent;
+                            }
+
+                            mFirebaseDatabaseReference.child(tempGoalDir + "/" +Task.TIME_SPENT)
+                                    .setValue(updatedTimeSpent);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+                    }
+            );
         }
     }
 

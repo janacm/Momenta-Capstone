@@ -2,7 +2,6 @@ package com.momenta;
 
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -27,19 +26,32 @@ import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class TaskActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
+    private static final String TAG = "TaskActivity";
     EditText activityName;
     TextView activityDeadline;
     EditText activityHour;
     EditText activityMinute;
     Task task;
+
+    //Firebase instances
+    private DatabaseReference mFirebaseDatabaseReference;
+    private String directory = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,28 +64,63 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (mFirebaseUser != null) {
+            directory = mFirebaseUser.getUid() + "/goals";
+        }
+        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        task = new Task();
+
         //Get the id of the activity and retrieve it from the DB
         Bundle bundle = getIntent().getExtras();
-        int id = (int) bundle.get(DBHelper.ACTIVITY_ID);
-        task = DBHelper.getInstance(this).getTask(id);
+        final String id = (String) bundle.get(Task.ID);
 
-        //Set the text of the view
+        mFirebaseDatabaseReference.child(directory + "/" + id).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        task.setId( (String)dataSnapshot.child("id").getValue() );
+                        task.setName( (String)dataSnapshot.child("name").getValue() );
+                        task.setGoal( dataSnapshot.child("goal").getValue(Integer.class) );
+                        task.setDeadline( (Long)dataSnapshot.child("deadline").getValue() );
+                        task.setDateCreated( (Long)dataSnapshot.child("dateCreated").getValue() );
+                        task.setLastModified( (Long)dataSnapshot.child("lastModified").getValue() );
+                        task.setTimeSpent( dataSnapshot.child("timeSpent").getValue(Integer.class) );
+                        task.setPriority( (String)dataSnapshot.child("priority").getValue() );
+                        initializeFields();
+                        initializePieChart();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                }
+        );
+
         activityName = (EditText)findViewById(R.id.task_name_edit_text);
-        activityName.setText( task.getName() );
-
         activityHour = (EditText)findViewById(R.id.task_hour_edit_text);
         activityMinute = (EditText)findViewById(R.id.task_minute_edit_text);
+    }
 
-        int minutes = task.getGoalInMinutes(), hours = 0;
+    private void initializeFields() {
+        activityName.setText( task.getName() );
+
+        long minutes = task.getGoal(), hours = 0L;
         if ( ! (minutes < 60) ) {
             hours = minutes/60;
             minutes = minutes % 60;
         }
-
         String taskHours = "" + hours;
         String taskMinutes = "" + minutes;
         activityHour.setText( taskHours );
         activityMinute.setText( taskMinutes );
+
+        activityDeadline = (TextView) findViewById(R.id.task_time_set_deadline);
+        activityDeadline.setText( task.getFormattedDeadline() );
+
+        Spinner spinner = (Spinner)findViewById(R.id.task_priority_spinner);
+        spinner.setOnItemSelectedListener(this);
+        spinner.setSelection(spinnerPosition(task.getPriorityValue()));
 
         //Add watcher to move focus to minute text view
         activityHour.addTextChangedListener(new TextWatcher() {
@@ -93,39 +140,6 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
 
             }
         });
-
-
-        activityDeadline = (TextView) findViewById(R.id.task_time_set_deadline);
-        activityDeadline.setText( task.getFormattedDeadline() );
-
-        Spinner spinner = (Spinner)findViewById(R.id.task_priority_spinner);
-        spinner.setOnItemSelectedListener(this);
-        spinner.setSelection(spinnerPosition(task.getPriority()));
-
-
-        //Setting up the Pie Chart
-        PieChart pieChart = (PieChart) findViewById(R.id.task_activity_chart);
-        pieChart.setCenterText(task.getTimeSpent() + " minutes spent");
-        pieChart.setRotationEnabled(false);
-        pieChart.setHoleRadius(75);
-        pieChart.setDescription("");
-
-        ArrayList<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry(task.getGoalInMinutes() - task.getTimeSpent(), 0));
-        entries.add(new PieEntry(task.getTimeSpent(), 1));
-
-        PieDataSet dataSet = new PieDataSet(entries, "Percentage");
-
-        ArrayList<Integer> colors = new ArrayList<Integer>();
-        colors.add( ContextCompat.getColor(this, R.color.grey) );
-        colors.add( ContextCompat.getColor(this, R.color.colorAccent) );
-
-        dataSet.setColors(colors);
-
-        //Initialize the Pie data
-        PieData data = new PieData(dataSet);
-        data.setDrawValues(false);
-        pieChart.setData(data);
 
     }
 
@@ -159,7 +173,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                 .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        DBHelper.getInstance(getApplicationContext()).deleteTask(task.getId());
+                        mFirebaseDatabaseReference.child(directory + "/" + task.getId()).removeValue();
                         finish();
                     }
                 })
@@ -178,13 +192,13 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
 
     //Handler method for the deadline view being clicked
     public void deadlineOnClick(View v){
-        Calendar cal = task.getDeadline();
+        Calendar cal = task.getDeadlineValue();
         DatePickerDialog dialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 Calendar temp = Calendar.getInstance();
                 temp.set(year, monthOfYear, dayOfMonth);
-                task.setDeadline(temp);
+                task.setDeadlineValue(temp);
                 activityDeadline.setText( Task.getDateFormat(temp) );
             }
         }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
@@ -211,14 +225,12 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
             return;
         }
         task.setName(activityName.getText().toString());
-        task.setGoalInMinutes(totalMinutes.intValue());
-        task.setLastModified(Calendar.getInstance());
+        task.setGoal(totalMinutes.intValue());
+        task.setLastModifiedValue(Calendar.getInstance());
 
-        if ( DBHelper.getInstance(this).updateTask(task) ) {
-            toast(getString(R.string.toast_activity_updated));
-        } else {
-            toast(getString(R.string.toast_problem_updating_activity));
-        }
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put(directory + "/" + task.getId(), task.toMap());
+        mFirebaseDatabaseReference.updateChildren(childUpdates);
         finish();
     }
 
@@ -257,19 +269,19 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         switch(position) {
             case 0:
-                task.setPriority(Task.Priority.VERY_LOW);
+                task.setPriorityValue(Task.Priority.VERY_LOW);
                 break;
             case 1:
-                task.setPriority(Task.Priority.LOW);
+                task.setPriorityValue(Task.Priority.LOW);
                 break;
             case 2:
-                task.setPriority(Task.Priority.MEDIUM);
+                task.setPriorityValue(Task.Priority.MEDIUM);
                 break;
             case 3:
-                task.setPriority(Task.Priority.HIGH);
+                task.setPriorityValue(Task.Priority.HIGH);
                 break;
             case 4:
-                task.setPriority(Task.Priority.VERY_HIGH);
+                task.setPriorityValue(Task.Priority.VERY_HIGH);
                 break;
         }
 
@@ -278,6 +290,38 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         //Do nothing
+    }
+
+    private void initializePieChart() {
+        //Setting up the Pie Chart
+        PieChart pieChart = (PieChart) findViewById(R.id.task_activity_chart);
+        pieChart.setCenterText(task.getTimeSpent() + " minutes spent");
+        pieChart.setRotationEnabled(false);
+        pieChart.setHoleRadius(75);
+        pieChart.setDescription("");
+
+        ArrayList<PieEntry> entries = new ArrayList<>();
+        long goalDiff = task.getGoal() - task.getTimeSpent();
+        if ( goalDiff > 0) {
+            entries.add(new PieEntry(goalDiff, 0));
+        } else {
+            entries.add(new PieEntry(0, 0));
+        }
+        entries.add(new PieEntry(task.getTimeSpent(), 1));
+
+        PieDataSet dataSet = new PieDataSet(entries, "Percentage");
+
+        ArrayList<Integer> colors = new ArrayList<Integer>();
+        colors.add( ContextCompat.getColor(this, R.color.hint_text) );
+        colors.add( ContextCompat.getColor(this, R.color.colorAccent) );
+
+        dataSet.setColors(colors);
+
+        //Initialize the Pie data
+        pieChart.invalidate();
+        PieData data = new PieData(dataSet);
+        data.setDrawValues(false);
+        pieChart.setData(data);
     }
 
 }

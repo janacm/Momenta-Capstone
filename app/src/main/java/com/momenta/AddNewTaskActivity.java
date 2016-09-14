@@ -17,6 +17,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -38,6 +43,10 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
     private  Integer timespentHours = 0;
     private  Integer timespentMins = 0;
     private  Task.Priority PRIORITY = Task.Priority.VERY_LOW;
+
+    //Firebase Instances
+    private DatabaseReference reference;
+    private String directory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +77,12 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
 
         activityGoal.setText(timeSetText(goalHours,goalMins));
         activityTimeSpent.setText(timeSetText(timespentHours,timespentMins));
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        reference = FirebaseDatabase.getInstance().getReference();
+        if ( user!= null ) {
+            directory = user.getUid() + "/goals";
+        }
     }
 
     /**
@@ -261,9 +276,13 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
 
         Task task = new Task(name, totalGoalMinutes.intValue(),
                 deadlineCalendar, Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
-        task.addTimeInMinutes(totalTimeSpentMinutes.intValue());
-        task.setPriority(PRIORITY);
-        DBHelper.getInstance(this).insertTask(task);
+        task.logTimeSpent(totalTimeSpentMinutes.intValue(), this);
+        task.setPriorityValue(PRIORITY);
+
+        String id = reference.child(directory).push().getKey();
+        task.setId(id);
+
+        reference.child(directory + "/" + task.getId()).setValue(task);
         finish();
     }
 

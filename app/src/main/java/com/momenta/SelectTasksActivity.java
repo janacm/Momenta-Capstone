@@ -12,7 +12,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
@@ -76,21 +80,18 @@ public class SelectTasksActivity extends AppCompatActivity {
     //Method for extracting the task IDs and position from the tasks in the list and passing
     //them to the AddTimeToTaskActivity in the form of a stack.
     public void prepareItems() {
-        Map<Integer, Integer> temp = new TreeMap<>(mAdapter.getItemsClickedIDs());
-        int size = temp.size();
+        HashMap<String, String> selectedTasks = mAdapter.getSelectedTasks();
+
+        int size = selectedTasks.size();
         int intervalTime = (intervalHours * 60) + intervalMins;
         if ((size > 0) && ((intervalTime/size) >= 1)){
             Stack<Integer> taskIDs = new Stack<>();
-            Set set = temp.entrySet();
-            for (Object aSet : set) {
-                Map.Entry me = (Map.Entry) aSet;
-                taskIDs.push((Integer) me.getValue());
-            }
-
-            Collections.reverse(taskIDs);
+            Stack<Integer> taskNames = new Stack<>();
 
             Intent intent = new Intent(this, AddTaskTimeActivity.class);
-            intent.putExtra("Task IDs", taskIDs);
+            Bundle extras = new Bundle();
+            extras.putSerializable("HASH_MAP", selectedTasks);
+            intent.putExtras(extras);
             startActivity(intent);
             finish();
         } else {

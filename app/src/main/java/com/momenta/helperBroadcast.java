@@ -50,12 +50,12 @@ public class helperBroadcast {
             // START_TIME - CURRENT_TIME + INTERVAL_TIME
             Calendar alarmStartCal = Calendar.getInstance(); //Variable used to hold the alarm start time
             Calendar tempCal = Calendar.getInstance();
-            tempCal.setTime(SettingsActivity.parseTimeString(startTimeString, SettingsActivity.TIME_FORMAT));
+            tempCal.setTime(SettingsActivity.parseStringToDate(startTimeString, SettingsActivity.AM_TIME_FORMAT));
             alarmStartCal.set(Calendar.HOUR_OF_DAY, tempCal.get(Calendar.HOUR_OF_DAY));
             alarmStartCal.set(Calendar.MINUTE, tempCal.get(Calendar.MINUTE));
 
             Calendar alarmEndCal = Calendar.getInstance();
-            tempCal.setTime(SettingsActivity.parseTimeString(endTimeString, SettingsActivity.TIME_FORMAT));
+            tempCal.setTime(SettingsActivity.parseStringToDate(endTimeString, SettingsActivity.AM_TIME_FORMAT));
             alarmEndCal.set(Calendar.HOUR_OF_DAY, tempCal.get(Calendar.HOUR_OF_DAY));
             alarmEndCal.set(Calendar.MINUTE, tempCal.get(Calendar.MINUTE));
 

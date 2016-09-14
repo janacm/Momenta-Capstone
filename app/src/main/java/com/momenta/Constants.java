@@ -20,4 +20,5 @@ public class Constants {
     public static final String JSONTAG_ACTIVITY_DATE_CREATED = "date_created";
     public static final String JSONTAG_UPLOAD_TASKS = "upload_tasks";
     public static final String JSONTAG_STATUS ="status";
+    public static final String USER_ID ="user_id";
 }

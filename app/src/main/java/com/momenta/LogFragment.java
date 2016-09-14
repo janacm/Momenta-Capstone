@@ -1,36 +1,55 @@
 package com.momenta;
 
 import android.content.DialogInterface;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.Calendar;
 
 /**
  * Created by Joe on 2016-01-31.
  * For Momenta
  */
 
-public class LogFragment extends Fragment implements View.OnClickListener {
+public class LogFragment extends Fragment {
     public static final String ARG_PAGE = "ARG_PAGE";
-    private ActivitiesAdapter mAdapter;
-    private String sortString;
-    private String orderString;
+    public static final String ASC = "ASC";
+    public static final String DESC = "DESC";
+    private EditText newActivity;
+    private EditText activityHour;
+    private EditText activityMinute;
+    private EditText activityDeadline;
+    private final Calendar deadlineCalendar = Calendar.getInstance();
+    private boolean deadlineSet = false;
+    private String sortString = Task.LAST_MODIFIED;
+    private String orderString = ASC;
     private helperPreferences helperPreferences;
-    private ImageView image;
-    private TextView sortColumnnName;
+    private RecyclerView mRecyclerView;
+
+    // Firebase instance variables
+    private String directory = "tests";
+    private DatabaseReference mFirebaseDatabaseReference;
+    private FirebaseRecyclerAdapter<Task, TaskViewHolder> mFirebaseAdapter;
 
     public static LogFragment newInstance(int page) {
         Bundle args = new Bundle();
@@ -43,37 +62,44 @@ public class LogFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        helperPreferences = new helperPreferences(getActivity());
+
+        FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (mFirebaseUser != null) {
+            directory = mFirebaseUser.getUid() + "/goals";
+        }
+
+        // New child entries
+        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        mFirebaseAdapter = buildAdapter(helperPreferences.getPreferences(DBHelper.COLUMN, Task.LAST_MODIFIED));
+
+        setHasOptionsMenu(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        //AutoCompleteTextView actv;
-
         View view = inflater.inflate(R.layout.fragment_log, container, false);
-        RecyclerView mRecyclerView = (RecyclerView) view.findViewById(R.id.activity_recycler_view);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.activity_recycler_view);
 
-//        //actv = (AutoCompleteTextView) view.findViewById(R.id.new_activity_edit_text);
-//        String[] suggestions = getResources().getStringArray(R.array.suggestions);
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, suggestions);
-//        //actv.setAdapter(adapter);
-//
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        mRecyclerView.setLayoutManager(mLayoutManager);
+//        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+//        mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new ActivitiesAdapter(this.getContext(), getActivity());
-        mRecyclerView.setAdapter(mAdapter);
-//
+//=======
+
+        setLayoutManger();
+        mRecyclerView.setAdapter(mFirebaseAdapter);
+
 //        ImageButton addButton = (ImageButton)view.findViewById(R.id.new_activity_add_button);
 //        addButton.setOnClickListener(this);
-//
+
 //        newActivity = (EditText) view.findViewById(R.id.new_activity_edit_text);
-//
+
 //        activityHour = (EditText) view.findViewById(R.id.new_activity_hour_edit_text);
 //        activityMinute = (EditText) view.findViewById(R.id.new_activity_minute_edit_text);
-//
-//        //Add watcher to move focus to minute text view
+
+        //Add watcher to move focus to minute text view
 //        activityHour.addTextChangedListener(new TextWatcher() {
 //            @Override
 //            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -90,39 +116,36 @@ public class LogFragment extends Fragment implements View.OnClickListener {
 //            public void afterTextChanged(Editable s) {
 //            }
 //        });
-//
+
 //        activityDeadline = (EditText) view.findViewById(R.id.new_activity_deadline_edit_text);
 //        activityDeadline.setOnClickListener(this);
-
-        ImageButton sortButton = (ImageButton) view.findViewById(R.id.sort_button);
-        sortButton.setOnClickListener(this);
-
-        helperPreferences = new helperPreferences(getActivity());
-
-        image = (ImageView)view.findViewById(R.id.asc_desc_image);
-        sortColumnnName = (TextView)view.findViewById(R.id.asc_desc_name);
-        sortColumnnName.setText( getSortLabel() );
-        if ( helperPreferences.getPreferences(DBHelper.ORDER, DBHelper.DESC).equals(DBHelper.ASC) ) {
-            image.setBackgroundResource(R.drawable.ic_up_arrow);
-        } else {
-            image.setBackgroundResource(R.drawable.ic_down_arrow);
-        }
-
-        LinearLayout sortLayout = (LinearLayout)view.findViewById(R.id.sort_order_layout);
-        sortLayout.setOnClickListener(this);
+//>>>>>>> firetrends
 
         return view;
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        mAdapter.retrieveTasks();
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        MenuItem item = menu.add(getString(R.string.sort_by));
+        item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                sortDialog();
+                return true;
+            }
+        });
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
+    public void onResume() {
+        super.onResume();
+    }
+
+//    @Override
+//    public void onClick(View v) {
+//        switch (v.getId()) {
+//<<<<<<< HEAD
 //            case R.id.new_activity_add_button:
 //                addActivity();
 //                httpRequest();
@@ -130,25 +153,33 @@ public class LogFragment extends Fragment implements View.OnClickListener {
 //            case R.id.new_activity_deadline_edit_text:
 //                inputDeadline();
 //                break;
-            case R.id.sort_button:
-                sortDialog();
-                break;
-            case R.id.sort_order_layout:
-                orderOnClick();
-                break;
-        }
-    }
+//            case R.id.sort_button:
+//                sortDialog();
+//                break;
+//            case R.id.sort_order_layout:
+//                orderOnClick();
+//                break;
+//        }
+//    }
 
-    private void orderOnClick() {
-        if ( helperPreferences.getPreferences(DBHelper.ORDER, DBHelper.DESC).equals(DBHelper.ASC) ) {
-            helperPreferences.savePreferences(DBHelper.ORDER, DBHelper.DESC);
-            image.setBackgroundResource(R.drawable.ic_down_arrow);
-        } else {
-            helperPreferences.savePreferences(DBHelper.ORDER, DBHelper.ASC);
-            image.setBackgroundResource(R.drawable.ic_up_arrow);
-        }
-        mAdapter.retrieveTasks();
-    }
+//    private void orderOnClick() {
+//        if ( helperPreferences.getPreferences(DBHelper.ORDER, DBHelper.DESC).equals(DBHelper.ASC) ) {
+//            helperPreferences.savePreferences(DBHelper.ORDER, DBHelper.DESC);
+//            image.setBackgroundResource(R.drawable.ic_down_arrow);
+//        } else {
+//            helperPreferences.savePreferences(DBHelper.ORDER, DBHelper.ASC);
+//            image.setBackgroundResource(R.drawable.ic_up_arrow);
+//=======
+//            case R.id.new_activity_add_button:
+//                addActivity();
+//                httpRequest();
+//                return;
+//            case R.id.new_activity_deadline_edit_text:
+//                inputDeadline();
+//                break;
+//>>>>>>> firetrends
+//        }
+//    }
 
     /**
      * On click method for the sort button
@@ -164,13 +195,12 @@ public class LogFragment extends Fragment implements View.OnClickListener {
                     public void onClick(DialogInterface dialog, int which) {
                         helperPreferences.savePreferences(DBHelper.COLUMN, sortString);
                         helperPreferences.savePreferences(DBHelper.ORDER, orderString);
-                        sortColumnnName.setText(getSortLabel());
-                        if ( orderString.equals(DBHelper.ASC) ) {
-                            image.setBackgroundResource(R.drawable.ic_up_arrow);
-                        } else {
-                            image.setBackgroundResource(R.drawable.ic_down_arrow);
-                        }
-                        mAdapter.retrieveTasks();
+
+                        mFirebaseAdapter = buildAdapter(sortString);
+                        mFirebaseAdapter.notifyDataSetChanged();
+                        mRecyclerView.setAdapter(mFirebaseAdapter);
+
+                        setLayoutManger();
                     }
                 })
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
@@ -178,99 +208,75 @@ public class LogFragment extends Fragment implements View.OnClickListener {
                     public void onClick(DialogInterface dialog, int which) {
                     }
                 });
-        ColorStateList colorStateList = new ColorStateList(
-                new int[][]{
-                        new int[]{-android.R.attr.state_checked},
-                        new int[]{android.R.attr.state_checked}
-                },
-                new int[]{
-                        Color.DKGRAY
-                        , Color.rgb(33, 150, 243),
-                }
-        );
 
-        RadioGroup radioGroup = (RadioGroup)dialogView.findViewById(R.id.sort_dialog_group);
+        RadioGroup sortRadioGroup = (RadioGroup)dialogView.findViewById(R.id.sort_dialog_group);
+        RadioGroup orderRadioGroup = (RadioGroup)dialogView.findViewById(R.id.order_dialog_group);
 
-        //Setup for radio buttons to filter.
-        final AppCompatRadioButton radioButtonName = (AppCompatRadioButton)dialogView
-                .findViewById(R.id.radio_button_name);
-        radioButtonName.setSupportButtonTintList(colorStateList);
 
-        AppCompatRadioButton radioButtonLastModified = (AppCompatRadioButton)dialogView
-                .findViewById(R.id.radio_button_last_modified);
-        radioButtonLastModified.setSupportButtonTintList(colorStateList);
-
-        AppCompatRadioButton radioButtonCreated = (AppCompatRadioButton)dialogView
-                .findViewById(R.id.radio_button_date_created);
-        radioButtonCreated.setSupportButtonTintList(colorStateList);
-
-        AppCompatRadioButton radioButtonDeadline = (AppCompatRadioButton)dialogView
-                .findViewById(R.id.radio_button_deadline);
-        radioButtonDeadline.setSupportButtonTintList(colorStateList);
-
-        radioGroup.setOnCheckedChangeListener(
+        sortRadioGroup.setOnCheckedChangeListener(
                 new RadioGroup.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGroup group, int checkedId) {
                         switch ( checkedId ) {
                             case R.id.radio_button_name:
-                                sortString = DBHelper.ACTIVITY_NAME;
-                                orderString = DBHelper.ASC;
+                                sortString = Task.NAME;
                                 break;
                             case R.id.radio_button_date_created:
-                                sortString = DBHelper.ACTIVITY_DATE_CREATED;
-                                orderString = DBHelper.DESC;
+                                sortString = Task.DATE_CREATED;
                                 break;
                             case R.id.radio_button_deadline:
-                                sortString = DBHelper.ACTIVITY_DEADLINE;
-                                orderString = DBHelper.DESC;
+                                sortString = Task.DEADLINE;
                                 break;
                             case R.id.radio_button_last_modified:
-                                sortString = DBHelper.ACTIVITY_LAST_MODIFIED;
-                                orderString = DBHelper.DESC;
+                                sortString = Task.LAST_MODIFIED;
                                 break;
                         }
                     }
                 }
         );
 
-        switch ( helperPreferences.getPreferences(DBHelper.COLUMN, DBHelper.ACTIVITY_LAST_MODIFIED) ) {
-            case DBHelper.ACTIVITY_NAME:
-                radioGroup.check(R.id.radio_button_name);
+        orderRadioGroup.setOnCheckedChangeListener(
+                new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int id) {
+                switch (id) {
+                    case R.id.radio_button_ascending:
+                        orderString = ASC;
+                        break;
+                    case R.id.radio_button_descending:
+                        orderString = DESC;
+                }
+            }
+        });
+
+        //Check current sort and order preference
+        switch ( helperPreferences.getPreferences(DBHelper.COLUMN, Task.LAST_MODIFIED) ) {
+            case Task.NAME:
+                sortRadioGroup.check(R.id.radio_button_name);
                 break;
-            case DBHelper.ACTIVITY_LAST_MODIFIED:
-                radioGroup.check(R.id.radio_button_last_modified);
+            case Task.LAST_MODIFIED:
+                sortRadioGroup.check(R.id.radio_button_last_modified);
                 break;
-            case DBHelper.ACTIVITY_DATE_CREATED:
-                radioGroup.check(R.id.radio_button_date_created);
+            case Task.DATE_CREATED:
+                sortRadioGroup.check(R.id.radio_button_date_created);
                 break;
-            case DBHelper.ACTIVITY_DEADLINE:
-                radioGroup.check(R.id.radio_button_deadline);
+            case Task.DEADLINE:
+                sortRadioGroup.check(R.id.radio_button_deadline);
+                break;
+        }
+        switch ( helperPreferences.getPreferences(DBHelper.ORDER, ASC)) {
+            case ASC:
+                orderRadioGroup.check(R.id.radio_button_ascending);
+                break;
+            case DESC:
+                orderRadioGroup.check(R.id.radio_button_descending);
                 break;
         }
 
         sortDialogBuilder.create().show();
     }
 
-    private String getSortLabel() {
-        String columnName = "";
-        switch ( helperPreferences.getPreferences(DBHelper.COLUMN, DBHelper.ACTIVITY_LAST_MODIFIED) ) {
-            case DBHelper.ACTIVITY_NAME:
-                columnName = getString(R.string.sort_dialog_name);
-                break;
-            case DBHelper.ACTIVITY_LAST_MODIFIED:
-                columnName = getString(R.string.sort_dialog_last_modified);
-                break;
-            case DBHelper.ACTIVITY_DATE_CREATED:
-                columnName = getString(R.string.sort_dialog_date_created);
-                break;
-            case DBHelper.ACTIVITY_DEADLINE:
-                columnName = getString(R.string.sort_dialog_dealine);
-                break;
-        }
-        return columnName;
-    }
-
+//<<<<<<< HEAD
 //    /**
 //     * Handler method for the add activity button on log fragment.
 //     */
@@ -310,6 +316,48 @@ public class LogFragment extends Fragment implements View.OnClickListener {
 //            toast(getContext().getString(R.string.toast_no_name_activity_added));
 //        }
 //    }
+//=======
+//    /**
+//     * Handler method for the add activity button on log fragment.
+//     */
+//    private void addActivity() {
+//        //If the text box is empty do nothing.
+//        if (!newActivity.getText().toString().trim().isEmpty()) {
+//            long hourField = Long.valueOf( "0" + activityHour.getText().toString() );
+//            long minuteField = Long.valueOf( "0" + activityMinute.getText().toString());
+//            Long totalMinutes = TimeUnit.MINUTES.convert(hourField, TimeUnit.HOURS)
+//                    + minuteField;
+//
+//            //If no goal is chosen, default to 2 hours.
+//            if (totalMinutes == 0L) {
+//                totalMinutes = TimeUnit.MINUTES.convert(2, TimeUnit.HOURS);
+//            }
+//
+//            //If no deadline is chosen, default to one week from now.
+//            if (!deadlineSet) {
+//                deadlineCalendar.setTimeInMillis( deadlineCalendar.getTimeInMillis()
+//                        + TimeUnit.MILLISECONDS.convert(7, TimeUnit.DAYS));
+//            }
+//
+//            Task task = new Task(newActivity.getText().toString(), totalMinutes.intValue(),
+//                    deadlineCalendar, Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
+//            String id = mFirebaseDatabaseReference.child(directory).push().getKey();
+//            task.setId(id);
+//            mFirebaseDatabaseReference.child(directory + "/" + id).setValue(task);
+//
+//            //Reset input fields
+//            newActivity.setText("");
+//            activityHour.setText("");
+//            activityMinute.setText("");
+//            activityDeadline.setText("");
+//
+//            toast("Activity added!");
+//            deadlineSet = false;
+//        } else {
+//            toast(getContext().getString(R.string.toast_no_name_activity_added));
+//        }
+//    }
+//>>>>>>> firetrends
 
     /**
      * Helper method to input the Deadline/Due date if an activity.
@@ -359,5 +407,73 @@ public class LogFragment extends Fragment implements View.OnClickListener {
 //        }.execute();
 //
 //    }
+
+    /**
+     * Helper method to build a recycler adapter
+     * @param sortBy the field to sort the taskas by
+     * @return an adapter
+     */
+    private FirebaseRecyclerAdapter<Task, TaskViewHolder> buildAdapter(String sortBy) {
+        return new FirebaseRecyclerAdapter<Task, TaskViewHolder>(
+                Task.class,
+                R.layout.list_item,
+                TaskViewHolder.class,
+                mFirebaseDatabaseReference.child(directory).orderByChild(sortBy)) {
+
+            @Override
+            protected void populateViewHolder(TaskViewHolder viewHolder,
+                                              Task task, int position) {
+                viewHolder.name.setText(task.getName());
+                viewHolder.timeSpent.setText(task.getFormattedTimeSpent());
+                viewHolder.progressBar.setMax(task.getGoal());
+                viewHolder.progressBar.setProgress(task.getTimeSpent());
+            }
+
+            @Override
+            public void onBindViewHolder(TaskViewHolder viewHolder, int position) {
+                super.onBindViewHolder(viewHolder, position);
+
+                final Task task = getItem(position);
+                //Set onClick listener for each activity
+                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getContext(), TaskActivity.class);
+                        intent.putExtra(Task.ID, task.getId());
+                        getContext().startActivity(intent);
+                    }
+                });
+            }
+
+        };
+    }
+
+    private void setLayoutManger() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        orderString = helperPreferences.getPreferences(DBHelper.ORDER, ASC);
+
+        if ( orderString.equals(DESC) ) {
+            layoutManager.setReverseLayout(true);
+            layoutManager.setStackFromEnd(true);
+            mRecyclerView.setLayoutManager(layoutManager);
+        } else {
+            mRecyclerView.setLayoutManager(layoutManager);
+        }
+
+    }
+
+    public static class TaskViewHolder extends RecyclerView.ViewHolder {
+        public TextView name;
+        public TextView timeSpent;
+        public ProgressBar progressBar;
+
+        public TaskViewHolder(View itemView) {
+            super(itemView);
+
+            name = (TextView) itemView.findViewById(R.id.list_item_name);
+            timeSpent = (TextView) itemView.findViewById(R.id.list_item_time_spent);
+            progressBar = (ProgressBar) itemView.findViewById(R.id.progressBar);
+        }
+    }
 
 }

@@ -155,49 +155,6 @@
         android:textSize="20sp"
         android:textColor="@color/colorAccent" />
 
-    <LinearLayout
-        android:id="@+id/sort_order_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/sort_button"
-        android:layout_toStartOf="@+id/sort_button"
-        android:layout_marginEnd="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginTop="24dp"
-        android:background="?attr/selectableItemBackground">
-
-        <TextView
-            android:id="@+id/asc_desc_name"
-            android:layout_width="wrap_content"
-            android:layout_height="25dp"
-            android:layout_gravity="bottom"
-            android:text="@string/sort_dialog_name"
-            android:textColor="@color/primary_text"
-            android:textSize="15sp"/>
-
-        <ImageView
-            android:id="@+id/asc_desc_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/asc_desc_button_content_description"
-            android:background="@drawable/ic_up_arrow"
-            />
-    </LinearLayout>
-
-
-    <ImageButton
-        android:id="@+id/sort_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:src="@drawable/ic_sort_action"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="25dp"
-        android:layout_marginEnd="25dp"
-        android:contentDescription="@string/sort_button_content_description"/>
-
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
