@@ -3,7 +3,7 @@
     <!-- General strings-->
     <string name="app_name">Momenta</string>
     <string name="tab_title_dashboard">Dashboard</string>
-    <string name="tab_title_log">Log</string>
+    <string name="tab_title_log">Goals</string>
     <string name="tab_title_awards">Awards</string>
     <string name="tab_title_trends">Trends</string>
 
