@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "847781900553",
-    "firebase_url": "https://momenta-74fad.firebaseio.com",
-    "project_id": "momenta-74fad",
-    "storage_bucket": "momenta-74fad.appspot.com"
+    "project_number": "670328591705",
+    "firebase_url": "https://momenta-59600.firebaseio.com",
+    "project_id": "momenta-59600",
+    "storage_bucket": "momenta-59600.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:847781900553:android:54a168c714488144",
+        "mobilesdk_app_id": "1:670328591705:android:54a168c714488144",
         "android_client_info": {
           "package_name": "com.momenta"
         }
       },
       "oauth_client": [
         {
-          "client_id": "847781900553-gsh4bvmmn9ak7h5ln6rdf2csgik3d1og.apps.googleusercontent.com",
+          "client_id": "670328591705-s3auga4ft35uid6fnmuujt56njud54np.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.momenta",
@@ -23,13 +23,13 @@
           }
         },
         {
-          "client_id": "847781900553-eb75imprflj7hovn1rqm3tfga8ps7qb2.apps.googleusercontent.com",
+          "client_id": "670328591705-c9l2crk7020mh76p9v3q4v6ajoo6edp5.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBcF6T8K799cTnowUIlAdXiZcZiLgaWF3U"
+          "current_key": "AIzaSyBsW2esljGQkY1HKmIKLvAiupzyr8qXmLU"
         }
       ],
       "services": {
@@ -40,7 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "847781900553-eb75imprflj7hovn1rqm3tfga8ps7qb2.apps.googleusercontent.com",
+              "client_id": "670328591705-c9l2crk7020mh76p9v3q4v6ajoo6edp5.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
