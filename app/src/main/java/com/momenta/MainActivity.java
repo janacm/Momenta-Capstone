@@ -17,13 +17,15 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 
-public class MainActivity extends AppCompatActivity implements SheetLayout.OnFabAnimationEndListener{
+public class MainActivity extends AppCompatActivity implements NetworkStateReceiver.NetworkStateReceiverListener,
+        SheetLayout.OnFabAnimationEndListener{
     private static final int REQUEST_CODE = 1;
     private static final String TAG = "MainActivity";
 
     private ManagerFragmentPagerAdapter fragmentManager;
     private SheetLayout mSheetLayout;
     private FloatingActionButton fab;
+    private NetworkStateReceiver networkStateReceiver;
     private SessionManager sm;
 
     @Override
@@ -43,9 +45,9 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
             return;
         }
 
-//        networkStateReceiver = new NetworkStateReceiver();
-//        networkStateReceiver.addListener(this);
-//        this.registerReceiver(networkStateReceiver, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
+        networkStateReceiver = new NetworkStateReceiver();
+        networkStateReceiver.addListener(this);
+        this.registerReceiver(networkStateReceiver, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
 
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -125,7 +127,6 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
         return super.onOptionsItemSelected(item);
     }
 
-    //<<<<<<< HEAD
     @Override
     public void onFabAnimationEnd() {
         Intent intent = new Intent(this, AddNewTaskActivity.class);
@@ -135,29 +136,32 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_CODE){
+        if (requestCode == REQUEST_CODE) {
             mSheetLayout.contractFab();
         }
-//    public void networkAvailable() {
-//        Log.d(TAG, "Network Available");
-//        //TODO: When network connectivity becomes available, upload all tasks to server. UNCOMMENT next line to do so
-//        //HelperNetwork.uploadTasksToServer(this);
-//    }
+    }
 
-//    @Override
-//    public void networkUnavailable() {
-//        Log.d(TAG, "Network Unavailable");
-//        //Show networ unavailable status
-//    }
-//    @Override
-//    protected void onStop()
-//    {
-//        sm.getGoogleApiClient().disconnect();
-//        try{
-//            unregisterReceiver(networkStateReceiver);
-//        }catch(Exception e){
-//            e.printStackTrace();
-//        }
-//        super.onStop();
+    public void networkAvailable() {
+        Log.d(TAG, "Network Available");
+        //TODO: When network connectivity becomes available, upload all tasks to server. UNCOMMENT next line to do so
+        //HelperNetwork.uploadTasksToServer(this);
+    }
+
+    @Override
+    public void networkUnavailable() {
+        Log.d(TAG, "Network Unavailable");
+        //Show networ unavailable status
+    }
+
+    @Override
+    protected void onStop()
+    {
+        sm.getGoogleApiClient().disconnect();
+        try{
+            unregisterReceiver(networkStateReceiver);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        super.onStop();
     }
 }

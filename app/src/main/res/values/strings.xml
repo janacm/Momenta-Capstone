@@ -104,7 +104,7 @@
 
     <!-- Demo/Sample strings-->
     <string name="sample_duration_string">1h 45m</string>
-    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_button">Go</string>
     <string name="demo_activty">Go swimming</string>
     <string name="later">Later</string>
     <string name="sampleQuote">\"It does not matter how slowly you go as long as you do not stop.\"</string>
