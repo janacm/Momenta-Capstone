@@ -164,6 +164,7 @@
     <!--String related to New Task screen-->
     <string name="new_task_title">Add New Activity</string>
     <string name="new_task_submit_button">D O N E</string>
+    <string name="welcome_to_momenta">Welcome To Momenta</string>
 
     <string-array name="suggestions">
         <item>Go to the gym </item>

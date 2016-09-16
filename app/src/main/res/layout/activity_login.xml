@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="Welcome To Momenta"
+            android:text="@string/welcome_to_momenta"
             android:gravity="center"
             android:textColor="@android:color/white"
             android:textSize="30sp" />
