@@ -128,8 +128,19 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
         builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        goalHours = Integer.valueOf(editTextHours.getText().toString());
-                        goalMins = Integer.valueOf(editTextMinutes.getText().toString());
+                        try{
+                            goalHours = Integer.valueOf(editTextHours.getText().toString());
+                        }
+                        catch (NumberFormatException e){
+                            goalHours = 0;
+                        }
+
+                        try{
+                            goalMins = Integer.valueOf(editTextMinutes.getText().toString());
+                        }
+                        catch (NumberFormatException e){
+                            goalMins = 0;
+                        }
                         activityGoal.setText(timeSetText(goalHours, goalMins));
                     }
                 })
@@ -168,9 +179,20 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
         builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                timespentHours = Integer.valueOf(editTextHours.getText().toString());
-                timespentMins = Integer.valueOf(editTextMinutes.getText().toString());
-                activityTimeSpent.setText(timeSetText(timespentHours, timespentMins) );
+                try{
+                    timespentHours = Integer.valueOf(editTextHours.getText().toString());
+                }
+                catch (NumberFormatException e){
+                    timespentHours = 0;
+                }
+
+                try{
+                    timespentMins = Integer.valueOf(editTextMinutes.getText().toString());
+                }
+                catch (NumberFormatException e){
+                    timespentMins = 0;
+                }
+                activityTimeSpent.setText(timeSetText(timespentHours, timespentMins));
             }
         })
                 .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
@@ -180,7 +202,6 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
                 });
 
         AlertDialog dialog = builder.create();
-
         dialog.show();
     }
     /**

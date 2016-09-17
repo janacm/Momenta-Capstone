@@ -224,7 +224,7 @@ public class SelectTasksActivityTest {
         //Check if the list contains the activities
         onView(withId(R.id.select_tasks_recycler_view)).check(matches(hasDescendant(withText(activityName))));
 
-        //Check that
+        //Check item off the list
         onView(allOf(withId(R.id.item_select_item_checkbox))).check(matches(not(isChecked())));
 
         //Select the next key
