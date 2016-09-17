@@ -3,11 +3,15 @@
     <!-- General strings-->
     <string name="app_name">Momenta</string>
     <string name="tab_title_dashboard">Dashboard</string>
-    <string name="tab_title_log">Log</string>
+    <string name="tab_title_log">Goals</string>
     <string name="tab_title_awards">Awards</string>
     <string name="tab_title_trends">Trends</string>
 
     <!--Sort Dialog Strings-->
+    <string name="sort_by">Sort by</string>
+    <string name="order">Order</string>
+    <string name="ascending">Ascending</string>
+    <string name="descending">Descending</string>
     <string name="sort_dialog_date_created">Date Created</string>
     <string name="sort_dialog_dealine">Deadline</string>
     <string name="sort_dialog_name">Name</string>
@@ -100,7 +104,7 @@
 
     <!-- Demo/Sample strings-->
     <string name="sample_duration_string">1h 45m</string>
-    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_button">Go</string>
     <string name="demo_activty">Go swimming</string>
     <string name="later">Later</string>
     <string name="sampleQuote">\"It does not matter how slowly you go as long as you do not stop.\"</string>
@@ -127,6 +131,7 @@
     <string name="prompt_password">Password (optional)</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
+    <string name="action_signout">Sign Out</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
@@ -159,14 +164,27 @@
     <!--String related to New Task screen-->
     <string name="new_task_title">Add New Activity</string>
     <string name="new_task_submit_button">D O N E</string>
+    <string name="welcome_to_momenta">Welcome To Momenta</string>
 
     <string-array name="suggestions">
-        <item>Go To The Gym</item>
+        <item>Go to the gym </item>
         <item>Go Running</item>
         <item>Go Catch Pokemon</item>
         <item>Eat a lot of food</item>
         <item>Explore</item>
         <item>Code in Java</item>
         <item>Work on this android project</item>
+        <item>Explore </item>
+        <item>Learn to </item>
+        <item>Work on </item>
     </string-array>
+
+    <string-array name="trends_spinner">
+        <item>Past Week</item>
+        <item>Past Month</item>
+    </string-array>
+
+    <!--Sign in credentials for Integration testing with Firebase-->
+    <string name="email">digging62@yahoo.com</string>
+    <string name="password">MomentaFirebase</string>
 </resources>

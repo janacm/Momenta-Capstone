@@ -10,7 +10,7 @@
         android:gravity="center_vertical"
         android:layout_marginLeft="24dp"
         android:layout_marginStart="24dp"
-        android:text="Sort by"
+        android:text="@string/sort_by"
         android:textSize="20sp"
         android:textColor="@color/black"
         android:textStyle="bold" />
@@ -55,7 +55,42 @@
             android:textSize="18sp"
             android:text="@string/sort_dialog_last_modified"
             android:checked="false" />
+    </RadioGroup>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="24dp"
+        android:layout_marginStart="24dp"
+        android:text="@string/order"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:textStyle="bold" />
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="24dp"
+        android:layout_marginStart="24dp"
+        android:id="@+id/order_dialog_group">
+
+        <android.support.v7.widget.AppCompatRadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:id="@+id/radio_button_ascending"
+            android:textSize="18sp"
+            android:text="@string/ascending"/>
+
+        <android.support.v7.widget.AppCompatRadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:id="@+id/radio_button_descending"
+            android:textSize="18sp"
+            android:text="@string/descending"
+            android:checked="false" />
 
     </RadioGroup>
 

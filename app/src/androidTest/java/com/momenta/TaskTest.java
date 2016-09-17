@@ -18,7 +18,7 @@ public class TaskTest {
     public final String TASK_NAME = "TASK_NAME";
 
     @Test
-    public void testTaskGoal() {
+    public void testTaskFormattedGoal() {
         Task task = new Task(TASK_NAME, 60, Calendar.getInstance(),
                 Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
         assertEquals("1H", task.getFormattedGoal());
@@ -36,17 +36,17 @@ public class TaskTest {
     public void testAddMinute() {
         Task task = new Task(TASK_NAME, 0, Calendar.getInstance(),
                 Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
-        task.addTimeInMinutes(310);
+        task.logTimeSpent(310, null);
         assertEquals(310, task.getTimeSpent());
 
         task = new Task(TASK_NAME, 30, Calendar.getInstance(),
                 Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
-        task.addTimeInMinutes(30);
+        task.logTimeSpent(30, null);
         assertEquals(30, task.getTimeSpent());
 
         task = new Task(TASK_NAME, 61, Calendar.getInstance(),
                 Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
-        task.addTimeInMinutes(25);
+        task.logTimeSpent(25, null);
         assertEquals(25, task.getTimeSpent());
     }
 
@@ -59,15 +59,15 @@ public class TaskTest {
         Task task = new Task(TASK_NAME, -0, Calendar.getInstance(),
                 Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
         exception.expect(IllegalArgumentException.class);
-        task.addTimeInMinutes(-30);
+        task.logTimeSpent(-30, null);
     }
 
     @Test
-    public void testGetTime() {
+    public void testGetGoalTime() {
         Task task = new Task(TASK_NAME, 198, Calendar.getInstance(),
                 Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
-        task.setGoalInMinutes(434);
-        assertEquals(434, task.getGoalInMinutes());
+        task.setGoal(434);
+        assertEquals(434, task.getGoal());
     }
 
     @Test
@@ -77,20 +77,20 @@ public class TaskTest {
                 Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
 
         cal.set( 2022, 11, 10);
-        task.setDeadline(cal);
-        assertEquals( cal, task.getDeadline());
+        task.setDeadlineValue(cal);
+        assertEquals( cal, task.getDeadlineValue());
 
         cal.set( 1850, 1, 1);
-        task.setDeadline(cal);
-        assertEquals( cal, task.getDeadline());
+        task.setDeadlineValue(cal);
+        assertEquals( cal, task.getDeadlineValue());
 
         cal.set(1990, 12, 31);
-        task.setDeadline(cal);
-        assertEquals(cal, task.getDeadline());
+        task.setDeadlineValue(cal);
+        assertEquals(cal, task.getDeadlineValue());
 
         cal.set(3098, 6, 30);
-        task.setDeadline(cal);
-        assertEquals( cal, task.getDeadline());
+        task.setDeadlineValue(cal);
+        assertEquals( cal, task.getDeadlineValue());
     }
 
     @Test
@@ -124,20 +124,20 @@ public class TaskTest {
                 Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
 
         cal.set( 2022, 11, 10);
-        task.setLastModified(cal);
-        assertEquals( cal, task.getLastModified());
+        task.setLastModifiedValue(cal);
+        assertEquals( cal, task.getLastModifiedValue());
 
         cal.set( 1850, 1, 1);
-        task.setLastModified(cal);
-        assertEquals( cal, task.getLastModified());
+        task.setLastModifiedValue(cal);
+        assertEquals( cal, task.getLastModifiedValue());
 
         cal.set( 1990, 12, 31);
-        task.setLastModified(cal);
-        assertEquals( cal, task.getLastModified());
+        task.setLastModifiedValue(cal);
+        assertEquals( cal, task.getLastModifiedValue());
 
         cal.set( 3098, 6, 30);
-        task.setLastModified(cal);
-        assertEquals( cal, task.getLastModified());
+        task.setLastModifiedValue(cal);
+        assertEquals( cal, task.getLastModifiedValue());
     }
 
     @Test
@@ -145,27 +145,20 @@ public class TaskTest {
         Task task = new Task(TASK_NAME, 198, Calendar.getInstance(),
                 Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
 
-        task.setPriority(Task.Priority.VERY_LOW);
-        assertEquals(Task.Priority.VERY_LOW, task.getPriority());
+        task.setPriorityValue(Task.Priority.VERY_LOW);
+        assertEquals(Task.Priority.VERY_LOW, task.getPriorityValue());
 
-        task.setPriority(Task.Priority.LOW);
-        assertEquals(Task.Priority.LOW, task.getPriority());
+        task.setPriorityValue(Task.Priority.LOW);
+        assertEquals(Task.Priority.LOW, task.getPriorityValue());
 
-        task.setPriority(Task.Priority.MEDIUM);
-        assertEquals(Task.Priority.MEDIUM, task.getPriority());
+        task.setPriorityValue(Task.Priority.MEDIUM);
+        assertEquals(Task.Priority.MEDIUM, task.getPriorityValue());
 
-        task.setPriority(Task.Priority.HIGH);
-        assertEquals(Task.Priority.HIGH, task.getPriority());
+        task.setPriorityValue(Task.Priority.HIGH);
+        assertEquals(Task.Priority.HIGH, task.getPriorityValue());
 
-        task.setPriority(Task.Priority.VERY_HIGH);
-        assertEquals(Task.Priority.VERY_HIGH, task.getPriority());
+        task.setPriorityValue(Task.Priority.VERY_HIGH);
+        assertEquals(Task.Priority.VERY_HIGH, task.getPriorityValue());
     }
 
-    @Test
-    public void testStripNonDigits() {
-        assertEquals("232221322302382",Task.stripNonDigits("232idfdbld22132ldifdbf2302382ldffib"));
-        assertEquals("10030", Task.stripNonDigits("100H30M"));
-        assertEquals("2082", Task.stripNonDigits("Rea2082RE"));
-        assertEquals( "000030", Task.stripNonDigits("-00H0030M"));
-    }
 }
