@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion '23.0.3'
+    buildToolsVersion '24'
 
     defaultConfig {
         applicationId "com.momenta"
@@ -32,9 +32,9 @@ dependencies {
     compile 'com.android.support:support-v4:24.2.0'
     compile 'me.grantland:autofittextview:0.2.1'
     compile 'org.apache.httpcomponents:httpcore:4.4.1'
-    compile 'org.apache.httpcomponents:httpclient:4.5'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.0-beta1'
     compile 'com.github.coyarzun89:fabtransitionactivity:0.2.0'
+    compile 'com.github.lzyzsd:circleprogress:1.1.0@aar'
 
     // Testing-only dependencies
     // Force usage of support annotations in the test app, since it is internally used by the runner module.
