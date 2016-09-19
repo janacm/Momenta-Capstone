@@ -84,10 +84,7 @@ public class SelectTasksActivity extends AppCompatActivity {
 
         int size = selectedTasks.size();
         int intervalTime = (intervalHours * 60) + intervalMins;
-        if ((size > 0) && ((intervalTime/size) >= 1)){
-            Stack<Integer> taskIDs = new Stack<>();
-            Stack<Integer> taskNames = new Stack<>();
-
+        if ((size > 0) && ((intervalTime/size) >= 1)) {
             Intent intent = new Intent(this, AddTaskTimeActivity.class);
             Bundle extras = new Bundle();
             extras.putSerializable("HASH_MAP", selectedTasks);
