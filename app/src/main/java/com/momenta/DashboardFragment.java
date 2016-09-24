@@ -39,13 +39,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        activityView= inflater.inflate(R.layout.fragment_dashboard, container, false);
-//        TextView textView = (TextView) activityView.findViewById(R.id.textView3);
-//        textView.setText("Fragment #" + mPage);
-//        numberPicker = (NumberPicker) activityView.findViewById(R.id.numberPicker);
-//        numberPicker.setMinValue(1);
-//        numberPicker.setMaxValue(15);
-//        return activityView;
 
         activityView = inflater.inflate(R.layout.fragment_dashboard, container, false);
         button = (Button)activityView.findViewById(R.id.button1);

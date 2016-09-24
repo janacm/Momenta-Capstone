@@ -49,13 +49,8 @@ public class SelectTasksActivityTest {
                 = InstrumentationRegistry.getInstrumentation();
         ctx = instrumentation.getTargetContext();
         db = DBHelper.getInstance(ctx);
-        tearDown();
     }
 
-    @After
-    public void tearDown() {
-        db.getReadableDatabase().delete(DBHelper.SAMPLE_TABLE, null, null);
-    }
 
 
     @Test

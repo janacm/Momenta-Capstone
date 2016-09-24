@@ -49,18 +49,8 @@ public class AddTaskTimeActivity extends AppCompatActivity {
     SeekBar seekbar;
     Button nextBtn;
 
-//<<<<<<< HEAD
-    //Data structures to store Task IDs
-//    public ArrayList<Integer> tempIDs;
-//    private Stack<Integer> taskIDs;
-//    private Stack<Integer> store;
-//    private Task task;
-//=======
-//    private Stack<Integer> taskIDs;
     private Stack<Map.Entry<String, String>> store;
     private Stack<Map.Entry<String, String>> taskStask;
-    private Task task;
-//>>>>>>> firetrends
 
     //Firebase instances
     private DatabaseReference mFirebaseDatabaseReference;
@@ -124,17 +114,9 @@ public class AddTaskTimeActivity extends AppCompatActivity {
             }
         }
 
-        //Set an arraylist to hold the task id's temporarily (stacks cannot be inserted into bundle)
-        ArrayList<Integer> tempIDs = (ArrayList<Integer>) bundle.get("Task IDs");
-//        taskIDs = new Stack<>();
-
         //Initialize a store stack, which will be used for moving backward.
         store = new Stack<>();
 
-        //Contents from the tempIDs arraylist are copied into the item IDs stack
-//        for (int i = 0; i < tempIDs.size(); i++) {
-//            taskIDs.push(tempIDs.get(i));
-//        }
 
         //Initialize the interval values array to store the time intervals for each task
         intervalValues = new int[taskStask.size()];

@@ -24,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -55,7 +56,7 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
 
     public Button goButton;
-    List<Task> taskList;
+    private List<Task> taskList;
 
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
@@ -207,10 +208,14 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
             Intent intent = new Intent(this, SelectTasksActivity.class);
             startActivity(intent);
         } else if (taskList.size() == 1) {
-            ArrayList<String> taskID = new ArrayList<>();
-            taskID.add(taskList.get(0).getId());
+            HashMap<String, String> map = new HashMap<>();
+            Task task = taskList.get(0);
+            map.put(task.getId(), task.getName());
+
+            Bundle extras = new Bundle();
+            extras.putSerializable("HASH_MAP", map);
             Intent intent = new Intent(this, AddTaskTimeActivity.class);
-            intent.putExtra("Task IDs", taskID);
+            intent.putExtras(extras);
             startActivity(intent);
         } else {
             Intent intent = new Intent(this, MainActivity.class);

@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
@@ -294,12 +293,12 @@ public class DBHelper extends SQLiteOpenHelper {
     public long insertAward(Award award,SQLiteDatabase db) {
         ContentValues values = new ContentValues();
         values.put(AWARD_NAME, award.getName());
-        values.put(AWARD_DESCRIPTION, award.getDescription());
+        values.put(AWARD_DESCRIPTION, award.getDescription1());
         values.put(AWARD_CURRENT_LEVEL, award.getCurrentLevel());
         values.put(AWARD_CURRENT_PROGRESS, award.getCurrentProgress());
         values.put(AWARD_MAX_LEVEL, award.getMaxLevel());
-        for (int i = 0; i<award.getProgressLimitForEachLevel().size();i++ ) {
-            values.put("AWARD_LEVEL_"+i+"_PROGRESS_LIMIT", award.getProgressLimitForEachLevel().get(i));
+        for (int i = 0; i<award.getProgressLimitEachLevel().size(); i++ ) {
+            values.put("AWARD_LEVEL_"+i+"_PROGRESS_LIMIT", award.getProgressLimitEachLevel().get(i));
         }
         return db.insert(AWARDS_TABLE, null, values);
     }
@@ -320,7 +319,7 @@ public class DBHelper extends SQLiteOpenHelper {
                         ,AWARD_LEVEL_4_PROGRESS_LIMIT,AWARD_LEVEL_5_PROGRESS_LIMIT,},
                 null, null, null, null, null, null);
         while (cursor != null && cursor.moveToNext()) {
-            int id = cursor.getInt(cursor.getColumnIndex(AWARD_ID));
+            String id = cursor.getString(cursor.getColumnIndex(AWARD_ID));
             String name = cursor.getString(cursor.getColumnIndex(AWARD_NAME));
             String description = cursor.getString(cursor.getColumnIndex(AWARD_DESCRIPTION));
             int currentProgress = cursor.getInt(cursor.getColumnIndex(AWARD_CURRENT_PROGRESS));
@@ -336,7 +335,7 @@ public class DBHelper extends SQLiteOpenHelper {
             if(level3ProgressLimit!=0){progressLimitForEachLevel.add(level3ProgressLimit);}
             if(level4ProgressLimit!=0){progressLimitForEachLevel.add(level4ProgressLimit);}
             if(level5ProgressLimit!=0){progressLimitForEachLevel.add(level5ProgressLimit);}
-            Award a = new Award(id, name, description, progressLimitForEachLevel);
+            Award a = new Award(id, name, description,description, progressLimitForEachLevel);
             a.setCurrentLevel(currentLevel);
             a.setCurrentProgress(currentProgress);
             awardsList.add(a);
@@ -363,7 +362,7 @@ public class DBHelper extends SQLiteOpenHelper {
                         ,AWARD_LEVEL_4_PROGRESS_LIMIT,AWARD_LEVEL_5_PROGRESS_LIMIT},
                 AWARD_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null && cursor.moveToNext()) {
-            int DBid = cursor.getInt(cursor.getColumnIndex(AWARD_ID));
+            String DBid = cursor.getString(cursor.getColumnIndex(AWARD_ID));
             String name = cursor.getString(cursor.getColumnIndex(AWARD_NAME));
             String description = cursor.getString(cursor.getColumnIndex(AWARD_DESCRIPTION));
             int currentProgress = cursor.getInt(cursor.getColumnIndex(AWARD_CURRENT_PROGRESS));
@@ -379,7 +378,7 @@ public class DBHelper extends SQLiteOpenHelper {
             if(level3ProgressLimit!=0){progressLimitForEachLevel.add(level3ProgressLimit);}
             if(level4ProgressLimit!=0){progressLimitForEachLevel.add(level4ProgressLimit);}
             if(level5ProgressLimit!=0){progressLimitForEachLevel.add(level5ProgressLimit);}
-            award = new Award(DBid, name, description, progressLimitForEachLevel);
+            award = new Award(DBid, name, description,description, progressLimitForEachLevel);
             award.setCurrentLevel(currentLevel);
             award.setCurrentProgress(currentProgress);
         } else {
@@ -400,15 +399,15 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(AWARD_NAME, award.getName());
-        cv.put(AWARD_DESCRIPTION, award.getDescription());
+        cv.put(AWARD_DESCRIPTION, award.getDescription1());
         cv.put(AWARD_CURRENT_PROGRESS, award.getCurrentProgress());
         cv.put(AWARD_CURRENT_LEVEL, award.getCurrentLevel());
-        cv.put(AWARD_LEVEL_1_PROGRESS_LIMIT, (award.getProgressLimitForEachLevel().get(0) != null) ? award.getProgressLimitForEachLevel().get(0) : 0);
-        cv.put(AWARD_LEVEL_2_PROGRESS_LIMIT, (award.getProgressLimitForEachLevel().get(1) != null) ? award.getProgressLimitForEachLevel().get(1) : 0);
-        cv.put(AWARD_LEVEL_3_PROGRESS_LIMIT, (award.getProgressLimitForEachLevel().get(2) != null) ? award.getProgressLimitForEachLevel().get(2) : 0);
-        cv.put(AWARD_LEVEL_4_PROGRESS_LIMIT, (award.getProgressLimitForEachLevel().get(3) != null) ? award.getProgressLimitForEachLevel().get(3) : 0);
-        cv.put(AWARD_LEVEL_5_PROGRESS_LIMIT, (award.getProgressLimitForEachLevel().get(4) != null) ? award.getProgressLimitForEachLevel().get(4) : 0);
-        cv.put(AWARD_MAX_LEVEL, award.getProgressLimitForEachLevel().size());
+        cv.put(AWARD_LEVEL_1_PROGRESS_LIMIT, (award.getProgressLimitEachLevel().get(0) != null) ? award.getProgressLimitEachLevel().get(0) : 0);
+        cv.put(AWARD_LEVEL_2_PROGRESS_LIMIT, (award.getProgressLimitEachLevel().get(1) != null) ? award.getProgressLimitEachLevel().get(1) : 0);
+        cv.put(AWARD_LEVEL_3_PROGRESS_LIMIT, (award.getProgressLimitEachLevel().get(2) != null) ? award.getProgressLimitEachLevel().get(2) : 0);
+        cv.put(AWARD_LEVEL_4_PROGRESS_LIMIT, (award.getProgressLimitEachLevel().get(3) != null) ? award.getProgressLimitEachLevel().get(3) : 0);
+        cv.put(AWARD_LEVEL_5_PROGRESS_LIMIT, (award.getProgressLimitEachLevel().get(4) != null) ? award.getProgressLimitEachLevel().get(4) : 0);
+        cv.put(AWARD_MAX_LEVEL, award.getProgressLimitEachLevel().size());
         String[] whereArgs = new String[]{award.getId() + ""};
         int result = 0;
         try {
@@ -431,7 +430,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     //Fill the awrds table with the defined awrds we want in our application
     private void fillAwardsTable(SQLiteDatabase db) {
-        Award commitedAward = new Award("Committed", "Logged time towards an activity you previously committed to.", new ArrayList<>(Collections.singletonList(1)));
+      /*  Award commitedAward = new Award("Committed", "Logged time towards an activity you previously committed to.", new ArrayList<>(Collections.singletonList(1)));
         commitedAward.setCurrentLevel(0);
         commitedAward.setCurrentProgress(0);
         insertAward(commitedAward, db);
@@ -441,7 +440,7 @@ public class DBHelper extends SQLiteOpenHelper {
         neophyteAward.setCurrentProgress(0);
         insertAward(neophyteAward, db);
 
-        Award trendSetterAward = new Award("Trend Setter", "Completed 5 hours towards a productive activity.", new ArrayList<>(Arrays.asList(1, 5, 10, 50, 200)));
+        Award trendSetterAward = new Award("Trend Setter", "Completed 5 hours towards a productive activity", new ArrayList<>(Arrays.asList(1, 5, 10, 50, 200)));
         trendSetterAward.setCurrentLevel(0);
         trendSetterAward.setCurrentProgress(0);
         insertAward(trendSetterAward, db);
@@ -464,7 +463,7 @@ public class DBHelper extends SQLiteOpenHelper {
         Award ponctualAward = new Award("Ponctual", "Achieve time goal before deadline on X activities.", new ArrayList<>(Arrays.asList(5, 10, 25, 100, 200)));
         ponctualAward.setCurrentLevel(0);
         ponctualAward.setCurrentProgress(0);
-        insertAward(ponctualAward, db);
+        insertAward(ponctualAward, db);*/
     }
 
     /**
