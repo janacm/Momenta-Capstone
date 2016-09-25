@@ -7,11 +7,13 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import com.github.fabtransitionactivity.SheetLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -47,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
 
         if (mFirebaseUser != null) {
             awardsDirectory = mFirebaseUser.getUid() + "/awards";
+        }else{//TODO:For testing only. Remove when releasing app
+            awardsDirectory = "cKgs5suhs9UmDsAWF3ajHnF9Gnv1/awards";
         }
 
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();

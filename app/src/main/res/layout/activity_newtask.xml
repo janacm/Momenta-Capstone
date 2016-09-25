@@ -97,7 +97,8 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:onClick="deadlineOnClick"
         android:background="?attr/selectableItemBackground"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:clickable="true">
 
         <ImageView
             android:id="@+id/newtask_deadline_image"
@@ -246,6 +247,7 @@
         android:background="@color/colorPrimaryDark"
         android:onClick="doneOnClick"
         android:layout_alignParentBottom="true"
+        android:clickable="true"
         >
         <TextView
             android:layout_width="match_parent"

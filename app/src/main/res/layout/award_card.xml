@@ -2,7 +2,7 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="150dp"
+    android:layout_height="140dp"
     android:id="@+id/card_view"
     android:layout_margin="5dp"
     card_view:cardBackgroundColor="@color/blue_transparent"
@@ -11,6 +11,7 @@
     android:clickable="false">
 
     <RelativeLayout
+        android:id="@+id/relative_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp" >
@@ -41,17 +42,35 @@
             android:layout_below="@+id/award_title"
             />
         <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:id="@+id/award_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+
+            android:layout_below="@id/award_image"
             card_view:rcProgress="9"
-            card_view:rcSecondaryProgress="1"
             card_view:rcMax="20"
             card_view:rcRadius="20dp"
-            card_view:rcBackgroundPadding="2dp"
             card_view:rcReverse="false"
+            card_view:rcTextProgress="Text Test"
+            card_view:rcTextProgressColor="@color/black"
             card_view:rcProgressColor="@color/accent_material_light_1"
-            card_view:rcSecondaryProgressColor="@color/accent_material_light_2"
-            card_view:rcBackgroundColor="@color/black" />
+            card_view:rcBackgroundPadding="3dp"
+            card_view:rcBackgroundColor="@color/progress_bg"
+            android:layout_toLeftOf="@+id/award_level_progress"
+            android:layout_toRightOf="@+id/award_image"
+            android:layout_alignRight="@+id/award_level_progress"
+            android:layout_marginRight="35dp" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/award_level_progress"
+            android:text="1/5"
+            android:textSize="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignBottom="@id/award_progress_bar"
+            android:layout_marginRight="12dp"
+            android:layout_marginEnd="12dp" />
     </RelativeLayout>
 </android.support.v7.widget.CardView>
