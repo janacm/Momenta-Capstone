@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
     @Override
     protected void onResume() {
         super.onResume();
+        sm.getGoogleApiClient().connect();
     }
 
     @Override
