@@ -10,5 +10,5 @@
     app:navigationContentDescription="@string/abc_action_bar_up_description"
     android:background="?attr/colorAccent"
     app:navigationIcon="?attr/homeAsUpIndicator"
-    app:title="Select tasks to add time to"
+    app:title="@string/select_tasks_to_add_time_to_title"
     />

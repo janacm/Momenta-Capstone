@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="60dp"
+    xmlns:autofit="http://schemas.android.com/tools"
     android:background="?attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
@@ -13,17 +14,19 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="15dp" />
+            android:layout_gravity="center_vertical"
+           />
 
-        <TextView
+        <me.grantland.widget.AutofitTextView
             android:id="@+id/item_select_task_name"
-            android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:layout_marginBottom="30dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginStart="50dp"
-            android:layout_marginTop="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="false"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_gravity="center_vertical"
             android:textColor="@color/black"
             android:text="@string/dummy_content"
-            android:textSize="19sp" />
+            android:textSize="17sp"
+            autofit:minTextSize="13sp"/>
 </LinearLayout>
