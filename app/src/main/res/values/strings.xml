@@ -146,7 +146,7 @@
     <string name="toast_problem_updating_activity">There was a problem updating your activity</string>
 
     <!-- Strings related to the Select tasks to add time towards Screen !-->
-    <string name="select_tasks_to_add_time_to_title">Select tasks to add time to</string>
+    <string name="select_tasks_to_add_time_to_title">Select tasks</string>
     <string name="select_tasks_no_tasks_selected">No task(s) selected</string>
     <string name="select_tasks_cannot_divide_tasks">Cannot divide tasks evenly within time interval</string>
 

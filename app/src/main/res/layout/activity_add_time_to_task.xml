@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:autofit="http://schemas.android.com/tools"
     android:background="@color/colorPrimary"
     android:orientation="vertical">
-
     <TextView
         android:id="@+id/add_time_to_task_title"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_marginTop="20dp"
+        android:layout_gravity="center"
         android:gravity="center"
         android:padding="5dp"
         android:text="@string/add_time_to_task_title1"
@@ -21,35 +22,45 @@
         android:layout_height="45dp"
         android:gravity="center"
         android:padding="5dp"
+        android:layout_below="@id/add_time_to_task_title"
         android:text="@string/add_time_to_task_title2"
+        android:layout_gravity="center"
         android:textSize="23sp" />
 
-    <TextView
+    <me.grantland.widget.AutofitTextView
         android:id="@+id/add_time_to_task_taskname"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
+        android:singleLine="false"
         android:layout_marginTop="60dp"
         android:gravity="center"
+        android:layout_below="@id/add_time_to_task_title2"
+        android:layout_gravity="center"
         android:textSize="26sp"
+        autofit:minTextSize="18sp"
         android:textStyle="bold" />
 
     <SeekBar
         android:id="@+id/add_time_to_task_seekbar"
         android:layout_width="320dp"
         android:layout_height="40dp"
+        android:layout_marginTop="60dp"
+        android:layout_below="@id/add_time_to_task_taskname"
         android:layout_gravity="center"
-        android:layout_marginTop="60dp" />
+        android:layout_centerHorizontal="true" />
 
     <RelativeLayout
+        android:id="@+id/add_time_to_task_seekbar_text"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
-
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_below="@id/add_time_to_task_seekbar"
+        android:gravity="center">
         <TextView
             android:id="@+id/add_time_to_task_seekbar_value_min"
             android:layout_width="100dp"
             android:layout_height="50dp"
             android:layout_marginTop="11dp"
-            android:gravity="start"
             android:text="@string/add_time_to_task_min"
             android:textAlignment="center"
             android:textSize="19sp" />
@@ -58,10 +69,11 @@
             android:id="@+id/add_time_to_task_seekbar_value"
             android:layout_width="100dp"
             android:layout_height="50dp"
-            android:layout_marginLeft="158dp"
-            android:layout_marginStart="158dp"
+            android:layout_gravity="center"
             android:gravity="center"
             android:textAlignment="center"
+            android:layout_toEndOf="@id/add_time_to_task_seekbar_value_min"
+            android:layout_toRightOf="@id/add_time_to_task_seekbar_value_min"
             android:text="@string/add_time_to_task_min"
             android:textSize="25sp" />
 
@@ -69,23 +81,29 @@
             android:id="@+id/add_time_to_task_seekbar_value_max"
             android:layout_width="100dp"
             android:layout_height="50dp"
-            android:layout_marginLeft="310dp"
-            android:layout_marginStart="310dp"
+            android:layout_toEndOf="@id/add_time_to_task_seekbar_value"
+            android:layout_toRightOf="@id/add_time_to_task_seekbar_value"
             android:layout_marginTop="11dp"
             android:textAlignment="center"
-            android:gravity="end"
             android:text="@string/add_time_to_task_min"
             android:textSize="19sp" />
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/add_time_to_task_nextBtn"
-        android:layout_width="120dp"
-        android:layout_height="48dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="70dp"
-        android:background="@color/colorAccent"
-        android:textColor="@color/white"
-        android:text="@string/add_time_to_task_next"
-        android:textSize="15sp" />
-</LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/add_time_to_task_seekbar_text"
+        android:gravity="center_vertical">
+        <Button
+            android:id="@+id/add_time_to_task_nextBtn"
+            android:layout_width="120dp"
+            android:layout_height="48dp"
+            android:background="@color/colorAccent"
+            android:textColor="@color/white"
+            android:text="@string/add_time_to_task_next"
+            android:layout_centerHorizontal="true"
+            android:textSize="15sp"
+            />
+    </RelativeLayout>
+
+</RelativeLayout>
