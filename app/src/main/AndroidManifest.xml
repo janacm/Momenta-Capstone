@@ -43,7 +43,8 @@
             android:theme="@style/momentaTheme.NoActionBar"/>
         <activity android:name=".AddNewTaskActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/momentaTheme.NoActionBar"/>
+            android:theme="@style/momentaTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".AddTaskTimeActivity"
             android:screenOrientation="portrait" />
