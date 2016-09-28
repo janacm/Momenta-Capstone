@@ -28,6 +28,7 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements SheetLayout.OnFabAnimationEndListener{
     private static final int REQUEST_CODE = 1;
+//    private static boolean persistenceEnabled = false;
 
     private SheetLayout mSheetLayout;
     private FloatingActionButton fab;
@@ -39,8 +40,11 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         setContentView(R.layout.activity_main);
+//        if (!persistenceEnabled) {
+//            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+//            persistenceEnabled = true;
+//        }
 
         sm = SessionManager.getInstance(this);
         // Initialize Firebase Auth
