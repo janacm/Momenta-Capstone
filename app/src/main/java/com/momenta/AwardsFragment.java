@@ -46,7 +46,7 @@ public class AwardsFragment extends Fragment {
         if (mFirebaseUser != null) {
             directory = mFirebaseUser.getUid() + "/awards";
         }
-        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        mFirebaseDatabaseReference = FirebaseProvider.getInstance().getReference();
         mFirebaseAdapter = buildAdapter();
     }
 

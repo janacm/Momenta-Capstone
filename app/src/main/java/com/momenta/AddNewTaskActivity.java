@@ -79,7 +79,7 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
         activityTimeSpent.setText(timeSetText(timespentHours,timespentMins));
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        reference = FirebaseDatabase.getInstance().getReference();
+        reference = FirebaseProvider.getInstance().getReference();
         if ( user!= null ) {
             directory = user.getUid() + "/goals";
         }

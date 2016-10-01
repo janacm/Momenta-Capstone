@@ -49,7 +49,7 @@ public class SelectTasksAdapter extends RecyclerView.Adapter<SelectTasksAdapter.
         Log.d(TAG, goalDirectory);
         tasks = new ArrayList<>();
 
-        DatabaseReference mDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference mDatabaseReference = FirebaseProvider.getInstance().getReference();
         mDatabaseReference.child(goalDirectory).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override

@@ -66,7 +66,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         if (mFirebaseUser != null) {
             directory = mFirebaseUser.getUid() + "/goals";
         }
-        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        mFirebaseDatabaseReference = FirebaseProvider.getInstance().getReference();
         task = new Task();
 
         //Get the id of the activity and retrieve it from the DB

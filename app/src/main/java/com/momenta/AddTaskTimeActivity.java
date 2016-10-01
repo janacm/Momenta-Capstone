@@ -76,13 +76,13 @@ public class AddTaskTimeActivity extends AppCompatActivity {
         actionbar.setElevation(0);
 
         String date = SettingsActivity.formatDate(Calendar.getInstance().getTime(),
-                DBHelper.TIME_SPENT_DATE_FORMAT);
+                Constants.TIME_SPENT_DATE_FORMAT);
         FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (mFirebaseUser != null) {
             goalDirectory = mFirebaseUser.getUid() + "/goals";
             timespentDirectory = mFirebaseUser.getUid() + "/" + Task.TIME_SPENT + "/" + date;
         }
-        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        mFirebaseDatabaseReference = FirebaseProvider.getInstance().getReference();
 
 
         taskName = (TextView) findViewById(R.id.add_time_to_task_taskname);

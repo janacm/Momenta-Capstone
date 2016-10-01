@@ -88,7 +88,7 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
         if (mFirebaseUser != null) {
             directory = mFirebaseUser.getUid();
         }
-        databaseReference = FirebaseDatabase.getInstance().getReference();
+        databaseReference = FirebaseProvider.getInstance().getReference();
     }
 
     @Override
@@ -166,7 +166,7 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
         // Check to see if time was logged on each dayt for the past 6 days.
         // If no time was logged for any day, set TIME_SPENT=0 for that day;
         while ( tempCal.getTimeInMillis() < Calendar.getInstance().getTimeInMillis() ) {
-            String date = SettingsActivity.formatDate( tempCal.getTime(), DBHelper.TIME_SPENT_DATE_FORMAT );
+            String date = SettingsActivity.formatDate( tempCal.getTime(), Constants.TIME_SPENT_DATE_FORMAT );
             if ( lineGraphData.get(date) == null ) {
                 //If no time was logged on the day, set time to 0;
                 lineGraphData.put(date, 0);
@@ -285,12 +285,12 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
         pieChart.setData(pieData);
 //        pieChart.invalidate();
 
-        String pieDate = SettingsActivity.formatDate(tempCal.getTime(), DBHelper.TIME_SPENT_DATE_FORMAT);
+        String pieDate = SettingsActivity.formatDate(tempCal.getTime(), Constants.TIME_SPENT_DATE_FORMAT);
         setPieDayData(pieDate);
     }
 
     private void setPieDayData(String dateString){
-        Date date = SettingsActivity.parseStringToDate(dateString, DBHelper.TIME_SPENT_DATE_FORMAT);
+        Date date = SettingsActivity.parseStringToDate(dateString, Constants.TIME_SPENT_DATE_FORMAT);
         pieTextView.setText( SettingsActivity.formatDate(date, "EEE, MMM d") );
 
         Log.d("Stats", "Getting data for " + dateString);
