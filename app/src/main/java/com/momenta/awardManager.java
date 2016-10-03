@@ -45,7 +45,6 @@ public class awardManager {
         databaseReference = firebaseDatabase.getReference();
     }
 
-
     public void increaseAwardProgress(final String awardId, final double progressAmount, final Task task) {
         Log.d("Progress amount", String.valueOf(progressAmount));
         final String award_id = helperPreferences.getPreferences(awardId, "");

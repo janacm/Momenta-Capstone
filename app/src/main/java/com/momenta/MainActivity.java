@@ -173,7 +173,6 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
         if(id == R.id.action_signout){
             sm.signOut();
         }
-
         return super.onOptionsItemSelected(item);
     }
 
