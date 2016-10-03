@@ -118,6 +118,7 @@ public class AddActivityTest {
         //Click Add Activity Button
         onView(withId(R.id.fab)).perform(click());
 
+
         //Delay for a few secs while reveal animation plays
         try {
             Thread.sleep(1200);

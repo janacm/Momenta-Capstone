@@ -6,7 +6,7 @@
     android:id="@+id/card_view"
     android:layout_margin="5dp"
     card_view:cardBackgroundColor="@color/blue_transparent"
-    card_view:cardCornerRadius="12dp"
+    card_view:cardCornerRadius="11dp"
     card_view:contentPadding="1dp"
     android:clickable="false">
 
