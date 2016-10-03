@@ -90,7 +90,7 @@ public class awardManager {
                 }
         );
     }
-
+    //handles some extra awards porgress logic
     public boolean handleAwardTaskProgressIncrease(Award award, String award_id, Task task) {
         String task_id = task.getId();
         //NOTE: Task id array list is empty when get(0) == ""
