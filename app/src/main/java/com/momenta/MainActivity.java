@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         setContentView(R.layout.activity_main);
 
         sm = SessionManager.getInstance(this);
@@ -118,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
     @Override
     protected void onResume() {
         super.onResume();
+        sm.getGoogleApiClient().connect();
     }
 
     @Override
