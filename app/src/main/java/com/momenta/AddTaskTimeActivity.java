@@ -470,6 +470,7 @@ public class AddTaskTimeActivity extends AppCompatActivity {
         return flag;
     }
 
+    //award increase progress logic
     private void handleAwardsProgress(Long progressIncrease, Task task){
 
         //Increase the Neophyte award

@@ -11,7 +11,7 @@ import java.util.Map;
  * For Momenta-Capstone
  */
 public class Award {
-
+    //class for awards
     //Firebase fields
     public static final String ID = "id";
     public static final String NAME = "name";
