@@ -118,7 +118,6 @@ public class AddActivityTest {
         //Click Add Activity Button
         onView(withId(R.id.fab)).perform(click());
 
-
         //Delay for a few secs while reveal animation plays
         try {
             Thread.sleep(1200);
@@ -128,7 +127,6 @@ public class AddActivityTest {
 
         //add activity with a name only
         onView(withId(R.id.newtask_name_edit_text)).perform(typeText(activityName));
-
         //check toast is displayed
         onView(withText(ctx.getString(R.string.toast_activity_added))).inRoot(withDecorView(not(main.getActivity().getWindow().getDecorView())))
                 .check(matches(isDisplayed()));
