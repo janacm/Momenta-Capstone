@@ -53,7 +53,6 @@ public class SelectTasksActivityTest {
 
 
 
-
     @Test
     public void testSelectOneActivity() {
         //Initialize intent

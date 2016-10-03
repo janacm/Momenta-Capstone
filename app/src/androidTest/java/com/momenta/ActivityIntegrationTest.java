@@ -49,8 +49,6 @@ public class ActivityIntegrationTest {
     helperPreferences helperPreferences;
     DatabaseReference reference;
 
-
-
     @Before
     public void before() {
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
@@ -61,6 +59,12 @@ public class ActivityIntegrationTest {
         firebaseDatabase.goOffline();
         reference = firebaseDatabase.getReference();
 
+//        Calendar deadline = Calendar.getInstance();
+//        deadline.setTimeInMillis(deadline.getTimeInMillis() + TimeUnit.MILLISECONDS.convert(30, TimeUnit.HOURS));
+//        Task task = new Task("Initial Task Name", 400, deadline,
+//                Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
+//
+//        reference.child(directory).push().setValue(task);
         try {
             Thread.sleep(750);
         } catch (InterruptedException e) {
@@ -70,8 +74,6 @@ public class ActivityIntegrationTest {
 
     @Test
     public void testSettingsActivity() {
-
-        FirebaseAuth.getInstance().signInWithEmailAndPassword("cmomenta@gmail.com","CMomenta4911");
         //Go to settings activity.
         onView(withId(R.id.action_settings)).perform(click());
         onView(withText(R.string.interval_time_title)).perform(click());
