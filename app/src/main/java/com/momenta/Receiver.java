@@ -15,6 +15,14 @@ public class Receiver extends WakefulBroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        //On boot
+        if ("android.intent.action.BOOT_COMPLETED".equals(intent.getAction())) {
+            Log.d("BootBroadcast","BootBroadcast received");
+            helperBroadcast helperBroadcast = new helperBroadcast(context);
+            helperBroadcast.sendBroadcast();
+            return;
+        }
+
         //Check to see if the alarm is still valid & is within its time limits
         Calendar currentCal = Calendar.getInstance();
         Calendar notifCal = Calendar.getInstance();
@@ -59,6 +67,7 @@ public class Receiver extends WakefulBroadcastReceiver {
             helperBroadcast.sendBroadcast();
             return;
         }
+
 
         Log.d("Receiver", "Notifying!!");
         Intent sIntent = new Intent(context, ScreenTakeOverActivity.class);
