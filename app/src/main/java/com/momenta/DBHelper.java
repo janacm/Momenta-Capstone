@@ -290,61 +290,14 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param award The task to be inserted into the database.
      * @return the row ID of the newly inserted row, or -1 if an error occurred
      */
-    public long insertAward(Award award,SQLiteDatabase db) {
-        ContentValues values = new ContentValues();
-        values.put(AWARD_NAME, award.getName());
-        values.put(AWARD_DESCRIPTION, award.getDescription1());
-        values.put(AWARD_CURRENT_LEVEL, award.getCurrentLevel());
-        values.put(AWARD_CURRENT_PROGRESS, award.getCurrentProgress());
-        values.put(AWARD_MAX_LEVEL, award.getMaxLevel());
-        for (int i = 0; i<award.getProgressLimitEachLevel().size(); i++ ) {
-            values.put("AWARD_LEVEL_"+i+"_PROGRESS_LIMIT", award.getProgressLimitEachLevel().get(i));
-        }
-        return db.insert(AWARDS_TABLE, null, values);
-    }
+
 
     /**
      * Used to retrieve all the awards in the database.
      *
      * @return ArrayList containing all awards.
      */
-    public List<Award> getAllAwards() {
-        SQLiteDatabase db = getReadableDatabase();
 
-        List<Award> awardsList = new ArrayList<>();
-
-        Cursor cursor = db.query(AWARDS_TABLE,
-                new String[]{AWARD_ID, AWARD_NAME, AWARD_DESCRIPTION, AWARD_CURRENT_PROGRESS, AWARD_CURRENT_PROGRESS,
-                        AWARD_MAX_LEVEL, AWARD_LEVEL_1_PROGRESS_LIMIT,AWARD_LEVEL_2_PROGRESS_LIMIT,AWARD_LEVEL_3_PROGRESS_LIMIT
-                        ,AWARD_LEVEL_4_PROGRESS_LIMIT,AWARD_LEVEL_5_PROGRESS_LIMIT,},
-                null, null, null, null, null, null);
-        while (cursor != null && cursor.moveToNext()) {
-            String id = cursor.getString(cursor.getColumnIndex(AWARD_ID));
-            String name = cursor.getString(cursor.getColumnIndex(AWARD_NAME));
-            String description = cursor.getString(cursor.getColumnIndex(AWARD_DESCRIPTION));
-            int currentProgress = cursor.getInt(cursor.getColumnIndex(AWARD_CURRENT_PROGRESS));
-            int currentLevel = cursor.getInt(cursor.getColumnIndex(AWARD_CURRENT_LEVEL));
-            int level1ProgressLimit = cursor.getInt(cursor.getColumnIndex(AWARD_LEVEL_1_PROGRESS_LIMIT));
-            int level2ProgressLimit = cursor.getInt(cursor.getColumnIndex(AWARD_LEVEL_2_PROGRESS_LIMIT));
-            int level3ProgressLimit = cursor.getInt(cursor.getColumnIndex(AWARD_LEVEL_3_PROGRESS_LIMIT));
-            int level4ProgressLimit = cursor.getInt(cursor.getColumnIndex(AWARD_LEVEL_4_PROGRESS_LIMIT));
-            int level5ProgressLimit = cursor.getInt(cursor.getColumnIndex(AWARD_LEVEL_5_PROGRESS_LIMIT));
-            List<Integer> progressLimitForEachLevel = new ArrayList<>();
-            if(level1ProgressLimit!=0){progressLimitForEachLevel.add(level1ProgressLimit);}
-            if(level2ProgressLimit!=0){progressLimitForEachLevel.add(level2ProgressLimit);}
-            if(level3ProgressLimit!=0){progressLimitForEachLevel.add(level3ProgressLimit);}
-            if(level4ProgressLimit!=0){progressLimitForEachLevel.add(level4ProgressLimit);}
-            if(level5ProgressLimit!=0){progressLimitForEachLevel.add(level5ProgressLimit);}
-            Award a = new Award(id, name, description,description, progressLimitForEachLevel);
-            a.setCurrentLevel(currentLevel);
-            a.setCurrentProgress(currentProgress);
-            awardsList.add(a);
-        }
-        if (cursor != null) {
-            cursor.close();
-        }
-        return awardsList;
-    }
 
     /**
      * Used to retrieve a single award from the db
@@ -353,40 +306,6 @@ public class DBHelper extends SQLiteOpenHelper {
      * @return Award object of the task with the corresponding id
      * or null if no task with the id could be found.
      */
-    public Award getAward(int id) {
-        SQLiteDatabase db = getReadableDatabase();
-        Award award;
-        Cursor cursor = db.query(ACTIVITIES_TABLE,
-                new String[]{AWARD_ID, AWARD_NAME, AWARD_DESCRIPTION, AWARD_CURRENT_PROGRESS, AWARD_CURRENT_PROGRESS,
-                        AWARD_MAX_LEVEL, AWARD_LEVEL_1_PROGRESS_LIMIT,AWARD_LEVEL_2_PROGRESS_LIMIT,AWARD_LEVEL_3_PROGRESS_LIMIT
-                        ,AWARD_LEVEL_4_PROGRESS_LIMIT,AWARD_LEVEL_5_PROGRESS_LIMIT},
-                AWARD_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
-        if (cursor != null && cursor.moveToNext()) {
-            String DBid = cursor.getString(cursor.getColumnIndex(AWARD_ID));
-            String name = cursor.getString(cursor.getColumnIndex(AWARD_NAME));
-            String description = cursor.getString(cursor.getColumnIndex(AWARD_DESCRIPTION));
-            int currentProgress = cursor.getInt(cursor.getColumnIndex(AWARD_CURRENT_PROGRESS));
-            int currentLevel = cursor.getInt(cursor.getColumnIndex(AWARD_CURRENT_LEVEL));
-            int level1ProgressLimit = cursor.getInt(cursor.getColumnIndex(AWARD_LEVEL_1_PROGRESS_LIMIT));
-            int level2ProgressLimit = cursor.getInt(cursor.getColumnIndex(AWARD_LEVEL_2_PROGRESS_LIMIT));
-            int level3ProgressLimit = cursor.getInt(cursor.getColumnIndex(AWARD_LEVEL_3_PROGRESS_LIMIT));
-            int level4ProgressLimit = cursor.getInt(cursor.getColumnIndex(AWARD_LEVEL_4_PROGRESS_LIMIT));
-            int level5ProgressLimit = cursor.getInt(cursor.getColumnIndex(AWARD_LEVEL_5_PROGRESS_LIMIT));
-            List<Integer> progressLimitForEachLevel = new ArrayList<>();
-            if(level1ProgressLimit!=0){progressLimitForEachLevel.add(level1ProgressLimit);}
-            if(level2ProgressLimit!=0){progressLimitForEachLevel.add(level2ProgressLimit);}
-            if(level3ProgressLimit!=0){progressLimitForEachLevel.add(level3ProgressLimit);}
-            if(level4ProgressLimit!=0){progressLimitForEachLevel.add(level4ProgressLimit);}
-            if(level5ProgressLimit!=0){progressLimitForEachLevel.add(level5ProgressLimit);}
-            award = new Award(DBid, name, description,description, progressLimitForEachLevel);
-            award.setCurrentLevel(currentLevel);
-            award.setCurrentProgress(currentProgress);
-        } else {
-            return null;
-        }
-        cursor.close();
-        return award;
-    }
 
     /**
      * Used to update the fields of an award in the DB matching the id of
@@ -395,27 +314,6 @@ public class DBHelper extends SQLiteOpenHelper {
      * @param award the updated task fields to be matched
      * @return true if the operation was successful and false otherwise.
      */
-    public boolean updateAward(Award award) {
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put(AWARD_NAME, award.getName());
-        cv.put(AWARD_DESCRIPTION, award.getDescription1());
-        cv.put(AWARD_CURRENT_PROGRESS, award.getCurrentProgress());
-        cv.put(AWARD_CURRENT_LEVEL, award.getCurrentLevel());
-        cv.put(AWARD_LEVEL_1_PROGRESS_LIMIT, (award.getProgressLimitEachLevel().get(0) != null) ? award.getProgressLimitEachLevel().get(0) : 0);
-        cv.put(AWARD_LEVEL_2_PROGRESS_LIMIT, (award.getProgressLimitEachLevel().get(1) != null) ? award.getProgressLimitEachLevel().get(1) : 0);
-        cv.put(AWARD_LEVEL_3_PROGRESS_LIMIT, (award.getProgressLimitEachLevel().get(2) != null) ? award.getProgressLimitEachLevel().get(2) : 0);
-        cv.put(AWARD_LEVEL_4_PROGRESS_LIMIT, (award.getProgressLimitEachLevel().get(3) != null) ? award.getProgressLimitEachLevel().get(3) : 0);
-        cv.put(AWARD_LEVEL_5_PROGRESS_LIMIT, (award.getProgressLimitEachLevel().get(4) != null) ? award.getProgressLimitEachLevel().get(4) : 0);
-        cv.put(AWARD_MAX_LEVEL, award.getProgressLimitEachLevel().size());
-        String[] whereArgs = new String[]{award.getId() + ""};
-        int result = 0;
-        try {
-            result = db.update(AWARDS_TABLE, cv, AWARD_ID + " = ?", whereArgs);
-        } catch (Exception e) {
-        }
-        return result > 0;
-    }
 
     /**
      * Method to delete award from the database
