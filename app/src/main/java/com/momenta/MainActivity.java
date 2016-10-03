@@ -102,13 +102,40 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
         mSheetLayout.setFab(fab);
         mSheetLayout.setFabAnimationEndListener(this);
 
-        //Check if awards table is empty before. if so, fill it in
         mFirebaseDatabaseReference.child(awardsDirectory).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if(dataSnapshot.getValue() == null){
                             fillAwards();
+                        }else{//To make sure the DB and share prefs are in sync
+                            for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                                String awardId = (String) postSnapshot.child("id").getValue();
+                                String name = (String) postSnapshot.child("name").getValue();
+                                switch (name) {
+                                    case "award_neophyte_title":
+                                        helperPreferences.savePreferences(Constants.SHPREF_NEOPHYTE_AWARD_ID, awardId);
+                                        break;
+                                    case "award_perfectionnist_title":
+                                        helperPreferences.savePreferences(Constants.SHPREF_PERFECTIONIST_AWARD_ID, awardId);
+                                        break;
+                                    case "award_productive_title":
+                                        helperPreferences.savePreferences(Constants.SHPREF_PRODUCTIVE_AWARD_ID, awardId);
+                                        break;
+                                    case "award_trend_setter_title":
+                                        helperPreferences.savePreferences(Constants.SHPREF_TREND_SETTER_AWARD_ID, awardId);
+                                        break;
+                                    case "award_commited_title":
+                                        helperPreferences.savePreferences(Constants.SHARE_COMMITTED_AWARD_ID, awardId);
+                                        break;
+                                    case "award_ponctual_title":
+                                        helperPreferences.savePreferences(Constants.SHPREF_PUNCTUAL_AWARD_ID, awardId);
+                                        break;
+                                    case "award_multi_tasker_title":
+                                        helperPreferences.savePreferences(Constants.SHPREF_MULTI_TASKER_AWARD_ID, awardId);
+                                        break;
+                                }
+                            }
                         }
                     }
                     @Override
@@ -176,37 +203,37 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
 
     private void fillAwards(){
         Map<String,Award> awardsList = new HashMap<>();
-        Award commitedAward = new Award("award_commited_title", "award_commited_desc_1","", new ArrayList<>(Collections.singletonList(1)));
+        Award commitedAward = new Award("award_commited_title", "award_commited_desc_1","", new ArrayList<>(Collections.singletonList(1)), new ArrayList<>(Collections.singletonList("")));
         commitedAward.setCurrentLevel(0);
         commitedAward.setCurrentProgress(0);
         awardsList.put(Constants.SHARE_COMMITTED_AWARD_ID,commitedAward);
 
-        Award neophyteAward = new Award("award_neophyte_title", "award_neophyte_desc_1", "", new ArrayList<>(Collections.singletonList(1)));
+        Award neophyteAward = new Award("award_neophyte_title", "award_neophyte_desc_1", "", new ArrayList<>(Collections.singletonList(1)), new ArrayList<>(Collections.singletonList("")));
         neophyteAward.setCurrentLevel(0);
         neophyteAward.setCurrentProgress(0);
         awardsList.put(Constants.SHPREF_NEOPHYTE_AWARD_ID,neophyteAward);
 
-        Award trendSetterAward = new Award("award_trend_setter_title", "award_trend_setter_desc_1", "", new ArrayList<>(Collections.singletonList(1)));
+        Award trendSetterAward = new Award("award_trend_setter_title", "award_trend_setter_desc_1", "", new ArrayList<>(Collections.singletonList(5)), new ArrayList<>(Collections.singletonList("")));
         trendSetterAward.setCurrentLevel(0);
         trendSetterAward.setCurrentProgress(0);
         awardsList.put(Constants.SHPREF_TREND_SETTER_AWARD_ID,trendSetterAward);
 
-        Award multiTaskerAward = new Award("award_multi_tasker_title", "award_multi_tasker_desc_1", "award_multi_tasker_desc_2", new ArrayList<>(Arrays.asList(5, 10, 25, 100, 200)));
+        Award multiTaskerAward = new Award("award_multi_tasker_title", "award_multi_tasker_desc_1", "award_multi_tasker_desc_2", new ArrayList<>(Arrays.asList(5, 10, 25, 100, 200)), new ArrayList<>(Collections.singletonList("")));
         multiTaskerAward.setCurrentLevel(0);
         multiTaskerAward.setCurrentProgress(0);
         awardsList.put(Constants.SHPREF_MULTI_TASKER_AWARD_ID,multiTaskerAward);
 
-        Award productiveAward = new Award("award_productive_title", "award_productive_desc_1", "award_productive_desc_2", new ArrayList<>(Arrays.asList(10, 50, 100, 500, 2000)));
+        Award productiveAward = new Award("award_productive_title", "award_productive_desc_1", "award_productive_desc_2", new ArrayList<>(Arrays.asList(10, 50, 100, 500, 2000)), new ArrayList<>(Collections.singletonList("")));
         productiveAward.setCurrentLevel(0);
         productiveAward.setCurrentProgress(0);
         awardsList.put(Constants.SHPREF_PRODUCTIVE_AWARD_ID,productiveAward);
 
-        Award perfectionistAward = new Award("award_perfectionnist_title", "award_perfectionnist_desc_1", "award_perfectionnist_desc_2", new ArrayList<>(Arrays.asList(10, 20, 50, 200, 500)));
+        Award perfectionistAward = new Award("award_perfectionnist_title", "award_perfectionnist_desc_1", "award_perfectionnist_desc_2", new ArrayList<>(Arrays.asList(10, 20, 50, 200, 500)), new ArrayList<>(Collections.singletonList("")));
         perfectionistAward.setCurrentLevel(0);
         perfectionistAward.setCurrentProgress(0);
         awardsList.put(Constants.SHPREF_PERFECTIONIST_AWARD_ID,perfectionistAward);
 
-        Award punctualAward = new Award("award_ponctual_title", "award_ponctual_desc_1", "award_ponctual_desc_2", new ArrayList<>(Arrays.asList(5, 10, 25, 100, 200)));
+        Award punctualAward = new Award("award_ponctual_title", "award_ponctual_desc_1", "award_ponctual_desc_2", new ArrayList<>(Arrays.asList(5, 10, 25, 100, 200)), new ArrayList<>(Collections.singletonList("")));
         punctualAward.setCurrentLevel(0);
         punctualAward.setCurrentProgress(0);
         awardsList.put(Constants.SHPREF_PUNCTUAL_AWARD_ID,punctualAward);
