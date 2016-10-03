@@ -293,7 +293,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public long insertAward(Award award,SQLiteDatabase db) {
         ContentValues values = new ContentValues();
         values.put(AWARD_NAME, award.getName());
-        values.put(AWARD_DESCRIPTION, award.getDescription1());
+        values.put(AWARD_DESCRIPTION, award.getDescription_1());
         values.put(AWARD_CURRENT_LEVEL, award.getCurrentLevel());
         values.put(AWARD_CURRENT_PROGRESS, award.getCurrentProgress());
         values.put(AWARD_MAX_LEVEL, award.getMaxLevel());
@@ -329,16 +329,16 @@ public class DBHelper extends SQLiteOpenHelper {
             int level3ProgressLimit = cursor.getInt(cursor.getColumnIndex(AWARD_LEVEL_3_PROGRESS_LIMIT));
             int level4ProgressLimit = cursor.getInt(cursor.getColumnIndex(AWARD_LEVEL_4_PROGRESS_LIMIT));
             int level5ProgressLimit = cursor.getInt(cursor.getColumnIndex(AWARD_LEVEL_5_PROGRESS_LIMIT));
-            List<Integer> progressLimitForEachLevel = new ArrayList<>();
+            ArrayList<Integer> progressLimitForEachLevel = new ArrayList<>();
             if(level1ProgressLimit!=0){progressLimitForEachLevel.add(level1ProgressLimit);}
             if(level2ProgressLimit!=0){progressLimitForEachLevel.add(level2ProgressLimit);}
             if(level3ProgressLimit!=0){progressLimitForEachLevel.add(level3ProgressLimit);}
             if(level4ProgressLimit!=0){progressLimitForEachLevel.add(level4ProgressLimit);}
             if(level5ProgressLimit!=0){progressLimitForEachLevel.add(level5ProgressLimit);}
-            Award a = new Award(id, name, description,description, progressLimitForEachLevel);
+         /*   Award a = new Award(id, name, description, description, progressLimitForEachLevel);
             a.setCurrentLevel(currentLevel);
             a.setCurrentProgress(currentProgress);
-            awardsList.add(a);
+            awardsList.add(a);*/
         }
         if (cursor != null) {
             cursor.close();
@@ -372,20 +372,20 @@ public class DBHelper extends SQLiteOpenHelper {
             int level3ProgressLimit = cursor.getInt(cursor.getColumnIndex(AWARD_LEVEL_3_PROGRESS_LIMIT));
             int level4ProgressLimit = cursor.getInt(cursor.getColumnIndex(AWARD_LEVEL_4_PROGRESS_LIMIT));
             int level5ProgressLimit = cursor.getInt(cursor.getColumnIndex(AWARD_LEVEL_5_PROGRESS_LIMIT));
-            List<Integer> progressLimitForEachLevel = new ArrayList<>();
+            ArrayList<Integer> progressLimitForEachLevel = new ArrayList<>();
             if(level1ProgressLimit!=0){progressLimitForEachLevel.add(level1ProgressLimit);}
             if(level2ProgressLimit!=0){progressLimitForEachLevel.add(level2ProgressLimit);}
             if(level3ProgressLimit!=0){progressLimitForEachLevel.add(level3ProgressLimit);}
             if(level4ProgressLimit!=0){progressLimitForEachLevel.add(level4ProgressLimit);}
             if(level5ProgressLimit!=0){progressLimitForEachLevel.add(level5ProgressLimit);}
-            award = new Award(DBid, name, description,description, progressLimitForEachLevel);
+         /*   award = new Award(DBid, name, description,description, progressLimitForEachLevel);
             award.setCurrentLevel(currentLevel);
-            award.setCurrentProgress(currentProgress);
+            award.setCurrentProgress(currentProgress);*/
         } else {
             return null;
         }
         cursor.close();
-        return award;
+        return null;
     }
 
     /**
@@ -399,7 +399,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(AWARD_NAME, award.getName());
-        cv.put(AWARD_DESCRIPTION, award.getDescription1());
+        cv.put(AWARD_DESCRIPTION, award.getDescription_1());
         cv.put(AWARD_CURRENT_PROGRESS, award.getCurrentProgress());
         cv.put(AWARD_CURRENT_LEVEL, award.getCurrentLevel());
         cv.put(AWARD_LEVEL_1_PROGRESS_LIMIT, (award.getProgressLimitEachLevel().get(0) != null) ? award.getProgressLimitEachLevel().get(0) : 0);

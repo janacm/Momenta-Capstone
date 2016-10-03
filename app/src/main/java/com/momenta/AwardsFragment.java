@@ -1,6 +1,5 @@
 package com.momenta;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,11 +10,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import org.w3c.dom.Text;
 
 
 /**
@@ -28,8 +30,9 @@ public class AwardsFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private DatabaseReference mFirebaseDatabaseReference;
     private String directory = "";
-
+    private helperPreferences helperPreferences;
     private FirebaseRecyclerAdapter<Award, AwardsFragment.AwardViewHolder> mFirebaseAdapter;
+
     public static AwardsFragment newInstance(int page) {
         Bundle args = new Bundle();
         args.putInt(ARG_PAGE, page);
@@ -48,6 +51,7 @@ public class AwardsFragment extends Fragment {
         }
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
         mFirebaseAdapter = buildAdapter();
+        helperPreferences = new helperPreferences(getContext());
     }
 
     @Override
@@ -64,6 +68,7 @@ public class AwardsFragment extends Fragment {
 
     /**
      * Helper method to build a recycler adapter
+     *
      * @return an adapter
      */
     private FirebaseRecyclerAdapter<Award, AwardsFragment.AwardViewHolder> buildAdapter() {
@@ -78,16 +83,30 @@ public class AwardsFragment extends Fragment {
                                               Award award, int position) {
 
                 viewHolder.name.setText(getStringResourceByName(award.getName()));
-                if(award.getMaxLevel() > 1){
-                    viewHolder.description.setText(getStringResourceByName(award.getDescription1())+" "+
-                            award.getProgressLimitEachLevel().get(award.getCurrentLevel())+" "+
-                            getStringResourceByName(award.getDescription2()));
-                }else{
-                    viewHolder.description.setText(getStringResourceByName(award.getDescription1())+" "+
-                            getStringResourceByName(award.getDescription2()));
+                //Detremines the text for description of the award depending on how long it is(1 vs 2 parts desc)
+                if (award.getMaxLevel() > 1) {
+                    viewHolder.description.setText(getStringResourceByName(award.getDescription_1()) + " " +
+                            award.getProgressLimitEachLevel().get(award.getCurrentLevel()) + " " +
+                            getStringResourceByName(award.getDescription_2()));
+                } else {
+                    viewHolder.description.setText(getStringResourceByName(award.getDescription_1()) + " " +
+                            getStringResourceByName(award.getDescription_2()));
                 }
                 viewHolder.awardImage.setImageDrawable(getResources().getDrawable(R.mipmap.momenta_icon));
 
+                viewHolder.progressText.setText(award.getCurrentLevel() + 1 + "/" + award.getMaxLevel());
+
+                //Draw progress bar's progress if award is not yet completed
+                if (award.getCurrentLevel() != award.getMaxLevel()) {
+                    viewHolder.progressBar.setMax(award.getProgressLimitEachLevel().get(award.getCurrentLevel()));
+                    viewHolder.progressBar.setProgress((float) award.getCurrentProgress());
+                    //string formatting for the hours
+                    if (!award.getId().equals(helperPreferences.getPreferences(Constants.SHPREF_TREND_SETTER_AWARD_ID, "")) && !award.getId().equals(helperPreferences.getPreferences(Constants.SHPREF_PERFECTIONIST_AWARD_ID, ""))) {
+                        viewHolder.progressBar.setProgressText(String.valueOf((int) award.getCurrentProgress()));
+                    }else{
+                        viewHolder.progressBar.setProgressText(String.valueOf(award.getCurrentProgress()));
+                    }
+                }
             }
 
             @Override
@@ -125,6 +144,8 @@ public class AwardsFragment extends Fragment {
         public TextView name;
         public TextView description;
         public ImageView awardImage;
+        public TextView progressText;
+        public TextRoundCornerProgressBar progressBar;
 
         public AwardViewHolder(View itemView) {
             super(itemView);
@@ -132,13 +153,20 @@ public class AwardsFragment extends Fragment {
             name = (TextView) itemView.findViewById(R.id.award_title);
             description = (TextView) itemView.findViewById(R.id.award_description);
             awardImage = (ImageView) itemView.findViewById(R.id.award_image);
+            progressText = (TextView) itemView.findViewById(R.id.award_level_progress);
+            progressBar = (TextRoundCornerProgressBar) itemView.findViewById(R.id.award_progress_bar);
+
         }
     }
+
     private String getStringResourceByName(String aString) {
-        int resId = getResources().getIdentifier(aString, "string", "com.momenta");
-        if(resId!=0){
-            return getString(resId);
-        }else
-            return "";
+        if (aString != null) {
+            int resId = getResources().getIdentifier(aString, "string", "com.momenta");
+            if (resId != 0) {
+                return getString(resId);
+            } else
+                return "";
+        }
+        return "";
     }
 }
