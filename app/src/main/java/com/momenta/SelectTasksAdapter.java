@@ -40,20 +40,11 @@ public class SelectTasksAdapter extends RecyclerView.Adapter<SelectTasksAdapter.
 
 
     public SelectTasksAdapter(Context context) {
-//<<<<<<< HEAD
-//        List<Task> list = DBHelper.getInstance(context).getAllTasks();
-//        Collections.reverse(list);
-//        this.tasks = list;
-//
-//        //Initializing the itemClickedMap for all positions to be false
-//        itemClickedMap = new HashMap<>();
-//        for(int i = 0; i < list.size(); i++ ){
-//            itemClickedMap.put(i, false);
-//=======
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             goalDirectory = user.getUid() + "/goals";
-//>>>>>>> firetrends
+        } else {
+            Log.e(TAG, "User is null");
         }
         Log.d(TAG, goalDirectory);
         tasks = new ArrayList<>();
@@ -63,6 +54,7 @@ public class SelectTasksAdapter extends RecyclerView.Adapter<SelectTasksAdapter.
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        Log.e(TAG, "Processing call back");
                         // Iterate over all tasks
                         for (DataSnapshot snapshot: dataSnapshot.getChildren() ){
 
@@ -81,12 +73,13 @@ public class SelectTasksAdapter extends RecyclerView.Adapter<SelectTasksAdapter.
                             // Add task to the list
                             tasks.add(task);
                         }
-
+                        Log.e(TAG, "Finished processing " + tasks.size() + " tasks");
                         //Initializing the itemClickedMap for all positions to be false
                         itemClickedMap = new HashMap<>();
                         for(int i = 0; i < tasks.size(); i++ ){
                             itemClickedMap.put(i, false);
                         }
+                        notifyDataSetChanged();
                     }
 
                     @Override
@@ -94,6 +87,7 @@ public class SelectTasksAdapter extends RecyclerView.Adapter<SelectTasksAdapter.
                     }
                 }
         );
+        Log.e(TAG, "Waiting for callback");
     }
 
     @Override
@@ -153,25 +147,20 @@ public class SelectTasksAdapter extends RecyclerView.Adapter<SelectTasksAdapter.
         });
     }
 
-    /**
-     * Method for extracting the items that selected as well as their task ID and storing
-     * them in another HashMap to be used by the AddTimeToTaskActivity.
-     */
-//<<<<<<< HEAD
-//    public HashMap<Integer,Integer> getItemsClickedIDs(){
-//        HashMap<Integer,Integer> itemIDs = new HashMap<>();
-//=======
-    public HashMap<Integer,String> getItemsClickedIDs(){
-        HashMap<Integer,String> itemIDs = new HashMap<>();
-//>>>>>>> firetrends
-        for (Map.Entry<Integer, Boolean> entry : itemClickedMap.entrySet()){
-            if(entry.getValue()){
-                itemIDs.put(entry.getKey(), tasks.get(entry.getKey()).getId());
-                //System.out.println(tasks.get(entry.getKey()).getId());
-            }
-        }
-        return itemIDs;
-    }
+//    /**
+//     * Method for extracting the items that selected as well as their task ID and storing
+//     * them in another HashMap to be used by the AddTimeToTaskActivity.
+//     */
+//    public HashMap<Integer,String> getItemsClickedIDs(){
+//        HashMap<Integer,String> itemIDs = new HashMap<>();
+//        for (Map.Entry<Integer, Boolean> entry : itemClickedMap.entrySet()){
+//            if(entry.getValue()){
+//                itemIDs.put(entry.getKey(), tasks.get(entry.getKey()).getId());
+//                //System.out.println(tasks.get(entry.getKey()).getId());
+//            }
+//        }
+//        return itemIDs;
+//    }
 
     /**
      * Returns a map containing the ids & names of selected tasks

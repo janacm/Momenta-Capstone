@@ -47,106 +47,67 @@
             android:layout_height="wrap_content">
 
 
-            <com.github.mikephil.charting.charts.PieChart
-                android:id="@+id/task_activity_chart"
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:paddingTop="20dp"/>
+            <!--<com.github.mikephil.charting.charts.PieChart-->
+                <!--android:id="@+id/task_activity_chart"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="300dp"-->
+                <!--android:paddingTop="20dp"/>-->
 
             <RelativeLayout
-                android:id="@+id/task_time_layout"
+                android:id="@+id/task_goal_layout"
                 android:layout_width="match_parent"
-                android:paddingTop="5dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
-                android:background="?attr/selectableItemBackground"
                 android:onClick="goalOnClick"
-                android:layout_below="@id/task_activity_chart"
+                android:background="?attr/selectableItemBackground"
                 android:layout_height="wrap_content">
 
                 <ImageView
-                    android:id="@+id/task_time_image"
+                    android:id="@+id/task_goal_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="15dp"
                     android:layout_marginEnd="15dp"
+                    android:paddingTop="8dp"
+                    android:tint="#9B9B9B"
                     android:contentDescription="@string/goal_icon_content_description"
-                    android:src="@drawable/ic_time_lapse"/>
+                    android:src="@drawable/bullseye"/>
                 <TextView
-                    android:id="@+id/task_time_text_view"
+                    android:id="@+id/task_goal_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/goal_string"
                     android:textSize="18sp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
                     android:textColor="@color/black"
-                    android:layout_toRightOf="@+id/task_time_image"
-                    android:layout_toEndOf="@+id/task_time_image"/>
-                <EditText
-                    android:layout_width="50dp"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/task_hour_edit_text"
-                    android:layout_toRightOf="@+id/task_time_image"
-                    android:layout_toEndOf="@+id/task_time_image"
-                    android:layout_below="@+id/task_time_text_view"
-                    android:inputType="number"
-                    android:maxLength="2"
-                    android:imeOptions="actionNext"/>
-
+                    android:layout_toRightOf="@+id/task_goal_image"
+                    android:layout_toEndOf="@+id/task_goal_image"/>
                 <TextView
-                    android:id="@+id/task_time_hour_label"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/task_goal_value"
+                    android:layout_width="match_parent"
+                    android:text="@string/goal_string"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/task_time_text_view"
-                    android:layout_marginLeft="25dp"
-                    android:layout_marginStart="25dp"
-                    android:layout_alignEnd="@id/task_hour_edit_text"
-                    android:layout_alignRight="@id/task_hour_edit_text"
-                    android:layout_alignBaseline="@+id/task_hour_edit_text"
-                    android:layout_alignBottom="@+id/task_hour_edit_text"
-                    android:gravity="end|bottom"
-                    android:text="@string/activity_hour_label"
-                    android:textSize="18sp"
-                    />
-
-                <EditText
-                    android:layout_width="60dp"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/task_minute_edit_text"
-                    android:layout_below="@+id/task_time_text_view"
-                    android:layout_toEndOf="@+id/task_time_hour_label"
-                    android:layout_toRightOf="@+id/task_time_hour_label"
-                    android:inputType="number"
-                    android:maxLength="2"
-                    android:imeOptions="actionNext" />
-
-                <TextView
-                    android:id="@+id/new_activity_minute_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/task_time_text_view"
-                    android:layout_toEndOf="@+id/task_time_hour_label"
-                    android:layout_toRightOf="@+id/task_time_hour_label"
-                    android:layout_alignEnd="@id/task_minute_edit_text"
-                    android:layout_alignRight="@id/task_minute_edit_text"
-                    android:layout_alignBaseline="@+id/task_minute_edit_text"
-                    android:layout_alignBottom="@+id/task_minute_edit_text"
-                    android:gravity="end|bottom"
-                    android:text="@string/activity_minute_label"
-                    android:textSize="18sp"
-                    />
+                    android:layout_toRightOf="@+id/task_goal_image"
+                    android:layout_toEndOf="@+id/task_goal_image"
+                    android:layout_below="@+id/task_goal_title" />
 
             </RelativeLayout>
-
 
             <RelativeLayout
                 android:id="@+id/task_deadline_layout"
                 android:layout_width="match_parent"
-                android:paddingTop="15dp"
-                android:layout_below="@id/task_time_layout"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:layout_below="@id/task_goal_layout"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
-                android:background="?attr/selectableItemBackground"
                 android:onClick="deadlineOnClick"
+                android:background="?attr/selectableItemBackground"
                 android:layout_height="wrap_content">
 
                 <ImageView
@@ -155,23 +116,29 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="15dp"
                     android:layout_marginEnd="15dp"
+                    android:paddingTop="8dp"
+                    android:tint="#9B9B9B"
                     android:contentDescription="@string/deadline_icon_content_description"
-                    android:src="@drawable/ic_deadline"/>
+                    android:src="@drawable/timetable"/>
                 <TextView
-                    android:id="@+id/task_deadline_text_view"
+                    android:id="@+id/task_deadline_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
                     android:text="@string/deadline_string"
                     android:textSize="18sp"
                     android:textColor="@color/black"
                     android:layout_toRightOf="@+id/task_deadline_image"
                     android:layout_toEndOf="@+id/task_deadline_image"/>
                 <TextView
-                    android:id="@+id/task_time_set_deadline"
+                    android:id="@+id/task_deadline_value"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/task_deadline_text_view"
-                    android:layout_toRightOf="@+id/task_deadline_image"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_below="@+id/task_deadline_title"
+                    android:layout_toRightOf="@+id/task_deadline_title"
                     android:layout_toEndOf="@+id/task_deadline_image"
                     android:text="@string/sample_deadline_string"/>
 
@@ -180,10 +147,13 @@
             <RelativeLayout
                 android:id="@+id/task_priority_layout"
                 android:layout_width="match_parent"
-                android:paddingTop="15dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
                 android:layout_below="@id/task_deadline_layout"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingLeft="14dp"
+                android:paddingStart="14dp"
                 android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingEnd="@dimen/activity_horizontal_margin"
                 android:background="?attr/selectableItemBackground"
                 android:layout_height="wrap_content">
 
@@ -193,28 +163,82 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="15dp"
                     android:layout_marginEnd="15dp"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:paddingTop="8dp"
+                    android:tint="#9B9B9B"
                     android:contentDescription="@string/priority_icon_content_description"
-                    android:src="@drawable/ic_priority"/>
+                    android:src="@drawable/format_list_numbers"/>
 
                 <TextView
-                    android:id="@+id/task_priority_text_view"
+                    android:id="@+id/task_priority_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/priority_string"
                     android:textSize="18sp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
                     android:textColor="@color/black"
                     android:layout_toRightOf="@+id/task_priority_image"
                     android:layout_toEndOf="@+id/task_priority_image"/>
 
                 <Spinner
                     android:id="@+id/task_priority_spinner"
-                    android:layout_below="@+id/task_priority_text_view"
+                    android:layout_below="@+id/task_priority_title"
                     android:layout_width="match_parent"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
                     android:layout_toRightOf="@+id/task_priority_image"
                     android:layout_toEndOf="@+id/task_priority_image"
                     android:layout_height="25dp"
                     android:entries="@array/Priorities"
                     android:prompt="@string/priority_spinner_title"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/task_timespent_layout"
+                android:layout_width="match_parent"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:onClick="timeSpentOnClick"
+                android:background="?attr/selectableItemBackground"
+                android:layout_below="@id/task_priority_layout"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/task_timespent_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:paddingTop="8dp"
+                    android:tint="#9B9B9B"
+                    android:contentDescription="@string/goal_icon_content_description"
+                    android:src="@drawable/timer_sand"/>
+                <TextView
+                    android:id="@+id/task_timespent_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/timespent_string"
+                    android:textSize="18sp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:textColor="@color/black"
+                    android:layout_toRightOf="@+id/task_timespent_image"
+                    android:layout_toEndOf="@+id/task_timespent_image"/>
+                <TextView
+                    android:id="@+id/task_timespent_value"
+                    android:layout_width="match_parent"
+                    android:text="@string/timespent_string"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/task_timespent_image"
+                    android:layout_toEndOf="@+id/task_timespent_image"
+                    android:layout_below="@+id/task_timespent_title" />
 
             </RelativeLayout>
 

@@ -3,14 +3,11 @@ package com.momenta;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,10 +19,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.data.PieDataSet;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -34,7 +27,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,11 +35,17 @@ import java.util.concurrent.TimeUnit;
 public class TaskActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private static final String TAG = "TaskActivity";
-    EditText activityName;
-    TextView activityDeadline;
-    EditText activityHour;
-    EditText activityMinute;
-    Task task;
+    private EditText activityName;
+    private TextView activityDeadline;
+    private TextView activityGoal;
+    private TextView activityTimeSpent;
+    private Task task;
+
+
+    private  Integer goalHours = 2;
+    private  Integer goalMins = 30;
+    private  Integer timeSpentHours = 0;
+    private  Integer timeSpentMins = 0;
 
     //Firebase instances
     private DatabaseReference mFirebaseDatabaseReference;
@@ -88,7 +86,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                         task.setTimeSpent( dataSnapshot.child("timeSpent").getValue(Integer.class) );
                         task.setPriority( (String)dataSnapshot.child("priority").getValue() );
                         initializeFields();
-                        initializePieChart();
+//                        initializePieChart();
                     }
 
                     @Override
@@ -98,48 +96,38 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         );
 
         activityName = (EditText)findViewById(R.id.task_name_edit_text);
-        activityHour = (EditText)findViewById(R.id.task_hour_edit_text);
-        activityMinute = (EditText)findViewById(R.id.task_minute_edit_text);
+        activityGoal = (TextView)findViewById(R.id.task_goal_value);
+        activityTimeSpent = (TextView)findViewById(R.id.task_timespent_value);
+        activityDeadline = (TextView) findViewById(R.id.task_deadline_value);
     }
 
     private void initializeFields() {
         activityName.setText( task.getName() );
-
-        long minutes = task.getGoal(), hours = 0L;
-        if ( ! (minutes < 60) ) {
-            hours = minutes/60;
-            minutes = minutes % 60;
-        }
-        String taskHours = "" + hours;
-        String taskMinutes = "" + minutes;
-        activityHour.setText( taskHours );
-        activityMinute.setText( taskMinutes );
-
-        activityDeadline = (TextView) findViewById(R.id.task_time_set_deadline);
         activityDeadline.setText( task.getFormattedDeadline() );
+
+        //Set the goal textView
+        goalMins = task.getGoal();
+        goalHours = 0;
+        if ( goalMins >= 60 ) {
+            goalHours = goalMins/60;
+            goalMins = goalMins%60;
+        }
+        String goalText = timeSetText(goalHours, goalMins);
+        activityGoal.setText(goalText);
+
+        //Set the timeSpent textView
+        timeSpentMins = task.getTimeSpent();
+        timeSpentHours = 0;
+        if ( timeSpentMins >= 60 ) {
+            timeSpentHours = timeSpentMins/60;
+            timeSpentMins = timeSpentMins%60;
+        }
+        String spentText = timeSetText(timeSpentHours, timeSpentMins);
+        activityTimeSpent.setText(spentText);
 
         Spinner spinner = (Spinner)findViewById(R.id.task_priority_spinner);
         spinner.setOnItemSelectedListener(this);
         spinner.setSelection(spinnerPosition(task.getPriorityValue()));
-
-        //Add watcher to move focus to minute text view
-        activityHour.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() == 2) {
-                    activityMinute.requestFocus();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
 
     }
 
@@ -185,12 +173,49 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         builder.create().show();
     }
 
-    //Handler method for the goal view being clicked
+    /**
+     * On click method for the goal relative layout
+     * @param v the view that was clicked
+     */
     public void goalOnClick(View v) {
-        activityHour.requestFocus();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogCustom);
+        LayoutInflater inflater = this.getLayoutInflater();
+
+        final View alertView = inflater.inflate(R.layout.dialog_timeentry, null);
+        final EditText editTextHours  = (EditText) alertView.findViewById(R.id.dialog_hour_edittext);
+        editTextHours.setText(Integer.toString(goalHours));
+
+        final EditText editTextMinutes = (EditText) alertView.findViewById(R.id.dialog_minute_edittext);
+        editTextMinutes.setText(Integer.toString(goalMins));
+
+        final TextView dialogTitle = (TextView) alertView.findViewById(R.id.dialog_title);
+        dialogTitle.setText(R.string.timeentry_dialog_goal_title);
+        builder.setView(alertView);
+
+
+        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                goalHours = Integer.valueOf(editTextHours.getText().toString());
+                goalMins = Integer.valueOf(editTextMinutes.getText().toString());
+                activityGoal.setText(timeSetText(goalHours, goalMins));
+            }
+        })
+                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
     }
 
-    //Handler method for the deadline view being clicked
+    /**
+     * On click method for the deadline layout
+     * @param v the deadline layout
+     */
     public void deadlineOnClick(View v){
         Calendar cal = task.getDeadlineValue();
         DatePickerDialog dialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
@@ -207,13 +232,51 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     /**
+     * On click method for the timeSpent layout
+     * @param view view being clicked
+     */
+    public void timeSpentOnClick(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogCustom);
+        LayoutInflater inflater = this.getLayoutInflater();
+
+        final View alertView = inflater.inflate(R.layout.dialog_timeentry, null);
+        final EditText editTextHours  = (EditText) alertView.findViewById(R.id.dialog_hour_edittext);
+        editTextHours.setText(Integer.toString(timeSpentHours));
+
+        final EditText editTextMinutes = (EditText) alertView.findViewById(R.id.dialog_minute_edittext);
+        editTextMinutes.setText(Integer.toString(timeSpentMins));
+
+        final TextView dialogTitle = (TextView) alertView.findViewById(R.id.dialog_title);
+        dialogTitle.setText(R.string.timeentry_dialog_timespent_title);
+
+        builder.setView(alertView);
+
+
+        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                timeSpentHours = Integer.valueOf(editTextHours.getText().toString());
+                timeSpentMins = Integer.valueOf(editTextMinutes.getText().toString());
+                activityTimeSpent.setText(timeSetText(timeSpentHours, timeSpentMins) );
+            }
+        })
+                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
+    }
+
+    /**
      * Convenience method to save after the user click on done button.
      */
     private void save()  {
-        long hourField = Long.valueOf( "0" + activityHour.getText().toString() );
-        long minuteField = Long.valueOf("0" + activityMinute.getText().toString());
-        Long totalMinutes = TimeUnit.MINUTES.convert(hourField, TimeUnit.HOURS)
-                + minuteField;
+        Long totalMinutes = TimeUnit.MINUTES.convert(goalHours, TimeUnit.HOURS)
+                + goalMins;
 
         //Set updated values
         String name = activityName.getText().toString();
@@ -292,36 +355,72 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         //Do nothing
     }
 
-    private void initializePieChart() {
-        //Setting up the Pie Chart
-        PieChart pieChart = (PieChart) findViewById(R.id.task_activity_chart);
-        pieChart.setCenterText(task.getTimeSpent() + " minutes spent");
-        pieChart.setRotationEnabled(false);
-        pieChart.setHoleRadius(75);
-        pieChart.setDescription("");
+//    private void initializePieChart() {
+//        //Setting up the Pie Chart
+////        PieChart pieChart = (PieChart) findViewById(R.id.task_activity_chart);
+////        pieChart.setCenterText(task.getTimeSpent() + " minutes spent");
+////        pieChart.setRotationEnabled(false);
+////        pieChart.setHoleRadius(75);
+////        pieChart.setDescription("");
+//
+//        ArrayList<PieEntry> entries = new ArrayList<>();
+//        long goalDiff = task.getGoal() - task.getTimeSpent();
+//        if ( goalDiff > 0) {
+//            entries.add(new PieEntry(goalDiff, 0));
+//        } else {
+//            entries.add(new PieEntry(0, 0));
+//        }
+//        entries.add(new PieEntry(task.getTimeSpent(), 1));
+//
+//        PieDataSet dataSet = new PieDataSet(entries, "Percentage");
+//
+//        ArrayList<Integer> colors = new ArrayList<Integer>();
+//        colors.add( ContextCompat.getColor(this, R.color.hint_text) );
+//        colors.add( ContextCompat.getColor(this, R.color.colorAccent) );
+//
+//        dataSet.setColors(colors);
+//
+//        //Initialize the Pie data
+//        pieChart.invalidate();
+//        PieData data = new PieData(dataSet);
+//        data.setDrawValues(false);
+//        pieChart.setData(data);
+//    }
 
-        ArrayList<PieEntry> entries = new ArrayList<>();
-        long goalDiff = task.getGoal() - task.getTimeSpent();
-        if ( goalDiff > 0) {
-            entries.add(new PieEntry(goalDiff, 0));
-        } else {
-            entries.add(new PieEntry(0, 0));
+    /**
+     * Convenience method for setting the time related values for the goal and time spent fields
+     * @param hours hour value that is being set
+     * @param minutes minute value that is being set
+     * @return the string containing the minute and hour values that will be set in the TextView
+     */
+    private String timeSetText(int hours, int minutes) {
+        if (minutes > 1 && hours > 1) {
+            return hours + " " + getResources().getString(R.string.timeentry_dialog_hours_label) + " & " +
+                    minutes + " " +  getResources().getString(R.string.timeentry_dialog_minutes_label) ;
+        } else if (minutes == 0 && hours > 1) {
+            return hours + " " + getResources().getString(R.string.timeentry_dialog_hours_label);
         }
-        entries.add(new PieEntry(task.getTimeSpent(), 1));
-
-        PieDataSet dataSet = new PieDataSet(entries, "Percentage");
-
-        ArrayList<Integer> colors = new ArrayList<Integer>();
-        colors.add( ContextCompat.getColor(this, R.color.hint_text) );
-        colors.add( ContextCompat.getColor(this, R.color.colorAccent) );
-
-        dataSet.setColors(colors);
-
-        //Initialize the Pie data
-        pieChart.invalidate();
-        PieData data = new PieData(dataSet);
-        data.setDrawValues(false);
-        pieChart.setData(data);
+        else if (minutes == 1 && hours > 1) {
+            return hours + " " + getResources().getString(R.string.timeentry_dialog_hours_label) + " & " +
+                    minutes + " " + getResources().getString(R.string.timeentry_dialog_minute_label);
+        }
+        else if (hours == 1 && minutes > 1) {
+            return hours + " " + getResources().getString(R.string.timeentry_dialog_hour_label) + " & " +
+                    minutes + " " + getResources().getString(R.string.timeentry_dialog_minutes_label);
+        }
+        else if (hours == 1 && minutes == 1) {
+            return hours + " " + getResources().getString(R.string.timeentry_dialog_hour_label) + " & " +
+                    minutes + " " + getResources().getString(R.string.timeentry_dialog_minute_label);
+        }
+        else if (hours == 1 && minutes == 0) {
+            return hours + " " + getResources().getString(R.string.timeentry_dialog_hour_label);
+        }
+        else if (minutes == 1 && hours == 0) {
+            return minutes + " " + getResources().getString(R.string.timeentry_dialog_minute_label);
+        }
+        else {
+            return minutes + " " + getResources().getString(R.string.timeentry_dialog_minutes_label);
+        }
     }
 
 }

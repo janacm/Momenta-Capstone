@@ -315,7 +315,6 @@ public class Task {
         lastModified = Calendar.getInstance();
 
         if (context != null) {
-//            DBHelper.getInstance(context).logTimeSpent(getId(), minutes);
         }
     }
 
