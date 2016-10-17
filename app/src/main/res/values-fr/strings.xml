@@ -145,4 +145,29 @@
     <string name="order">Ordre</string>
     <string name="password">MomentaFirebase</string>
     <string name="select_tasks_cannot_divide_tasks">Impossible de diviser le temps à travers les tâches également</string>
+    <string-array name="Priorities">
+        <item>Très Basse</item>
+        <item>Basse</item>
+        <item>Medium</item>
+        <item>Haute</item>
+        <item>Très Haute</item>
+    </string-array>
+
+    <string-array name="suggestions">
+        <item>Aller au gym </item>
+        <item>Aller courrir</item>
+        <item>Attraper des Pokemon</item>
+        <item>Manger </item>
+        <item>Explorer</item>
+        <item>Code in Java</item>
+        <item>Travailer sur ce projet android </item>
+        <item>Explorer </item>
+        <item>Apprendre à </item>
+        <item>Travailler sur </item>
+    </string-array>
+
+    <string-array name="trends_spinner">
+        <item>Dernière semaine</item>
+        <item>Dernier Mois</item>
+    </string-array>
 </resources>
