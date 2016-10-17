@@ -52,7 +52,7 @@ public class AddActivityTest {
                 = InstrumentationRegistry.getInstrumentation();
         ctx = instrumentation.getTargetContext();
         helperPreferences = new helperPreferences(ctx);
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        FirebaseDatabase firebaseDatabase = FirebaseProvider.getInstance();
         firebaseDatabase.goOffline();
         reference = firebaseDatabase.getReference();
     }

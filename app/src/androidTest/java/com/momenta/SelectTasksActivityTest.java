@@ -40,7 +40,6 @@ import static org.hamcrest.Matchers.not;
 public class SelectTasksActivityTest {
     @Rule
     public final ActivityTestRule<MainActivity> main = new ActivityTestRule<>(MainActivity.class);
-    DBHelper db;
     Context ctx;
 
     @Before
@@ -48,7 +47,6 @@ public class SelectTasksActivityTest {
         Instrumentation instrumentation
                 = InstrumentationRegistry.getInstrumentation();
         ctx = instrumentation.getTargetContext();
-        db = DBHelper.getInstance(ctx);
     }
 
 

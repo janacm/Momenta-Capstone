@@ -36,18 +36,28 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.mockito.Mockito.*;
 
 /**
  * Test
  */
 public class ActivityIntegrationTest {
 
+    FirebaseDatabase database = mock(FirebaseDatabase.class);
+    DatabaseReference reference = mock(DatabaseReference.class);
+
     @Rule
-    public final ActivityTestRule<MainActivity> main = new ActivityTestRule<>(MainActivity.class);
+    public final ActivityTestRule<MainActivity> main = new ActivityTestRule<MainActivity>(MainActivity.class){
+        @Override
+        protected void beforeActivityLaunched() {
+            super.beforeActivityLaunched();
+            FirebaseProvider.setFirebaseDatabase(database);
+        }
+    };
+
     private static final String TAG = "ActivityIntegrationTest";
     Context context;
     helperPreferences helperPreferences;
-    DatabaseReference reference;
 
     @Before
     public void before() {
@@ -55,22 +65,9 @@ public class ActivityIntegrationTest {
         context = instrumentation.getTargetContext();
 
         helperPreferences = new helperPreferences(context);
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        firebaseDatabase.goOffline();
-        reference = firebaseDatabase.getReference();
-
-//        Calendar deadline = Calendar.getInstance();
-//        deadline.setTimeInMillis(deadline.getTimeInMillis() + TimeUnit.MILLISECONDS.convert(30, TimeUnit.HOURS));
-//        Task task = new Task("Initial Task Name", 400, deadline,
-//                Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
-//
-//        reference.child(directory).push().setValue(task);
-        try {
-            Thread.sleep(750);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
+
+
 
     @Test
     public void testSettingsActivity() {
@@ -93,10 +90,8 @@ public class ActivityIntegrationTest {
                 RecyclerViewActions.actionOnItemAtPosition(0, click()));
 
         onView(withId(R.id.task_name_edit_text)).check(matches(withText(name)));
-        onView(withId(R.id.task_hour_edit_text)).check(matches(withText(hours)));
-        onView(withId(R.id.task_minute_edit_text)).check(matches(withText(minutes)));
         String expected = Task.getDateFormat(cal);
-        onView(withId(R.id.task_time_set_deadline)).check(matches(withText(expected)));
+        onView(withId(R.id.task_deadline_value)).check(matches(withText(expected)));
 
     }
 

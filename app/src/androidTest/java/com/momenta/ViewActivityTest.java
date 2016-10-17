@@ -69,7 +69,7 @@
 //                Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
 //        task.setTimeSpent(200);
 //
-//        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+//        FirebaseDatabase firebaseDatabase = FirebaseProvider.getInstance();
 //        FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 //        if (mFirebaseUser != null) {
 //            directory = mFirebaseUser.getUid() + "/goals";
