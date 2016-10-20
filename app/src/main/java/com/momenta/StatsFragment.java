@@ -253,18 +253,6 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
 
         tempCal.setTimeInMillis( Calendar.getInstance().getTimeInMillis() );
 
-//        String pieDate = SettingsActivity.formatDate(tempCal.getTime(), "EEE, MMM d");
-//        pieTextView.setText(pieDate);
-//
-//        pieDate = SettingsActivity.formatDate(tempCal.getTime(), DBHelper.TIME_SPENT_DATE_FORMAT);
-//        Log.d("Stats", "Getting data for " + pieDate);
-//        ArrayList<Task> pieDateList = pieGraphData.get(pieDate);
-//        Log.d("Stats", "Size of map for " + pieDate + " is: " + pieDateList.size());
-//
-//        for (Task t: pieDateList) {
-//            pieEntries.add(new PieEntry(t.getTimeSpent(), t.getName()));
-//        }
-
         PieDataSet pieDataSet = new PieDataSet(pieEntries, "Time spent");
 
         ArrayList<Integer> colors = new ArrayList<>();
@@ -282,7 +270,6 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
         pieData.setValueTextSize(11f);
         pieData.setValueTextColor(Color.WHITE);
         pieChart.setData(pieData);
-//        pieChart.invalidate();
 
         String pieDate = SettingsActivity.formatDate(tempCal.getTime(), Constants.TIME_SPENT_DATE_FORMAT);
         setPieDayData(pieDate);
