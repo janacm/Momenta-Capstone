@@ -213,6 +213,7 @@ public class AddActivityTest {
 
         //Add activity with a name goal and deadline
         onView(withId(R.id.newtask_name_edit_text)).perform(typeText(activityName));
+        Espresso.closeSoftKeyboard();
         onView(withId(R.id.newtask_deadline_layout)).perform(click());
 
         int year = 2030;
@@ -254,6 +255,7 @@ public class AddActivityTest {
 
         //add activity with a name and deadline
         onView(withId(R.id.newtask_name_edit_text)).perform(typeText(activityName));
+        Espresso.closeSoftKeyboard();
         onView(withId(R.id.newtask_deadline_layout)).perform(click());
 
         int year = 2030;

@@ -134,6 +134,7 @@ public class ActivityIntegrationTest {
             e.printStackTrace();
         }
         onView(withId(R.id.newtask_name_edit_text)).perform(typeText(activityName));
+        Espresso.closeSoftKeyboard();
         onView(withId(R.id.newtask_deadline_layout)).perform(click());
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(year, month + 1, day));
         onView(withId(android.R.id.button1)).perform(click());
