@@ -1,0 +1,520 @@
+package com.momenta;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.Semaphore;
+
+/**
+ * Provides a connection to android local database.
+ */
+public class DBHelper extends SQLiteOpenHelper {
+
+    //DBHelper Instance
+    public static DBHelper mInstance = null;
+
+    //Database Constants
+    public static final int DATABASE_VERSION = 1;
+    public static final String DATABASE_NAME = "Momenta.db";
+    public static final String TIME_SPENT_DATE_FORMAT = "yyyy-MM-dd";
+
+    //Table Names
+    public static final String ACTIVITIES_TABLE = "ACTIVITIES_TABLE";
+    public static final String TIME_SPENT_TABLE = "TIME_SPENT_TABLE";
+    public static final String AWARDS_TABLE = "AWARDS_TABLE";
+
+    //Activities Table Columns
+    public static final String ACTIVITY_ID = "ACTIVITY_ID";
+    public static final String ACTIVITY_NAME = "ACTIVITY_NAME";
+    public static final String ACTIVITY_DURATION = "ACTIVITY_DURATION";
+    public static final String ACTIVITY_DEADLINE = "ACTIVITY_DEADLINE";
+    public static final String ACTIVITY_PRIORITY = "ACTIVITY_PRIORITY";
+    public static final String ACTIVITY_LAST_MODIFIED = "ACTIVITY_LAST_MODIFIED";
+    public static final String ACTIVITY_DATE_CREATED = "ACTIVITY_DATE_CREATED";
+    public static final String ACTIVITY_TIME_SPENT = "ACTIVITY_TIME_SPENT";
+
+    //Activities Table Columns
+    private static final String AWARD_ID = "AWARD_ID";
+    private static final String AWARD_NAME = "AWARD_NAME";
+    private static final String AWARD_DESCRIPTION = "AWARD_DESCRIPTION";
+    private static final String AWARD_CURRENT_LEVEL = "AWARD_CURRENT_LEVEL";
+    private static final String AWARD_MAX_LEVEL = "AWARD_MAX_LEVEL";
+    private static final String AWARD_CURRENT_PROGRESS = "AWARD_CURRENT_PROGRESS";
+    private static final String AWARD_LEVEL_1_PROGRESS_LIMIT = "AWARD_LEVEL_1_PROGRESS_LIMIT";
+    private static final String AWARD_LEVEL_2_PROGRESS_LIMIT = "AWARD_LEVEL_2_PROGRESS_LIMIT";
+    private static final String AWARD_LEVEL_3_PROGRESS_LIMIT = "AWARD_LEVEL_3_PROGRESS_LIMIT";
+    private static final String AWARD_LEVEL_4_PROGRESS_LIMIT = "AWARD_LEVEL_4_PROGRESS_LIMIT";
+    private static final String AWARD_LEVEL_5_PROGRESS_LIMIT = "AWARD_LEVEL_5_PROGRESS_LIMIT";
+
+    //Common Table Columns
+    public static final String USER_ID = "USER_ID";
+    //Time spent table columns
+    public static final String TIME_SPENT_DATE = "TIME_SPENT_DATE";
+    public static final String TIME_SPENT_TIME_SPENT = "TIME_SPENT_TIME_SPENT";
+
+
+    //Fields to specify the column & order to sort the result by
+    public static final String COLUMN = "COLUMN";
+    public static final String ORDER = "ORDER";
+    public static final String ASC = "ASC";
+    public static final String DESC = "DESC";
+
+    private helperPreferences helperPreferences;
+
+    private static final String CREATE_TIME_SPENT_TABLE = "CREATE TABLE "
+            + TIME_SPENT_TABLE + "("
+            + TIME_SPENT_DATE + " DATE NOT NULL, "
+            + ACTIVITY_ID + " INTEGER NOT NULL, "
+            + TIME_SPENT_TIME_SPENT + " INTEGER NOT NULL, "
+            + "FOREIGN KEY (" + ACTIVITY_ID + ") references " + ACTIVITIES_TABLE + "(" + ACTIVITY_ID + "), "
+            + "PRIMARY KEY (" + TIME_SPENT_DATE + "," + ACTIVITY_ID + ") )";
+
+    // ACTIVITIES table create statement
+    private static final String CREATE_ACTIVITIES_TABLE = "CREATE TABLE "
+            + ACTIVITIES_TABLE + "("
+            + ACTIVITY_ID + " INTEGER PRIMARY KEY, "
+            + USER_ID + " CHAR(32) NOT NULL, "
+            + ACTIVITY_NAME + " CHAR(32) NOT NULL, "
+            + ACTIVITY_DURATION + " INTEGER NOT NULL, "
+            + ACTIVITY_DEADLINE + " LONG DEFAULT 0, "
+            + ACTIVITY_PRIORITY + " CHAR(32) NOT NULL, "
+            + ACTIVITY_LAST_MODIFIED + " LONG NOT NULL DEFAULT 0, "
+            + ACTIVITY_DATE_CREATED + " LONG NOT NULL DEFAULT 0, "
+            + ACTIVITY_TIME_SPENT + " INTEGER NOT NULL)";
+
+    // AWARDS table create statement
+    private static final String CREATE_AWARDS_TABLE = "CREATE TABLE "
+            + AWARDS_TABLE + "("
+            + AWARD_ID + " INTEGER PRIMARY KEY, "
+            + USER_ID + " CHAR(32) NOT NULL, "
+            + AWARD_NAME + " CHAR(32) NOT NULL, "
+            + AWARD_DESCRIPTION + " CHAR(32) NOT NULL, "
+            + AWARD_CURRENT_LEVEL + " INTEGER NOT NULL DEFAULT 0, "
+            + AWARD_CURRENT_PROGRESS + " INTEGER NOT NULL DEFAULT 0, "
+            + AWARD_MAX_LEVEL + " INTEGER NOT NULL DEFAULT 0, "
+            + AWARD_LEVEL_1_PROGRESS_LIMIT + " INTEGER NOT NULL DEFAULT 0, "
+            + AWARD_LEVEL_2_PROGRESS_LIMIT + " INTEGER NOT NULL DEFAULT 0, "
+            + AWARD_LEVEL_3_PROGRESS_LIMIT + " INTEGER NOT NULL DEFAULT 0, "
+            + AWARD_LEVEL_4_PROGRESS_LIMIT + " INTEGER NOT NULL DEFAULT 0, "
+            + AWARD_LEVEL_5_PROGRESS_LIMIT + " INTEGER NOT NULL DEFAULT 0)";
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        /*The DATABASE_VERSION must be incremented if this statement is altered;
+            and the onUpgrade method must be updated
+         */
+        db.execSQL(CREATE_ACTIVITIES_TABLE);
+        db.execSQL(CREATE_AWARDS_TABLE);
+//        fillAwardsTable(db);
+        db.execSQL(CREATE_TIME_SPENT_TABLE);
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    }
+
+    /**
+     * Create a helper object to read from & write data to
+     *
+     * @param context application context.
+     */
+    private DBHelper(Context context) {
+        super(context.getApplicationContext(), DATABASE_NAME, null, DATABASE_VERSION);
+        this.helperPreferences = new helperPreferences(context);
+    }
+
+    public static DBHelper getInstance(Context context) {
+        if (mInstance == null) {
+            mInstance = new DBHelper(context);
+        }
+        return mInstance;
+    }
+
+    /**
+     * Inserts a task into the temporary table, sample.
+     *
+     * @param task The task to be inserted into the database.
+     * @return the row ID of the newly inserted row, or -1 if an error occurred
+     */
+    public long insertTask(Task task,String user_id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(ACTIVITY_NAME, task.getName());
+        values.put(USER_ID, user_id);
+        values.put(ACTIVITY_DURATION, task.getGoal());
+        values.put(ACTIVITY_PRIORITY, task.getPriorityValue().name());
+        values.put(ACTIVITY_DEADLINE, task.getDeadlineValue().getTimeInMillis());
+        values.put(ACTIVITY_DATE_CREATED, task.getDateCreated());
+        values.put(ACTIVITY_LAST_MODIFIED, task.getLastModified());
+        values.put(ACTIVITY_TIME_SPENT,task.getTimeSpent());
+        values.put(ACTIVITY_LAST_MODIFIED, task.getLastModifiedValue().getTimeInMillis());
+        values.put(ACTIVITY_TIME_SPENT,0);
+        return db.insert(ACTIVITIES_TABLE, null, values);
+    }
+
+    /**
+     * Used to retrieve all the tasks in the database.
+     *
+     * @return ArrayList containing all shows.
+     */
+    public List<Task> getAllTasks() {
+        SQLiteDatabase db = getReadableDatabase();
+
+        String column = helperPreferences.getPreferences(COLUMN, ACTIVITY_LAST_MODIFIED);
+        String order = helperPreferences.getPreferences(ORDER, DESC);
+        List<Task> taskList = new ArrayList<>();
+        Calendar calDue = Calendar.getInstance();
+        Calendar calModified = Calendar.getInstance();
+        column += " COLLATE NOCASE " + order + ";";
+
+        Cursor cursor = db.query(ACTIVITIES_TABLE,
+                new String[]{ACTIVITY_ID, ACTIVITY_NAME, ACTIVITY_DURATION, ACTIVITY_DEADLINE,
+                        ACTIVITY_PRIORITY, ACTIVITY_DATE_CREATED, ACTIVITY_LAST_MODIFIED,
+                        ACTIVITY_TIME_SPENT},
+                null, null, null, null, column, null);
+        while (cursor != null && cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex(ACTIVITY_ID));
+            String name = cursor.getString(cursor.getColumnIndex(ACTIVITY_NAME));
+            int duration = cursor.getInt(cursor.getColumnIndex(ACTIVITY_DURATION));
+            calDue.setTimeInMillis(cursor.getLong(cursor.getColumnIndex(ACTIVITY_DEADLINE)));
+            String priority = cursor.getString(cursor.getColumnIndex(ACTIVITY_PRIORITY));
+            long dateCreated = cursor.getLong(cursor.getColumnIndex(ACTIVITY_DATE_CREATED));
+            calModified.setTimeInMillis(cursor.getLong(cursor.getColumnIndex(ACTIVITY_LAST_MODIFIED)));
+            calModified.setTimeInMillis( cursor.getLong(cursor.getColumnIndex(ACTIVITY_LAST_MODIFIED)) );
+            int timeSpent = cursor.getInt(cursor.getColumnIndex(ACTIVITY_TIME_SPENT));
+
+            Task t = new Task(null, name, duration, calDue, dateCreated, calModified, timeSpent);
+            t.setPriorityValue( Task.Priority.valueOf(priority) );
+
+            taskList.add(t);
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return taskList;
+    }
+
+    /**
+     * Used to retrieve a single task from the db
+     *
+     * @param id of the task to be retrieved from the db
+     * @return Task object of the task with the corresponding id
+     * or null if no task with the id could be found.
+     */
+    public Task getTask(int id) {
+        SQLiteDatabase db = getReadableDatabase();
+        Calendar calDue = Calendar.getInstance();
+        Calendar calModified = Calendar.getInstance();
+        Task task;
+        Cursor cursor = db.query(ACTIVITIES_TABLE,
+                new String[]{ACTIVITY_ID, ACTIVITY_NAME, ACTIVITY_DURATION, ACTIVITY_DEADLINE
+                        , ACTIVITY_PRIORITY, ACTIVITY_DATE_CREATED, ACTIVITY_LAST_MODIFIED,
+                        ACTIVITY_TIME_SPENT},
+                ACTIVITY_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
+        if (cursor != null && cursor.moveToNext()) {
+            int dbID = cursor.getInt(cursor.getColumnIndex(ACTIVITY_ID));
+            String name = cursor.getString(cursor.getColumnIndex(ACTIVITY_NAME));
+            int duration = cursor.getInt(cursor.getColumnIndex(ACTIVITY_DURATION));
+            long deadlineLong = cursor.getLong(cursor.getColumnIndex(ACTIVITY_DEADLINE));
+            long dateCreated = cursor.getLong(cursor.getColumnIndex(ACTIVITY_DATE_CREATED));
+            long lastModified = cursor.getLong(cursor.getColumnIndex(ACTIVITY_LAST_MODIFIED));
+            calDue.setTimeInMillis(deadlineLong);
+            int timeSpent = cursor.getInt(cursor.getColumnIndex(ACTIVITY_TIME_SPENT));
+            calDue.setTimeInMillis( deadlineLong );
+            calModified.setTimeInMillis(lastModified);
+
+            task = new Task(null, name, duration , calDue, dateCreated, calModified, timeSpent);
+            String priority = cursor.getString(cursor.getColumnIndex(ACTIVITY_PRIORITY));
+            task.setPriorityValue(Task.Priority.valueOf(priority));
+        } else {
+            return null;
+        }
+        cursor.close();
+        return task;
+    }
+
+    /**
+     * Used to update the fields of a task in the DB matching the id of
+     * the provided task, with its fields.
+     * @param task the updated task fields to be matched
+     * @return true if the operation was successful and false otherwise.
+     */
+    public boolean updateTask(Task task) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(ACTIVITY_NAME, task.getName());
+        cv.put(ACTIVITY_DURATION, task.getGoal());
+        cv.put(ACTIVITY_DEADLINE, task.getDeadlineValue().getTimeInMillis());
+        cv.put(ACTIVITY_PRIORITY, task.getPriorityValue().name());
+        cv.put(ACTIVITY_LAST_MODIFIED, task.getLastModifiedValue().getTimeInMillis());
+        cv.put(ACTIVITY_TIME_SPENT, task.getTimeSpent());
+        String[] whereArgs = new String[]{task.getId() + ""};
+        int result = 0;
+        try {
+            result = db.update(ACTIVITIES_TABLE, cv, ACTIVITY_ID + " = ?", whereArgs);
+        } catch (Exception e) {
+        }
+        return result > 0;
+    }
+
+    /**
+     * Method to delete task from the databse
+     *
+     * @param id the id to be deleted
+     */
+    public void deleteTask(int id) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(ACTIVITIES_TABLE, ACTIVITY_ID + " = ?", new String[]{String.valueOf(id)});
+        db.close();
+    }
+
+    /**
+     * Inserts an award into the awards table.
+     *
+     * @param award The task to be inserted into the database.
+     * @return the row ID of the newly inserted row, or -1 if an error occurred
+     */
+
+
+    /**
+     * Used to retrieve all the awards in the database.
+     *
+     * @return ArrayList containing all awards.
+     */
+
+
+    /**
+     * Used to retrieve a single award from the db
+     *
+     * @param id of the award to be retrieved from the db
+     * @return Award object of the task with the corresponding id
+     * or null if no task with the id could be found.
+     */
+
+    /**
+     * Used to update the fields of an award in the DB matching the id of
+     * the provided task, with its fields.
+     *
+     * @param award the updated task fields to be matched
+     * @return true if the operation was successful and false otherwise.
+     */
+
+    /**
+     * Method to delete award from the database
+     *
+     * @param id the id to be deleted
+     */
+    public void deleteAward(int id) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(AWARDS_TABLE, AWARD_ID + " = ?", new String[]{String.valueOf(id)});
+        db.close();
+    }
+
+    //Fill the awrds table with the defined awrds we want in our application
+    private void fillAwardsTable(SQLiteDatabase db) {
+      /*  Award commitedAward = new Award("Committed", "Logged time towards an activity you previously committed to.", new ArrayList<>(Collections.singletonList(1)));
+        commitedAward.setCurrentLevel(0);
+        commitedAward.setCurrentProgress(0);
+        insertAward(commitedAward, db);
+
+        Award neophyteAward = new Award("Neophyte", "Logged time for the first time towards an activity.", new ArrayList<>(Collections.singletonList(1)));
+        neophyteAward.setCurrentLevel(0);
+        neophyteAward.setCurrentProgress(0);
+        insertAward(neophyteAward, db);
+
+        Award trendSetterAward = new Award("Trend Setter", "Completed 5 hours towards a productive activity", new ArrayList<>(Arrays.asList(1, 5, 10, 50, 200)));
+        trendSetterAward.setCurrentLevel(0);
+        trendSetterAward.setCurrentProgress(0);
+        insertAward(trendSetterAward, db);
+
+        Award multiTaskerAward = new Award("Mulit-Tasker", "Log time in X different activities.", new ArrayList<>(Arrays.asList(5, 10, 25, 100, 200)));
+        multiTaskerAward.setCurrentLevel(0);
+        multiTaskerAward.setCurrentProgress(0);
+        insertAward(multiTaskerAward, db);
+
+        Award productiveAward = new Award("Productive", "Successfully log time towards an activity after seeing the notification X times.", new ArrayList<>(Arrays.asList(10, 50, 100, 500, 2000)));
+        productiveAward.setCurrentLevel(0);
+        productiveAward.setCurrentProgress(0);
+        insertAward(productiveAward, db);
+
+        Award perfectionnistAward = new Award("Perfectionnist", "Spend more than X hours towards an activity.", new ArrayList<>(Arrays.asList(10, 20, 50, 200, 500)));
+        perfectionnistAward.setCurrentLevel(0);
+        perfectionnistAward.setCurrentProgress(0);
+        insertAward(perfectionnistAward, db);
+
+        Award ponctualAward = new Award("Ponctual", "Achieve time goal before deadline on X activities.", new ArrayList<>(Arrays.asList(5, 10, 25, 100, 200)));
+        ponctualAward.setCurrentLevel(0);
+        ponctualAward.setCurrentProgress(0);
+        insertAward(ponctualAward, db);*/
+    }
+
+    /**
+     * Helper method to log time spent in the time spent table
+     * first check with primary key to see if already exist, if so
+     * an update query is run, else an insert query is run
+     * @param id the id of the task
+     * @param timeSpent the amount of time spent on the task
+     */
+    public void logTimeSpent(int id, int timeSpent) {
+        SimpleDateFormat sdf = new SimpleDateFormat(TIME_SPENT_DATE_FORMAT);
+        String date = sdf.format(Calendar.getInstance().getTime());
+        Integer currentTimeSpent = 0;
+        ContentValues values = new ContentValues();
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String whereClause = TIME_SPENT_DATE + " =? AND " + ACTIVITY_ID + " =?";
+        String[] whereArgs = new String[]{date, id + ""};
+        Cursor cursor = db.query(TIME_SPENT_TABLE,
+                new String[]{TIME_SPENT_TIME_SPENT},
+                whereClause,
+                whereArgs,
+                null, null, null, null);
+
+        if (cursor != null && cursor.moveToNext()) {
+            currentTimeSpent = cursor.getInt(cursor.getColumnIndex(TIME_SPENT_TIME_SPENT));
+            timeSpent += currentTimeSpent;
+
+            values.put(TIME_SPENT_TIME_SPENT, timeSpent);
+            db.update(TIME_SPENT_TABLE, values, whereClause ,whereArgs);
+            return;
+        }
+
+        values.put(TIME_SPENT_DATE, date);
+        values.put(ACTIVITY_ID, id);
+        values.put(TIME_SPENT_TIME_SPENT, timeSpent);
+
+        db.insert(TIME_SPENT_TABLE, null, values);
+    }
+
+    /**
+     * Helper method to get time logged data grouped by day
+     * @return a HashMap<String, Integer> with the Date(yyyy-MM-dd)
+     * as the key and the amount of time spent in minutes as the value(Integer).
+     */
+    public HashMap<String, Integer> getTimeSpentByDay() {
+        SQLiteDatabase db = getReadableDatabase();
+
+        HashMap<String, Integer> data = new HashMap<>();
+
+        String rawQuery = "SELECT " + TIME_SPENT_DATE + ", " + " SUM( " + TIME_SPENT_TIME_SPENT + " )" +
+                " AS " + TIME_SPENT_TIME_SPENT +
+                " FROM " + TIME_SPENT_TABLE + " GROUP BY " + TIME_SPENT_DATE;
+        Cursor cursor = db.rawQuery(rawQuery, null);
+
+        while (cursor != null && cursor.moveToNext()) {
+            String date = cursor.getString(cursor.getColumnIndex(TIME_SPENT_DATE));
+            int timeSpent = cursor.getInt(cursor.getColumnIndex(TIME_SPENT_TIME_SPENT));
+            data.put( date, timeSpent);
+        }
+
+        if ( cursor != null ) {
+            cursor.close();
+        }
+
+        return data;
+    }
+
+    public HashMap<String, Integer> getTimeSpentForDay(String date) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        HashMap<String, Integer> data = new HashMap<>();
+        String rawQuery = "SELECT " + ACTIVITY_ID + "," + TIME_SPENT_TIME_SPENT
+                + " FROM " + TIME_SPENT_TABLE + " WHERE  " + TIME_SPENT_DATE
+                + "= '" + date + "'";
+
+        Cursor cursor = db.rawQuery(rawQuery, null);
+
+        while (cursor != null && cursor.moveToNext()) {
+            int activityId = cursor.getInt(cursor.getColumnIndex(ACTIVITY_ID));
+            String activityName = "";
+            int timeSpent = cursor.getInt(cursor.getColumnIndex(TIME_SPENT_TIME_SPENT));
+
+
+            String getNameQuery = "SELECT " + ACTIVITY_NAME + " FROM " + ACTIVITIES_TABLE
+                    + " WHERE  " + ACTIVITY_ID + "= '" + activityId + "'";
+            Cursor nameCursor = db.rawQuery(getNameQuery, null);
+
+            if (nameCursor != null && nameCursor.moveToNext()) {
+                activityName = nameCursor.getString(nameCursor.getColumnIndex(ACTIVITY_NAME));
+            }
+
+            data.put( activityName, timeSpent);
+        }
+
+        if (cursor != null) {
+            cursor.close();
+        }
+
+        return data;
+    }
+
+    //Firebase instances
+    private DatabaseReference mFirebaseDatabaseReference;
+    private String goalDirectory = "";
+    private String timespentDirectory = "";
+
+    /**
+     * Helper method to retrieve all the tasks.
+     * @return ArrayList containing all tasks.
+     */
+    public List<Task> getActiveTasks() {
+        final List<Task> activeTasks = new ArrayList<Task>();
+        final Semaphore semaphore = new Semaphore(0);
+
+        mFirebaseDatabaseReference.child(goalDirectory).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        // Iterate over all tasks
+                        for (DataSnapshot snapshot: dataSnapshot.getChildren() ){
+
+                            Task task = new Task();
+                            task.setId( (String)snapshot.child("id").getValue() );
+                            task.setName( (String)snapshot.child("name").getValue() );
+                            Long goal = (long)snapshot.child("goal").getValue();
+                            task.setGoal( goal.intValue() );
+                            task.setDeadline( (Long)snapshot.child("deadline").getValue() );
+                            task.setDateCreated( (Long)snapshot.child("dateCreated").getValue() );
+                            task.setLastModified( (Long)snapshot.child("lastModified").getValue() );
+                            Long timeSpent = (long)snapshot.child("timeSpent").getValue();
+                            task.setTimeSpent( timeSpent.intValue() );
+                            task.setPriority( (String)snapshot.child("priority").getValue() );
+
+                            // Add task to the list
+                            activeTasks.add(task);
+                        }
+                        semaphore.release();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                }
+        );
+
+        try {
+            semaphore.acquire();
+        } catch (InterruptedException e) {
+            Log.e("DBHelper", Log.getStackTraceString(e));
+        }
+        return activeTasks;
+    }
+
+}

@@ -13,10 +13,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -251,14 +251,14 @@ public class LogFragment extends Fragment {
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
         public TextView timeSpent;
-        public ProgressBar progressBar;
+        public TextRoundCornerProgressBar progressBar;
 
         public TaskViewHolder(View itemView) {
             super(itemView);
 
             name = (TextView) itemView.findViewById(R.id.list_item_name);
             timeSpent = (TextView) itemView.findViewById(R.id.list_item_time_spent);
-            progressBar = (ProgressBar) itemView.findViewById(R.id.progressBar);
+            progressBar = (TextRoundCornerProgressBar) itemView.findViewById(R.id.progressBar);
         }
     }
 

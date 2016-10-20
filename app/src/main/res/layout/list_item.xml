@@ -35,7 +35,7 @@
 
         <TextView
             android:id="@+id/list_item_name"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:ellipsize="end"
@@ -43,11 +43,21 @@
             android:text="@string/dummy_content"
             android:maxLines="2"/>
 
-        <android.support.v4.widget.ContentLoadingProgressBar
+        <com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar
             android:id="@+id/progressBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
+            android:layout_height="20dp"
+
+            android:layout_below="@id/award_image"
+            autofit:rcRadius="20dp"
+            autofit:rcReverse="false"
+            autofit:rcProgressColor="@color/accent_material_light_1"
+            autofit:rcBackgroundPadding="3dp"
+            autofit:rcBackgroundColor="@color/progress_bg"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp" />
 
     </LinearLayout>
 
