@@ -152,7 +152,7 @@ public class AddActivityTest {
         //close soft keyboard
         Espresso.closeSoftKeyboard();
 
-        onView(withText(R.string.yes)).perform(click());
+        onView(withText(R.string.dialog_ok)).perform(click());
 
         //Add activity
 //        onView(withId(R.id.add_task_done_button)).perform(click());
@@ -228,7 +228,7 @@ public class AddActivityTest {
         //close soft keyboard
         Espresso.closeSoftKeyboard();
 
-        onView(withText(R.string.yes)).perform(click());
+        onView(withText(R.string.dialog_ok)).perform(click());
 
         //Add activity
         onView(withId(R.id.add_task_done_button)).perform(click());

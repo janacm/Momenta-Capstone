@@ -143,7 +143,7 @@ public class ActivityIntegrationTest {
         onView(withId(R.id.dialog_minute_edittext)).perform(replaceText(minutes));
         //close soft keyboard
         Espresso.closeSoftKeyboard();
-        onView(withText(R.string.yes)).perform(click());
+        onView(withText(R.string.dialog_ok)).perform(click());
 
         onView(withId(R.id.add_task_done_button)).perform(click());
 
