@@ -21,7 +21,6 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * Created by Joe on 2016-01-31.
@@ -263,4 +262,17 @@ public class LogFragment extends Fragment {
         }
     }
 
+    /**
+     * Sets the adapter of the recycler view
+     * @param adapter the new adapter to change to
+     */
+    public void setAdapter(final RecyclerView.Adapter adapter) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mRecyclerView.setAdapter(adapter);
+                mRecyclerView.invalidate();
+            }
+        });
+    }
 }

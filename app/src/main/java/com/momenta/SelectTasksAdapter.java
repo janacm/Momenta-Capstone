@@ -2,7 +2,6 @@ package com.momenta;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,19 +10,10 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 
 /**
  * Adapter to handle the task data in the SelectTasksActivity and serve the recycler view
@@ -39,55 +29,54 @@ public class SelectTasksAdapter extends RecyclerView.Adapter<SelectTasksAdapter.
     private HashMap<Integer,Boolean> itemClickedMap;
 
 
-    public SelectTasksAdapter(Context context) {
+    public SelectTasksAdapter(Context context, List<Task> tasks) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             goalDirectory = user.getUid() + "/goals";
-        } else {
-            Log.e(TAG, "User is null");
         }
-        Log.d(TAG, goalDirectory);
-        tasks = new ArrayList<>();
+        this.tasks = tasks;
+        //Initializing the itemClickedMap for all positions to be false
+        itemClickedMap = new HashMap<>();
+        for(int i = 0; i < tasks.size(); i++ ){
+            itemClickedMap.put(i, false);
+        }
 
-        DatabaseReference mDatabaseReference = FirebaseProvider.getInstance().getReference();
-        mDatabaseReference.child(goalDirectory).addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        Log.e(TAG, "Processing call back");
-                        // Iterate over all tasks
-                        for (DataSnapshot snapshot: dataSnapshot.getChildren() ){
-
-                            Task task = new Task();
-                            task.setId( (String)snapshot.child("id").getValue() );
-                            task.setName( (String)snapshot.child("name").getValue() );
-                            Long goal = (long)snapshot.child("goal").getValue();
-                            task.setGoal( goal.intValue() );
-                            task.setDeadline( (Long)snapshot.child("deadline").getValue() );
-                            task.setDateCreated( (Long)snapshot.child("dateCreated").getValue() );
-                            task.setLastModified( (Long)snapshot.child("lastModified").getValue() );
-                            Long timeSpent = (long)snapshot.child("timeSpent").getValue();
-                            task.setTimeSpent( timeSpent.intValue() );
-                            task.setPriority( (String)snapshot.child("priority").getValue() );
-
-                            // Add task to the list
-                            tasks.add(task);
-                        }
-                        Log.e(TAG, "Finished processing " + tasks.size() + " tasks");
-                        //Initializing the itemClickedMap for all positions to be false
-                        itemClickedMap = new HashMap<>();
-                        for(int i = 0; i < tasks.size(); i++ ){
-                            itemClickedMap.put(i, false);
-                        }
-                        notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                }
-        );
-        Log.e(TAG, "Waiting for callback");
+//        DatabaseReference mDatabaseReference = FirebaseProvider.getInstance().getReference();
+//        mDatabaseReference.child(goalDirectory).addListenerForSingleValueEvent(
+//                new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                        Log.e(TAG, "Processing call back");
+//                        // Iterate over all tasks
+//                        for (DataSnapshot snapshot: dataSnapshot.getChildren() ){
+//
+//                            Task task = new Task();
+//                            task.setId( (String)snapshot.child("id").getValue() );
+//                            task.setName( (String)snapshot.child("name").getValue() );
+//                            Long goal = (long)snapshot.child("goal").getValue();
+//                            task.setGoal( goal.intValue() );
+//                            task.setDeadline( (Long)snapshot.child("deadline").getValue() );
+//                            task.setDateCreated( (Long)snapshot.child("dateCreated").getValue() );
+//                            task.setLastModified( (Long)snapshot.child("lastModified").getValue() );
+//                            Long timeSpent = (long)snapshot.child("timeSpent").getValue();
+//                            task.setTimeSpent( timeSpent.intValue() );
+//                            task.setPriority( (String)snapshot.child("priority").getValue() );
+//
+//                            // Add task to the list
+//                            tasks.add(task);
+//                        }
+//                        Log.e(TAG, "Finished processing " + tasks.size() + " tasks");
+//
+//                        addSelectedItems(tasks);
+//                        notifyDataSetChanged();
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(DatabaseError databaseError) {
+//                    }
+//                }
+//        );
+//        Log.e(TAG, "Waiting for callback");
     }
 
     @Override
@@ -161,6 +150,18 @@ public class SelectTasksAdapter extends RecyclerView.Adapter<SelectTasksAdapter.
 //        }
 //        return itemIDs;
 //    }
+
+    /**
+     * Used to process the tasks to add time towards
+     * @param list
+     */
+    public void addSelectedItems(List<Task> list){
+        //Initializing the itemClickedMap for all positions to be false
+        itemClickedMap = new HashMap<>();
+        for(int i = 0; i < list.size(); i++ ){
+            itemClickedMap.put(i, false);
+        }
+    }
 
     /**
      * Returns a map containing the ids & names of selected tasks

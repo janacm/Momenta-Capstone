@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
 import com.github.fabtransitionactivity.SheetLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,6 +29,10 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity implements SheetLayout.OnFabAnimationEndListener{
     private static final int REQUEST_CODE = 1;
 //    private static boolean persistenceEnabled = false;
+
+    //Fragment fields
+    private ViewPager viewPager;
+    private ManagerFragmentPagerAdapter fragmentManager;
 
     private SheetLayout mSheetLayout;
     private FloatingActionButton fab;
@@ -52,8 +57,8 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
 
         helperPreferences = new helperPreferences(this);
         // Get the ViewPager and set it's PagerAdapter so that it can display items
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        ManagerFragmentPagerAdapter fragmentManager = new ManagerFragmentPagerAdapter(getSupportFragmentManager(),
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        fragmentManager = new ManagerFragmentPagerAdapter(getSupportFragmentManager(),
                 MainActivity.this);
         viewPager.setAdapter(fragmentManager);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -167,6 +172,14 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
         sm.getGoogleApiClient().disconnect();
 
         super.onStop();
+    }
+
+    /**
+     * Returns the viewPager of MainActivity
+     * @return Viewpager
+     */
+    public ViewPager getViewerPager() {
+        return viewPager;
     }
 
     private void fillAwards(){
