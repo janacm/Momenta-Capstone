@@ -10,13 +10,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
 import com.github.fabtransitionactivity.SheetLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -30,6 +30,10 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
     private static final int REQUEST_CODE = 1;
 //    private static boolean persistenceEnabled = false;
 
+    //Fragment fields
+    private ViewPager viewPager;
+    private ManagerFragmentPagerAdapter fragmentManager;
+
     private SheetLayout mSheetLayout;
     private FloatingActionButton fab;
     private SessionManager sm;
@@ -41,25 +45,20 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        if (!persistenceEnabled) {
-//            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-//            persistenceEnabled = true;
-//        }
 
         sm = SessionManager.getInstance(this);
         // Initialize Firebase Auth
         FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
         if (mFirebaseUser != null) {
             awardsDirectory = mFirebaseUser.getUid() + "/awards";
         }
 
-        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        mFirebaseDatabaseReference = FirebaseProvider.getInstance().getReference();
 
         helperPreferences = new helperPreferences(this);
         // Get the ViewPager and set it's PagerAdapter so that it can display items
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        ManagerFragmentPagerAdapter fragmentManager = new ManagerFragmentPagerAdapter(getSupportFragmentManager(),
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        fragmentManager = new ManagerFragmentPagerAdapter(getSupportFragmentManager(),
                 MainActivity.this);
         viewPager.setAdapter(fragmentManager);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -199,6 +198,14 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
         sm.getGoogleApiClient().disconnect();
 
         super.onStop();
+    }
+
+    /**
+     * Returns the viewPager of MainActivity
+     * @return Viewpager
+     */
+    public ViewPager getViewerPager() {
+        return viewPager;
     }
 
     private void fillAwards(){

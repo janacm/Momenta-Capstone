@@ -21,7 +21,6 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * Created by Joe on 2016-01-31.
@@ -61,8 +60,8 @@ public class LogFragment extends Fragment {
         }
 
         // New child entries
-        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        mFirebaseAdapter = buildAdapter(helperPreferences.getPreferences(DBHelper.COLUMN, Task.LAST_MODIFIED));
+        mFirebaseDatabaseReference = FirebaseProvider.getInstance().getReference();
+        mFirebaseAdapter = buildAdapter(helperPreferences.getPreferences(Constants.COLUMN, Task.LAST_MODIFIED));
 
         setHasOptionsMenu(true);
     }
@@ -106,8 +105,8 @@ public class LogFragment extends Fragment {
                 .setPositiveButton(R.string.dialog_done, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        helperPreferences.savePreferences(DBHelper.COLUMN, sortString);
-                        helperPreferences.savePreferences(DBHelper.ORDER, orderString);
+                        helperPreferences.savePreferences(Constants.COLUMN, sortString);
+                        helperPreferences.savePreferences(Constants.ORDER, orderString);
 
                         mFirebaseAdapter = buildAdapter(sortString);
                         mFirebaseAdapter.notifyDataSetChanged();
@@ -163,7 +162,7 @@ public class LogFragment extends Fragment {
         });
 
         //Check current sort and order preference
-        switch ( helperPreferences.getPreferences(DBHelper.COLUMN, Task.LAST_MODIFIED) ) {
+        switch ( helperPreferences.getPreferences(Constants.COLUMN, Task.LAST_MODIFIED) ) {
             case Task.NAME:
                 sortRadioGroup.check(R.id.radio_button_name);
                 break;
@@ -177,7 +176,7 @@ public class LogFragment extends Fragment {
                 sortRadioGroup.check(R.id.radio_button_deadline);
                 break;
         }
-        switch ( helperPreferences.getPreferences(DBHelper.ORDER, ASC)) {
+        switch ( helperPreferences.getPreferences(Constants.ORDER, ASC)) {
             case ASC:
                 orderRadioGroup.check(R.id.radio_button_ascending);
                 break;
@@ -234,7 +233,7 @@ public class LogFragment extends Fragment {
      */
     private void setLayoutManger() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        orderString = helperPreferences.getPreferences(DBHelper.ORDER, ASC);
+        orderString = helperPreferences.getPreferences(Constants.ORDER, ASC);
 
         if ( orderString.equals(DESC) ) {
             layoutManager.setReverseLayout(true);
@@ -263,4 +262,17 @@ public class LogFragment extends Fragment {
         }
     }
 
+    /**
+     * Sets the adapter of the recycler view
+     * @param adapter the new adapter to change to
+     */
+    public void setAdapter(final RecyclerView.Adapter adapter) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mRecyclerView.setAdapter(adapter);
+                mRecyclerView.invalidate();
+            }
+        });
+    }
 }

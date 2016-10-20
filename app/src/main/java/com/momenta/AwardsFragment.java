@@ -1,6 +1,5 @@
 package com.momenta;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,7 +15,6 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 
 /**
@@ -47,7 +45,7 @@ public class AwardsFragment extends Fragment {
         if (mFirebaseUser != null) {
             directory = mFirebaseUser.getUid() + "/awards";
         }
-        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        mFirebaseDatabaseReference = FirebaseProvider.getInstance().getReference();
         mFirebaseAdapter = buildAdapter();
         helperPreferences = new helperPreferences(getContext());
     }

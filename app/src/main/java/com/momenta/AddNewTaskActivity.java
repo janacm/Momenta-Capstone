@@ -15,12 +15,10 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -79,7 +77,7 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
         activityTimeSpent.setText(timeSetText(timespentHours,timespentMins));
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        reference = FirebaseDatabase.getInstance().getReference();
+        reference = FirebaseProvider.getInstance().getReference();
         if ( user!= null ) {
             directory = user.getUid() + "/goals";
         }
@@ -140,7 +138,7 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
         builder.setView(alertView);
 
 
-        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         try{
@@ -158,8 +156,7 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
                         }
                         activityGoal.setText(timeSetText(goalHours, goalMins));
                     }
-                })
-                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                }).setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     }
@@ -191,7 +188,7 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
         builder.setView(alertView);
 
 
-        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 try{
@@ -209,8 +206,7 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
                 }
                 activityTimeSpent.setText(timeSetText(timespentHours, timespentMins));
             }
-        })
-                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+        }).setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     }

@@ -18,10 +18,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
@@ -78,13 +76,13 @@ public class AddTaskTimeActivity extends AppCompatActivity {
         actionbar.setElevation(0);
 
         String date = SettingsActivity.formatDate(Calendar.getInstance().getTime(),
-                DBHelper.TIME_SPENT_DATE_FORMAT);
+                Constants.TIME_SPENT_DATE_FORMAT);
         FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (mFirebaseUser != null) {
             goalDirectory = mFirebaseUser.getUid() + "/goals";
             timespentDirectory = mFirebaseUser.getUid() + "/" + Task.TIME_SPENT + "/" + date;
         }
-        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        mFirebaseDatabaseReference = FirebaseProvider.getInstance().getReference();
 
 
         taskName = (TextView) findViewById(R.id.add_time_to_task_taskname);

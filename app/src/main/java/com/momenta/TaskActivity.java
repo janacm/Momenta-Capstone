@@ -24,7 +24,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Calendar;
@@ -66,7 +65,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         if (mFirebaseUser != null) {
             directory = mFirebaseUser.getUid() + "/goals";
         }
-        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        mFirebaseDatabaseReference = FirebaseProvider.getInstance().getReference();
         task = new Task();
 
         //Get the id of the activity and retrieve it from the DB
@@ -193,15 +192,14 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         builder.setView(alertView);
 
 
-        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 goalHours = Integer.valueOf(editTextHours.getText().toString());
                 goalMins = Integer.valueOf(editTextMinutes.getText().toString());
                 activityGoal.setText(timeSetText(goalHours, goalMins));
             }
-        })
-                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+        }).setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     }
@@ -228,6 +226,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
         dialog.getDatePicker().setMinDate(Calendar.getInstance().getTimeInMillis());
+        dialog.setTitle("");
         dialog.show();
     }
 
@@ -252,7 +251,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         builder.setView(alertView);
 
 
-        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 timeSpentHours = Integer.valueOf(editTextHours.getText().toString());
@@ -260,7 +259,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                 activityTimeSpent.setText(timeSetText(timeSpentHours, timeSpentMins) );
             }
         })
-                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     }
