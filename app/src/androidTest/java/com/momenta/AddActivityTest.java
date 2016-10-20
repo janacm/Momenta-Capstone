@@ -69,24 +69,6 @@ public class AddActivityTest {
         helperPreferences = new helperPreferences(ctx);
     }
 
-    /**
-     * This test seems to be useless, at least in this context
-     */
-//    @Test
-//    public void addActivityDBTesting() {
-//        String taskName = "TaskName";
-//        int duration = 12;
-//        Calendar deadline = Calendar.getInstance();
-//        Task task = new Task(taskName, duration, deadline,
-//                Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
-//        reference.child(directory).push().setValue(task);
-//
-//        Task taskAdded = db.getTask((int) id);
-//        assertEquals(taskName, taskAdded.getName());
-//        assertEquals(duration, taskAdded.getGoal());
-//        assertEquals(deadline, taskAdded.getDeadlineValue());
-//    }
-
     @Test
     public void addActivityDefaultStringFieldValuesUITests() {
         //Switching to Log tab
@@ -100,9 +82,6 @@ public class AddActivityTest {
         }
 
         //Checking Default Values in text fields and text views
-        //onView(withId(R.id.new_activity_edit_text)).check(matches(withHint(ctx.getString(R.string.new_activity_hint))));TODO cannot get string to pass
-
-        //Verify String values
         onView(withText(ctx.getString(R.string.goal_string))).check(matches(isDisplayed()));
         onView(withText(ctx.getString(R.string.deadline_string))).check(matches(isDisplayed()));
         onView(withText(ctx.getString(R.string.priority_string))).check(matches(isDisplayed()));
@@ -146,18 +125,8 @@ public class AddActivityTest {
         //close soft keyboard
         Espresso.closeSoftKeyboard();
 
-        //Add activity
-        onView(withId(R.id.add_task_done_button)).perform(click());
-
-//        //TODO Snackbar validation here
-//        //check toast is displayed
-//        //onView(withText(ctx.getString(R.string.toast_activity_added))).inRoot(withDecorView(not(main.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed()));
-//
-//        //Navigate to Log tab
-//        onView(withText(ctx.getString(R.string.tab_title_log))).perform(click());
-//
-//        //check new activity is added in listView
-//        onView(withId(R.id.activity_recycler_view)).check(matches(hasDescendant(withText(activityName))));
+//        TODO:
+//        onView(withId(R.id.add_task_done_button)).perform(click());
     }
 
     @Test
@@ -187,14 +156,6 @@ public class AddActivityTest {
 
         //Add activity
         onView(withId(R.id.add_task_done_button)).perform(click());
-
-        //TODO Snackbar validation here
-        //check toast is displayed
-        //onView(withText(ctx.getString(R.string.toast_activity_added))).inRoot(withDecorView(not(main.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed()));
-
-        //check new activity is added in listView
-//        onView(withId(R.id.activity_recycler_view)).check(matches(hasDescendant(withText(activityName))));
-//        onView(withId(R.id.activity_recycler_view)).check(matches(hasDescendant(withText("0M"))));
     }
 
     @Test
@@ -230,13 +191,6 @@ public class AddActivityTest {
         Espresso.closeSoftKeyboard();
 
         onView(withId(R.id.add_task_done_button)).perform(click());
-
-        //TODO Snackbar validation here
-        //check toast is displayed
-        //onView(withText(ctx.getString(R.string.toast_activity_added))).inRoot(withDecorView(not(main.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed()));
-
-        //check new activity is added in listView
-//        onView(withId(R.id.activity_recycler_view)).check(matches(hasDescendant(withText(activityName))));
     }
 
     @Test
@@ -267,11 +221,9 @@ public class AddActivityTest {
         onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(year, month + 1, day));
         onView(withText("OK")).perform(click());
 
-
         onView(withId(R.id.newtask_goal_layout)).perform(click());
         onView(withId(R.id.dialog_hour_edittext)).perform(typeText("97"));
         onView(withId(R.id.dialog_minute_edittext)).perform(typeText("34"));
-
 
         //close soft keyboard
         Espresso.closeSoftKeyboard();
@@ -280,13 +232,5 @@ public class AddActivityTest {
 
         //Add activity
         onView(withId(R.id.add_task_done_button)).perform(click());
-
-        //TODO Snackbar validation here
-        //check toast is displayed
-        //onView(withText(ctx.getString(R.string.toast_activity_added))).inRoot(withDecorView(not(main.getActivity().getWindow().getDecorView()))).check(matches(isDisplayed()));
-
-        //check new activity is added in listView
-//        onView(withId(R.id.activity_recycler_view)).check(matches(hasDescendant(withText(activityName))));
-//        onView(withId(R.id.activity_recycler_view)).check(matches(hasDescendant(withText("0M"))));
     }
 }

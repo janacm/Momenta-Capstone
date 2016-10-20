@@ -45,7 +45,6 @@ import static org.mockito.Mockito.when;
  */
 public class ActivityIntegrationTest {
 
-
     @Rule
     public final ActivityTestRule<MainActivity> main = new ActivityTestRule<MainActivity>(MainActivity.class){
         @Override
