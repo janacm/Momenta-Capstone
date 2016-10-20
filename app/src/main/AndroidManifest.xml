@@ -39,7 +39,7 @@
         <activity
             android:name=".TaskActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:theme="@style/momentaTheme.NoActionBar" />
         <activity
             android:name=".SelectTasksActivity"

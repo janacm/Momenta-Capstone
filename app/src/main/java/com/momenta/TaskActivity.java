@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -193,15 +194,14 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         builder.setView(alertView);
 
 
-        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 goalHours = Integer.valueOf(editTextHours.getText().toString());
                 goalMins = Integer.valueOf(editTextMinutes.getText().toString());
                 activityGoal.setText(timeSetText(goalHours, goalMins));
             }
-        })
-                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+        }).setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     }
@@ -252,7 +252,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         builder.setView(alertView);
 
 
-        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 timeSpentHours = Integer.valueOf(editTextHours.getText().toString());
@@ -260,7 +260,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                 activityTimeSpent.setText(timeSetText(timeSpentHours, timeSpentMins) );
             }
         })
-                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     }

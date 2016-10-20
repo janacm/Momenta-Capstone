@@ -140,7 +140,7 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
         builder.setView(alertView);
 
 
-        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         try{
@@ -158,8 +158,7 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
                         }
                         activityGoal.setText(timeSetText(goalHours, goalMins));
                     }
-                })
-                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                }).setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     }
@@ -191,7 +190,7 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
         builder.setView(alertView);
 
 
-        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 try{
@@ -209,8 +208,7 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
                 }
                 activityTimeSpent.setText(timeSetText(timespentHours, timespentMins));
             }
-        })
-                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+        }).setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     }
