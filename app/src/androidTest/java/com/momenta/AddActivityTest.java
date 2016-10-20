@@ -155,7 +155,7 @@ public class AddActivityTest {
         onView(withText(R.string.yes)).perform(click());
 
         //Add activity
-        onView(withId(R.id.add_task_done_button)).perform(click());
+//        onView(withId(R.id.add_task_done_button)).perform(click());
     }
 
     @Test
