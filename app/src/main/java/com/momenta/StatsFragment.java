@@ -96,6 +96,7 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
             directory = mFirebaseUser.getUid();
         }
         databaseReference = FirebaseProvider.getInstance().getReference();
+        // Fetch the data from firebase
     }
 
     @Override
@@ -103,9 +104,9 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_stats, container, false);
 
-        // Fetch the data from firebase
         fetchWeekData();
         fetchMonthData();
+
         Spinner spinner = (Spinner)view.findViewById(R.id.stats_spinner);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -122,6 +123,7 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
         return view;
     }
 
@@ -308,7 +310,6 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
                             }
                             weekLineData.put(date.getKey(), totalTime);
                         }
-                        drawPieChart();
                     }
 
                     @Override
@@ -356,6 +357,8 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
                         t.setName(name);
                     }
                 }
+                drawLineGraph();
+                drawPieChart();
             }
 
             @Override
