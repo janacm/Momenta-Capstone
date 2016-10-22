@@ -99,7 +99,6 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
 
         activityName = (EditText)findViewById(R.id.task_name_edit_text);
         activityGoal = (TextView)findViewById(R.id.task_goal_value);
-        activityTimeSpent = (TextView)findViewById(R.id.task_timespent_value);
         activityDeadline = (TextView) findViewById(R.id.task_deadline_value);
     }
 
