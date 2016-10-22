@@ -178,7 +178,7 @@
 //        onView(withId(R.id.action_done)).perform(click());
 //
 //        Intent intent = new Intent();
-//        intent.putExtra(DBHelper.ACTIVITY_ID, id);
+//        intent.putExtra(DBHlper.ACTIVITY_ID, id);
 //        rule.launchActivity(intent);
 //        try {
 //            Thread.sleep(1500);
