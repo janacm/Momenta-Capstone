@@ -67,11 +67,7 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
     private ArrayList<PieEntry> pieEntries;
 
     // Holds the data for the week's pie chart. <Date, List<Task>>
-    private HashMap<String, ArrayList> weekPieData;
-
-    // Holds the data for the month's pie chart. <Date, List<Task>>
-    private HashMap<String, ArrayList> monthPieData;
-
+    private HashMap<String, ArrayList> pieData;
     /******************************  Firebase fields  ******************************/
     private DatabaseReference databaseReference;
     private String directory = "";
@@ -92,9 +88,8 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
 
         // Initializing the graph data
         weekLineData = new HashMap<>();
-        weekPieData = new HashMap<>();
+        pieData = new HashMap<>();
         monthLineData = new HashMap<>();
-        monthPieData = new HashMap<>();
 
         FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (mFirebaseUser != null) {
@@ -127,9 +122,6 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-
-
-
         return view;
     }
 
@@ -279,7 +271,7 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
         pieTextView.setText( SettingsActivity.formatDate(date, "EEE, MMM d") );
 
         Log.d("Stats", "Getting data for " + dateString);
-        ArrayList<Task> pieDateList = weekPieData.get(dateString);
+        ArrayList<Task> pieDateList = pieData.get(dateString);
         pieEntries.clear();
         if ( pieDateList != null ) {
             Log.d("Stats", "Size of map for " + dateString + " is: " + pieDateList.size());
@@ -300,7 +292,6 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot wholeSnap) {
-
                         DataSnapshot timeDir = wholeSnap.child(Task.TIME_SPENT);
                         //Iterate through to get all dates.
                         for ( DataSnapshot date: timeDir.getChildren() ) {
@@ -315,21 +306,8 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
                                 pieDataList.add(t);
                                 totalTime += t.getTimeSpent();
                             }
-                            // Save the list against the date.
-                            weekPieData.put(date.getKey(), pieDataList);
-                            // Save date along with total time spent for the day.
                             weekLineData.put(date.getKey(), totalTime);
                         }
-
-                        DataSnapshot goalDir = wholeSnap.child("goals");
-                        for (String date : weekPieData.keySet()) {
-                            ArrayList<Task> list = (ArrayList<Task>) weekPieData.get(date);
-                            for ( Task t : list ) {
-                                String name = (String)goalDir.child(t.getId()).child(Task.NAME).getValue();
-                                t.setName(name);
-                            }
-                        }
-
                         drawPieChart();
                     }
 
@@ -367,9 +345,17 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
                         totalTime += t.getTimeSpent();
                     }
                     monthLineData.put(date.getKey(), totalTime);
-                    monthPieData.put(date.getKey(), data);
+                    pieData.put(date.getKey(), data);
                 }
 
+                DataSnapshot goalDir = dataSnapshot.child("goals");
+                for (String date : pieData.keySet()) {
+                    ArrayList<Task> list = (ArrayList<Task>) pieData.get(date);
+                    for ( Task t : list ) {
+                        String name = (String)goalDir.child(t.getId()).child(Task.NAME).getValue();
+                        t.setName(name);
+                    }
+                }
             }
 
             @Override
