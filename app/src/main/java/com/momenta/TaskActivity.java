@@ -19,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -39,8 +40,6 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
     private TextView activityGoal;
     private TextView activityTimeSpent;
     private Task task;
-
-
     private  Integer goalHours = 2;
     private  Integer goalMins = 30;
     private  Integer timeSpentHours = 0;
@@ -49,6 +48,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
     //Firebase instances
     private DatabaseReference mFirebaseDatabaseReference;
     private String directory = "";
+    private String timeSpentDirectory = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +63,10 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
 
         FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (mFirebaseUser != null) {
+            Calendar cal = Calendar.getInstance();
+            String date = SettingsActivity.formatDate(cal.getTime(), Constants.TIME_SPENT_DATE_FORMAT);
             directory = mFirebaseUser.getUid() + "/goals";
+            timeSpentDirectory = mFirebaseUser.getUid() + "/" + Task.TIME_SPENT + "/" + date;
         }
         mFirebaseDatabaseReference = FirebaseProvider.getInstance().getReference();
         task = new Task();
@@ -85,7 +88,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                         task.setTimeSpent( dataSnapshot.child("timeSpent").getValue(Integer.class) );
                         task.setPriority( (String)dataSnapshot.child("priority").getValue() );
                         initializeFields();
-//                        initializePieChart();
+                        initializeProgressBar();
                     }
 
                     @Override
@@ -122,7 +125,6 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
             timeSpentMins = timeSpentMins%60;
         }
         String spentText = timeSetText(timeSpentHours, timeSpentMins);
-        activityTimeSpent.setText(spentText);
 
         Spinner spinner = (Spinner)findViewById(R.id.task_priority_spinner);
         spinner.setOnItemSelectedListener(this);
@@ -130,27 +132,12 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.done, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                break;
-            case R.id.action_done:
-                save();
-                break;
-            case R.id.action_delete:
-                delete();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
+    private void initializeProgressBar() {
+        TextRoundCornerProgressBar pBar = (TextRoundCornerProgressBar)findViewById(R.id.progressBar);
+        pBar.setMax(task.getGoal());
+        pBar.setProgress(task.getTimeSpent());
+        pBar.setProgressText(task.getTimeSpent() + "/" + task.getGoal() + " mins");
     }
 
     private void delete() {
@@ -198,6 +185,8 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                 goalHours = Integer.valueOf(editTextHours.getText().toString());
                 goalMins = Integer.valueOf(editTextMinutes.getText().toString());
                 activityGoal.setText(timeSetText(goalHours, goalMins));
+                task.setGoal( (goalHours*60) + goalMins );
+                initializeProgressBar();
             }
         }).setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
                     @Override
@@ -235,28 +224,44 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
      * @param view view being clicked
      */
     public void timeSpentOnClick(View view) {
+        //TODO: Changed @string/timespent_string to Add time spent (FR)
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogCustom);
         LayoutInflater inflater = this.getLayoutInflater();
 
         final View alertView = inflater.inflate(R.layout.dialog_timeentry, null);
         final EditText editTextHours  = (EditText) alertView.findViewById(R.id.dialog_hour_edittext);
-        editTextHours.setText(Integer.toString(timeSpentHours));
-
         final EditText editTextMinutes = (EditText) alertView.findViewById(R.id.dialog_minute_edittext);
-        editTextMinutes.setText(Integer.toString(timeSpentMins));
 
         final TextView dialogTitle = (TextView) alertView.findViewById(R.id.dialog_title);
         dialogTitle.setText(R.string.timeentry_dialog_timespent_title);
-
         builder.setView(alertView);
-
 
         builder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                timeSpentHours = Integer.valueOf(editTextHours.getText().toString());
-                timeSpentMins = Integer.valueOf(editTextMinutes.getText().toString());
-                activityTimeSpent.setText(timeSetText(timeSpentHours, timeSpentMins) );
+                final Integer hours = Integer.valueOf(editTextHours.getText().toString());
+                final Integer minutes = Integer.valueOf(editTextMinutes.getText().toString());
+                task.setTimeSpent( task.getTimeSpent() + minutes + (hours*60) );
+                initializeProgressBar();
+                timeSpentDirectory += "/" + task.getId();
+                mFirebaseDatabaseReference.child(timeSpentDirectory)
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot snapshot) {
+                                Long totalTimeForDay = minutes.longValue() + (hours.longValue()*60);
+                                if (snapshot.exists()) {
+                                    Long currTimeLogged = (long)snapshot.child(Task.TIME_SPENT).getValue();
+                                    totalTimeForDay += currTimeLogged;
+                                }
+                                mFirebaseDatabaseReference.child(timeSpentDirectory + "/" + Task.TIME_SPENT)
+                                        .setValue(totalTimeForDay);
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                            }
+                        }
+                );
             }
         })
                 .setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
@@ -266,7 +271,6 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                 });
 
         AlertDialog dialog = builder.create();
-
         dialog.show();
     }
 
@@ -328,6 +332,29 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.done, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+            case R.id.action_done:
+                save();
+                break;
+            case R.id.action_delete:
+                delete();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         switch(position) {
             case 0:
@@ -353,38 +380,6 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onNothingSelected(AdapterView<?> parent) {
         //Do nothing
     }
-
-//    private void initializePieChart() {
-//        //Setting up the Pie Chart
-////        PieChart pieChart = (PieChart) findViewById(R.id.task_activity_chart);
-////        pieChart.setCenterText(task.getTimeSpent() + " minutes spent");
-////        pieChart.setRotationEnabled(false);
-////        pieChart.setHoleRadius(75);
-////        pieChart.setDescription("");
-//
-//        ArrayList<PieEntry> entries = new ArrayList<>();
-//        long goalDiff = task.getGoal() - task.getTimeSpent();
-//        if ( goalDiff > 0) {
-//            entries.add(new PieEntry(goalDiff, 0));
-//        } else {
-//            entries.add(new PieEntry(0, 0));
-//        }
-//        entries.add(new PieEntry(task.getTimeSpent(), 1));
-//
-//        PieDataSet dataSet = new PieDataSet(entries, "Percentage");
-//
-//        ArrayList<Integer> colors = new ArrayList<Integer>();
-//        colors.add( ContextCompat.getColor(this, R.color.hint_text) );
-//        colors.add( ContextCompat.getColor(this, R.color.colorAccent) );
-//
-//        dataSet.setColors(colors);
-//
-//        //Initialize the Pie data
-//        pieChart.invalidate();
-//        PieData data = new PieData(dataSet);
-//        data.setDrawValues(false);
-//        pieChart.setData(data);
-//    }
 
     /**
      * Convenience method for setting the time related values for the goal and time spent fields
