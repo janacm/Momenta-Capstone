@@ -2,6 +2,7 @@ package com.momenta;
 
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -73,7 +74,11 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
 
         //Get the id of the activity and retrieve it from the DB
         Bundle bundle = getIntent().getExtras();
-        final String id = (String) bundle.get(Task.ID);
+        String bundleId = "";
+        if (bundle != null) {
+            bundleId = (String) bundle.get(Task.ID);
+        }
+        final String id = bundleId;
 
         mFirebaseDatabaseReference.child(directory + "/" + id).addListenerForSingleValueEvent(
                 new ValueEventListener() {
@@ -181,8 +186,18 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         builder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                goalHours = Integer.valueOf(editTextHours.getText().toString());
-                goalMins = Integer.valueOf(editTextMinutes.getText().toString());
+                String hour = editTextHours.getText().toString().trim();
+                if (hour.isEmpty()) {
+                    goalHours = 0;
+                } else {
+                    goalHours = Integer.valueOf(hour);
+                }
+                String minute = editTextMinutes.getText().toString().trim();
+                if (minute.isEmpty()) {
+                    goalMins = 0;
+                } else {
+                    goalMins = Integer.valueOf(minute);
+                }
                 activityGoal.setText(timeSetText(goalHours, goalMins));
                 task.setGoal( (goalHours*60) + goalMins );
                 initializeProgressBar();
@@ -238,8 +253,20 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         builder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                final Integer hours = Integer.valueOf(editTextHours.getText().toString());
-                final Integer minutes = Integer.valueOf(editTextMinutes.getText().toString());
+                String hourString = editTextHours.getText().toString().trim();
+                int hourValue = 0;
+                if (!hourString.isEmpty()) {
+                    hourValue = Integer.valueOf(hourString);
+                }
+                final Integer hours = hourValue;
+
+                String minString = editTextMinutes.getText().toString().trim();
+                int minValue = 0;
+                if (!minString.isEmpty()) {
+                    minValue = Integer.valueOf(minString);
+                }
+                final Integer minutes = minValue;
+
                 task.setTimeSpent( task.getTimeSpent() + minutes + (hours*60) );
                 initializeProgressBar();
                 timeSpentDirectory += "/" + task.getId();
