@@ -170,6 +170,7 @@ public class ViewActivityTest {
 
     @Test
     public void testAddMinutes() {
+        onView(withId(R.id.task_timespent_layout)).perform(scrollTo());
         onView(withId(R.id.task_timespent_layout)).perform(click());
         onView(withId(R.id.dialog_hour_edittext)).perform(clearText());
         onView(withId(R.id.dialog_hour_edittext)).perform(typeText("50"));
@@ -181,6 +182,7 @@ public class ViewActivityTest {
 
     @Test
     public void testAddZeroMinutes() {
+        onView(withId(R.id.task_timespent_layout)).perform(scrollTo());
         onView(withId(R.id.task_timespent_layout)).perform(click());
         onView(withId(R.id.dialog_hour_edittext)).perform(clearText());
         onView(withId(R.id.dialog_hour_edittext)).perform(typeText("0"));
@@ -192,6 +194,7 @@ public class ViewActivityTest {
 
     @Test
     public void testAddEmptyMinutes() {
+        onView(withId(R.id.task_timespent_layout)).perform(scrollTo());
         onView(withId(R.id.task_timespent_layout)).perform(click());
         onView(withId(R.id.dialog_hour_edittext)).perform(clearText());
         onView(withId(R.id.dialog_hour_edittext)).perform(typeText(""));
