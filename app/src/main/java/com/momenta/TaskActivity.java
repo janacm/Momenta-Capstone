@@ -129,7 +129,6 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
             timeSpentMins = timeSpentMins%60;
         }
         String spentText = timeSetText(timeSpentHours, timeSpentMins);
-        activityTimeSpent.setText(spentText);
 
         Spinner spinner = (Spinner)findViewById(R.id.task_priority_spinner);
         spinner.setOnItemSelectedListener(this);
@@ -411,38 +410,6 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onNothingSelected(AdapterView<?> parent) {
         //Do nothing
     }
-
-//    private void initializePieChart() {
-//        //Setting up the Pie Chart
-////        PieChart pieChart = (PieChart) findViewById(R.id.task_activity_chart);
-////        pieChart.setCenterText(task.getTimeSpent() + " minutes spent");
-////        pieChart.setRotationEnabled(false);
-////        pieChart.setHoleRadius(75);
-////        pieChart.setDescription("");
-//
-//        ArrayList<PieEntry> entries = new ArrayList<>();
-//        long goalDiff = task.getGoal() - task.getTimeSpent();
-//        if ( goalDiff > 0) {
-//            entries.add(new PieEntry(goalDiff, 0));
-//        } else {
-//            entries.add(new PieEntry(0, 0));
-//        }
-//        entries.add(new PieEntry(task.getTimeSpent(), 1));
-//
-//        PieDataSet dataSet = new PieDataSet(entries, "Percentage");
-//
-//        ArrayList<Integer> colors = new ArrayList<Integer>();
-//        colors.add( ContextCompat.getColor(this, R.color.hint_text) );
-//        colors.add( ContextCompat.getColor(this, R.color.colorAccent) );
-//
-//        dataSet.setColors(colors);
-//
-//        //Initialize the Pie data
-//        pieChart.invalidate();
-//        PieData data = new PieData(dataSet);
-//        data.setDrawValues(false);
-//        pieChart.setData(data);
-//    }
 
     /**
      * Convenience method for setting the time related values for the goal and time spent fields
