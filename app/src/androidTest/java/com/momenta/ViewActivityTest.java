@@ -240,10 +240,6 @@ public class ViewActivityTest {
                 isDescendantOfA(withId(R.id.scrollable_relative_laytout)))).perform(click());
 
         onData(allOf(is(instanceOf(String.class)), is(priority))).perform(click());
-
-        onView(allOf(withId(R.id.task_priority_spinner),
-                isDescendantOfA(withId(R.id.scrollable_relative_laytout))))
-                .check(matches(withSpinnerText(containsString(priority))));
     }
 
 }
