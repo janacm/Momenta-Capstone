@@ -15,12 +15,10 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -67,6 +65,8 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
         activityTimeSpent = (TextView) findViewById(R.id.newtask_timespent_value);
 
         deadlineCalendar.setTime(new Date());
+        deadlineCalendar.add(Calendar.WEEK_OF_MONTH, 2);
+
         activityDeadline.setText(Task.getDateFormat(deadlineCalendar));
 
         spinner = (Spinner)findViewById(R.id.newtask_priority_spinner);
@@ -79,7 +79,7 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
         activityTimeSpent.setText(timeSetText(timespentHours,timespentMins));
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        reference = FirebaseDatabase.getInstance().getReference();
+        reference = FirebaseProvider.getInstance().getReference();
         if ( user!= null ) {
             directory = user.getUid() + "/goals";
         }
@@ -140,7 +140,7 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
         builder.setView(alertView);
 
 
-        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         try{
@@ -158,8 +158,7 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
                         }
                         activityGoal.setText(timeSetText(goalHours, goalMins));
                     }
-                })
-                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                }).setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     }
@@ -191,7 +190,7 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
         builder.setView(alertView);
 
 
-        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 try{
@@ -209,8 +208,7 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
                 }
                 activityTimeSpent.setText(timeSetText(timespentHours, timespentMins));
             }
-        })
-                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+        }).setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     }
@@ -229,9 +227,12 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 deadlineCalendar.set(year, monthOfYear, dayOfMonth);
+                deadlineCalendar.set(Calendar.HOUR_OF_DAY, 23);
+                deadlineCalendar.set(Calendar.MINUTE, 59);
+                deadlineCalendar.set(Calendar.SECOND, 59);
                 activityDeadline.setText(Task.getDateFormat(deadlineCalendar));
             }
-        }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+        }, deadlineCalendar.get(Calendar.YEAR), deadlineCalendar.get(Calendar.MONTH), deadlineCalendar.get(Calendar.DAY_OF_MONTH));
         dialog.getDatePicker().setMinDate(cal.getTimeInMillis());
         dialog.show();
     }

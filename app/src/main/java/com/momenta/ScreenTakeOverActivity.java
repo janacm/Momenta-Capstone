@@ -120,12 +120,11 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
         goButton.setOnTouchListener(mDelayHideTouchListener);
         taskList = new ArrayList<>();
 
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
-                WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        FirebaseDatabase firebaseDatabase = FirebaseProvider.getInstance();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         if (user == null) {
@@ -231,4 +230,5 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
     }
+
 }

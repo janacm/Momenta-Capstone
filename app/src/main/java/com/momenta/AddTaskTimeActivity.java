@@ -18,10 +18,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
@@ -66,6 +64,8 @@ public class AddTaskTimeActivity extends AppCompatActivity {
     //Integer for storing the number of tasks
     private int numofTasks;
 
+    //Award manager for award's progress
+    private awardManager awardManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,13 +76,13 @@ public class AddTaskTimeActivity extends AppCompatActivity {
         actionbar.setElevation(0);
 
         String date = SettingsActivity.formatDate(Calendar.getInstance().getTime(),
-                DBHelper.TIME_SPENT_DATE_FORMAT);
+                Constants.TIME_SPENT_DATE_FORMAT);
         FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (mFirebaseUser != null) {
             goalDirectory = mFirebaseUser.getUid() + "/goals";
             timespentDirectory = mFirebaseUser.getUid() + "/" + Task.TIME_SPENT + "/" + date;
         }
-        mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        mFirebaseDatabaseReference = FirebaseProvider.getInstance().getReference();
 
 
         taskName = (TextView) findViewById(R.id.add_time_to_task_taskname);
@@ -131,6 +131,7 @@ public class AddTaskTimeActivity extends AppCompatActivity {
                 moveNext();
             }
         });
+        awardManager = awardManager.getInstance(this);
     }
 
     /**
@@ -181,7 +182,6 @@ public class AddTaskTimeActivity extends AppCompatActivity {
      */
     public void setUpScreen(Stack<Map.Entry<String, String>> stack) {
         //Obtain the ID of the next task
-//        task = DBHelper.getInstance(this).getTask(taskIDs.peek());
         Map.Entry<String, String> entry = stack.peek();
 
         //Animate the TextView displaying its text name
@@ -403,9 +403,11 @@ public class AddTaskTimeActivity extends AppCompatActivity {
                             currTimeSpent = 0L;  // Reset the value of current time spent
                             Long updatedTimeSpent = (long)intervalValues[index];
                             if ( snapshot.exists() ) {
+                                Task task = snapshot.getValue(Task.class);
                                 // If exists update current time spent
                                 currTimeSpent = (long)snapshot.child(Task.TIME_SPENT).getValue();
                                 updatedTimeSpent += currTimeSpent;
+                                handleAwardsProgress(updatedTimeSpent,task);
                             }
 
                             mFirebaseDatabaseReference.child(tempGoalDir + "/" +Task.TIME_SPENT)
@@ -446,6 +448,33 @@ public class AddTaskTimeActivity extends AppCompatActivity {
         return flag;
     }
 
+    private void handleAwardsProgress(Long progressIncrease, Task task){
+
+        //Increase the Neophyte award
+        awardManager.increaseAwardProgress(Constants.SHPREF_NEOPHYTE_AWARD_ID,1, task);
+
+        //Increase the Productive award
+        awardManager.increaseAwardProgress(Constants.SHPREF_PRODUCTIVE_AWARD_ID,1, task);
+
+        //Increase the perfectionnist award
+        awardManager.increaseAwardProgress(Constants.SHPREF_PERFECTIONIST_AWARD_ID, progressIncrease.doubleValue()/60.0, task);
+
+        //Increase trend-setter award
+        awardManager.increaseAwardProgress(Constants.SHPREF_TREND_SETTER_AWARD_ID, progressIncrease.doubleValue()/60.0, task);
+
+        //Increase the committed award
+        awardManager.increaseAwardProgress(Constants.SHARE_COMMITTED_AWARD_ID,1, task);
+
+        //Increase the punctual award
+        task.setTimeSpent(progressIncrease.intValue());
+        if(task.getTimeSpent() >= task.getGoal() && Calendar.getInstance().getTime().before(task.getDeadlineValue().getTime())) {
+            awardManager.increaseAwardProgress(Constants.SHPREF_PUNCTUAL_AWARD_ID, 1, task);
+        }
+
+        //Increase the multi-tasker award
+        awardManager.increaseAwardProgress(Constants.SHPREF_MULTI_TASKER_AWARD_ID,1, task);
+
+    }
     /**
      * Convenience method for toasting messages to the user
      * Toast message is set tot LENGTH_LONG.
