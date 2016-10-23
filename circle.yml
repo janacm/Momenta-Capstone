@@ -7,13 +7,17 @@ machine:
     ADB_INSTALL_TIMEOUT: "10"
     GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
     
-
-
+deployment:
+    alpha:
+        branch: production
+        commands:
+           - ./gradlew publishApkProductionRelease
+           
 dependencies:
   pre:
     - wget "https://services.gradle.org/distributions/gradle-2.9-bin.zip"; unzip gradle-2.9-bin.zip
     - echo y | android update sdk --no-ui --all --filter tool,extra-android-m2repository,extra-android-support,extra-google-google_play_services,extra-google-m2repository,android-24
-    - echo y | android update sdk --no-ui --all --filter build-tools-24.0.0
+    - echo y | android update sdk --no-ui --all --filter build-tools-24.0.2
 
 test:
   override:

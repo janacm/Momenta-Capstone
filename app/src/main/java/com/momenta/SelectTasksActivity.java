@@ -64,10 +64,9 @@ public class SelectTasksActivity extends AppCompatActivity {
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        long currentTime = System.currentTimeMillis();
-
                         // Iterate over all tasks
-                        for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                        for (DataSnapshot snapshot: dataSnapshot.getChildren() ) {
+                            long currentTime = System.currentTimeMillis();
                             if (currentTime < (Long) snapshot.child("deadline").getValue()) {
                                 Task task = new Task();
                                 task.setId((String) snapshot.child("id").getValue());
@@ -83,6 +82,7 @@ public class SelectTasksActivity extends AppCompatActivity {
                                 tasks.add(task);
                             }
                         }
+
                         mAdapter = new SelectTasksAdapter(SelectTasksActivity.this, tasks);
                         mRecyclerView.setAdapter(mAdapter);
                     }

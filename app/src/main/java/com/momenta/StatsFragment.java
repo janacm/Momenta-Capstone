@@ -168,7 +168,12 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
             int yAxis = lineGraph.get(date);
             lineEntries.add(new Entry(index, yAxis));
 
-            String xAxisDate = SettingsActivity.formatDate(tempCal.getTime(), "EEE");
+            String xAxisDate = "";
+            if (weekSelected) {
+                xAxisDate = SettingsActivity.formatDate(tempCal.getTime(), "EEE");
+            } else {
+                xAxisDate = SettingsActivity.formatDate(tempCal.getTime(), "d/M");
+            }
             dayLabels.put(index, xAxisDate);
 
             //Incrementing day by one for next iteration

@@ -2,6 +2,7 @@ package com.momenta;
 
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -73,7 +74,11 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
 
         //Get the id of the activity and retrieve it from the DB
         Bundle bundle = getIntent().getExtras();
-        final String id = (String) bundle.get(Task.ID);
+        String bundleId = "";
+        if (bundle != null) {
+            bundleId = (String) bundle.get(Task.ID);
+        }
+        final String id = bundleId;
 
         mFirebaseDatabaseReference.child(directory + "/" + id).addListenerForSingleValueEvent(
                 new ValueEventListener() {
@@ -124,6 +129,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
             timeSpentMins = timeSpentMins%60;
         }
         String spentText = timeSetText(timeSpentHours, timeSpentMins);
+        activityTimeSpent.setText(spentText);
 
         Spinner spinner = (Spinner)findViewById(R.id.task_priority_spinner);
         spinner.setOnItemSelectedListener(this);
@@ -181,8 +187,18 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         builder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                goalHours = Integer.valueOf(editTextHours.getText().toString());
-                goalMins = Integer.valueOf(editTextMinutes.getText().toString());
+                String hour = editTextHours.getText().toString().trim();
+                if (hour.isEmpty()) {
+                    goalHours = 0;
+                } else {
+                    goalHours = Integer.valueOf(hour);
+                }
+                String minute = editTextMinutes.getText().toString().trim();
+                if (minute.isEmpty()) {
+                    goalMins = 0;
+                } else {
+                    goalMins = Integer.valueOf(minute);
+                }
                 activityGoal.setText(timeSetText(goalHours, goalMins));
                 task.setGoal( (goalHours*60) + goalMins );
                 initializeProgressBar();
@@ -241,8 +257,20 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         builder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                final Integer hours = Integer.valueOf(editTextHours.getText().toString());
-                final Integer minutes = Integer.valueOf(editTextMinutes.getText().toString());
+                String hourString = editTextHours.getText().toString().trim();
+                int hourValue = 0;
+                if (!hourString.isEmpty()) {
+                    hourValue = Integer.valueOf(hourString);
+                }
+                final Integer hours = hourValue;
+
+                String minString = editTextMinutes.getText().toString().trim();
+                int minValue = 0;
+                if (!minString.isEmpty()) {
+                    minValue = Integer.valueOf(minString);
+                }
+                final Integer minutes = minValue;
+
                 task.setTimeSpent( task.getTimeSpent() + minutes + (hours*60) );
                 initializeProgressBar();
                 timeSpentDirectory += "/" + task.getId();
@@ -273,6 +301,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                 });
 
         AlertDialog dialog = builder.create();
+
         dialog.show();
     }
 
@@ -382,6 +411,38 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onNothingSelected(AdapterView<?> parent) {
         //Do nothing
     }
+
+//    private void initializePieChart() {
+//        //Setting up the Pie Chart
+////        PieChart pieChart = (PieChart) findViewById(R.id.task_activity_chart);
+////        pieChart.setCenterText(task.getTimeSpent() + " minutes spent");
+////        pieChart.setRotationEnabled(false);
+////        pieChart.setHoleRadius(75);
+////        pieChart.setDescription("");
+//
+//        ArrayList<PieEntry> entries = new ArrayList<>();
+//        long goalDiff = task.getGoal() - task.getTimeSpent();
+//        if ( goalDiff > 0) {
+//            entries.add(new PieEntry(goalDiff, 0));
+//        } else {
+//            entries.add(new PieEntry(0, 0));
+//        }
+//        entries.add(new PieEntry(task.getTimeSpent(), 1));
+//
+//        PieDataSet dataSet = new PieDataSet(entries, "Percentage");
+//
+//        ArrayList<Integer> colors = new ArrayList<Integer>();
+//        colors.add( ContextCompat.getColor(this, R.color.hint_text) );
+//        colors.add( ContextCompat.getColor(this, R.color.colorAccent) );
+//
+//        dataSet.setColors(colors);
+//
+//        //Initialize the Pie data
+//        pieChart.invalidate();
+//        PieData data = new PieData(dataSet);
+//        data.setDrawValues(false);
+//        pieChart.setData(data);
+//    }
 
     /**
      * Convenience method for setting the time related values for the goal and time spent fields
