@@ -224,6 +224,9 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 Calendar temp = Calendar.getInstance();
                 temp.set(year, monthOfYear, dayOfMonth);
+                temp.set(Calendar.HOUR_OF_DAY, 23);
+                temp.set(Calendar.MINUTE, 59);
+                temp.set(Calendar.SECOND, 59);
                 task.setDeadlineValue(temp);
                 activityDeadline.setText( Task.getDateFormat(temp) );
             }

@@ -65,6 +65,8 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
         activityTimeSpent = (TextView) findViewById(R.id.newtask_timespent_value);
 
         deadlineCalendar.setTime(new Date());
+        deadlineCalendar.add(Calendar.WEEK_OF_MONTH, 2);
+
         activityDeadline.setText(Task.getDateFormat(deadlineCalendar));
 
         spinner = (Spinner)findViewById(R.id.newtask_priority_spinner);
@@ -225,9 +227,12 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 deadlineCalendar.set(year, monthOfYear, dayOfMonth);
+                deadlineCalendar.set(Calendar.HOUR_OF_DAY, 23);
+                deadlineCalendar.set(Calendar.MINUTE, 59);
+                deadlineCalendar.set(Calendar.SECOND, 59);
                 activityDeadline.setText(Task.getDateFormat(deadlineCalendar));
             }
-        }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+        }, deadlineCalendar.get(Calendar.YEAR), deadlineCalendar.get(Calendar.MONTH), deadlineCalendar.get(Calendar.DAY_OF_MONTH));
         dialog.getDatePicker().setMinDate(cal.getTimeInMillis());
         dialog.show();
     }
