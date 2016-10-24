@@ -25,13 +25,14 @@
         <EditText
             android:id="@+id/task_name_edit_text"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:hint="@string/new_activity_hint"
             android:textColorHint="@color/hint_text"
             android:textColor="@color/colorPrimary"
             android:textSize="24sp"
             android:maxLength="64"
             android:theme="@style/SecondaryEditTextTheme"
-            android:layout_height="wrap_content" />
+            android:inputType="textCapSentences"/>
 
     </LinearLayout>
 
