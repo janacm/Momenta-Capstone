@@ -275,6 +275,9 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                             @Override
                             public void onDataChange(DataSnapshot snapshot) {
                                 Long totalTimeForDay = minutes.longValue() + (hours.longValue()*60);
+                                if (totalTimeForDay == 0) {
+                                    return;
+                                }
                                 if (snapshot.exists()) {
                                     Long currTimeLogged = (long)snapshot.child(Task.TIME_SPENT).getValue();
                                     totalTimeForDay += currTimeLogged;
