@@ -182,7 +182,6 @@ public class AddTaskTimeActivity extends AppCompatActivity {
      */
     public void setUpScreen(Stack<Map.Entry<String, String>> stack) {
         //Obtain the ID of the next task
-//        task = DBHelper.getInstance(this).getTask(taskIDs.peek());
         Map.Entry<String, String> entry = stack.peek();
 
         //Animate the TextView displaying its text name

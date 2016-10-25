@@ -116,7 +116,7 @@
     <string name="deadline_string">Deadline</string>
     <string name="sample_time_string">50 hours</string>
     <string name="priority_string">Priority</string>
-    <string name="timespent_string">Time Spent</string>
+    <string name="timespent_string">Add time spent</string>
     <string name="sample_deadline_string">March 12 5PM</string>
     <string name="sample_priority_string">Priority 1</string>
     <string name="goal_icon_content_description">Icon for Goal</string>
