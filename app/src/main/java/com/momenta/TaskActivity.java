@@ -314,8 +314,8 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
 
         //Set updated values
         String name = activityName.getText().toString();
-        if ( name.isEmpty() ) {
-            toast(getString(R.string.toast_no_name_activity_added));
+        if (name.isEmpty()) {
+            activityName.setError(getResources().getString(R.string.toast_no_name_activity_added));
             return;
         } else if ( totalMinutes == 0 ) {
             toast(getString(R.string.toast_enter_goal));
