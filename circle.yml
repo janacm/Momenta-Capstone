@@ -11,7 +11,7 @@ deployment:
     alpha:
         branch: production
         commands:
-           - ./gradlew publishApkRelease
+           - ./gradlew publishApkProductionRelease
            
 dependencies:
   pre:
