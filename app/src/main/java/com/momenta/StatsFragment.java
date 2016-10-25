@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -47,26 +49,30 @@ import java.util.concurrent.TimeUnit;
 public class StatsFragment extends Fragment implements OnChartValueSelectedListener {
     public static final String TAG = "StatsFragment";
 
-    /******************  Line Chart Fields  ******************/
-    // Holds the data for the line graph: <Date, TIME_SPENT>
-    private HashMap<String, Integer> lineGraphData;
+    /******************************  Line Chart Fields  ******************************/
+    // Holds the data for the week's line graph: <Date, TIME_SPENT>
+    private HashMap<String, Integer> weekLineData;
 
-    // Maps the integers to dates: <Count, Date>
-    private HashMap<Integer,String> countMapping;
+    // Holds the index(order) of the each date in the graph
+    private HashMap<Integer,String> dateIndex;
 
-    /****************** Pie Chart fields  ******************/
+    // Holds the data for the month's line graph: <Date, TIME_SPENT>
+    private HashMap<String, Integer> monthLineData;
+
+    /****************************** Pie Chart fields  ******************************/
     private PieChart pieChart;
     private TextView pieTextView;
 
     // Entries to the pie chart
     private ArrayList<PieEntry> pieEntries;
 
-    // Holds the data for the pie chart. <Date, List<Task>>
-    private HashMap<String, ArrayList> pieGraphData;
-
-    /******************  Firebase fields  ******************/
+    // Holds the data for the week's pie chart. <Date, List<Task>>
+    private HashMap<String, ArrayList> pieData;
+    /******************************  Firebase fields  ******************************/
     private DatabaseReference databaseReference;
     private String directory = "";
+
+    private boolean weekSelected = true;
 
 
     public static StatsFragment newInstance(int page) {
@@ -81,13 +87,16 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
         super.onCreate(savedInstanceState);
 
         // Initializing the graph data
-        lineGraphData = new HashMap<>();
-        pieGraphData = new HashMap<>();
+        weekLineData = new HashMap<>();
+        pieData = new HashMap<>();
+        monthLineData = new HashMap<>();
+
         FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (mFirebaseUser != null) {
             directory = mFirebaseUser.getUid();
         }
         databaseReference = FirebaseProvider.getInstance().getReference();
+        // Fetch the data from firebase
     }
 
     @Override
@@ -95,93 +104,82 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_stats, container, false);
 
-        databaseReference.child(directory).addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot wholeSnap) {
+        fetchWeekData();
+        fetchMonthData();
 
-                        DataSnapshot timeDir = wholeSnap.child(Task.TIME_SPENT);
-                        //Iterate through to get all dates.
-                        for ( DataSnapshot date: timeDir.getChildren() ) {
-                            // Temp list to hold the tasks for the day
-                            ArrayList<Task> pieDataList = new ArrayList<Task>();
-                            // Variable to hold the sum of time spent, for the date.
-                            int totalTime = 0;
-                            for ( DataSnapshot id : date.getChildren() ) {
-                                Task t =  new Task();
-                                t.setId(id.getKey());
-                                t.setTimeSpent( id.child(Task.TIME_SPENT).getValue(Integer.class) );
-                                pieDataList.add(t);
-                                totalTime += t.getTimeSpent();
-                            }
-                            // Save the list against the date.
-                            pieGraphData.put(date.getKey(), pieDataList);
-                            // Save date along with total time spent for the day.
-                            lineGraphData.put(date.getKey(), totalTime);
-                        }
-                        drawLineGraph();
-
-                        DataSnapshot goalDir = wholeSnap.child("goals");
-                        for (String date : pieGraphData.keySet()) {
-                            ArrayList<Task> list = (ArrayList<Task>) pieGraphData.get(date);
-                            for ( Task t : list ) {
-                                String name = (String)goalDir.child(t.getId()).child(Task.NAME).getValue();
-                                t.setName(name);
-                            }
-                        }
-
-                        drawPieChart();
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
+        Spinner spinner = (Spinner)view.findViewById(R.id.stats_spinner);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position==1) {
+                    weekSelected = false;
+                } else {
+                    weekSelected = true;
                 }
-        );
+                drawLineGraph();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
         return view;
     }
 
     /**
-     * Sets up & draws the line graph with data from lineGraphData.
+     * Sets up & draws the line graph with data from weekLineData.
      */
     private void drawLineGraph() {
         if (getView() == null) {
             return;
         }
-
         LineChart lineChart = (LineChart) getView().findViewById(R.id.trends_linechart);
         List<Entry> lineEntries = new ArrayList<>();
         pieTextView = (TextView) getView().findViewById(R.id.trends_day_pie_textview);
+        HashMap<String, Integer> lineGraph;
 
-        final HashMap<Integer, String> weekdayLabels = new HashMap<>();
-        countMapping = new HashMap<>();
+        final HashMap<Integer, String> dayLabels = new HashMap<>();
+        dateIndex = new HashMap<>();
 
         Calendar tempCal = Calendar.getInstance();
 
-        // Get the date 6 days ago to get the past weeks data
-        tempCal.setTimeInMillis( tempCal.getTimeInMillis() - TimeUnit.MILLISECONDS.convert(6L, TimeUnit.DAYS) );
-        int count = 0;
+        // Get start date
+        long days = 0L;
+        if ( weekSelected ) {
+            days = 6L;
+            lineGraph = weekLineData;
+        } else {
+            days = 31L;
+            lineGraph = monthLineData;
+        }
+        tempCal.setTimeInMillis( tempCal.getTimeInMillis() - TimeUnit.MILLISECONDS.convert(days, TimeUnit.DAYS) );
+        int index = 0;
 
-        // Check to see if time was logged on each dayt for the past 6 days.
-        // If no time was logged for any day, set TIME_SPENT=0 for that day;
+        // Check to see if no time was long on any of the days.
+        // If no time was logged on any day, set TIME_SPENT=0 for that day;
         while ( tempCal.getTimeInMillis() < Calendar.getInstance().getTimeInMillis() ) {
             String date = SettingsActivity.formatDate( tempCal.getTime(), Constants.TIME_SPENT_DATE_FORMAT );
-            if ( lineGraphData.get(date) == null ) {
+            if ( lineGraph.get(date) == null ) {
                 //If no time was logged on the day, set time to 0;
-                lineGraphData.put(date, 0);
-                Log.w(TAG, "Nothing for date " + date);
+                lineGraph.put(date, 0);
             }
 
-            int yAxis = lineGraphData.get(date);
-            lineEntries.add(new Entry(count, yAxis));
+            int yAxis = lineGraph.get(date);
+            lineEntries.add(new Entry(index, yAxis));
 
-            String xAxisDate = SettingsActivity.formatDate(tempCal.getTime(), "EEE");
-            weekdayLabels.put(count, xAxisDate);
+            String xAxisDate = "";
+            if (weekSelected) {
+                xAxisDate = SettingsActivity.formatDate(tempCal.getTime(), "EEE");
+            } else {
+                xAxisDate = SettingsActivity.formatDate(tempCal.getTime(), "d/M");
+            }
+            dayLabels.put(index, xAxisDate);
 
             //Incrementing day by one for next iteration
-            countMapping.put(count, date);
+            dateIndex.put(index, date);
             tempCal.setTimeInMillis( tempCal.getTimeInMillis() + TimeUnit.MILLISECONDS.convert(1L, TimeUnit.DAYS) );
-            count++;
+            index++;
         }
 
         LineDataSet lineDataSet = new LineDataSet(lineEntries, "Label");
@@ -198,8 +196,8 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
 
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
-                int count = (int) value;
-                return weekdayLabels.get(count);
+                int index = (int) value;
+                return dayLabels.get(index);
             }
 
             @Override
@@ -253,18 +251,6 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
 
         tempCal.setTimeInMillis( Calendar.getInstance().getTimeInMillis() );
 
-//        String pieDate = SettingsActivity.formatDate(tempCal.getTime(), "EEE, MMM d");
-//        pieTextView.setText(pieDate);
-//
-//        pieDate = SettingsActivity.formatDate(tempCal.getTime(), DBHelper.TIME_SPENT_DATE_FORMAT);
-//        Log.d("Stats", "Getting data for " + pieDate);
-//        ArrayList<Task> pieDateList = pieGraphData.get(pieDate);
-//        Log.d("Stats", "Size of map for " + pieDate + " is: " + pieDateList.size());
-//
-//        for (Task t: pieDateList) {
-//            pieEntries.add(new PieEntry(t.getTimeSpent(), t.getName()));
-//        }
-
         PieDataSet pieDataSet = new PieDataSet(pieEntries, "Time spent");
 
         ArrayList<Integer> colors = new ArrayList<>();
@@ -282,7 +268,6 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
         pieData.setValueTextSize(11f);
         pieData.setValueTextColor(Color.WHITE);
         pieChart.setData(pieData);
-//        pieChart.invalidate();
 
         String pieDate = SettingsActivity.formatDate(tempCal.getTime(), Constants.TIME_SPENT_DATE_FORMAT);
         setPieDayData(pieDate);
@@ -293,7 +278,7 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
         pieTextView.setText( SettingsActivity.formatDate(date, "EEE, MMM d") );
 
         Log.d("Stats", "Getting data for " + dateString);
-        ArrayList<Task> pieDateList = pieGraphData.get(dateString);
+        ArrayList<Task> pieDateList = pieData.get(dateString);
         pieEntries.clear();
         if ( pieDateList != null ) {
             Log.d("Stats", "Size of map for " + dateString + " is: " + pieDateList.size());
@@ -306,13 +291,95 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
         pieChart.invalidate();
     }
 
+    /**
+     * Retrieves the week's data from firebase
+     */
+    private void fetchWeekData(){
+        databaseReference.child(directory).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot wholeSnap) {
+                        DataSnapshot timeDir = wholeSnap.child(Task.TIME_SPENT);
+                        //Iterate through to get all dates.
+                        for ( DataSnapshot date: timeDir.getChildren() ) {
+                            // Temp list to hold the tasks for the day
+                            ArrayList<Task> pieDataList = new ArrayList<Task>();
+                            // Variable to hold the sum of time spent, for the date.
+                            int totalTime = 0;
+                            for ( DataSnapshot id : date.getChildren() ) {
+                                Task t =  new Task();
+                                t.setId(id.getKey());
+                                t.setTimeSpent( id.child(Task.TIME_SPENT).getValue(Integer.class) );
+                                pieDataList.add(t);
+                                totalTime += t.getTimeSpent();
+                            }
+                            weekLineData.put(date.getKey(), totalTime);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                }
+        );
+    }
+
+    /**
+     * Retrieves the month's data from firebase
+     */
+    private void fetchMonthData() {
+        Calendar endCal = Calendar.getInstance();
+        Calendar startCal = Calendar.getInstance();
+        long startTime = endCal.getTimeInMillis() - TimeUnit.MILLISECONDS.convert(31L, TimeUnit.DAYS);
+        startCal.setTimeInMillis(startTime);
+        String endDate = SettingsActivity.formatDate( startCal.getTime(), Constants.TIME_SPENT_DATE_FORMAT );
+
+        databaseReference.child(directory).endAt(endDate)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                DataSnapshot timeDir = dataSnapshot.child(Task.TIME_SPENT);
+                for (DataSnapshot date : timeDir.getChildren()) {
+                    ArrayList<Task> data = new ArrayList<Task>();
+                    // Variable to hold the sum of time spent, for the date.
+                    int totalTime = 0;
+                    for ( DataSnapshot id : date.getChildren() ) {
+                        Task t =  new Task();
+                        t.setId(id.getKey());
+                        t.setTimeSpent( id.child(Task.TIME_SPENT).getValue(Integer.class) );
+                        data.add(t);
+                        totalTime += t.getTimeSpent();
+                    }
+                    monthLineData.put(date.getKey(), totalTime);
+                    pieData.put(date.getKey(), data);
+                }
+
+                DataSnapshot goalDir = dataSnapshot.child("goals");
+                for (String date : pieData.keySet()) {
+                    ArrayList<Task> list = (ArrayList<Task>) pieData.get(date);
+                    for ( Task t : list ) {
+                        String name = (String)goalDir.child(t.getId()).child(Task.NAME).getValue();
+                        t.setName(name);
+                    }
+                }
+                drawLineGraph();
+                drawPieChart();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+    }
+
     @Override
     public void onValueSelected(Entry e, Highlight h) {
-        Float countInFloat = e.getX();
-        Integer count = countInFloat.intValue();
+        Float indexInFloat = e.getX();
+        Integer index = indexInFloat.intValue();
 
-        String countDate = countMapping.get(count);
-        setPieDayData( countDate );
+        String indexDate = dateIndex.get(index);
+        setPieDayData( indexDate );
     }
 
     @Override

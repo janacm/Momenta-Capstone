@@ -65,19 +65,23 @@ public class SelectTasksActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         // Iterate over all tasks
-                        for (DataSnapshot snapshot: dataSnapshot.getChildren() ){
-                            Task task = new Task();
-                            task.setId( (String)snapshot.child("id").getValue() );
-                            task.setName( (String)snapshot.child("name").getValue() );
-                            task.setGoal( snapshot.child("goal").getValue(Integer.class) );
-                            task.setDeadline( (Long)snapshot.child("deadline").getValue() );
-                            task.setDateCreated( (Long)snapshot.child("dateCreated").getValue() );
-                            task.setLastModified( (Long)snapshot.child("lastModified").getValue() );
-                            task.setTimeSpent( snapshot.child("timeSpent").getValue(Integer.class) );
-                            task.setPriority( (String)snapshot.child("priority").getValue() );
+                        for (DataSnapshot snapshot: dataSnapshot.getChildren() ) {
+                            long currentTime = System.currentTimeMillis();
+                            //If the deadline hasn't passed
+                            if (currentTime < (Long) snapshot.child("deadline").getValue()) {
+                                Task task = new Task();
+                                task.setId((String) snapshot.child("id").getValue());
+                                task.setName((String) snapshot.child("name").getValue());
+                                task.setGoal(snapshot.child("goal").getValue(Integer.class));
+                                task.setDeadline((Long) snapshot.child("deadline").getValue());
+                                task.setDateCreated((Long) snapshot.child("dateCreated").getValue());
+                                task.setLastModified((Long) snapshot.child("lastModified").getValue());
+                                task.setTimeSpent(snapshot.child("timeSpent").getValue(Integer.class));
+                                task.setPriority((String) snapshot.child("priority").getValue());
 
-                            // Add task to the list
-                            tasks.add(task);
+                                // Add task to the list
+                                tasks.add(task);
+                            }
                         }
 
                         mAdapter = new SelectTasksAdapter(SelectTasksActivity.this, tasks);

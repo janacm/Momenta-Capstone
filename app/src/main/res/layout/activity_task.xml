@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:autofit="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_task"
     tools:context="com.momenta.TaskActivity">
-
 
     <include
         android:id="@+id/toolbar"
@@ -25,33 +25,39 @@
         <EditText
             android:id="@+id/task_name_edit_text"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:hint="@string/new_activity_hint"
             android:textColorHint="@color/hint_text"
             android:textColor="@color/colorPrimary"
             android:textSize="24sp"
             android:maxLength="64"
             android:theme="@style/SecondaryEditTextTheme"
-            android:layout_height="wrap_content" />
+            android:inputType="textCapSentences"/>
 
     </LinearLayout>
+
+    <com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@+id/task_top_layout"
+        autofit:rcRadius="20dp"
+        autofit:rcReverse="false"
+        autofit:rcProgressColor="@color/accent_material_light_1"
+        autofit:rcBackgroundPadding="2dp"
+        autofit:rcBackgroundColor="@color/progress_bg"
+        android:layout_margin="15dp"/>
 
     <ScrollView
         android:id="@+id/task_scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/task_top_layout">
+        android:layout_below="@+id/progressBar">
 
         <RelativeLayout
             android:id="@+id/scrollable_relative_laytout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-
-            <!--<com.github.mikephil.charting.charts.PieChart-->
-                <!--android:id="@+id/task_activity_chart"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="300dp"-->
-                <!--android:paddingTop="20dp"/>-->
 
             <RelativeLayout
                 android:id="@+id/task_goal_layout"
@@ -229,16 +235,6 @@
                     android:textColor="@color/black"
                     android:layout_toRightOf="@+id/task_timespent_image"
                     android:layout_toEndOf="@+id/task_timespent_image"/>
-                <TextView
-                    android:id="@+id/task_timespent_value"
-                    android:layout_width="match_parent"
-                    android:text="@string/timespent_string"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/task_timespent_image"
-                    android:layout_toEndOf="@+id/task_timespent_image"
-                    android:layout_below="@+id/task_timespent_title" />
 
             </RelativeLayout>
 
