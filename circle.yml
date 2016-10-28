@@ -7,11 +7,11 @@ machine:
     ADB_INSTALL_TIMEOUT: "10"
     GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
     
-deployment:
-    alpha:
-        branch: production
-        commands:
-           - ./gradlew publishApkProductionRelease
+#deployment:
+#    alpha:
+#        branch: production
+#        commands:
+#           - ./gradlew publishApkProductionRelease
            
 dependencies:
   pre:
