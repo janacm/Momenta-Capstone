@@ -2,7 +2,6 @@ package com.momenta;
 
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -50,6 +49,10 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
     private DatabaseReference mFirebaseDatabaseReference;
     private String directory = "";
     private String timeSpentDirectory = "";
+
+
+    //Award manager for award's progress
+    private AwardManager awardManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +108,8 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         activityName = (EditText)findViewById(R.id.task_name_edit_text);
         activityGoal = (TextView)findViewById(R.id.task_goal_value);
         activityDeadline = (TextView) findViewById(R.id.task_deadline_value);
+
+        awardManager = AwardManager.getInstance(this);
     }
 
     private void initializeFields() {
@@ -284,6 +289,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                                 if (snapshot.exists()) {
                                     Long currTimeLogged = (long)snapshot.child(Task.TIME_SPENT).getValue();
                                     totalTimeForDay += currTimeLogged;
+                                    awardManager.handleAwardsProgress(totalTimeForDay,task);
                                 }
                                 mFirebaseDatabaseReference.child(timeSpentDirectory + "/" + Task.TIME_SPENT)
                                         .setValue(totalTimeForDay);

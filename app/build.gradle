@@ -67,7 +67,7 @@ dependencies {
 apply plugin: 'com.github.triplet.play'
 
 play {
-    track = "alpha"
+    track = 'alpha'
     serviceAccountEmail = '736122607629-compute@developer.gserviceaccount.com'
     pk12File = file('Google Play Android Developer-04b006574b67.p12')
 }
