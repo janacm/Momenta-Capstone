@@ -38,12 +38,12 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
     private EditText activityName;
     private TextView activityDeadline;
     private TextView activityGoal;
-    private TextView activityTimeSpent;
     private Task task;
     private  Integer goalHours = 2;
     private  Integer goalMins = 30;
-    private  Integer timeSpentHours = 0;
-    private  Integer timeSpentMins = 0;
+
+    private boolean wasEdited = false;
+    private Task.Priority priority;
 
     //Firebase instances
     private DatabaseReference mFirebaseDatabaseReference;
@@ -95,6 +95,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                         task.setLastModified( (Long)dataSnapshot.child("lastModified").getValue() );
                         task.setTimeSpent( dataSnapshot.child("timeSpent").getValue(Integer.class) );
                         task.setPriority( (String)dataSnapshot.child("priority").getValue() );
+                        priority = task.getPriorityValue();
                         initializeFields();
                         initializeProgressBar();
                     }
@@ -125,15 +126,6 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         String goalText = timeSetText(goalHours, goalMins);
         activityGoal.setText(goalText);
-
-        //Set the timeSpent textView
-        timeSpentMins = task.getTimeSpent();
-        timeSpentHours = 0;
-        if ( timeSpentMins >= 60 ) {
-            timeSpentHours = timeSpentMins/60;
-            timeSpentMins = timeSpentMins%60;
-        }
-        String spentText = timeSetText(timeSpentHours, timeSpentMins);
 
         Spinner spinner = (Spinner)findViewById(R.id.task_priority_spinner);
         spinner.setOnItemSelectedListener(this);
@@ -191,6 +183,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         builder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                wasEdited= true;
                 String hour = editTextHours.getText().toString().trim();
                 if (hour.isEmpty()) {
                     goalHours = 0;
@@ -227,6 +220,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         DatePickerDialog dialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                wasEdited = true;
                 Calendar temp = Calendar.getInstance();
                 temp.set(year, monthOfYear, dayOfMonth);
                 temp.set(Calendar.HOUR_OF_DAY, 23);
@@ -321,8 +315,8 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
 
         //Set updated values
         String name = activityName.getText().toString();
-        if ( name.isEmpty() ) {
-            toast(getString(R.string.toast_no_name_activity_added));
+        if (name.isEmpty()) {
+            activityName.setError(getResources().getString(R.string.toast_no_name_activity_added));
             return;
         } else if ( totalMinutes == 0 ) {
             toast(getString(R.string.toast_enter_goal));
@@ -380,7 +374,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                onBackPressed();
                 break;
             case R.id.action_done:
                 save();
@@ -411,7 +405,32 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                 task.setPriorityValue(Task.Priority.VERY_HIGH);
                 break;
         }
+        if (!priority.equals(task.getPriorityValue())){
+            wasEdited = true;
+        }
+    }
 
+    @Override
+    public void onBackPressed() {
+        boolean nameEdited = !activityName.getText().toString().trim().equals(task.getName());
+        if (nameEdited || wasEdited) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(getString(R.string.discard_changes))
+                    .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            TaskActivity.super.onBackPressed();
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+            builder.create().show();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override

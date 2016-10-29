@@ -295,7 +295,13 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
      * Retrieves the week's data from firebase
      */
     private void fetchWeekData(){
-        databaseReference.child(directory).addListenerForSingleValueEvent(
+        Calendar endCal = Calendar.getInstance();
+        Calendar startCal = Calendar.getInstance();
+        long startTime = endCal.getTimeInMillis() - TimeUnit.MILLISECONDS.convert(7L, TimeUnit.DAYS);
+        startCal.setTimeInMillis(startTime);
+        String endDate = SettingsActivity.formatDate( startCal.getTime(), Constants.TIME_SPENT_DATE_FORMAT );
+
+        databaseReference.child(directory).endAt(endDate).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot wholeSnap) {
