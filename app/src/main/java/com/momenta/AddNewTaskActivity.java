@@ -1,7 +1,9 @@
 package com.momenta;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -286,7 +288,7 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
     /**
      * Method for saving a task into the database upon entering the fields.
      */
-    private void save(){
+    private void save() {
         String name = activityName.getText().toString();
         Long totalGoalMinutes = TimeUnit.MINUTES.convert(goalHours.longValue(), TimeUnit.HOURS) + goalMins.longValue();
         Long totalTimeSpentMinutes = TimeUnit.MINUTES.convert(timespentHours.longValue(), TimeUnit.HOURS) + timespentMins.longValue();
@@ -305,7 +307,18 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
         task.setId(id);
 
         reference.child(directory + "/" + task.getId()).setValue(task);
-        finish();
+
+        Bundle bundle = getIntent().getExtras();
+
+        //Check to see if new task is being created from SelectTasksActivity
+        if ((bundle != null) && (bundle.getBoolean("NewTaskFromSelectTasks"))) {
+            Intent returnIntent = new Intent();
+            setResult(Activity.RESULT_OK, returnIntent);
+            finish();
+        }
+        else{
+            finish();
+        }
     }
 
     @Override
