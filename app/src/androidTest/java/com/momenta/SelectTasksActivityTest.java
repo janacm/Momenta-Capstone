@@ -52,8 +52,6 @@ public class SelectTasksActivityTest {
             Query query = mock(Query.class);
 
             when(database.getReference()).thenReturn(reference);
-            when(database.getReference()).thenReturn(reference);
-            when(database.getReference()).thenReturn(reference);
             when(reference.child(null)).thenReturn(reference);
             when(reference.child(any(String.class))).thenReturn(reference);
             when(reference.orderByChild(any(String.class))).thenReturn(query);

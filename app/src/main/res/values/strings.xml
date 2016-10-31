@@ -38,6 +38,7 @@
 
     <!--Task Actiivty -->
     <string name="delete_string">Delete</string>
+    <string name="discard_changes">Discard your changes?</string>
     <string name="no">No</string>
     <string name="yes">Yes</string>
     <string name="undo">Undo</string>
