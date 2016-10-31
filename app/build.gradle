@@ -19,6 +19,11 @@ android {
         }
     }
     useLibrary 'org.apache.http.legacy'
+
+        lintOptions{
+            disable 'MissingTranslation'
+        }
+
 }
 
 dependencies {
@@ -36,6 +41,7 @@ dependencies {
     compile 'com.github.coyarzun89:fabtransitionactivity:0.2.0'
     compile 'com.github.lzyzsd:circleprogress:1.1.0@aar'
     compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'
+    compile 'com.squareup.picasso:picasso:2.2.+'
 
     // Testing-only dependencies
     // Force usage of support annotations in the test app, since it is internally used by the runner module.
