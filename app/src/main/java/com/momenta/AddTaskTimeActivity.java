@@ -65,7 +65,7 @@ public class AddTaskTimeActivity extends AppCompatActivity {
     private int numofTasks;
 
     //Award manager for award's progress
-    private awardManager awardManager;
+    private AwardManager awardManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,7 +131,7 @@ public class AddTaskTimeActivity extends AppCompatActivity {
                 moveNext();
             }
         });
-        awardManager = awardManager.getInstance(this);
+        awardManager = AwardManager.getInstance(this);
     }
 
     /**
@@ -407,7 +407,7 @@ public class AddTaskTimeActivity extends AppCompatActivity {
                                 // If exists update current time spent
                                 currTimeSpent = (long)snapshot.child(Task.TIME_SPENT).getValue();
                                 updatedTimeSpent += currTimeSpent;
-                                handleAwardsProgress(updatedTimeSpent,task);
+                                awardManager.handleAwardsProgress(updatedTimeSpent,task);
                             }
 
                             mFirebaseDatabaseReference.child(tempGoalDir + "/" +Task.TIME_SPENT)
@@ -448,33 +448,7 @@ public class AddTaskTimeActivity extends AppCompatActivity {
         return flag;
     }
 
-    private void handleAwardsProgress(Long progressIncrease, Task task){
 
-        //Increase the Neophyte award
-        awardManager.increaseAwardProgress(Constants.SHPREF_NEOPHYTE_AWARD_ID,1, task);
-
-        //Increase the Productive award
-        awardManager.increaseAwardProgress(Constants.SHPREF_PRODUCTIVE_AWARD_ID,1, task);
-
-        //Increase the perfectionnist award
-        awardManager.increaseAwardProgress(Constants.SHPREF_PERFECTIONIST_AWARD_ID, progressIncrease.doubleValue()/60.0, task);
-
-        //Increase trend-setter award
-        awardManager.increaseAwardProgress(Constants.SHPREF_TREND_SETTER_AWARD_ID, progressIncrease.doubleValue()/60.0, task);
-
-        //Increase the committed award
-        awardManager.increaseAwardProgress(Constants.SHARE_COMMITTED_AWARD_ID,1, task);
-
-        //Increase the punctual award
-        task.setTimeSpent(progressIncrease.intValue());
-        if(task.getTimeSpent() >= task.getGoal() && Calendar.getInstance().getTime().before(task.getDeadlineValue().getTime())) {
-            awardManager.increaseAwardProgress(Constants.SHPREF_PUNCTUAL_AWARD_ID, 1, task);
-        }
-
-        //Increase the multi-tasker award
-        awardManager.increaseAwardProgress(Constants.SHPREF_MULTI_TASKER_AWARD_ID,1, task);
-
-    }
     /**
      * Convenience method for toasting messages to the user
      * Toast message is set tot LENGTH_LONG.

@@ -10,17 +10,11 @@
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/select_tasks_toolbar"/>
+        layout="@layout/toolbar"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/select_tasks_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="25dp"
-        android:layout_marginEnd="25dp"
-        android:layout_marginRight="25dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="20dp"
         android:scrollbars="vertical" />
 </LinearLayout>

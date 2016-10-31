@@ -168,7 +168,12 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
             int yAxis = lineGraph.get(date);
             lineEntries.add(new Entry(index, yAxis));
 
-            String xAxisDate = SettingsActivity.formatDate(tempCal.getTime(), "EEE");
+            String xAxisDate = "";
+            if (weekSelected) {
+                xAxisDate = SettingsActivity.formatDate(tempCal.getTime(), "EEE");
+            } else {
+                xAxisDate = SettingsActivity.formatDate(tempCal.getTime(), "d/M");
+            }
             dayLabels.put(index, xAxisDate);
 
             //Incrementing day by one for next iteration
@@ -177,7 +182,7 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
             index++;
         }
 
-        LineDataSet lineDataSet = new LineDataSet(lineEntries, "Label");
+        LineDataSet lineDataSet = new LineDataSet(lineEntries, "");
         lineDataSet.setColor( ContextCompat.getColor(getContext(), R.color.colorPrimary) );
         lineDataSet.setDrawFilled(true);
         lineDataSet.setHighLightColor( ContextCompat.getColor(getContext(), R.color.deep_purple) );
@@ -246,7 +251,7 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
 
         tempCal.setTimeInMillis( Calendar.getInstance().getTimeInMillis() );
 
-        PieDataSet pieDataSet = new PieDataSet(pieEntries, "Time spent");
+        PieDataSet pieDataSet = new PieDataSet(pieEntries, getString(R.string.time_in_minutes));
 
         ArrayList<Integer> colors = new ArrayList<>();
         for (int c : ColorTemplate.MATERIAL_COLORS)
@@ -290,7 +295,13 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
      * Retrieves the week's data from firebase
      */
     private void fetchWeekData(){
-        databaseReference.child(directory).addListenerForSingleValueEvent(
+        Calendar endCal = Calendar.getInstance();
+        Calendar startCal = Calendar.getInstance();
+        long startTime = endCal.getTimeInMillis() - TimeUnit.MILLISECONDS.convert(7L, TimeUnit.DAYS);
+        startCal.setTimeInMillis(startTime);
+        String endDate = SettingsActivity.formatDate( startCal.getTime(), Constants.TIME_SPENT_DATE_FORMAT );
+
+        databaseReference.child(directory).endAt(endDate).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot wholeSnap) {

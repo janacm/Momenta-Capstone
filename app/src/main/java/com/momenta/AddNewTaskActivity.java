@@ -1,7 +1,9 @@
 package com.momenta;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -65,6 +67,8 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
         activityTimeSpent = (TextView) findViewById(R.id.newtask_timespent_value);
 
         deadlineCalendar.setTime(new Date());
+        deadlineCalendar.add(Calendar.WEEK_OF_MONTH, 2);
+
         activityDeadline.setText(Task.getDateFormat(deadlineCalendar));
 
         spinner = (Spinner)findViewById(R.id.newtask_priority_spinner);
@@ -225,9 +229,12 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 deadlineCalendar.set(year, monthOfYear, dayOfMonth);
+                deadlineCalendar.set(Calendar.HOUR_OF_DAY, 23);
+                deadlineCalendar.set(Calendar.MINUTE, 59);
+                deadlineCalendar.set(Calendar.SECOND, 59);
                 activityDeadline.setText(Task.getDateFormat(deadlineCalendar));
             }
-        }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+        }, deadlineCalendar.get(Calendar.YEAR), deadlineCalendar.get(Calendar.MONTH), deadlineCalendar.get(Calendar.DAY_OF_MONTH));
         dialog.getDatePicker().setMinDate(cal.getTimeInMillis());
         dialog.show();
     }
@@ -281,7 +288,7 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
     /**
      * Method for saving a task into the database upon entering the fields.
      */
-    private void save(){
+    private void save() {
         String name = activityName.getText().toString();
         Long totalGoalMinutes = TimeUnit.MINUTES.convert(goalHours.longValue(), TimeUnit.HOURS) + goalMins.longValue();
         Long totalTimeSpentMinutes = TimeUnit.MINUTES.convert(timespentHours.longValue(), TimeUnit.HOURS) + timespentMins.longValue();
@@ -300,7 +307,18 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
         task.setId(id);
 
         reference.child(directory + "/" + task.getId()).setValue(task);
-        finish();
+
+        Bundle bundle = getIntent().getExtras();
+
+        //Check to see if new task is being created from SelectTasksActivity
+        if ((bundle != null) && (bundle.getBoolean("NewTaskFromSelectTasks"))) {
+            Intent returnIntent = new Intent();
+            setResult(Activity.RESULT_OK, returnIntent);
+            finish();
+        }
+        else{
+            finish();
+        }
     }
 
     @Override

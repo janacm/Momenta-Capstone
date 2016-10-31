@@ -11,6 +11,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,23 +19,23 @@ import java.util.Map;
  * Created by joesi on 2016-09-25.
  */
 
-public class awardManager {
+public class AwardManager {
     private Context context;
     private helperPreferences helperPreferences;
-    private static awardManager instance;
+    private static AwardManager instance;
     private DatabaseReference databaseReference;
     private Award award;
     private FirebaseUser user;
     private FirebaseDatabase firebaseDatabase;
 
-    public static awardManager getInstance(Context context) {
+    public static AwardManager getInstance(Context context) {
         if (instance == null) {
-            instance = new awardManager(context);
+            instance = new AwardManager(context);
         }
         return instance;
     }
 
-    private awardManager(Context context) {
+    private AwardManager(Context context) {
         helperPreferences = new helperPreferences(context);
         firebaseDatabase = FirebaseDatabase.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -156,5 +157,33 @@ public class awardManager {
             return true;
         }
         return false;
+    }
+
+    public void handleAwardsProgress(Long progressIncrease, Task task){
+
+        //Increase the Neophyte award
+        increaseAwardProgress(Constants.SHPREF_NEOPHYTE_AWARD_ID,1, task);
+
+        //Increase the Productive award
+        increaseAwardProgress(Constants.SHPREF_PRODUCTIVE_AWARD_ID,1, task);
+
+        //Increase the perfectionnist award
+        increaseAwardProgress(Constants.SHPREF_PERFECTIONIST_AWARD_ID, progressIncrease.doubleValue()/60.0, task);
+
+        //Increase trend-setter award
+        increaseAwardProgress(Constants.SHPREF_TREND_SETTER_AWARD_ID, progressIncrease.doubleValue()/60.0, task);
+
+        //Increase the committed award
+        increaseAwardProgress(Constants.SHARE_COMMITTED_AWARD_ID,1, task);
+
+        //Increase the punctual award
+        task.setTimeSpent(progressIncrease.intValue());
+        if(task.getTimeSpent() >= task.getGoal() && Calendar.getInstance().getTime().before(task.getDeadlineValue().getTime())) {
+            increaseAwardProgress(Constants.SHPREF_PUNCTUAL_AWARD_ID, 1, task);
+        }
+
+        //Increase the multi-tasker award
+        increaseAwardProgress(Constants.SHPREF_MULTI_TASKER_AWARD_ID,1, task);
+
     }
 }
