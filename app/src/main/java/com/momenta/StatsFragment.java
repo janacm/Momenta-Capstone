@@ -182,7 +182,7 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
             index++;
         }
 
-        LineDataSet lineDataSet = new LineDataSet(lineEntries, "Label");
+        LineDataSet lineDataSet = new LineDataSet(lineEntries, "");
         lineDataSet.setColor( ContextCompat.getColor(getContext(), R.color.colorPrimary) );
         lineDataSet.setDrawFilled(true);
         lineDataSet.setHighLightColor( ContextCompat.getColor(getContext(), R.color.deep_purple) );
@@ -251,7 +251,7 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
 
         tempCal.setTimeInMillis( Calendar.getInstance().getTimeInMillis() );
 
-        PieDataSet pieDataSet = new PieDataSet(pieEntries, "Time spent");
+        PieDataSet pieDataSet = new PieDataSet(pieEntries, "Time in minutes");
 
         ArrayList<Integer> colors = new ArrayList<>();
         for (int c : ColorTemplate.MATERIAL_COLORS)
