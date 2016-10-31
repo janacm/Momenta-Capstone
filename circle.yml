@@ -36,3 +36,5 @@ test:
     - cp -r app/build/outputs $CIRCLE_ARTIFACTS
     # copy the test results to the test results directory.
     - cp -r app/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
+    - cp -r /home/ubuntu/Momenta-Capstone/app/build/reports/androidTests/connected/ $CIRCLE_TEST_REPORTS
+    - cp -r /home/ubuntu/Momenta-Capstone/app/build/outputs/ $CIRCLE_ARTIFACTS
