@@ -26,6 +26,7 @@ import java.util.List;
 public class SelectTasksActivity extends AppCompatActivity {
 
     private static final String TAG = "SelectTasksActivity";
+    private static final int NEW_TASK_REQUEST_CODE = 1;
     //UI items
     public RecyclerView mRecyclerView;
     private SelectTasksAdapter mAdapter;
@@ -115,10 +116,19 @@ public class SelectTasksActivity extends AppCompatActivity {
             case R.id.action_done:
                 prepareItems();
                 break;
+            case R.id.action_add:
+                addNewActivity();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
-
+    //Method for adding a new activity from the SelectTasksActivity
+    public void addNewActivity(){
+        Intent intent = new Intent(this, AddNewTaskActivity.class);
+        //Simple boolean used to verify that task is being added from SelectTasksActivity
+        intent.putExtra("NewTaskFromSelectTasks", true);
+        startActivityForResult(intent, NEW_TASK_REQUEST_CODE);
+    }
     //Method for extracting the task IDs and position from the tasks in the list and passing
     //them to the AddTimeToTaskActivity in the form of a stack.
     public void prepareItems() {
@@ -165,6 +175,19 @@ public class SelectTasksActivity extends AppCompatActivity {
      */
     private void toast(String toToast) {
         Toast.makeText(this, toToast, Toast.LENGTH_LONG).show();
+    }
+
+    //Override method used for getting a result from creating a new task in SelectTasksActivity
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check to see if results
+        if (requestCode == NEW_TASK_REQUEST_CODE) {
+            // If result code is OK, refresh or reset activity
+            if (resultCode == RESULT_OK) {
+                finish();
+                startActivity(getIntent());
+            }
+        }
     }
 }
 
