@@ -251,7 +251,7 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
 
         tempCal.setTimeInMillis( Calendar.getInstance().getTimeInMillis() );
 
-        PieDataSet pieDataSet = new PieDataSet(pieEntries, "Time in minutes");
+        PieDataSet pieDataSet = new PieDataSet(pieEntries, getString(R.string.time_in_minutes));
 
         ArrayList<Integer> colors = new ArrayList<>();
         for (int c : ColorTemplate.MATERIAL_COLORS)

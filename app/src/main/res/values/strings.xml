@@ -182,10 +182,12 @@
         <item>Work on </item>
     </string-array>
 
+    <!--Trends Strings-->
     <string-array name="trends_spinner">
         <item>Past Week</item>
         <item>Past Month</item>
     </string-array>
+    <string name="time_in_minutes">Time in minutes</string>
 
     <!-- Awards titles and descriptions -->
 
