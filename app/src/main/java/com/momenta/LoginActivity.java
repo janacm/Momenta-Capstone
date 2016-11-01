@@ -2,6 +2,7 @@ package com.momenta;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
@@ -116,7 +117,11 @@ public class LoginActivity extends FragmentActivity implements
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+        Log.d("pls", "firebaseAuthWithGoogle:" + acct.getId());
+        final String displayName = acct.getDisplayName();
+        Log.d("pls", displayName);
+        final String email = acct.getEmail();
+        final String personPhoto = acct.getPhotoUrl().toString();
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         showProgressDialog();
         mFirebaseAuth.signInWithCredential(credential)
@@ -134,7 +139,7 @@ public class LoginActivity extends FragmentActivity implements
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                            startActivity(new Intent(LoginActivity.this, MainActivity.class).putExtra("displayName", displayName).putExtra("email", email).putExtra("personPhoto",personPhoto));
                             finish();
                         }
                     }
