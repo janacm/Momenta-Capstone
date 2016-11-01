@@ -1,8 +1,15 @@
 package com.momenta;
 
+import android.Manifest;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -29,18 +36,29 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class TaskActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+import pub.devrel.easypermissions.EasyPermissions;
 
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+
+public class TaskActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener,
+        EasyPermissions.PermissionCallbacks{
     private static final String TAG = "TaskActivity";
+
+    public static final int P_REQUEST = 900;
+    static final int REQUEST_AUTHORIZATION = 1001;
+
     private EditText activityName;
     private TextView activityDeadline;
     private TextView activityGoal;
+    private helperPreferences helperPreferences;
     private Task task;
     private  Integer goalHours = 2;
     private  Integer goalMins = 30;
+    private Integer timeLogged = 0;
 
     private boolean wasEdited = false;
     private Task.Priority priority;
@@ -111,6 +129,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         activityDeadline = (TextView) findViewById(R.id.task_deadline_value);
 
         awardManager = AwardManager.getInstance(this);
+        helperPreferences = new helperPreferences(this);
     }
 
     private void initializeFields() {
@@ -283,7 +302,9 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                                 if (snapshot.exists()) {
                                     Long currTimeLogged = (long)snapshot.child(Task.TIME_SPENT).getValue();
                                     totalTimeForDay += currTimeLogged;
-                                    awardManager.handleAwardsProgress(totalTimeForDay,task);
+                                    timeLogged = currTimeLogged.intValue();
+                                    createCalendarEvent();
+//                                    awardManager.handleAwardsProgress(totalTimeForDay,task);
                                 }
                                 mFirebaseDatabaseReference.child(timeSpentDirectory + "/" + Task.TIME_SPENT)
                                         .setValue(totalTimeForDay);
@@ -474,4 +495,75 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        //Do nothing
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        // Do nothing.
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case REQUEST_AUTHORIZATION:
+                if (resultCode == RESULT_OK) {
+                    createCalendarEvent();
+                }
+        }
+    }
+
+    private void createCalendarEvent() {
+        Account account = getAccount();
+        if ( account!= null ) {
+            GoogleCalendarIntegration gci = new GoogleCalendarIntegration(TaskActivity.this, account, timeLogged + " minutes on " + task.getName());
+            gci.execute();
+        }
+    }
+
+    /**
+     * Used to get the Google Account currently signed in
+     * @return The Google Account currently signed in to the Momenta
+     */
+    private Account getAccount() {
+        Account result = null;
+        String accountName = helperPreferences.getPreferences(Constants.ACCOUNT_NAME, null);
+        checkPermissions(P_REQUEST, Manifest.permission.GET_ACCOUNTS, Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
+
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.GET_ACCOUNTS) != PERMISSION_GRANTED) {
+            return null;
+        }
+        Account[] accounts = AccountManager.get(this).getAccountsByType("com.google");
+        for (Account account : accounts) {
+            if (accountName.equals(account.name)) {
+                result = account;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Requests for permisssions in batch
+     * @param callbackId the unique callbackId
+     * @param permissionsId the permissions to request from the user
+     */
+    private void checkPermissions(int callbackId, String... permissionsId) {
+        boolean permissions = true;
+        for (String p : permissionsId) {
+            permissions = permissions && ContextCompat.checkSelfPermission(this, p) == PERMISSION_GRANTED;
+        }
+
+        if (!permissions) {
+            ActivityCompat.requestPermissions(this, permissionsId, callbackId);
+        }
+    }
 }

@@ -87,6 +87,9 @@
     <string name="settings_notification">Notifications</string>
     <string name="start_time_title">Start Time</string>
     <string name="end_time_title">End Time</string>
+    <string name="settings_integrations">Integrations</string>
+    <string name="integration_switch_title">Integrate with Google Calendar</string>
+    <string name="integration_switch_summary">Create events in your calendar after logging your time</string>
 
     <!-- EditText strings-->
     <string name="new_activity_hint"><i>Go to the gym...</i></string>
