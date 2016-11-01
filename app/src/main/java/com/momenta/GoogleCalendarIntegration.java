@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.api.client.extensions.android.http.AndroidHttp;
@@ -40,6 +39,7 @@ public class GoogleCalendarIntegration extends AsyncTask<Void, Void, Boolean> {
     private Context context;
     private Exception mLastError = null;
 
+    //TODO: Handle Event: timeSpent > IntervalTime
     public GoogleCalendarIntegration(Context context, Account account, String summary) {
         calendar = Calendar.getInstance();
         HttpTransport transport = AndroidHttp.newCompatibleTransport();
@@ -52,12 +52,6 @@ public class GoogleCalendarIntegration extends AsyncTask<Void, Void, Boolean> {
                 context.getApplicationContext(), Arrays.asList(SCOPES))
                 .setBackOff(new ExponentialBackOff());
         mCredential.setSelectedAccount(account);
-
-        if (mCredential.getSelectedAccountName() == null) {
-            Log.e(TAG, "Selected account is null");
-        } else {
-            Log.w(TAG, "Selected account is " + mCredential.getSelectedAccountName());
-        }
 
         mService = new com.google.api.services.calendar.Calendar.Builder(
                 transport, jsonFactory, mCredential)
@@ -89,7 +83,6 @@ public class GoogleCalendarIntegration extends AsyncTask<Void, Void, Boolean> {
      * Creates the calendar event
      */
     private void createEvent() throws IOException {
-        //TODO Maybe look into setting location on the event, based on the device location
         Event event = new Event().setSummary(summary);
 
         Calendar startCal = Calendar.getInstance();
@@ -108,11 +101,10 @@ public class GoogleCalendarIntegration extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean created) {
+        //TODO Toast message if a calender event is created?
         super.onPostExecute(created);
         if (created) {
-            Toast.makeText(context, "Created event in your Calendar", Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(context, "Creation failed", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, R.string.created_event_string, Toast.LENGTH_LONG).show();
         }
     }
 

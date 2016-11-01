@@ -219,4 +219,7 @@
     <!--Sign in credentials for Integration testing with Firebase-->
     <string name="email">digging62@yahoo.com</string>
     <string name="password">MomentaFirebase</string>
+
+    <!--Integration Strings-->
+    <string name="created_event_string">Created event in your Calendar</string>
 </resources>
