@@ -522,6 +522,9 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
+    /**
+     * Executes the Async task to create the calendar event.
+     */
     private void createCalendarEvent() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         boolean isEnabled = prefs.getBoolean("integration_switch", false);
