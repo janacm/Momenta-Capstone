@@ -111,12 +111,18 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
 
 
         Bundle args = getActivity().getIntent().getExtras();
+        String name = "";
+        String email = "";
+        String photo = "";
 
-        String name = args.getString("displayName");
-        Log.d("pls", name + " test");
-        String email = args.getString("email");
+        if (args != null) {
+            name = args.getString("displayName");
+            Log.d("pls", name + " test");
+            email = args.getString("email");
 
-        String photo = args.getString("personPhoto");
+            photo = args.getString("personPhoto");
+        }
+
 
         TextView displayNameText = (TextView)activityView.findViewById(R.id.displayName);
         displayNameText.setText(name);

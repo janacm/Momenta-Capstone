@@ -283,8 +283,8 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                                 if (snapshot.exists()) {
                                     Long currTimeLogged = (long)snapshot.child(Task.TIME_SPENT).getValue();
                                     totalTimeForDay += currTimeLogged;
-                                    awardManager.handleAwardsProgress(totalTimeForDay,task);
                                 }
+                                awardManager.handleAwardsProgress(totalTimeForDay,task);
                                 mFirebaseDatabaseReference.child(timeSpentDirectory + "/" + Task.TIME_SPENT)
                                         .setValue(totalTimeForDay);
                             }
