@@ -6,7 +6,9 @@ import android.accounts.AccountManager;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -523,6 +525,11 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void createCalendarEvent() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isEnabled = prefs.getBoolean("integration_switch", false);
+        if (!isEnabled) {
+            return;
+        }
         Account account = getAccount();
         if ( account!= null ) {
             GoogleCalendarIntegration gci = new GoogleCalendarIntegration(TaskActivity.this, account, timeLogged + " minutes on " + task.getName());
@@ -546,6 +553,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         for (Account account : accounts) {
             if (accountName.equals(account.name)) {
                 result = account;
+                break;
             }
         }
         return result;

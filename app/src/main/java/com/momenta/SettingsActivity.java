@@ -103,6 +103,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
                     return true;
                 }
             });
+            calIntegration.setChecked( havePermissions(android.Manifest.permission.GET_ACCOUNTS, android.Manifest.permission.READ_CALENDAR, android.Manifest.permission.WRITE_CALENDAR) );
         }
     }
 
@@ -157,7 +158,6 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     }
 
     private void updatePreference(Preference preference, String key) {
-//        Log.d("preference.toSt",preference.toString());
         if (preference instanceof ListPreference) {
             ListPreference listPreference = (ListPreference) preference;
             listPreference.setSummary(listPreference.getEntry());
@@ -218,6 +218,19 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         if (!permissions) {
             ActivityCompat.requestPermissions(this, permissionsId, callbackId);
         }
+    }
+
+    /**
+     * Check if all the permissions necessary for Google Calendar have been granted
+     * @return True if the all permissions are granted, False Otherwise
+     */
+    private boolean havePermissions(String... permissionsId) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean result = prefs.getBoolean("integration_switch", false);
+        for (String p : permissionsId) {
+            result = result && ContextCompat.checkSelfPermission(this, p) == PERMISSION_GRANTED;
+        }
+        return result;
     }
     /**
      * Helper method to show the time picker dialog
