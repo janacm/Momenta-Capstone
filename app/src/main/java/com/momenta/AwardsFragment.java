@@ -99,7 +99,7 @@ public class AwardsFragment extends Fragment {
                     if (!award.getId().equals(helperPreferences.getPreferences(Constants.SHPREF_TREND_SETTER_AWARD_ID, "")) && !award.getId().equals(helperPreferences.getPreferences(Constants.SHPREF_PERFECTIONIST_AWARD_ID, ""))) {
                         viewHolder.progressBar.setProgressText(String.valueOf((int) award.getCurrentProgress()));
                     }else{
-                        viewHolder.progressBar.setProgressText(String.valueOf(award.getCurrentProgress()));
+                        viewHolder.progressBar.setProgressText(String.format("%.2f",award.getCurrentProgress()));
                     }
                 }
             }
