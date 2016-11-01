@@ -1,6 +1,5 @@
 package com.momenta;
 
-import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.DatePickerDialog;
@@ -10,7 +9,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -544,7 +542,6 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
     private Account getAccount() {
         Account result = null;
         String accountName = helperPreferences.getPreferences(Constants.ACCOUNT_NAME, null);
-        checkPermissions(P_REQUEST, Manifest.permission.GET_ACCOUNTS, Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
 
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.GET_ACCOUNTS) != PERMISSION_GRANTED) {
             return null;
@@ -557,21 +554,5 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
         return result;
-    }
-
-    /**
-     * Requests for permisssions in batch
-     * @param callbackId the unique callbackId
-     * @param permissionsId the permissions to request from the user
-     */
-    private void checkPermissions(int callbackId, String... permissionsId) {
-        boolean permissions = true;
-        for (String p : permissionsId) {
-            permissions = permissions && ContextCompat.checkSelfPermission(this, p) == PERMISSION_GRANTED;
-        }
-
-        if (!permissions) {
-            ActivityCompat.requestPermissions(this, permissionsId, callbackId);
-        }
     }
 }
