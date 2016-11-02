@@ -10,7 +10,7 @@
 
     <me.grantland.widget.AutofitTextView
         android:id="@+id/list_item_time_spent"
-        android:singleLine="true"
+        android:maxLines="1"
         autofit:minTextSize="8sp"
         android:layout_width="70dp"
         android:layout_height="match_parent"

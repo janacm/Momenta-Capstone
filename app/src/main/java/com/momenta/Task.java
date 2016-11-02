@@ -13,7 +13,6 @@ import java.util.Map;
 
 /**
  * Blueprint of a user activity.
- * TODO Format class & look at naming.
  */
 public class Task {
 
@@ -25,8 +24,10 @@ public class Task {
     private int timeSpent;
     private Calendar deadline = Calendar.getInstance();
     private Calendar lastModified = Calendar.getInstance();
+    private String lastModifiedBy;
     private long dateCreated;
     private Priority priority;
+    private String owner;
     private ArrayList<String> team;
 
     //Firebase fields
@@ -35,9 +36,11 @@ public class Task {
     public static final String GOAL = "goal";
     public static final String TIME_SPENT = "timeSpent";
     public static final String DEADLINE = "deadline";
+    public static final String OWNER = "owner";
     public static final String LAST_MODIFIED = "lastModified";
-    public static final String DATE_CREATED = "dateCreated";
+    public static final String LAST_MODIFIED_BY = "lastModifiedBy";
     public static final String PRIORITY = "priority";
+    public static final String DATE_CREATED = "dateCreated";
     public static final String TEAM = "team";
 
     /**
@@ -237,6 +240,22 @@ public class Task {
         this.dateCreated = dateCreated;
     }
 
+    public String getLastModifiedBy() {
+        return this.lastModifiedBy;
+    }
+
+    public void setLastModifiedBy(String lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
+    }
+
+    public String getOwner() {
+        return this.owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
     /**
      * Returns the deadline in the format MMMM dd, YYYY.
      * Must check deadline is not null first using the getDeadlineValue() method.
@@ -383,7 +402,9 @@ public class Task {
         result.put(GOAL, getGoal());
         result.put(DEADLINE, getDeadline());
         result.put(DATE_CREATED, getDateCreated());
+        result.put(OWNER, getOwner());
         result.put(LAST_MODIFIED, getLastModified());
+        result.put(LAST_MODIFIED_BY, getLastModifiedBy());
         result.put(TIME_SPENT, getTimeSpent());
         result.put(PRIORITY, getPriority());
         result.put(TEAM, getTeamMembers());

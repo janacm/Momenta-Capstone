@@ -69,7 +69,7 @@
         </activity>
         <activity
             android:name=".ShareActivity"
-            android:label="Add Friends"
+            android:label="@string/title_share_activity"
             android:theme="@style/momentaTheme.NoActionBar"/>
     </application>
 

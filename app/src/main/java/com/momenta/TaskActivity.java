@@ -59,8 +59,8 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
     private TextView activityGoal;
     private helperPreferences helperPreferences;
     private Task task;
-    private  Integer goalHours = 2;
-    private  Integer goalMins = 30;
+    private Integer goalHours = 2;
+    private Integer goalMins = 30;
     private Integer timeLogged = 0;
 
     private boolean wasEdited = false;
@@ -106,14 +106,16 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        task.setId( (String)dataSnapshot.child("id").getValue() );
-                        task.setName( (String)dataSnapshot.child("name").getValue() );
-                        task.setGoal( dataSnapshot.child("goal").getValue(Integer.class) );
-                        task.setDeadline( (Long)dataSnapshot.child("deadline").getValue() );
-                        task.setDateCreated( (Long)dataSnapshot.child("dateCreated").getValue() );
-                        task.setLastModified( (Long)dataSnapshot.child("lastModified").getValue() );
-                        task.setTimeSpent( dataSnapshot.child("timeSpent").getValue(Integer.class) );
-                        task.setPriority( (String)dataSnapshot.child("priority").getValue() );
+                        task.setId( (String)dataSnapshot.child(Task.ID).getValue() );
+                        task.setName( (String)dataSnapshot.child(Task.NAME).getValue() );
+                        task.setGoal( dataSnapshot.child(Task.GOAL).getValue(Integer.class) );
+                        task.setDeadline( (Long)dataSnapshot.child(Task.DEADLINE).getValue() );
+                        task.setDateCreated( (Long)dataSnapshot.child(Task.DATE_CREATED).getValue() );
+                        task.setOwner( (String)dataSnapshot.child(Task.OWNER).getValue() );
+                        task.setLastModified( (Long)dataSnapshot.child(Task.LAST_MODIFIED).getValue() );
+                        task.setLastModifiedBy( (String)dataSnapshot.child(Task.LAST_MODIFIED_BY).getValue() );
+                        task.setTimeSpent( dataSnapshot.child(Task.TIME_SPENT).getValue(Integer.class) );
+                        task.setPriority( (String)dataSnapshot.child(Task.PRIORITY).getValue() );
                         priority = task.getPriorityValue();
 
                         for ( DataSnapshot member : dataSnapshot.child(Task.TEAM).getChildren()) {
@@ -300,17 +302,18 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot snapshot) {
-                                Long totalTimeForDay = minutes.longValue() + (hours.longValue()*60);
+                                Long logging = minutes.longValue() + (hours.longValue()*60);
+                                Long totalTimeForDay = logging;
                                 if (totalTimeForDay == 0) {
                                     return;
                                 }
                                 if (snapshot.exists()) {
-                                    Long currTimeLogged = (long)snapshot.child(Task.TIME_SPENT).getValue();
-                                    totalTimeForDay += currTimeLogged;
-                                    timeLogged = currTimeLogged.intValue();
-                                    createCalendarEvent();
-                                    awardManager.handleAwardsProgress(totalTimeForDay,task);
+                                    Long prevTimeLogged = (long)snapshot.child(Task.TIME_SPENT).getValue();
+                                    totalTimeForDay += prevTimeLogged;
+                                    timeLogged = prevTimeLogged.intValue();
                                 }
+                                createCalendarEvent();
+                                awardManager.handleAwardsProgress(logging,task);
                                 mFirebaseDatabaseReference.child(timeSpentDirectory + "/" + Task.TIME_SPENT)
                                         .setValue(totalTimeForDay);
                             }
@@ -351,6 +354,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         task.setName(name);
         task.setGoal(totalMinutes.intValue());
         task.setLastModifiedValue(Calendar.getInstance());
+        task.setLastModifiedBy(FirebaseProvider.getUserPath());
 
         Map<String, Object> childUpdates = new HashMap<>();
         for (String teamMember : task.getTeamMembers()) {
@@ -509,7 +513,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onPermissionsGranted(int requestCode, List<String> perms) {
         switch(requestCode) {
             case REQUEST_CONTACTS:
-                share();
+                startShareActivity();
                 break;
         }
     }
@@ -518,8 +522,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onPermissionsDenied(int requestCode, List<String> perms) {
         switch(requestCode) {
             case REQUEST_CONTACTS:
-                Intent i = new Intent(this, ShareActivity.class);
-                startActivityForResult(i, REQUEST_INVITE);
+                startShareActivity();
                 break;
         }
     }
@@ -541,10 +544,8 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
             case REQUEST_INVITE:
                 if (resultCode == RESULT_OK) {
-                    ArrayList<String> result = data.getStringArrayListExtra("result");
+                    ArrayList<String> result = data.getStringArrayListExtra(Task.TEAM);
                     addFriends(result);
-                } else if (resultCode == REQUEST_FAILED) {
-                    Toast.makeText(this, "Not using momenta", Toast.LENGTH_LONG).show();
                 }
         }
     }
@@ -593,9 +594,17 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PERMISSION_GRANTED) {
             askPermissions(REQUEST_CONTACTS, Manifest.permission.READ_CONTACTS);
         } else {
-            Intent i = new Intent(this, ShareActivity.class);
-            startActivityForResult(i, REQUEST_INVITE);
+            startShareActivity();
         }
+    }
+
+    private void startShareActivity() {
+        Intent i = new Intent(this, ShareActivity.class);
+        i.putExtra(Task.TEAM, task.getTeamMembers());
+        i.putExtra(Task.OWNER, task.getOwner());
+        i.putExtra(Task.LAST_MODIFIED, task.getLastModified());
+        i.putExtra(Task.LAST_MODIFIED_BY, task.getLastModifiedBy());
+        startActivityForResult(i, REQUEST_INVITE);
     }
 
     /**

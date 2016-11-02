@@ -11,16 +11,74 @@
         layout="@layout/toolbar"/>
 
     <AutoCompleteTextView
-        android:id="@+id/share_mail_text"
+        android:id="@+id/share_mail_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/share_people"
+        android:hint="@string/share_add_people"
         android:inputType="textEmailAddress"
         android:layout_below="@id/toolbar"
         android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"/>
 
+    <TextView
+        android:id="@+id/share_owner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:layout_below="@+id/share_mail_field"
+        android:text="@string/owner"/>
+
+    <TextView
+        android:id="@+id/share_owner_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/share_mail_field"
+        android:layout_toRightOf="@+id/share_last_modified_text"
+        android:layout_toEndOf="@+id/share_last_modified_text"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:text="@string/dummy_content"
+        />
+
+    <TextView
+        android:id="@+id/share_last_modified_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:layout_below="@+id/share_owner_value"
+        android:text="@string/sort_dialog_last_modified"/>
+
+    <TextView
+        android:id="@+id/share_last_modified_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/share_owner_value"
+        android:layout_toRightOf="@+id/share_last_modified_text"
+        android:layout_toEndOf="@+id/share_last_modified_text"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:text="@string/last_modified_placeholder"
+        />
+    <View
+        android:id="@+id/share_divider"
+        android:layout_width="wrap_content"
+        android:layout_height="5dp"
+        android:layout_below="@id/share_last_modified_value"
+        android:background="@drawable/list_item_line"/>
+
+    <TextView
+        android:id="@+id/share_members_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/share_divider"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:text="@string/team_members_text"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/share_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/share_members_message"/>
 </RelativeLayout>

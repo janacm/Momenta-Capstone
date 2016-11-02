@@ -31,6 +31,19 @@ public class FirebaseProvider {
     }
 
     /**
+     * Returns a User object created from the Google user currently logged in
+     * @return The User currently logged in; null if no user is logged in.
+     */
+    public static User getUser() {
+        FirebaseUser mUser=  FirebaseAuth.getInstance().getCurrentUser();
+        User user = null;
+        if ( mUser != null ) {
+            user = new User(mUser.getDisplayName(), mUser.getEmail().replace(".",","));
+        }
+        return user;
+    }
+
+    /**
      * Gets the path of the user currently logged in.
      * @return the current user's path, null in no user is logged in
      */
@@ -41,14 +54,5 @@ public class FirebaseProvider {
             path = user.getEmail().replace(".", ",");
         }
         return path;
-    }
-
-    /**
-     * Gets the path of a registered user given thier email
-     * @param email the email of the user
-     * @return path of the user
-     */
-    public static String getUserPath(String email) {
-        return email.replace(".", ",");
     }
 }

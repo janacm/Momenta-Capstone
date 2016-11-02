@@ -224,6 +224,11 @@
     <string name="created_event_string">Created event in your Calendar</string>
     <string name="invite_friends">Invite friends</string>
     <string name="invite_title">Invite</string>
-    <string name="share_people">People</string>
+    <string name="share_add_people">Add People</string>
     <string name="enter_valid_email"> is not a valid email address</string>
+    <string name="last_modified_placeholder">Sept 13 by Earl Ragnar</string>
+    <string name="team_members_text">Team members</string>
+    <string name="by">by</string>
+    <string name="owner">Owner</string>
+    <string name="title_share_activity">Add Friends</string>
 </resources>

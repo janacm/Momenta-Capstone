@@ -10,12 +10,18 @@ import android.provider.ContactsContract;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -24,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
@@ -32,6 +39,11 @@ public class ShareActivity extends AppCompatActivity {
     AutoCompleteTextView textView;
     private boolean usersValid = true;
     private ArrayList<String> result;
+    private ArrayList<String> teamMembers;
+    private ArrayList<User> users;
+    private String owner;
+    private String lastModifiedBy;
+    private Long lastModified;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +55,33 @@ public class ShareActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        users = new ArrayList<>();
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            teamMembers = bundle.getStringArrayList(Task.TEAM);
+            owner = bundle.getString(Task.OWNER);
+            lastModified = bundle.getLong(Task.LAST_MODIFIED);
+            lastModifiedBy = bundle.getString(Task.LAST_MODIFIED_BY);
+        }
+
+        DatabaseReference ref = FirebaseProvider.getInstance().getReference();
+        ref.child("/users").addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        setOwner(dataSnapshot);
+                        setLastModified(dataSnapshot);
+                        setTeamMembers(dataSnapshot);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                }
+        );
+
+
 
         ArrayList<String> emailAddressCollection = new ArrayList<String>();
         ContentResolver cr = getContentResolver();
@@ -64,7 +103,7 @@ public class ShareActivity extends AppCompatActivity {
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, emailAddresses);
-        textView = (AutoCompleteTextView)findViewById(R.id.share_mail_text);
+        textView = (AutoCompleteTextView)findViewById(R.id.share_mail_field);
         textView.setAdapter(adapter);
     }
 
@@ -88,6 +127,59 @@ public class ShareActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Sets the owner text view
+     * @param data The dataSnapshot to get the owner info from
+     */
+    private void setOwner(DataSnapshot data) {
+        if (owner != null) {
+            TextView ownerText = (TextView)findViewById(R.id.share_owner_value);
+            ownerText.setText( (String)data.child(owner + "/displayName").getValue() );
+        }
+    }
+
+    /**
+     * Sets the last modified text view
+     * @param data the dataSnapshot to get the user info from
+     */
+    private void setLastModified(DataSnapshot data) {
+        if (lastModifiedBy != null) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(lastModified);
+            String lastModText = SettingsActivity.formatDate(cal.getTime(), "MMM dd");
+            lastModText += " " + getString(R.string.by) + " ";
+            lastModText += (String)data.child(lastModifiedBy + "/displayName").getValue();
+            TextView last = (TextView)findViewById(R.id.share_last_modified_value);
+            last.setText(lastModText);
+        }
+    }
+
+    /**
+     * Initializes the team members RecyclerView and sets the data
+     * @param data the dataSnapshot to get teh user info from
+     */
+    private void setTeamMembers(DataSnapshot data) {
+        if (teamMembers != null) {
+            for (String member : teamMembers) {
+                User user = new User();
+                user.setDisplayName( (String)data.child(member + "/displayName").getValue() );
+                user.setPath(member);
+                users.add(user);
+            }
+        }
+
+        UserAdapter adapter = new UserAdapter(users);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+
+        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.share_recycler);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+        recyclerView.invalidate();
+    }
+
+    /**
+     * Invites the users to join the task
+     */
     private void invite() {
         String toParse = textView.getText().toString().trim();
         String[] mails = toParse.split(",");
@@ -101,6 +193,11 @@ public class ShareActivity extends AppCompatActivity {
         validateUsers(mails);
     }
 
+    /**
+     * Checks if the emails belong to users of the system
+     * Adds the members that are users of the system & discards the others
+     * @param mails
+     */
     private void validateUsers(final String[] mails) {
         DatabaseReference ref = FirebaseProvider.getInstance().getReference();
         result = new ArrayList<>();
@@ -117,7 +214,7 @@ public class ShareActivity extends AppCompatActivity {
                     usersValid = usersValid && exists;
                 }
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra("result", result);
+                returnIntent.putExtra(Task.TEAM, result);
                 setResult(Activity.RESULT_OK, returnIntent);
                 finish();
             }
@@ -151,5 +248,49 @@ public class ShareActivity extends AppCompatActivity {
             result = result && ContextCompat.checkSelfPermission(this, p) == PERMISSION_GRANTED;
         }
         return result;
+    }
+
+    /**
+     * Adapter for the team members RecyclerView
+     */
+    private class UserAdapter extends RecyclerView.Adapter<UserViewHolder>{
+
+        ArrayList<User> list;
+
+        UserAdapter(ArrayList<User> list) {
+            this.list = list;
+        }
+        @Override
+        public UserViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.user_item, parent, false);
+            return new UserViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(UserViewHolder holder, int position) {
+            User user = list.get(position);
+            holder.displayName.setText(user.getDisplayName());
+            holder.email.setText(user.getPath().replace(",","."));
+        }
+
+        @Override
+        public int getItemCount() {
+            return list.size();
+        }
+    }
+
+    /**
+     * ViewHolder for users RecyclerView
+     */
+    public static class UserViewHolder extends RecyclerView.ViewHolder {
+        TextView displayName;
+        TextView email;
+
+        UserViewHolder(View itemView) {
+            super(itemView);
+            displayName = (TextView) itemView.findViewById(R.id.user_display_name);
+            email = (TextView) itemView.findViewById(R.id.user_email);
+        }
     }
 }
