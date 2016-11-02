@@ -1,5 +1,6 @@
 package com.momenta;
 
+import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.DatePickerDialog;
@@ -9,6 +10,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -27,13 +29,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -48,8 +49,10 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         EasyPermissions.PermissionCallbacks{
     private static final String TAG = "TaskActivity";
 
-    public static final int P_REQUEST = 900;
-    static final int REQUEST_AUTHORIZATION = 1001;
+    static final int REQUEST_AUTHORIZATION = 1000;
+    static final int REQUEST_CONTACTS = 1001;
+    static final int REQUEST_INVITE = 1002;
+    static final int REQUEST_FAILED = 1003;
 
     private EditText activityName;
     private TextView activityDeadline;
@@ -83,13 +86,11 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (mFirebaseUser != null) {
-            Calendar cal = Calendar.getInstance();
-            String date = SettingsActivity.formatDate(cal.getTime(), Constants.TIME_SPENT_DATE_FORMAT);
-            directory = mFirebaseUser.getUid() + "/goals";
-            timeSpentDirectory = mFirebaseUser.getUid() + "/" + Task.TIME_SPENT + "/" + date;
-        }
+        Calendar cal = Calendar.getInstance();
+        String date = SettingsActivity.formatDate(cal.getTime(), Constants.TIME_SPENT_DATE_FORMAT);
+        directory = FirebaseProvider.getUserPath() + "/goals";
+        timeSpentDirectory = FirebaseProvider.getUserPath() + "/" + Task.TIME_SPENT + "/" + date;
+
         mFirebaseDatabaseReference = FirebaseProvider.getInstance().getReference();
         task = new Task();
 
@@ -114,6 +115,10 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                         task.setTimeSpent( dataSnapshot.child("timeSpent").getValue(Integer.class) );
                         task.setPriority( (String)dataSnapshot.child("priority").getValue() );
                         priority = task.getPriorityValue();
+
+                        for ( DataSnapshot member : dataSnapshot.child(Task.TEAM).getChildren()) {
+                            task.addTeamMember(member.getValue().toString());
+                        }
                         initializeFields();
                         initializeProgressBar();
                     }
@@ -304,7 +309,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                                     totalTimeForDay += currTimeLogged;
                                     timeLogged = currTimeLogged.intValue();
                                     createCalendarEvent();
-//                                    awardManager.handleAwardsProgress(totalTimeForDay,task);
+                                    awardManager.handleAwardsProgress(totalTimeForDay,task);
                                 }
                                 mFirebaseDatabaseReference.child(timeSpentDirectory + "/" + Task.TIME_SPENT)
                                         .setValue(totalTimeForDay);
@@ -335,7 +340,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                 + goalMins;
 
         //Set updated values
-        String name = activityName.getText().toString();
+        String name = activityName.getText().toString().trim();
         if (name.isEmpty()) {
             activityName.setError(getResources().getString(R.string.toast_no_name_activity_added));
             return;
@@ -343,12 +348,14 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
             toast(getString(R.string.toast_enter_goal));
             return;
         }
-        task.setName(activityName.getText().toString());
+        task.setName(name);
         task.setGoal(totalMinutes.intValue());
         task.setLastModifiedValue(Calendar.getInstance());
 
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put(directory + "/" + task.getId(), task.toMap());
+        for (String teamMember : task.getTeamMembers()) {
+            childUpdates.put(teamMember + "/goals/" + task.getId(), task.toMap());
+        }
         mFirebaseDatabaseReference.updateChildren(childUpdates);
         finish();
     }
@@ -387,7 +394,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.done, menu);
+        inflater.inflate(R.menu.menu_task_activity, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -402,6 +409,9 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
             case R.id.action_delete:
                 delete();
+                break;
+            case R.id.action_share:
+                share();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -497,12 +507,21 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
-        //Do nothing
+        switch(requestCode) {
+            case REQUEST_CONTACTS:
+                share();
+                break;
+        }
     }
 
     @Override
     public void onPermissionsDenied(int requestCode, List<String> perms) {
-        // Do nothing.
+        switch(requestCode) {
+            case REQUEST_CONTACTS:
+                Intent i = new Intent(this, ShareActivity.class);
+                startActivityForResult(i, REQUEST_INVITE);
+                break;
+        }
     }
 
     @Override
@@ -518,6 +537,14 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
             case REQUEST_AUTHORIZATION:
                 if (resultCode == RESULT_OK) {
                     createCalendarEvent();
+                }
+                break;
+            case REQUEST_INVITE:
+                if (resultCode == RESULT_OK) {
+                    ArrayList<String> result = data.getStringArrayListExtra("result");
+                    addFriends(result);
+                } else if (resultCode == REQUEST_FAILED) {
+                    Toast.makeText(this, "Not using momenta", Toast.LENGTH_LONG).show();
                 }
         }
     }
@@ -557,5 +584,46 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
         return result;
+    }
+
+    /**
+     * Launches the ShareActivity, to grab the details from the user.
+     */
+    private void share() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PERMISSION_GRANTED) {
+            askPermissions(REQUEST_CONTACTS, Manifest.permission.READ_CONTACTS);
+        } else {
+            Intent i = new Intent(this, ShareActivity.class);
+            startActivityForResult(i, REQUEST_INVITE);
+        }
+    }
+
+    /**
+     * Adds new team member to the task, and duplicates the data.
+     * @param teamMembers the list of new team members to be added to the task.
+     */
+    private void addFriends(ArrayList<String> teamMembers) {
+        task.addTeamMembers(teamMembers);
+        Map<String, Object> childUpdates = new HashMap<>();
+        for (String teamMember : task.getTeamMembers()) {
+            childUpdates.put(teamMember + "/goals/" + task.getId() + "/", task.toMap());
+        }
+        mFirebaseDatabaseReference.updateChildren(childUpdates);
+    }
+
+    /**
+     * Prompts the user for permissions.
+     * @param callbackId the unique callbackId
+     * @param permissionsId the permissions to request from the user
+     */
+    private void askPermissions(int callbackId, String... permissionsId) {
+        boolean permissions = true;
+        for (String p : permissionsId) {
+            permissions = permissions && ContextCompat.checkSelfPermission(this, p) == PERMISSION_GRANTED;
+        }
+
+        if (!permissions) {
+            ActivityCompat.requestPermissions(this, permissionsId, callbackId);
+        }
     }
 }

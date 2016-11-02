@@ -5,13 +5,18 @@
         android:id="@+id/action_done"
         android:title="@string/dialog_done"
         android:icon="@drawable/ic_action_done"
-        android:orderInCategory="2"
         app:showAsAction="always"/>
+    <item
+        android:id="@+id/action_share"
+        android:title="@string/invite_friends"
+        android:orderInCategory="10"
+        android:icon="@drawable/ic_action_share"
+        app:showAsAction="ifRoom"
+        />
     <item
         android:id="@+id/action_delete"
         android:title="@string/delete_string"
         android:icon="@drawable/ic_action_delete"
-        android:orderInCategory="1"
-        app:showAsAction="ifRoom"
-        />
+        android:orderInCategory="11"
+        app:showAsAction="ifRoom" />
 </menu>

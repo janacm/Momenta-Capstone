@@ -18,8 +18,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -84,11 +82,8 @@ public class AddTaskTimeActivity extends AppCompatActivity {
 
         String date = SettingsActivity.formatDate(Calendar.getInstance().getTime(),
                 Constants.TIME_SPENT_DATE_FORMAT);
-        FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (mFirebaseUser != null) {
-            goalDirectory = mFirebaseUser.getUid() + "/goals";
-            timespentDirectory = mFirebaseUser.getUid() + "/" + Task.TIME_SPENT + "/" + date;
-        }
+        goalDirectory = FirebaseProvider.getUserPath() + "/goals";
+        timespentDirectory = FirebaseProvider.getUserPath() + "/" + Task.TIME_SPENT + "/" + date;
         mFirebaseDatabaseReference = FirebaseProvider.getInstance().getReference();
 
 
@@ -420,7 +415,7 @@ public class AddTaskTimeActivity extends AppCompatActivity {
                                 // If exists update current time spent
                                 prevTimeSpent = (long)snapshot.child(Task.TIME_SPENT).getValue();
                                 updatedTimeSpent += prevTimeSpent;
-//                                awardManager.handleAwardsProgress(updatedTimeSpent,task);
+                                awardManager.handleAwardsProgress(updatedTimeSpent,task);
                             }
 
                             mFirebaseDatabaseReference.child(tempGoalDir + "/" +Task.TIME_SPENT)

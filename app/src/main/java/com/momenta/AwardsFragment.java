@@ -12,8 +12,6 @@ import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 
 
@@ -41,10 +39,7 @@ public class AwardsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (mFirebaseUser != null) {
-            directory = mFirebaseUser.getUid() + "/awards";
-        }
+        directory = FirebaseProvider.getUserPath() + "/awards";
         mFirebaseDatabaseReference = FirebaseProvider.getInstance().getReference();
         mFirebaseAdapter = buildAdapter();
         helperPreferences = new helperPreferences(getContext());

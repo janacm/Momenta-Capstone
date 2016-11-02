@@ -18,12 +18,12 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 
@@ -80,11 +80,8 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
         activityGoal.setText(timeSetText(goalHours,goalMins));
         activityTimeSpent.setText(timeSetText(timespentHours,timespentMins));
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         reference = FirebaseProvider.getInstance().getReference();
-        if ( user!= null ) {
-            directory = user.getUid() + "/goals";
-        }
+        directory = FirebaseProvider.getUserPath() + "/goals";
     }
 
     /**
@@ -302,11 +299,16 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
                 deadlineCalendar, Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
         task.logTimeSpent(totalTimeSpentMinutes.intValue(), this);
         task.setPriorityValue(PRIORITY);
+        task.addTeamMember(FirebaseProvider.getUserPath());
 
         String id = reference.child(directory).push().getKey();
         task.setId(id);
 
-        reference.child(directory + "/" + task.getId()).setValue(task);
+        String taskDir = directory + "/" + task.getId();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put(taskDir, task.toMap());
+        reference.updateChildren(childUpdates);
 
         Bundle bundle = getIntent().getExtras();
 

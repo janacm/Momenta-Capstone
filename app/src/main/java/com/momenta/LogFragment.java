@@ -18,8 +18,6 @@ import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 
 /**
@@ -54,10 +52,7 @@ public class LogFragment extends Fragment {
         super.onCreate(savedInstanceState);
         helperPreferences = new helperPreferences(getActivity());
 
-        FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (mFirebaseUser != null) {
-            directory = mFirebaseUser.getUid() + "/goals";
-        }
+        directory = FirebaseProvider.getUserPath() + "/goals";
 
         // New child entries
         mFirebaseDatabaseReference = FirebaseProvider.getInstance().getReference();

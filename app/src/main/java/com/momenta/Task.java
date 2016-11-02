@@ -1,9 +1,11 @@
 package com.momenta;
 
-import com.google.firebase.database.Exclude;
 import android.content.Context;
 
+import com.google.firebase.database.Exclude;
+
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
@@ -25,6 +27,7 @@ public class Task {
     private Calendar lastModified = Calendar.getInstance();
     private long dateCreated;
     private Priority priority;
+    private ArrayList<String> team;
 
     //Firebase fields
     public static final String ID = "id";
@@ -35,6 +38,7 @@ public class Task {
     public static final String LAST_MODIFIED = "lastModified";
     public static final String DATE_CREATED = "dateCreated";
     public static final String PRIORITY = "priority";
+    public static final String TEAM = "team";
 
     /**
      * Empty constructor used by Firebase.
@@ -276,7 +280,6 @@ public class Task {
     /**
      * Used to get the taskHour and taskMinutes values in a string
      * @return String in format 0H 00M
-     * TODO Write test cases for this method
      */
     @Exclude
     public String getFormattedTimeSpent() {
@@ -301,6 +304,47 @@ public class Task {
             return "";
         }
     }
+
+    /**
+     * Adds a team member to the task
+     * @param teamMember the team member to be added
+     */
+    @Exclude
+    public void addTeamMember(String teamMember) {
+        if (team == null) {
+            team = new ArrayList<>();
+        }
+        team.add(teamMember);
+    }
+
+    /**
+     * Adds multiple team members to the task
+     * @param teamMembers the list of team members to be added
+     */
+    @Exclude
+    public void addTeamMembers(ArrayList<String> teamMembers) {
+        if (team == null) {
+            team = new ArrayList<>();
+        }
+        for (String member : teamMembers) {
+            if ( !team.contains(member) ) {
+                team.add(member);
+            }
+        }
+    }
+
+    /**
+     * Retrieves all the team members from the task
+     * @return the team members of the task
+     */
+    @Exclude
+    public ArrayList<String> getTeamMembers() {
+        if (team == null) {
+            team = new ArrayList<>();
+        }
+        return team;
+    }
+
 
     /**
      * Used to add time to the task
@@ -342,6 +386,7 @@ public class Task {
         result.put(LAST_MODIFIED, getLastModified());
         result.put(TIME_SPENT, getTimeSpent());
         result.put(PRIORITY, getPriority());
+        result.put(TEAM, getTeamMembers());
 
         return result;
     }

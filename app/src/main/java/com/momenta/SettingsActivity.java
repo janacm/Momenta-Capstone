@@ -232,6 +232,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         }
         return result;
     }
+
     /**
      * Helper method to show the time picker dialog
      * @param TIME the start time or end time

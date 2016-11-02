@@ -222,4 +222,8 @@
 
     <!--Integration Strings-->
     <string name="created_event_string">Created event in your Calendar</string>
+    <string name="invite_friends">Invite friends</string>
+    <string name="invite_title">Invite</string>
+    <string name="share_people">People</string>
+    <string name="enter_valid_email"> is not a valid email address</string>
 </resources>

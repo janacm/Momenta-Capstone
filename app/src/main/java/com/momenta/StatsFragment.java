@@ -28,8 +28,6 @@ import com.github.mikephil.charting.formatter.AxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -91,10 +89,7 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
         pieData = new HashMap<>();
         monthLineData = new HashMap<>();
 
-        FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (mFirebaseUser != null) {
-            directory = mFirebaseUser.getUid();
-        }
+        directory = FirebaseProvider.getUserPath();
         databaseReference = FirebaseProvider.getInstance().getReference();
         // Fetch the data from firebase
     }
