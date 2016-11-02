@@ -3,6 +3,7 @@ package com.momenta;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -113,7 +114,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
         Bundle args = getActivity().getIntent().getExtras();
         String name = "";
         String email = "";
-        String photo = "";
+        String photo = "photo";
 
         if (args != null) {
             name = args.getString("displayName");
