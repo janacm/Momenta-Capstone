@@ -12,8 +12,6 @@ import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 
 
@@ -41,10 +39,7 @@ public class AwardsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (mFirebaseUser != null) {
-            directory = mFirebaseUser.getUid() + "/awards";
-        }
+        directory = FirebaseProvider.getUserPath() + "/awards";
         mFirebaseDatabaseReference = FirebaseProvider.getInstance().getReference();
         mFirebaseAdapter = buildAdapter();
         helperPreferences = new helperPreferences(getContext());
@@ -99,7 +94,7 @@ public class AwardsFragment extends Fragment {
                     if (!award.getId().equals(helperPreferences.getPreferences(Constants.SHPREF_TREND_SETTER_AWARD_ID, "")) && !award.getId().equals(helperPreferences.getPreferences(Constants.SHPREF_PERFECTIONIST_AWARD_ID, ""))) {
                         viewHolder.progressBar.setProgressText(String.valueOf((int) award.getCurrentProgress()));
                     }else{
-                        viewHolder.progressBar.setProgressText(String.valueOf(award.getCurrentProgress()));
+                        viewHolder.progressBar.setProgressText(String.format("%.2f",award.getCurrentProgress()));
                     }
                 }
             }

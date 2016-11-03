@@ -10,6 +10,9 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
+import android.preference.SwitchPreference;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +25,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+
 /**
  * Created by Joe on 2016-02-09.
  * For Tip Calculator
@@ -32,6 +37,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     private static final String PREFS_NAME = "momenta_prefs";
     public static final String AM_TIME_FORMAT = "hh:mm a";
     public static final String TWENTY_FOUR_HOUR_FORMAT = "HH:mm";
+    private static final int P_REQUEST = 900;
 
     //Enumeration for referencing start and end time.
     public enum NOTIFICATION_TIME{START_TIME, END_TIME};
@@ -83,6 +89,21 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
                 }
             });
             notificationEndTime.setSummary( helperPreferences.getPreferences(NOTIFICATION_TIME.END_TIME.toString(), "08:30 PM") );
+        }
+
+        SwitchPreference calIntegration = (SwitchPreference) findPreference("integration_switch");
+        if ( calIntegration != null ) {
+            calIntegration.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    boolean isEnabled = (boolean)newValue;
+                    if (isEnabled) {
+                        askPermissions(P_REQUEST, android.Manifest.permission.GET_ACCOUNTS, android.Manifest.permission.READ_CALENDAR, android.Manifest.permission.WRITE_CALENDAR);
+                    }
+                    return true;
+                }
+            });
+            calIntegration.setChecked( havePermissions(android.Manifest.permission.GET_ACCOUNTS, android.Manifest.permission.READ_CALENDAR, android.Manifest.permission.WRITE_CALENDAR) );
         }
     }
 
@@ -137,7 +158,6 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     }
 
     private void updatePreference(Preference preference, String key) {
-//        Log.d("preference.toSt",preference.toString());
         if (preference instanceof ListPreference) {
             ListPreference listPreference = (ListPreference) preference;
             listPreference.setSummary(listPreference.getEntry());
@@ -182,6 +202,35 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
             }
         }
 
+    }
+
+    /**
+     * Prompts the user for permissions.
+     * @param callbackId the unique callbackId
+     * @param permissionsId the permissions to request from the user
+     */
+    private void askPermissions(int callbackId, String... permissionsId) {
+        boolean permissions = true;
+        for (String p : permissionsId) {
+            permissions = permissions && ContextCompat.checkSelfPermission(this, p) == PERMISSION_GRANTED;
+        }
+
+        if (!permissions) {
+            ActivityCompat.requestPermissions(this, permissionsId, callbackId);
+        }
+    }
+
+    /**
+     * Check if all the permissions necessary for Google Calendar have been granted
+     * @return True if the all permissions are granted, False Otherwise
+     */
+    private boolean havePermissions(String... permissionsId) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean result = prefs.getBoolean("integration_switch", false);
+        for (String p : permissionsId) {
+            result = result && ContextCompat.checkSelfPermission(this, p) == PERMISSION_GRANTED;
+        }
+        return result;
     }
 
     /**

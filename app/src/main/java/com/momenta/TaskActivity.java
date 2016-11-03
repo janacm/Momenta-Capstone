@@ -1,9 +1,17 @@
 package com.momenta;
 
+import android.Manifest;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -21,35 +29,51 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class TaskActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+import pub.devrel.easypermissions.EasyPermissions;
 
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+
+public class TaskActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener,
+        EasyPermissions.PermissionCallbacks{
     private static final String TAG = "TaskActivity";
+
+    static final int REQUEST_AUTHORIZATION = 1000;
+    static final int REQUEST_CONTACTS = 1001;
+    static final int REQUEST_INVITE = 1002;
+    static final int REQUEST_FAILED = 1003;
+
     private EditText activityName;
     private TextView activityDeadline;
     private TextView activityGoal;
-    private TextView activityTimeSpent;
+    private helperPreferences helperPreferences;
     private Task task;
-    private  Integer goalHours = 2;
-    private  Integer goalMins = 30;
-    private  Integer timeSpentHours = 0;
-    private  Integer timeSpentMins = 0;
+    private Integer goalHours = 2;
+    private Integer goalMins = 30;
+    private Integer timeLogged = 0;
+
+    private boolean wasEdited = false;
+    private Task.Priority priority;
 
     //Firebase instances
     private DatabaseReference mFirebaseDatabaseReference;
     private String directory = "";
     private String timeSpentDirectory = "";
+
+
+    //Award manager for award's progress
+    private AwardManager awardManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,13 +86,11 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (mFirebaseUser != null) {
-            Calendar cal = Calendar.getInstance();
-            String date = SettingsActivity.formatDate(cal.getTime(), Constants.TIME_SPENT_DATE_FORMAT);
-            directory = mFirebaseUser.getUid() + "/goals";
-            timeSpentDirectory = mFirebaseUser.getUid() + "/" + Task.TIME_SPENT + "/" + date;
-        }
+        Calendar cal = Calendar.getInstance();
+        String date = SettingsActivity.formatDate(cal.getTime(), Constants.TIME_SPENT_DATE_FORMAT);
+        directory = FirebaseProvider.getUserPath() + "/goals";
+        timeSpentDirectory = FirebaseProvider.getUserPath() + "/" + Task.TIME_SPENT + "/" + date;
+
         mFirebaseDatabaseReference = FirebaseProvider.getInstance().getReference();
         task = new Task();
 
@@ -84,14 +106,21 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        task.setId( (String)dataSnapshot.child("id").getValue() );
-                        task.setName( (String)dataSnapshot.child("name").getValue() );
-                        task.setGoal( dataSnapshot.child("goal").getValue(Integer.class) );
-                        task.setDeadline( (Long)dataSnapshot.child("deadline").getValue() );
-                        task.setDateCreated( (Long)dataSnapshot.child("dateCreated").getValue() );
-                        task.setLastModified( (Long)dataSnapshot.child("lastModified").getValue() );
-                        task.setTimeSpent( dataSnapshot.child("timeSpent").getValue(Integer.class) );
-                        task.setPriority( (String)dataSnapshot.child("priority").getValue() );
+                        task.setId( (String)dataSnapshot.child(Task.ID).getValue() );
+                        task.setName( (String)dataSnapshot.child(Task.NAME).getValue() );
+                        task.setGoal( dataSnapshot.child(Task.GOAL).getValue(Integer.class) );
+                        task.setDeadline( (Long)dataSnapshot.child(Task.DEADLINE).getValue() );
+                        task.setDateCreated( (Long)dataSnapshot.child(Task.DATE_CREATED).getValue() );
+                        task.setOwner( (String)dataSnapshot.child(Task.OWNER).getValue() );
+                        task.setLastModified( (Long)dataSnapshot.child(Task.LAST_MODIFIED).getValue() );
+                        task.setLastModifiedBy( (String)dataSnapshot.child(Task.LAST_MODIFIED_BY).getValue() );
+                        task.setTimeSpent( dataSnapshot.child(Task.TIME_SPENT).getValue(Integer.class) );
+                        task.setPriority( (String)dataSnapshot.child(Task.PRIORITY).getValue() );
+                        priority = task.getPriorityValue();
+
+                        for ( DataSnapshot member : dataSnapshot.child(Task.TEAM).getChildren()) {
+                            task.addTeamMember(member.getValue().toString());
+                        }
                         initializeFields();
                         initializeProgressBar();
                     }
@@ -105,6 +134,9 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         activityName = (EditText)findViewById(R.id.task_name_edit_text);
         activityGoal = (TextView)findViewById(R.id.task_goal_value);
         activityDeadline = (TextView) findViewById(R.id.task_deadline_value);
+
+        awardManager = AwardManager.getInstance(this);
+        helperPreferences = new helperPreferences(this);
     }
 
     private void initializeFields() {
@@ -120,15 +152,6 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         String goalText = timeSetText(goalHours, goalMins);
         activityGoal.setText(goalText);
-
-        //Set the timeSpent textView
-        timeSpentMins = task.getTimeSpent();
-        timeSpentHours = 0;
-        if ( timeSpentMins >= 60 ) {
-            timeSpentHours = timeSpentMins/60;
-            timeSpentMins = timeSpentMins%60;
-        }
-        String spentText = timeSetText(timeSpentHours, timeSpentMins);
 
         Spinner spinner = (Spinner)findViewById(R.id.task_priority_spinner);
         spinner.setOnItemSelectedListener(this);
@@ -146,12 +169,32 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void delete() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(getString(R.string.delete_string) + " "
+        String message = null;
+        if (task.getOwner().equals(FirebaseProvider.getUserPath())) {
+            message = getString(R.string.delete_string);
+        } else {
+            message = getString(R.string.leave_team);
+        }
+        builder.setMessage(message + " "
                 + activityName.getText().toString() + "?")
                 .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mFirebaseDatabaseReference.child(directory + "/" + task.getId()).removeValue();
+                        String user = FirebaseProvider.getUserPath();
+                        Map<String, Object> childUpdates = new HashMap<>();
+                        if (task.getOwner().equals(user)) {
+                            for (String teamMember : task.getTeamMembers()) {
+                                childUpdates.put(teamMember + "/goals/" + task.getId(), null);
+                            }
+                            mFirebaseDatabaseReference.updateChildren(childUpdates);
+                        } else {
+                            task.getTeamMembers().remove(user);
+                            for (String teamMember : task.getTeamMembers()) {
+                                childUpdates.put(teamMember + "/goals/" + task.getId(), task.toMap());
+                            }
+                            mFirebaseDatabaseReference.updateChildren(childUpdates);
+                            mFirebaseDatabaseReference.child(directory + "/" + task.getId()).removeValue();
+                        }
                         finish();
                     }
                 })
@@ -186,6 +229,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         builder.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                wasEdited= true;
                 String hour = editTextHours.getText().toString().trim();
                 if (hour.isEmpty()) {
                     goalHours = 0;
@@ -222,6 +266,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         DatePickerDialog dialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                wasEdited = true;
                 Calendar temp = Calendar.getInstance();
                 temp.set(year, monthOfYear, dayOfMonth);
                 temp.set(Calendar.HOUR_OF_DAY, 23);
@@ -277,14 +322,17 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot snapshot) {
-                                Long totalTimeForDay = minutes.longValue() + (hours.longValue()*60);
-                                if (totalTimeForDay == 0) {
+                                timeLogged = minutes + (hours*60);
+                                Long totalTimeForDay = timeLogged.longValue();
+                                if (timeLogged == 0) {
                                     return;
                                 }
                                 if (snapshot.exists()) {
-                                    Long currTimeLogged = (long)snapshot.child(Task.TIME_SPENT).getValue();
-                                    totalTimeForDay += currTimeLogged;
+                                    Long prevTimeLogged = (long)snapshot.child(Task.TIME_SPENT).getValue();
+                                    totalTimeForDay += prevTimeLogged;
                                 }
+                                createCalendarEvent();
+                                awardManager.handleAwardsProgress(timeLogged.longValue(), task);
                                 mFirebaseDatabaseReference.child(timeSpentDirectory + "/" + Task.TIME_SPENT)
                                         .setValue(totalTimeForDay);
                             }
@@ -314,20 +362,23 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                 + goalMins;
 
         //Set updated values
-        String name = activityName.getText().toString();
-        if ( name.isEmpty() ) {
-            toast(getString(R.string.toast_no_name_activity_added));
+        String name = activityName.getText().toString().trim();
+        if (name.isEmpty()) {
+            activityName.setError(getResources().getString(R.string.toast_no_name_activity_added));
             return;
         } else if ( totalMinutes == 0 ) {
             toast(getString(R.string.toast_enter_goal));
             return;
         }
-        task.setName(activityName.getText().toString());
+        task.setName(name);
         task.setGoal(totalMinutes.intValue());
         task.setLastModifiedValue(Calendar.getInstance());
+        task.setLastModifiedBy(FirebaseProvider.getUserPath());
 
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put(directory + "/" + task.getId(), task.toMap());
+        for (String teamMember : task.getTeamMembers()) {
+            childUpdates.put(teamMember + "/goals/" + task.getId(), task.toMap());
+        }
         mFirebaseDatabaseReference.updateChildren(childUpdates);
         finish();
     }
@@ -366,7 +417,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.done, menu);
+        inflater.inflate(R.menu.menu_task_activity, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -374,13 +425,16 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                onBackPressed();
                 break;
             case R.id.action_done:
                 save();
                 break;
             case R.id.action_delete:
                 delete();
+                break;
+            case R.id.action_share:
+                share();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -405,7 +459,32 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                 task.setPriorityValue(Task.Priority.VERY_HIGH);
                 break;
         }
+        if (!priority.equals(task.getPriorityValue())){
+            wasEdited = true;
+        }
+    }
 
+    @Override
+    public void onBackPressed() {
+        boolean nameEdited = !activityName.getText().toString().trim().equals(task.getName());
+        if (nameEdited || wasEdited) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(getString(R.string.discard_changes))
+                    .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            TaskActivity.super.onBackPressed();
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+            builder.create().show();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -449,4 +528,133 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        switch(requestCode) {
+            case REQUEST_CONTACTS:
+                startShareActivity();
+                break;
+        }
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        switch(requestCode) {
+            case REQUEST_CONTACTS:
+                startShareActivity();
+                break;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case REQUEST_AUTHORIZATION:
+                if (resultCode == RESULT_OK) {
+                    createCalendarEvent();
+                }
+                break;
+            case REQUEST_INVITE:
+                if (resultCode == RESULT_OK) {
+                    ArrayList<String> result = data.getStringArrayListExtra(Task.TEAM);
+                    addFriends(result);
+                }
+        }
+    }
+
+    /**
+     * Executes the Async task to create the calendar event.
+     */
+    private void createCalendarEvent() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isEnabled = prefs.getBoolean("integration_switch", false);
+        if (!isEnabled) {
+            return;
+        }
+        Account account = getAccount();
+        if ( account!= null ) {
+            String eventSummary = getString(R.string.calendar_spent);
+            eventSummary += timeLogged + getString(R.string.calendar_minutes_on) + task.getName();
+            GoogleCalendarIntegration gci = new GoogleCalendarIntegration(TaskActivity.this, account,
+                    eventSummary, timeLogged);
+            gci.execute();
+        }
+    }
+
+    /**
+     * Used to get the Google Account currently signed in
+     * @return The Google Account currently signed in to the Momenta
+     */
+    private Account getAccount() {
+        Account result = null;
+        String accountName = helperPreferences.getPreferences(Constants.ACCOUNT_NAME, null);
+
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.GET_ACCOUNTS) != PERMISSION_GRANTED) {
+            return null;
+        }
+        Account[] accounts = AccountManager.get(this).getAccountsByType("com.google");
+        for (Account account : accounts) {
+            if (accountName.equals(account.name)) {
+                result = account;
+                break;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Launches the ShareActivity, to grab the details from the user.
+     */
+    private void share() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PERMISSION_GRANTED) {
+            askPermissions(REQUEST_CONTACTS, Manifest.permission.READ_CONTACTS);
+        } else {
+            startShareActivity();
+        }
+    }
+
+    private void startShareActivity() {
+        Intent i = new Intent(this, ShareActivity.class);
+        i.putExtra(Task.TEAM, task.getTeamMembers());
+        i.putExtra(Task.OWNER, task.getOwner());
+        i.putExtra(Task.LAST_MODIFIED, task.getLastModified());
+        i.putExtra(Task.LAST_MODIFIED_BY, task.getLastModifiedBy());
+        startActivityForResult(i, REQUEST_INVITE);
+    }
+
+    /**
+     * Adds new team member to the task, and duplicates the data.
+     * @param teamMembers the list of new team members to be added to the task.
+     */
+    private void addFriends(ArrayList<String> teamMembers) {
+        task.addTeamMembers(teamMembers);
+        Map<String, Object> childUpdates = new HashMap<>();
+        for (String teamMember : task.getTeamMembers()) {
+            childUpdates.put(teamMember + "/goals/" + task.getId() + "/", task.toMap());
+        }
+        mFirebaseDatabaseReference.updateChildren(childUpdates);
+    }
+
+    /**
+     * Prompts the user for permissions.
+     * @param callbackId the unique callbackId
+     * @param permissionsId the permissions to request from the user
+     */
+    private void askPermissions(int callbackId, String... permissionsId) {
+        boolean permissions = true;
+        for (String p : permissionsId) {
+            permissions = permissions && ContextCompat.checkSelfPermission(this, p) == PERMISSION_GRANTED;
+        }
+
+        if (!permissions) {
+            ActivityCompat.requestPermissions(this, permissionsId, callbackId);
+        }
+    }
 }

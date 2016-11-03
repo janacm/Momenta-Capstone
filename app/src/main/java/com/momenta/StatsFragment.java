@@ -28,8 +28,6 @@ import com.github.mikephil.charting.formatter.AxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -91,10 +89,7 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
         pieData = new HashMap<>();
         monthLineData = new HashMap<>();
 
-        FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (mFirebaseUser != null) {
-            directory = mFirebaseUser.getUid();
-        }
+        directory = FirebaseProvider.getUserPath();
         databaseReference = FirebaseProvider.getInstance().getReference();
         // Fetch the data from firebase
     }
@@ -182,7 +177,7 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
             index++;
         }
 
-        LineDataSet lineDataSet = new LineDataSet(lineEntries, "Label");
+        LineDataSet lineDataSet = new LineDataSet(lineEntries, "");
         lineDataSet.setColor( ContextCompat.getColor(getContext(), R.color.colorPrimary) );
         lineDataSet.setDrawFilled(true);
         lineDataSet.setHighLightColor( ContextCompat.getColor(getContext(), R.color.deep_purple) );
@@ -251,7 +246,7 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
 
         tempCal.setTimeInMillis( Calendar.getInstance().getTimeInMillis() );
 
-        PieDataSet pieDataSet = new PieDataSet(pieEntries, "Time spent");
+        PieDataSet pieDataSet = new PieDataSet(pieEntries, getString(R.string.time_in_minutes));
 
         ArrayList<Integer> colors = new ArrayList<>();
         for (int c : ColorTemplate.MATERIAL_COLORS)
@@ -295,7 +290,13 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
      * Retrieves the week's data from firebase
      */
     private void fetchWeekData(){
-        databaseReference.child(directory).addListenerForSingleValueEvent(
+        Calendar endCal = Calendar.getInstance();
+        Calendar startCal = Calendar.getInstance();
+        long startTime = endCal.getTimeInMillis() - TimeUnit.MILLISECONDS.convert(7L, TimeUnit.DAYS);
+        startCal.setTimeInMillis(startTime);
+        String endDate = SettingsActivity.formatDate( startCal.getTime(), Constants.TIME_SPENT_DATE_FORMAT );
+
+        databaseReference.child(directory).endAt(endDate).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot wholeSnap) {

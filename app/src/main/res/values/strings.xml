@@ -38,6 +38,8 @@
 
     <!--Task Actiivty -->
     <string name="delete_string">Delete</string>
+    <string name="leave_team">Leave</string>
+    <string name="discard_changes">Discard your changes?</string>
     <string name="no">No</string>
     <string name="yes">Yes</string>
     <string name="undo">Undo</string>
@@ -86,6 +88,9 @@
     <string name="settings_notification">Notifications</string>
     <string name="start_time_title">Start Time</string>
     <string name="end_time_title">End Time</string>
+    <string name="settings_integrations">Integrations</string>
+    <string name="integration_switch_title">Integrate with Google Calendar</string>
+    <string name="integration_switch_summary">Create events in your calendar after logging your time</string>
 
     <!-- EditText strings-->
     <string name="new_activity_hint"><i>Go to the gym...</i></string>
@@ -126,6 +131,7 @@
     <string name="timespent_icon_content_description">Time Spent Icon</string>
     <string name="title_activity_login">Sign in</string>
     <string name="_1h_45m">1H 45M</string>
+    <string name="add_item_string">Add New Task</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -147,7 +153,7 @@
     <string name="toast_problem_updating_activity">There was a problem updating your activity</string>
 
     <!-- Strings related to the Select tasks to add time towards Screen !-->
-    <string name="select_tasks_to_add_time_to_title">Select tasks</string>
+    <string name="select_tasks_to_add_time_to_title">Add time to...</string>
     <string name="select_tasks_no_tasks_selected">No task(s) selected</string>
     <string name="select_tasks_cannot_divide_tasks">Cannot divide tasks evenly within time interval</string>
 
@@ -180,10 +186,12 @@
         <item>Work on </item>
     </string-array>
 
+    <!--Trends Strings-->
     <string-array name="trends_spinner">
         <item>Past Week</item>
         <item>Past Month</item>
     </string-array>
+    <string name="time_in_minutes">Time in minutes</string>
 
     <!-- Awards titles and descriptions -->
 
@@ -212,4 +220,18 @@
     <!--Sign in credentials for Integration testing with Firebase-->
     <string name="email">digging62@yahoo.com</string>
     <string name="password">MomentaFirebase</string>
+
+    <!--Integration Strings-->
+    <string name="created_event_string">Created event in your Calendar</string>
+    <string name="invite_friends">Invite friends</string>
+    <string name="invite_title">Invite</string>
+    <string name="share_add_people">Add People</string>
+    <string name="enter_valid_email">" is not a valid email address"</string>
+    <string name="last_modified_placeholder">Sept 13 by Earl Ragnar</string>
+    <string name="team_members_text">Team members</string>
+    <string name="share_by">by</string>
+    <string name="share_owner">Owner</string>
+    <string name="title_share_activity">Add Friends</string>
+    <string name="calendar_spent">"Spent "</string>
+    <string name="calendar_minutes_on">" minutes on "</string>
 </resources>

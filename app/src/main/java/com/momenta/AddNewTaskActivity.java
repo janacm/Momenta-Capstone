@@ -1,7 +1,9 @@
 package com.momenta;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -16,12 +18,12 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 
@@ -78,11 +80,8 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
         activityGoal.setText(timeSetText(goalHours,goalMins));
         activityTimeSpent.setText(timeSetText(timespentHours,timespentMins));
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         reference = FirebaseProvider.getInstance().getReference();
-        if ( user!= null ) {
-            directory = user.getUid() + "/goals";
-        }
+        directory = FirebaseProvider.getUserPath() + "/goals";
     }
 
     /**
@@ -286,7 +285,7 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
     /**
      * Method for saving a task into the database upon entering the fields.
      */
-    private void save(){
+    private void save() {
         String name = activityName.getText().toString();
         Long totalGoalMinutes = TimeUnit.MINUTES.convert(goalHours.longValue(), TimeUnit.HOURS) + goalMins.longValue();
         Long totalTimeSpentMinutes = TimeUnit.MINUTES.convert(timespentHours.longValue(), TimeUnit.HOURS) + timespentMins.longValue();
@@ -296,16 +295,35 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
             return;
         }
 
+        String user = FirebaseProvider.getUserPath();
         Task task = new Task(name, totalGoalMinutes.intValue(),
                 deadlineCalendar, Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
         task.logTimeSpent(totalTimeSpentMinutes.intValue(), this);
         task.setPriorityValue(PRIORITY);
+        task.setOwner(user);
+        task.setLastModifiedBy(user);
+        task.addTeamMember(user);
 
         String id = reference.child(directory).push().getKey();
         task.setId(id);
 
-        reference.child(directory + "/" + task.getId()).setValue(task);
-        finish();
+        String taskDir = directory + "/" + task.getId();
+
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put(taskDir, task.toMap());
+        reference.updateChildren(childUpdates);
+
+        Bundle bundle = getIntent().getExtras();
+
+        //Check to see if new task is being created from SelectTasksActivity
+        if ((bundle != null) && (bundle.getBoolean("NewTaskFromSelectTasks"))) {
+            Intent returnIntent = new Intent();
+            setResult(Activity.RESULT_OK, returnIntent);
+            finish();
+        }
+        else{
+            finish();
+        }
     }
 
     @Override
