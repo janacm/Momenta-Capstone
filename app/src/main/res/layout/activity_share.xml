@@ -40,7 +40,6 @@
         android:layout_toRightOf="@+id/share_last_modified_text"
         android:layout_toEndOf="@+id/share_last_modified_text"
         android:layout_margin="@dimen/activity_horizontal_margin"
-        android:text="@string/dummy_content"
         />
 
     <TextView
@@ -59,7 +58,6 @@
         android:layout_toRightOf="@+id/share_last_modified_text"
         android:layout_toEndOf="@+id/share_last_modified_text"
         android:layout_margin="@dimen/activity_horizontal_margin"
-        android:text="@string/last_modified_placeholder"
         />
     <View
         android:id="@+id/share_divider"

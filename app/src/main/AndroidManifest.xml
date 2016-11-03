@@ -70,7 +70,9 @@
         <activity
             android:name=".ShareActivity"
             android:label="@string/title_share_activity"
-            android:theme="@style/momentaTheme.NoActionBar"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/momentaTheme.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
     </application>
 
 </manifest>
