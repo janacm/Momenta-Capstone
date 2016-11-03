@@ -17,6 +17,7 @@ public class Constants {
 
 
     public static final String USER_ID ="user_id";
+    public static final String ACCOUNT_NAME = "ACCOUNT_NAME";
 
     public static final String TIME_SPENT_DATE_FORMAT = "yyyy-MM-dd";
     public static final String COLUMN = "COLUMN";
