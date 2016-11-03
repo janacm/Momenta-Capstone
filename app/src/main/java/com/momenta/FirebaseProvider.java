@@ -36,20 +36,21 @@ public class FirebaseProvider {
      */
     public static User getUser() {
         FirebaseUser mUser=  FirebaseAuth.getInstance().getCurrentUser();
-        User user = null;
+        User user = new User();
         if ( mUser != null ) {
-            user = new User(mUser.getDisplayName(), mUser.getEmail().replace(".",","));
+            user .setDisplayName(mUser.getDisplayName());
+            user.setPath( mUser.getEmail().replace(".",",") );
         }
         return user;
     }
 
     /**
      * Gets the path of the user currently logged in.
-     * @return the current user's path, null in no user is logged in
+     * @return the current user's path, empty String if no user is loggged in
      */
     public static String getUserPath() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String path = null;
+        String path = "";
         if (user != null) {
             path = user.getEmail().replace(".", ",");
         }
