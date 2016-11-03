@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/activity_horizontal_margin"
         android:layout_below="@+id/share_mail_field"
-        android:text="@string/owner"/>
+        android:text="@string/share_owner"/>
 
     <TextView
         android:id="@+id/share_owner_value"

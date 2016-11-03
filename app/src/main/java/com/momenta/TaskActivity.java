@@ -169,12 +169,32 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void delete() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(getString(R.string.delete_string) + " "
+        String message = null;
+        if (task.getOwner().equals(FirebaseProvider.getUserPath())) {
+            message = getString(R.string.delete_string);
+        } else {
+            message = getString(R.string.leave_team);
+        }
+        builder.setMessage(message + " "
                 + activityName.getText().toString() + "?")
                 .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mFirebaseDatabaseReference.child(directory + "/" + task.getId()).removeValue();
+                        String user = FirebaseProvider.getUserPath();
+                        Map<String, Object> childUpdates = new HashMap<>();
+                        if (task.getOwner().equals(user)) {
+                            for (String teamMember : task.getTeamMembers()) {
+                                childUpdates.put(teamMember + "/goals/" + task.getId(), null);
+                            }
+                            mFirebaseDatabaseReference.updateChildren(childUpdates);
+                        } else {
+                            task.getTeamMembers().remove(user);
+                            for (String teamMember : task.getTeamMembers()) {
+                                childUpdates.put(teamMember + "/goals/" + task.getId(), task.toMap());
+                            }
+                            mFirebaseDatabaseReference.updateChildren(childUpdates);
+                            mFirebaseDatabaseReference.child(directory + "/" + task.getId()).removeValue();
+                        }
                         finish();
                     }
                 })
@@ -302,18 +322,17 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                         .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot snapshot) {
-                                Long logging = minutes.longValue() + (hours.longValue()*60);
-                                Long totalTimeForDay = logging;
-                                if (totalTimeForDay == 0) {
+                                timeLogged = minutes + (hours*60);
+                                Long totalTimeForDay = timeLogged.longValue();
+                                if (timeLogged == 0) {
                                     return;
                                 }
                                 if (snapshot.exists()) {
                                     Long prevTimeLogged = (long)snapshot.child(Task.TIME_SPENT).getValue();
                                     totalTimeForDay += prevTimeLogged;
-                                    timeLogged = prevTimeLogged.intValue();
                                 }
                                 createCalendarEvent();
-                                awardManager.handleAwardsProgress(logging,task);
+                                awardManager.handleAwardsProgress(timeLogged.longValue(), task);
                                 mFirebaseDatabaseReference.child(timeSpentDirectory + "/" + Task.TIME_SPENT)
                                         .setValue(totalTimeForDay);
                             }
@@ -561,7 +580,10 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         Account account = getAccount();
         if ( account!= null ) {
-            GoogleCalendarIntegration gci = new GoogleCalendarIntegration(TaskActivity.this, account, timeLogged + " minutes on " + task.getName());
+            String eventSummary = getString(R.string.calendar_spent);
+            eventSummary += timeLogged + getString(R.string.calendar_minutes_on) + task.getName();
+            GoogleCalendarIntegration gci = new GoogleCalendarIntegration(TaskActivity.this, account,
+                    eventSummary, timeLogged);
             gci.execute();
         }
     }

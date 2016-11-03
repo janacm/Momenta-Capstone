@@ -307,6 +307,7 @@ public class AddTaskTimeActivity extends AppCompatActivity {
     }
 
     // Method for handling the clicking of the next button
+//    TODO: Extract toast messages for translations
     public void moveNext() {
         int temp = intervalTime;
         if ((position < numofTasks - 1) && ((temp - seekbarValue) != temp)) {
@@ -440,15 +441,18 @@ public class AddTaskTimeActivity extends AppCompatActivity {
             return;
         }
         Account account = getAccount();
+        int totalTime = 0;
         if ( account!= null ) {
-            String eventSummary = "Spent ";
+            String eventSummary = getString(R.string.calendar_spent);
             for (int i=0; i<taskStask.size(); i++) {
-                eventSummary += intervalValues[i] + " minutes " + taskStask.get(i).getValue();
+                eventSummary += intervalValues[i] + getString(R.string.calendar_minutes_on) + taskStask.get(i).getValue();
+                totalTime += intervalValues[i];
                 if (taskStask.size()-i > 1) {
                     eventSummary += ", ";
                 }
             }
-            GoogleCalendarIntegration gci = new GoogleCalendarIntegration(AddTaskTimeActivity.this, account, eventSummary);
+            GoogleCalendarIntegration gci = new GoogleCalendarIntegration(AddTaskTimeActivity.this,
+                    account, eventSummary, totalTime);
             gci.execute();
         }
     }

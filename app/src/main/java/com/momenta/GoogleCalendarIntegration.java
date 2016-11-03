@@ -39,8 +39,7 @@ public class GoogleCalendarIntegration extends AsyncTask<Void, Void, Boolean> {
     private Context context;
     private Exception mLastError = null;
 
-    //TODO: Handle Event: timeSpent > IntervalTime
-    public GoogleCalendarIntegration(Context context, Account account, String summary) {
+    public GoogleCalendarIntegration(Context context, Account account, String summary, int totalTime) {
         calendar = Calendar.getInstance();
         HttpTransport transport = AndroidHttp.newCompatibleTransport();
         JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
@@ -65,6 +64,10 @@ public class GoogleCalendarIntegration extends AsyncTask<Void, Void, Boolean> {
         Long intervalMillis = TimeUnit.MILLISECONDS.convert(hours, TimeUnit.HOURS)
                 + TimeUnit.MILLISECONDS.convert(mins, TimeUnit.MINUTES);
         eventDuration = intervalMillis.intValue();
+        totalTime = (int)TimeUnit.MILLISECONDS.convert(totalTime, TimeUnit.MINUTES);
+        if ( totalTime > eventDuration) {
+            eventDuration = totalTime;
+        }
     }
 
     @Override
@@ -86,7 +89,7 @@ public class GoogleCalendarIntegration extends AsyncTask<Void, Void, Boolean> {
         Event event = new Event().setSummary(summary);
 
         Calendar startCal = Calendar.getInstance();
-        startCal.setTimeInMillis( calendar.getTimeInMillis() - eventDuration );
+        startCal.setTimeInMillis( calendar.getTimeInMillis() - eventDuration.longValue() );
         DateTime startDateTime = new DateTime( startCal.getTime() );
         EventDateTime eventStart = new EventDateTime().setDateTime(startDateTime);
         event.setStart(eventStart);

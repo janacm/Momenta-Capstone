@@ -147,7 +147,7 @@ public class ShareActivity extends AppCompatActivity {
             Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(lastModified);
             String lastModText = SettingsActivity.formatDate(cal.getTime(), "MMM dd");
-            lastModText += " " + getString(R.string.by) + " ";
+            lastModText += " " + getString(R.string.share_by) + " ";
             lastModText += (String)data.child(lastModifiedBy + "/displayName").getValue();
             TextView last = (TextView)findViewById(R.id.share_last_modified_value);
             last.setText(lastModText);
@@ -181,8 +181,8 @@ public class ShareActivity extends AppCompatActivity {
      * Invites the users to join the task
      */
     private void invite() {
-        String toParse = textView.getText().toString().trim();
-        String[] mails = toParse.split(",");
+        String toParse = textView.getText().toString().toLowerCase().trim();
+        String[] mails = toParse.replace(" ", "").split(",");
         for (String mail: mails) {
             if ( !isValidEmail(mail) ) {
                 Toast.makeText(this, mail + getString(R.string.enter_valid_email),
