@@ -331,19 +331,6 @@ public class AddTaskTimeActivity extends AppCompatActivity {
                 intervalValues[position] = seekbarValue;
                 store.push(taskStask.pop());
                 storeInDB();
-                Intent intent = new Intent(this, MainActivity.class);
-
-                //Clear activity stack
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-                startActivity(intent);
-
-
-                if (numofTasks > 1)
-                    toast("Successfully added time to your tasks");
-                else
-                    toast("Successfully added time to your task");
-
             }
         }
     }
@@ -395,6 +382,7 @@ public class AddTaskTimeActivity extends AppCompatActivity {
                             // Create Calendar event
                             if (index == storeSize-1) {
                                 createCalendarEvent();
+                                startMainActivity();
                             }
                         }
 
@@ -515,6 +503,21 @@ public class AddTaskTimeActivity extends AppCompatActivity {
         Toast.makeText(this, toToast, Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * Ends this activity and starts the main activity
+     */
+    private void startMainActivity() {
+        Intent intent = new Intent(AddTaskTimeActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+
+
+        if (numofTasks > 1)
+            toast("Successfully added time to your tasks");
+        else
+            toast("Successfully added time to your task");
+    }
+
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -522,5 +525,17 @@ public class AddTaskTimeActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case TaskActivity.REQUEST_AUTHORIZATION:
+                if (resultCode == RESULT_OK) {
+                    createCalendarEvent();
+                }
+                break;
+        }
     }
 }

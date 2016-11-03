@@ -116,7 +116,7 @@ public class GoogleCalendarIntegration extends AsyncTask<Void, Void, Boolean> {
         super.onCancelled();
         Activity activity = (AppCompatActivity)context;
         if (mLastError != null) {
-            if (mLastError instanceof UserRecoverableAuthIOException) {
+            if (mLastError instanceof UserRecoverableAuthIOException && activity!=null) {
                 activity.startActivityForResult(
                         ((UserRecoverableAuthIOException) mLastError).getIntent(),
                         TaskActivity.REQUEST_AUTHORIZATION);
