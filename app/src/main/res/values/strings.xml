@@ -214,4 +214,12 @@
     <!--Sign in credentials for Integration testing with Firebase-->
     <string name="email">digging62@yahoo.com</string>
     <string name="password">MomentaFirebase</string>
+
+    <!--Dashboard cards strings-->
+    <string name="dash_latest_tasks_card_title">Latest tasks worked on</string>
+    <string name="dash_goals_progress_card_title">Goal progress</string>
+    <string name="dash_time_left_card_title">Total time left to complete</string>
+    <string name="dash_trends_card_title">Overall productivity trend</string>
+    <string name="timespent_string2">Time Spent:</string>
+    <string name="goal_string2">Goal:</string>
 </resources>
