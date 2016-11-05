@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:autofit="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:background="@drawable/list_item_line">
+    <me.grantland.widget.AutofitTextView
+        android:id="@+id/dash_task_stat_item_task_name"
+        android:singleLine="true"
+        autofit:minTextSize="14sp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:textColor="@color/black"
+        android:textSize="17sp"
+        android:gravity="center_vertical|center_horizontal"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:id="@+id/dash_task_stat_item_task_value"
+        android:gravity="center_vertical|center_horizontal"
+        />
+
+</RelativeLayout>
