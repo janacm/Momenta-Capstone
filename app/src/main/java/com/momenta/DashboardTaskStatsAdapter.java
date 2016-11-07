@@ -1,6 +1,8 @@
 package com.momenta;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +19,11 @@ import me.grantland.widget.AutofitTextView;
 
 public class DashboardTaskStatsAdapter extends RecyclerView.Adapter<DashboardTaskStatsAdapter.ViewHolder>{
     private List<Task> tasks;
+    Context context;
 
-    public DashboardTaskStatsAdapter(Context context, List<Task> tasks){
+    public DashboardTaskStatsAdapter(Context c, List<Task> tasks){
         this.tasks = tasks;
+        context = c;
     }
 
     @Override
@@ -36,7 +40,7 @@ public class DashboardTaskStatsAdapter extends RecyclerView.Adapter<DashboardTas
     }
 
     @Override
-    public void onBindViewHolder(DashboardTaskStatsAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(final DashboardTaskStatsAdapter.ViewHolder holder, int position) {
         //Get the tasks at index, position from the tasks list
         Task task = tasks.get(position);
 
@@ -63,6 +67,17 @@ public class DashboardTaskStatsAdapter extends RecyclerView.Adapter<DashboardTas
             }
         }
         holder.taskLastModified.setText(taskLastModString);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Start TaskActivity for specific task clicked in card
+                 String taskId = tasks.get(holder.getAdapterPosition()).getId();
+                 Intent intent = new Intent(context,TaskActivity.class);
+                 intent.putExtra(Task.ID, taskId);
+                 context.startActivity(intent);
+            }
+        });
     }
 
     @Override
