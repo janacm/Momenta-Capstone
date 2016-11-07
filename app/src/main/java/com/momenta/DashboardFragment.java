@@ -17,8 +17,6 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -38,8 +36,6 @@ import java.util.List;
 public class DashboardFragment extends Fragment implements View.OnClickListener{
     public static final String ARG_PAGE = "ARG_PAGE";
 
-    private int mPage;
-    private View activityView;
     private NumberPicker numberPicker;
     private Button button;
     private RoundCornerProgressBar progressBar;
@@ -53,10 +49,11 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
     private DashboardTaskStatsAdapter dAdapter;
     public RecyclerView dRecyclerView;
     DatabaseReference mDatabaseReference;
+    User mFirebaseUser;
 
 
     // Firebase instance variables
-    private String directory = "tests";
+    private String directory = null;
 
     public static DashboardFragment newInstance(int page) {
         Bundle args = new Bundle();
@@ -69,8 +66,14 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPage = getArguments().getInt(ARG_PAGE);
+        int mPage = getArguments().getInt(ARG_PAGE);
         mDatabaseReference = FirebaseProvider.getInstance().getReference();
+        helperPreferences = new helperPreferences(getActivity());
+
+        mFirebaseUser = FirebaseProvider.getUser();
+        if (mFirebaseUser != null) {
+            directory = mFirebaseUser.getPath() + "/goals";
+        }
     }
 
     @Override
@@ -78,8 +81,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        activityView = inflater.inflate(R.layout.fragment_dashboard, container, false);
-        button = (Button)activityView.findViewById(R.id.button1);
+        View activityView = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        button = (Button) activityView.findViewById(R.id.button1);
         button.setOnClickListener(this);
         totalTimeSpent = (TextView) activityView.findViewById(R.id.dash_goals_total_time_spent_value);
         totalGoalTime = (TextView) activityView.findViewById(R.id.dash_goals_total_goal_value);
@@ -96,13 +99,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
             displayNameText.setText(name);
             imgView = (ImageView) activityView.findViewById(R.id.userImage);
             Picasso.with(getActivity()).load(photo).into(imgView);
-        }
-
-        helperPreferences = new helperPreferences(getActivity());
-
-        FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (mFirebaseUser != null) {
-            directory = mFirebaseUser.getUid() + "/goals";
         }
 
         // New child entries
@@ -172,8 +168,14 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
                             progressBar.setProgressColor(ContextCompat.getColor(getContext(), R.color.total_time_spent));
                         }
 
-                        totalTimeSpent.setText(String.valueOf(totalTime));
-                        totalGoalTime.setText(String.valueOf(totalGoal));
+                        int ttsh = totalTime/ 60;
+                        int ttsm = totalTime % 60;
+
+                        int tgh = totalGoal/60;
+                        int tgm = totalGoal % 60;
+
+                        totalTimeSpent.setText(timeSetText(ttsh,ttsm));
+                        totalGoalTime.setText(timeSetText(tgh,tgm));
                     }
 
                     @Override
@@ -183,6 +185,42 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
         );
 
         return activityView;
+    }
+
+    /**
+     * Convenience method for setting the time related values for the goal and time spent fields
+     * @param hours hour value that is being set
+     * @param minutes minute value that is being set
+     * @return the string containing the minute and hour values that will be set in the TextView
+     */
+    private String timeSetText(int hours, int minutes) {
+        if (minutes > 1 && hours > 1) {
+            return hours + " " + getResources().getString(R.string.add_time_to_task_hours) + " & " +
+                    minutes + " " +  getResources().getString(R.string.add_time_to_task_minutes) ;
+        } else if (minutes == 0 && hours > 1) {
+            return hours + " " + getResources().getString(R.string.add_time_to_task_hours);
+        }
+        else if (minutes == 1 && hours > 1) {
+            return hours + " " + getResources().getString(R.string.add_time_to_task_hours) + " & " +
+                    minutes + " " + getResources().getString(R.string.add_time_to_task_minutes);
+        }
+        else if (hours == 1 && minutes > 1) {
+            return hours + " " + getResources().getString(R.string.add_time_to_task_hours) + " & " +
+                    minutes + " " + getResources().getString(R.string.add_time_to_task_minutes);
+        }
+        else if (hours == 1 && minutes == 1) {
+            return hours + " " + getResources().getString(R.string.add_time_to_task_hours) + " & " +
+                    minutes + " " + getResources().getString(R.string.add_time_to_task_minutes);
+        }
+        else if (hours == 1 && minutes == 0) {
+            return hours + " " + getResources().getString(R.string.add_time_to_task_hours);
+        }
+        else if (minutes == 1 && hours == 0) {
+            return minutes + " " + getResources().getString(R.string.add_time_to_task_minutes);
+        }
+        else {
+            return minutes + " " + getResources().getString(R.string.add_time_to_task_minutes);
+        }
     }
 
     @Override
