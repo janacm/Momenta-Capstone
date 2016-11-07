@@ -18,6 +18,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -55,6 +57,7 @@ public class SelectTasksActivity extends AppCompatActivity {
         //Get all goals from firebase
         goalDirectory = FirebaseProvider.getUserPath() + "/goals";
         final List<Task> tasks = new ArrayList<>();
+
         DatabaseReference mDatabaseReference = FirebaseProvider.getInstance().getReference();
         mDatabaseReference.child(goalDirectory).addListenerForSingleValueEvent(
                 new ValueEventListener() {
@@ -79,6 +82,21 @@ public class SelectTasksActivity extends AppCompatActivity {
                                 tasks.add(task);
                             }
                         }
+
+                        //Sort tasks list based on last modified
+                        Collections.sort(tasks, new Comparator<Task>() {
+                            @Override
+                            public int compare(Task t1, Task t2) {
+                                if (t1.getLastModified() > t2.getLastModified())
+                                    return 1;
+                                if (t1.getLastModified() < t2.getLastModified())
+                                    return -1;
+                                return 0;
+                            }
+                        });
+
+                        //Reverse tasks list to be in descending order
+                        Collections.reverse(tasks);
 
                         mAdapter = new SelectTasksAdapter(SelectTasksActivity.this, tasks);
                         mRecyclerView.setAdapter(mAdapter);
