@@ -1,9 +1,12 @@
 package com.momenta;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,15 +16,18 @@ import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
-import com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by Joe on 2016-02-01.
@@ -30,19 +36,24 @@ import com.squareup.picasso.Picasso;
 public class DashboardFragment extends Fragment implements View.OnClickListener{
     public static final String ARG_PAGE = "ARG_PAGE";
 
-    private int mPage;
-    private View activityView;
     private NumberPicker numberPicker;
     private Button button;
-    private helperPreferences helperPreferences;
-    public TextRoundCornerProgressBar progressBar;
+    private RoundCornerProgressBar progressBar;
+    private TextView totalTimeSpent;
+    private TextView totalGoalTime;
 
+    private TextView displayNameText;
+    private ImageView imgView;
+
+    private helperPreferences helperPreferences;
+    private DashboardTaskStatsAdapter dAdapter;
+    public RecyclerView dRecyclerView;
+    DatabaseReference mDatabaseReference;
+    User mFirebaseUser;
 
 
     // Firebase instance variables
-    private String directory = "tests";
-    private DatabaseReference mFirebaseDatabaseReference;
-    private FirebaseRecyclerAdapter<Task, LogFragment.TaskViewHolder> mFirebaseAdapter;
+    private String directory = null;
 
     public static DashboardFragment newInstance(int page) {
         Bundle args = new Bundle();
@@ -50,58 +61,121 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
         DashboardFragment fragment = new DashboardFragment();
         fragment.setArguments(args);
         return fragment;
-
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPage = getArguments().getInt(ARG_PAGE);
+        int mPage = getArguments().getInt(ARG_PAGE);
+        mDatabaseReference = FirebaseProvider.getInstance().getReference();
+        helperPreferences = new helperPreferences(getActivity());
 
-
-
+        mFirebaseUser = FirebaseProvider.getUser();
+        if (mFirebaseUser != null) {
+            directory = mFirebaseUser.getPath() + "/goals";
+        }
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        activityView = inflater.inflate(R.layout.fragment_dashboard, container, false);
-
         super.onCreate(savedInstanceState);
-        helperPreferences = new helperPreferences(getActivity());
 
-        FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (mFirebaseUser != null) {
-            directory = mFirebaseUser.getUid() + "/goals";
+        View activityView = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        button = (Button) activityView.findViewById(R.id.button1);
+        button.setOnClickListener(this);
+        totalTimeSpent = (TextView) activityView.findViewById(R.id.dash_goals_total_time_spent_value);
+        totalGoalTime = (TextView) activityView.findViewById(R.id.dash_goals_total_goal_value);
+        progressBar = (RoundCornerProgressBar) activityView.findViewById(R.id.dash_goals_progress_bar);
+        dRecyclerView = (RecyclerView) activityView.findViewById(R.id.dashboard_tasks_stats_recycler_view);
+        dRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        Bundle args = getActivity().getIntent().getExtras();
+        if(args != null) {
+            String name = args.getString("displayName");
+            Log.d("pls", name + " test");
+            String photo = args.getString("personPhoto");
+            displayNameText = (TextView) activityView.findViewById(R.id.displayName);
+            displayNameText.setText(name);
+            imgView = (ImageView) activityView.findViewById(R.id.userImage);
+            Picasso.with(getActivity()).load(photo).into(imgView);
         }
 
-
         // New child entries
-        mFirebaseDatabaseReference = FirebaseProvider.getInstance().getReference();
-
-        mFirebaseDatabaseReference.child(directory).addValueEventListener(
+        mDatabaseReference.child(directory).addValueEventListener(
                 new ValueEventListener() {
+                    //TODO Change to ChildEventListener --> More efficient
                     @Override
-                    public void onDataChange(DataSnapshot snap) {
+                    public void onDataChange(DataSnapshot dataSnapshot) {
                         Integer totalTime = 0;
                         Integer totalGoal = 0;
-                        for (DataSnapshot data : snap.getChildren()) {
-                            totalTime += data.child(Task.TIME_SPENT).getValue(Integer.class);
-                            totalGoal += data.child(Task.GOAL).getValue(Integer.class);
+
+                        //List to store tasks to be displayed in dashboard stats
+                        List<Task> tasks = new ArrayList<>();
+
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            totalTime += snapshot.child(Task.TIME_SPENT).getValue(Integer.class);
+                            totalGoal += snapshot.child(Task.GOAL).getValue(Integer.class);
+
+                            Task task = new Task();
+                            task.setId((String) snapshot.child("id").getValue());
+                            task.setName((String) snapshot.child("name").getValue());
+                            task.setGoal(snapshot.child("goal").getValue(Integer.class));
+                            task.setDeadline((Long) snapshot.child("deadline").getValue());
+                            task.setDateCreated((Long) snapshot.child("dateCreated").getValue());
+                            task.setLastModified((Long) snapshot.child("lastModified").getValue());
+                            task.setTimeSpent(snapshot.child("timeSpent").getValue(Integer.class));
+                            task.setPriority((String) snapshot.child("priority").getValue());
+
+                            // Add task to the list
+                            tasks.add(task);
                         }
 
-                        TextView timeSpent = (TextView)activityView.findViewById(R.id.totalTimeSpent);
-                        timeSpent.setText(totalTime.toString());
+                        //Sort ArrayList items based on last modified task
+                        Collections.sort(tasks, new Comparator<Task>() {
+                            @Override
+                            public int compare(Task t1, Task t2) {
+                                if (t1.getLastModified() > t2.getLastModified())
+                                    return 1;
+                                if (t1.getLastModified() < t2.getLastModified())
+                                    return -1;
+                                return 0;
+                            }
+                        });
 
-                        TextView goal = (TextView)activityView.findViewById(R.id.goalTime);
-                        goal.setText(totalGoal.toString());
+                        //Reverse tasks list to be in descending order
+                        Collections.reverse(tasks);
 
-                        progressBar = (TextRoundCornerProgressBar) activityView.findViewById(R.id.progressBar);
+                        //Sublist of top 5 tasks is displayed in adapter
+                        if (!tasks.isEmpty()) {
+                            if (tasks.size() <= 5) {
+                                tasks = tasks.subList(0, tasks.size());
+                            } else {
+                                tasks = tasks.subList(0, 4);
+                            }
+                        }
 
+                        dAdapter = new DashboardTaskStatsAdapter(getContext(), tasks);
+                        dRecyclerView.setAdapter(dAdapter);
+
+                        /***Updating the Goal Progress card's fields**/
                         progressBar.setMax(totalGoal);
+                        progressBar.setPadding(10);
                         progressBar.setProgress(totalTime);
+
+                        if(isAdded()) {
+                            progressBar.setProgressBackgroundColor(ContextCompat.getColor(getContext(), R.color.total_time_goal));
+                            progressBar.setProgressColor(ContextCompat.getColor(getContext(), R.color.total_time_spent));
+                        }
+
+                        int ttsh = totalTime/ 60;
+                        int ttsm = totalTime % 60;
+
+                        int tgh = totalGoal/60;
+                        int tgm = totalGoal % 60;
+
+                        totalTimeSpent.setText(timeSetText(ttsh,ttsm));
+                        totalGoalTime.setText(timeSetText(tgh,tgm));
                     }
 
                     @Override
@@ -110,40 +184,52 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
                 }
         );
 
-
-        Bundle args = getActivity().getIntent().getExtras();
-        String name = "";
-        String email = "";
-        String photo = "photo";
-
-        if (args != null) {
-            name = args.getString("displayName");
-            Log.d("pls", name + " test");
-            email = args.getString("email");
-
-            photo = args.getString("personPhoto");
-        }
-
-
-        TextView displayNameText = (TextView)activityView.findViewById(R.id.displayName);
-        displayNameText.setText(name);
-
-        //TextView emailText = (TextView)activityView.findViewById(R.id.email);
-        //emailText.setText(email);
-
-        ImageView imgView = (ImageView)activityView.findViewById(R.id.imageView);
-        Picasso.with(getActivity()).load(photo).into(imgView);
-
         return activityView;
+    }
+
+    /**
+     * Convenience method for setting the time related values for the goal and time spent fields
+     * @param hours hour value that is being set
+     * @param minutes minute value that is being set
+     * @return the string containing the minute and hour values that will be set in the TextView
+     */
+    private String timeSetText(int hours, int minutes) {
+        if (minutes > 1 && hours > 1) {
+            return hours + " " + getResources().getString(R.string.add_time_to_task_hours) + " & " +
+                    minutes + " " +  getResources().getString(R.string.add_time_to_task_minutes) ;
+        } else if (minutes == 0 && hours > 1) {
+            return hours + " " + getResources().getString(R.string.add_time_to_task_hours);
+        }
+        else if (minutes == 1 && hours > 1) {
+            return hours + " " + getResources().getString(R.string.add_time_to_task_hours) + " & " +
+                    minutes + " " + getResources().getString(R.string.add_time_to_task_minutes);
+        }
+        else if (hours == 1 && minutes > 1) {
+            return hours + " " + getResources().getString(R.string.add_time_to_task_hours) + " & " +
+                    minutes + " " + getResources().getString(R.string.add_time_to_task_minutes);
+        }
+        else if (hours == 1 && minutes == 1) {
+            return hours + " " + getResources().getString(R.string.add_time_to_task_hours) + " & " +
+                    minutes + " " + getResources().getString(R.string.add_time_to_task_minutes);
+        }
+        else if (hours == 1 && minutes == 0) {
+            return hours + " " + getResources().getString(R.string.add_time_to_task_hours);
+        }
+        else if (minutes == 1 && hours == 0) {
+            return minutes + " " + getResources().getString(R.string.add_time_to_task_minutes);
+        }
+        else {
+            return minutes + " " + getResources().getString(R.string.add_time_to_task_minutes);
+        }
     }
 
     @Override
     public void onClick(View v) {
-        //  switch ( v.getId() ) {
-        //      case R.id.button1:
-        //         Intent intent = new Intent(this.getContext(), SelectTasksActivity.class);
-        //         startActivity(intent);
-        //          break;
-        // }
+        switch ( v.getId() ) {
+            case R.id.button1:
+                Intent intent = new Intent(this.getContext(), SelectTasksActivity.class);
+                startActivity(intent);
+                break;
+        }
     }
 }
