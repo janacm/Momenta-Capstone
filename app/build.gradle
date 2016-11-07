@@ -12,8 +12,19 @@ android {
         versionName "0.1.9beta"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+    signingConfigs {
+        release {
+            storeFile file("MomentaKeystore.jks")
+            storePassword "momenta"
+            keyAlias "MomentaKeystoreAlias"
+            keyPassword "momenta"
+        }
+    }
+
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
