@@ -50,7 +50,7 @@ public class AwardManager {
         Log.d("Progress amount", String.valueOf(progressAmount));
         final String award_id = helperPreferences.getPreferences(awardId, "");
         award = new Award();
-        databaseReference.child(user.getUid() + "/awards" + "/" + award_id).addListenerForSingleValueEvent(
+        databaseReference.child(FirebaseProvider.getUserPath() + "/awards" + "/" + award_id).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -77,7 +77,7 @@ public class AwardManager {
                                 }
                             }
                             Map<String, Object> childUpdates = new HashMap<>();
-                            childUpdates.put(user.getUid() + "/awards" + "/" + award_id, award.toMap());
+                            childUpdates.put(FirebaseProvider.getUserPath() + "/awards" + "/" + award_id, award.toMap());
                             databaseReference.updateChildren(childUpdates);
                         }
                     }

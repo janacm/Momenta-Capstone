@@ -1,7 +1,12 @@
 package com.momenta;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -13,8 +18,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,6 +28,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class AddTaskTimeActivity extends AppCompatActivity {
     helperPreferences hp;
@@ -37,7 +42,7 @@ public class AddTaskTimeActivity extends AppCompatActivity {
     private int intervalMins;
     private int stepValue;
     private int seekbarValue;
-    private Long currTimeSpent;
+    private Long prevTimeSpent;
 
     //UI elements
     TextView taskName;
@@ -77,11 +82,8 @@ public class AddTaskTimeActivity extends AppCompatActivity {
 
         String date = SettingsActivity.formatDate(Calendar.getInstance().getTime(),
                 Constants.TIME_SPENT_DATE_FORMAT);
-        FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (mFirebaseUser != null) {
-            goalDirectory = mFirebaseUser.getUid() + "/goals";
-            timespentDirectory = mFirebaseUser.getUid() + "/" + Task.TIME_SPENT + "/" + date;
-        }
+        goalDirectory = FirebaseProvider.getUserPath() + "/goals";
+        timespentDirectory = FirebaseProvider.getUserPath() + "/" + Task.TIME_SPENT + "/" + date;
         mFirebaseDatabaseReference = FirebaseProvider.getInstance().getReference();
 
 
@@ -305,6 +307,7 @@ public class AddTaskTimeActivity extends AppCompatActivity {
     }
 
     // Method for handling the clicking of the next button
+//    TODO: Extract toast messages for translations
     public void moveNext() {
         int temp = intervalTime;
         if ((position < numofTasks - 1) && ((temp - seekbarValue) != temp)) {
@@ -328,19 +331,6 @@ public class AddTaskTimeActivity extends AppCompatActivity {
                 intervalValues[position] = seekbarValue;
                 store.push(taskStask.pop());
                 storeInDB();
-                Intent intent = new Intent(this, MainActivity.class);
-
-                //Clear activity stack
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
-                startActivity(intent);
-
-
-                if (numofTasks > 1)
-                    toast("Successfully added time to your tasks");
-                else
-                    toast("Successfully added time to your task");
-
             }
         }
     }
@@ -363,9 +353,10 @@ public class AddTaskTimeActivity extends AppCompatActivity {
     //Method used to store interval values for each task in the DB
     public void storeInDB() {
         Collections.reverse(store);
-        int storeSize = store.size();
+        final int storeSize = store.size();
         for (int i = 0; i < storeSize;  i++) {
-            final String taskID = store.pop().getKey();
+            taskStask.push(store.pop());
+            final String taskID = taskStask.peek().getKey();
             final int index = i; // Save final index to be used in anonymous class
             final String tempTimeDir = timespentDirectory + "/" + taskID;
             final String tempGoalDir = goalDirectory + "/" + taskID;
@@ -376,17 +367,23 @@ public class AddTaskTimeActivity extends AppCompatActivity {
                     new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
-                            currTimeSpent = 0L;  // Reset the value of current time spent
+                            prevTimeSpent = 0L;  // Reset the value of current time spent
                             Long updatedTimeSpent = (long)intervalValues[index];
                             if ( snapshot.exists() ) {
                                 // If exists update current time spent
-                                currTimeSpent = (long)snapshot.child(Task.TIME_SPENT).getValue();
-                                updatedTimeSpent += currTimeSpent;
+                                prevTimeSpent = (long)snapshot.child(Task.TIME_SPENT).getValue();
+                                updatedTimeSpent += prevTimeSpent;
                             }
 
                             // Update time spent in both places
                             mFirebaseDatabaseReference.child(tempTimeDir + "/" + Task.TIME_SPENT)
                                     .setValue(updatedTimeSpent);
+
+                            // Create Calendar event
+                            if (index == storeSize-1) {
+                                createCalendarEvent();
+                                startMainActivity();
+                            }
                         }
 
                         @Override
@@ -400,13 +397,13 @@ public class AddTaskTimeActivity extends AppCompatActivity {
                     new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot snapshot) {
-                            currTimeSpent = 0L;  // Reset the value of current time spent
+                            prevTimeSpent = 0L;  // Reset the value of current time spent
                             Long updatedTimeSpent = (long)intervalValues[index];
                             if ( snapshot.exists() ) {
                                 Task task = snapshot.getValue(Task.class);
                                 // If exists update current time spent
-                                currTimeSpent = (long)snapshot.child(Task.TIME_SPENT).getValue();
-                                updatedTimeSpent += currTimeSpent;
+                                prevTimeSpent = (long)snapshot.child(Task.TIME_SPENT).getValue();
+                                updatedTimeSpent += prevTimeSpent;
                                 awardManager.handleAwardsProgress(updatedTimeSpent,task);
                             }
 
@@ -420,6 +417,53 @@ public class AddTaskTimeActivity extends AppCompatActivity {
                     }
             );
         }
+    }
+
+    /**
+     * Executes the Async task to create the calendar event.
+     */
+    private void createCalendarEvent() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isEnabled = prefs.getBoolean("integration_switch", false);
+        if (!isEnabled) {
+            return;
+        }
+        Account account = getAccount();
+        int totalTime = 0;
+        if ( account!= null ) {
+            String eventSummary = getString(R.string.calendar_spent);
+            for (int i=0; i<taskStask.size(); i++) {
+                eventSummary += intervalValues[i] + getString(R.string.calendar_minutes_on) + taskStask.get(i).getValue();
+                totalTime += intervalValues[i];
+                if (taskStask.size()-i > 1) {
+                    eventSummary += ", ";
+                }
+            }
+            GoogleCalendarIntegration gci = new GoogleCalendarIntegration(AddTaskTimeActivity.this,
+                    account, eventSummary, totalTime);
+            gci.execute();
+        }
+    }
+
+    /**
+     * Used to get the Google Account currently signed in
+     * @return The Google Account currently signed in to the Momenta
+     */
+    private Account getAccount() {
+        Account result = null;
+        String accountName = hp.getPreferences(Constants.ACCOUNT_NAME, null);
+
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.GET_ACCOUNTS) != PERMISSION_GRANTED) {
+            return null;
+        }
+        Account[] accounts = AccountManager.get(this).getAccountsByType("com.google");
+        for (Account account : accounts) {
+            if (accountName.equals(account.name)) {
+                result = account;
+                break;
+            }
+        }
+        return result;
     }
 
     /**
@@ -459,6 +503,21 @@ public class AddTaskTimeActivity extends AppCompatActivity {
         Toast.makeText(this, toToast, Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * Ends this activity and starts the main activity
+     */
+    private void startMainActivity() {
+        Intent intent = new Intent(AddTaskTimeActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+
+
+        if (numofTasks > 1)
+            toast("Successfully added time to your tasks");
+        else
+            toast("Successfully added time to your task");
+    }
+
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
@@ -466,5 +525,17 @@ public class AddTaskTimeActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case TaskActivity.REQUEST_AUTHORIZATION:
+                if (resultCode == RESULT_OK) {
+                    createCalendarEvent();
+                }
+                break;
+        }
     }
 }

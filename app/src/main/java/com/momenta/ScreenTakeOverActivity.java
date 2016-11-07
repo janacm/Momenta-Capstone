@@ -15,8 +15,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -125,13 +123,8 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
         FirebaseDatabase firebaseDatabase = FirebaseProvider.getInstance();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        if (user == null) {
-            return;
-        }
         DatabaseReference databaseReference = firebaseDatabase.getReference();
-        databaseReference.child( user.getUid() + "/goals").addListenerForSingleValueEvent(
+        databaseReference.child( FirebaseProvider.getUserPath() + "/goals").addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot wholeData) {

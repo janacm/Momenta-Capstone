@@ -12,8 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.github.fabtransitionactivity.SheetLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,7 +35,8 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
     private SheetLayout mSheetLayout;
     private FloatingActionButton fab;
     private SessionManager sm;
-    private DatabaseReference mFirebaseDatabaseReference;
+    private DatabaseReference ref;
+    private User user;
     private String awardsDirectory = null;
 
     private helperPreferences helperPreferences;
@@ -47,13 +46,11 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
         setContentView(R.layout.activity_main);
 
         sm = SessionManager.getInstance(this);
-        // Initialize Firebase Auth
-        FirebaseUser mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (mFirebaseUser != null) {
-            awardsDirectory = mFirebaseUser.getUid() + "/awards";
-        }
+        user = FirebaseProvider.getUser();
+        awardsDirectory = user.getPath() + "/awards";
 
-        mFirebaseDatabaseReference = FirebaseProvider.getInstance().getReference();
+
+        ref = FirebaseProvider.getInstance().getReference();
 
         helperPreferences = new helperPreferences(this);
         // Get the ViewPager and set it's PagerAdapter so that it can display items
@@ -101,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
         mSheetLayout.setFab(fab);
         mSheetLayout.setFabAnimationEndListener(this);
 
-        mFirebaseDatabaseReference.child(awardsDirectory).addListenerForSingleValueEvent(
+        ref.child(awardsDirectory).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -143,7 +140,20 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
                 }
         );
 
+        ref.child("users/" + user.getPath()).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if ( !dataSnapshot.exists() ) {
+                            ref.child("users/" + user.getPath()).setValue(user);
+                        }
+                    }
 
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                }
+        );
     }
 
     @Override
@@ -246,10 +256,10 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
         awardsList.put(Constants.SHPREF_PUNCTUAL_AWARD_ID,punctualAward);
 
         for (Map.Entry<String,Award> award: awardsList.entrySet()) {
-            String key = mFirebaseDatabaseReference.child(awardsDirectory).push().getKey();
+            String key = ref.child(awardsDirectory).push().getKey();
             award.getValue().setId(key);
             helperPreferences.savePreferences(award.getKey(),key);
-            mFirebaseDatabaseReference.child(awardsDirectory + "/" + award.getValue().getId()).setValue(award.getValue());
+            ref.child(awardsDirectory + "/" + award.getValue().getId()).setValue(award.getValue());
         }
 
     }

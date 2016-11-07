@@ -12,8 +12,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -57,10 +55,7 @@ public class SelectTasksActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         //Get all goals from firebase
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            goalDirectory = user.getUid() + "/goals";
-        }
+        goalDirectory = FirebaseProvider.getUserPath() + "/goals";
         final List<Task> tasks = new ArrayList<>();
 
         DatabaseReference mDatabaseReference = FirebaseProvider.getInstance().getReference();
