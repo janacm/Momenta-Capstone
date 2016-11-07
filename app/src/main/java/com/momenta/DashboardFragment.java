@@ -2,6 +2,7 @@ package com.momenta;
 
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -17,6 +18,8 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -90,11 +93,11 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
         dRecyclerView = (RecyclerView) activityView.findViewById(R.id.dashboard_tasks_stats_recycler_view);
         dRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        Bundle args = getActivity().getIntent().getExtras();
-        if(args != null) {
-            String name = args.getString("displayName");
-            Log.d("pls", name + " test");
-            String photo = args.getString("personPhoto");
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if(user != null) {
+            String name = user.getDisplayName();
+            Uri photo = user.getPhotoUrl();
             displayNameText = (TextView) activityView.findViewById(R.id.displayName);
             displayNameText.setText(name);
             imgView = (ImageView) activityView.findViewById(R.id.userImage);

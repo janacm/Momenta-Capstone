@@ -534,6 +534,7 @@ public class AddTaskTimeActivity extends AppCompatActivity {
             case TaskActivity.REQUEST_AUTHORIZATION:
                 if (resultCode == RESULT_OK) {
                     createCalendarEvent();
+                    startMainActivity();
                 }
                 break;
         }

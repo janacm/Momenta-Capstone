@@ -117,11 +117,9 @@ public class LoginActivity extends FragmentActivity implements
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d("pls", "firebaseAuthWithGoogle:" + acct.getId());
+        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
         final String displayName = acct.getDisplayName();
-        Log.d("pls", displayName);
-        final String email = acct.getEmail();
-        final String personPhoto = acct.getPhotoUrl().toString();
+        Log.d(TAG, displayName);
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         showProgressDialog();
         mFirebaseAuth.signInWithCredential(credential)
@@ -140,13 +138,6 @@ public class LoginActivity extends FragmentActivity implements
                                     Toast.LENGTH_SHORT).show();
                         } else {
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-
-                            Bundle bundle = new Bundle();
-                            bundle.putString("displayName",displayName);
-                            bundle.putString("email",email);
-                            bundle.putString("personPhoto",personPhoto);
-
-                            intent.putExtras(bundle);
                             startActivity(intent);
                             finish();
                         }

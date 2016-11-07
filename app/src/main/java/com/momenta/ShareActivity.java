@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,7 +37,7 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class ShareActivity extends AppCompatActivity {
 
-    AutoCompleteTextView textView;
+    MultiAutoCompleteTextView textView;
     private boolean usersValid = true;
     private ArrayList<String> result;
     private ArrayList<String> teamMembers;
@@ -103,8 +104,9 @@ public class ShareActivity extends AppCompatActivity {
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_dropdown_item_1line, emailAddresses);
-        textView = (AutoCompleteTextView)findViewById(R.id.share_mail_field);
+        textView = (MultiAutoCompleteTextView) findViewById(R.id.share_mail_field);
         textView.setAdapter(adapter);
+        textView.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
     }
 
     @Override

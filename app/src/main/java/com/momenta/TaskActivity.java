@@ -335,6 +335,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                                 awardManager.handleAwardsProgress(timeLogged.longValue(), task);
                                 mFirebaseDatabaseReference.child(timeSpentDirectory + "/" + Task.TIME_SPENT)
                                         .setValue(totalTimeForDay);
+                                wasEdited = true;
                             }
 
                             @Override
