@@ -19,4 +19,8 @@
     <color name="dark_grey">#9B9B9B</color>
     <color name="deep_purple">#673AB7</color>
     <color name="progress_bg">#70748f</color>
+    <color name="latest_tasks_modified_card">#BE3144</color>
+    <color name="total_time_spent_card">#25A55F</color>
+    <color name="total_time_spent">#17B794</color>
+    <color name="total_time_goal">#28518A</color>
 </resources>

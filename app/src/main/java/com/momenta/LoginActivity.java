@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+import com.google.android.gms.tasks.Task;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -19,7 +20,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -109,7 +109,6 @@ public class LoginActivity extends FragmentActivity implements
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
             helperPreferences.savePreferences(Constants.USER_ID,acct.getId());
-            helperPreferences.savePreferences(Constants.ACCOUNT_NAME, acct.getEmail());
             firebaseAuthWithGoogle(acct);
         } else {
             // Signed out, show unauthenticated UI.
@@ -118,11 +117,9 @@ public class LoginActivity extends FragmentActivity implements
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d("pls", "firebaseAuthWithGoogle:" + acct.getId());
+        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
         final String displayName = acct.getDisplayName();
-        Log.d("pls", displayName);
-        final String email = acct.getEmail();
-        final String personPhoto = acct.getPhotoUrl().toString();
+        Log.d(TAG, displayName);
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         showProgressDialog();
         mFirebaseAuth.signInWithCredential(credential)
@@ -140,7 +137,8 @@ public class LoginActivity extends FragmentActivity implements
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class).putExtra("displayName", displayName).putExtra("email", email).putExtra("personPhoto",personPhoto));
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(intent);
                             finish();
                         }
                     }
