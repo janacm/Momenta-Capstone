@@ -5,7 +5,7 @@ android {
     buildToolsVersion '25.0.0'
 
     defaultConfig {
-        applicationId "com.momenta"
+        applicationId "com.momenta_app"
         minSdkVersion 15
         targetSdkVersion 24
         versionCode 1
