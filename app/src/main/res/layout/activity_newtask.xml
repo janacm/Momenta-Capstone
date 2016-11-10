@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/activity_newtask"
-    tools:context="com.momenta.AddNewTaskActivity">
+    tools:context="com.momenta_app.AddNewTaskActivity">
 
     <include
         android:id="@+id/toolbar"

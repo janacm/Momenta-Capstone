@@ -4,7 +4,7 @@
     android:id="@+id/activity_share"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.momenta.ShareActivity">
+    tools:context="com.momenta_app.ShareActivity">
 
     <include
         android:id="@+id/toolbar"

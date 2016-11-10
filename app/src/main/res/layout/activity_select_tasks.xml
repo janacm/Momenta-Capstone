@@ -6,7 +6,7 @@
     android:background="@color/colorPrimary"
     android:orientation="vertical"
     android:fitsSystemWindows="true"
-    tools:context="com.momenta.SelectTasksActivity">
+    tools:context="com.momenta_app.SelectTasksActivity">
 
     <include
         android:id="@+id/toolbar"
