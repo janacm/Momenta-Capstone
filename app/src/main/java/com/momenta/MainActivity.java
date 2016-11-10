@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
         ref = FirebaseProvider.getInstance().getReference();
 
         helperPreferences = new helperPreferences(this);
-        if (user!=null) {
+        if (user.getPath()!=null) {
             helperPreferences.savePreferences(Constants.ACCOUNT_NAME,
                     user.getPath().replace(",","."));
         }
