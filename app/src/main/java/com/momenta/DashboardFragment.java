@@ -5,10 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +23,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -163,13 +160,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
 
                         /***Updating the Goal Progress card's fields**/
                         progressBar.setMax(totalGoal);
-                        progressBar.setPadding(10);
                         progressBar.setProgress(totalTime);
-
-                        if(isAdded()) {
-                            progressBar.setProgressBackgroundColor(ContextCompat.getColor(getContext(), R.color.total_time_goal));
-                            progressBar.setProgressColor(ContextCompat.getColor(getContext(), R.color.total_time_spent));
-                        }
 
                         int ttsh = totalTime/ 60;
                         int ttsm = totalTime % 60;
