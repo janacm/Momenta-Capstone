@@ -192,6 +192,7 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
         lineDataSet.setColor( ContextCompat.getColor(getContext(), R.color.colorPrimary) );
         lineDataSet.setDrawFilled(true);
         lineDataSet.setHighLightColor( ContextCompat.getColor(getContext(), R.color.deep_purple) );
+        lineDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
 
         //Setting labels for X & Y axis
         XAxis xAxis = lineChart.getXAxis();
