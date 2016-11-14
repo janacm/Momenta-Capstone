@@ -218,6 +218,33 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
         leftAxis.setDrawGridLines(false);
         leftAxis.setDrawAxisLine(false);
         leftAxis.setAxisMinValue(0);
+        leftAxis.setValueFormatter(new AxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                int minutes = (int) value;
+                int hours = 0;
+
+                if ( ! (minutes < 60) ) {
+                    hours = minutes/60;
+                    minutes = minutes% 60;
+                }
+
+                if ( hours >0 && minutes>0 ) {
+                    return hours + "H " + minutes + "M";
+                } else if ( hours ==0 && minutes>0 ) {
+                    return minutes + "M";
+                } else if ( hours >0 ) {
+                    return hours + "H";
+                } else {
+                    return "";
+                }
+            }
+
+            @Override
+            public int getDecimalDigits() {
+                return 0;
+            }
+        });
 
         YAxis rightAxis = lineChart.getAxisRight();
         rightAxis.setAxisMinValue(0);
@@ -232,6 +259,7 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
 
         lineChart.setData(lineData);
         lineChart.setDescription("");
+        lineChart.setPinchZoom(true);
         lineChart.setOnChartValueSelectedListener(this);
         lineChart.invalidate();
     }

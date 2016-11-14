@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -162,12 +163,18 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
                         progressBar.setMax(totalGoal);
                         progressBar.setProgress(totalTime);
 
+                        if(isAdded()) {
+                            progressBar.setProgressBackgroundColor(ContextCompat.getColor(getContext(), R.color.total_time_goal));
+                            progressBar.setProgressColor(ContextCompat.getColor(getContext(), R.color.total_time_spent));
+                        }
+
                         int ttsh = totalTime/ 60;
                         int ttsm = totalTime % 60;
 
                         int tgh = totalGoal/60;
                         int tgm = totalGoal % 60;
 
+                        //TODO Keeps crahsing in the timeSetText call, meybe add is added call.
                         totalTimeSpent.setText(timeSetText(ttsh,ttsm));
                         totalGoalTime.setText(timeSetText(tgh,tgm));
                     }
