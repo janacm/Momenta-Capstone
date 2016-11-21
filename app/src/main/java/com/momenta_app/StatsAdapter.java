@@ -1,4 +1,4 @@
-package com.momenta;
+package com.momenta_app;
 
 import android.content.Context;
 import android.support.v4.util.Pair;
