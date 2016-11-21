@@ -176,7 +176,7 @@ public class AwardManager {
         //Increase the committed award
         increaseAwardProgress(Constants.SHARE_COMMITTED_AWARD_ID,1, task);
 
-        //Increase the punctual award
+        //Increase the punctual award TODO: Calling task.setTimeSpent() causes a bug when called from TaskActivity
         task.setTimeSpent(progressIncrease.intValue());
         if(task.getTimeSpent() >= task.getGoal() && Calendar.getInstance().getTime().before(task.getDeadlineValue().getTime())) {
             increaseAwardProgress(Constants.SHPREF_PUNCTUAL_AWARD_ID, 1, task);

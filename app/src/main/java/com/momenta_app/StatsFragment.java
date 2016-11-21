@@ -4,6 +4,10 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.util.Pair;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +19,6 @@ import android.widget.TextView;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.AxisBase;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -69,6 +72,8 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
     /******************************  Firebase fields  ******************************/
     private DatabaseReference databaseReference;
     private String directory = "";
+    private RecyclerView recyclerView;
+    private StatsAdapter adapter;
 
     private boolean weekSelected = true;
 
@@ -118,6 +123,12 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
+        recyclerView = (RecyclerView)view.findViewById(R.id.legendRecyclerView);
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
+        recyclerView.setLayoutManager(layoutManager);
+        adapter = new StatsAdapter(new ArrayList());
+        recyclerView.setAdapter(adapter);
 
         return view;
     }
@@ -181,6 +192,7 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
         lineDataSet.setColor( ContextCompat.getColor(getContext(), R.color.colorPrimary) );
         lineDataSet.setDrawFilled(true);
         lineDataSet.setHighLightColor( ContextCompat.getColor(getContext(), R.color.deep_purple) );
+        lineDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
 
         //Setting labels for X & Y axis
         XAxis xAxis = lineChart.getXAxis();
@@ -206,6 +218,33 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
         leftAxis.setDrawGridLines(false);
         leftAxis.setDrawAxisLine(false);
         leftAxis.setAxisMinValue(0);
+        leftAxis.setValueFormatter(new AxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                int minutes = (int) value;
+                int hours = 0;
+
+                if ( ! (minutes < 60) ) {
+                    hours = minutes/60;
+                    minutes = minutes% 60;
+                }
+
+                if ( hours >0 && minutes>0 ) {
+                    return hours + "H " + minutes + "M";
+                } else if ( hours ==0 && minutes>0 ) {
+                    return minutes + "M";
+                } else if ( hours >0 ) {
+                    return hours + "H";
+                } else {
+                    return "";
+                }
+            }
+
+            @Override
+            public int getDecimalDigits() {
+                return 0;
+            }
+        });
 
         YAxis rightAxis = lineChart.getAxisRight();
         rightAxis.setAxisMinValue(0);
@@ -220,6 +259,7 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
 
         lineChart.setData(lineData);
         lineChart.setDescription("");
+        lineChart.setPinchZoom(true);
         lineChart.setOnChartValueSelectedListener(this);
         lineChart.invalidate();
     }
@@ -233,13 +273,9 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
         }
         pieChart = (PieChart) getView().findViewById(R.id.trends_piechart);
         pieChart.setRotationEnabled(false);
-        pieChart.setDrawHoleEnabled(false);
+        pieChart.setHoleRadius(55);
         pieChart.setDescription("");
-
-        Legend l = pieChart.getLegend();
-        l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
-        l.setXEntrySpace(7);
-        l.setYEntrySpace(5);
+        pieChart.getLegend().setEnabled(false);
 
         pieEntries = new ArrayList<>();
         Calendar tempCal = Calendar.getInstance();
@@ -247,6 +283,8 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
         tempCal.setTimeInMillis( Calendar.getInstance().getTimeInMillis() );
 
         PieDataSet pieDataSet = new PieDataSet(pieEntries, getString(R.string.time_in_minutes));
+        pieDataSet.setDrawValues(false);
+        pieDataSet.setSliceSpace(1f);
 
         ArrayList<Integer> colors = new ArrayList<>();
         for (int c : ColorTemplate.MATERIAL_COLORS)
@@ -259,8 +297,8 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
 
         //Initialize the Pie data
         PieData pieData = new PieData(pieDataSet);
-        pieData.setDrawValues(true);
-        pieData.setValueTextSize(11f);
+        pieData.setDrawValues(false);
+        pieData.setValueTextSize(12f);
         pieData.setValueTextColor(Color.WHITE);
         pieChart.setData(pieData);
 
@@ -278,10 +316,26 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
         if ( pieDateList != null ) {
             Log.d("Stats", "Size of map for " + dateString + " is: " + pieDateList.size());
             for (Task t: pieDateList) {
-                pieEntries.add(new PieEntry(t.getTimeSpent(), t.getName()));
+                pieEntries.add(new PieEntry(t.getTimeSpent(), t.getFormattedTimeSpent().toLowerCase(), t));
             }
         }
 
+        if (recyclerView != null && adapter != null) {
+            ArrayList list = new ArrayList();
+            int[] colors = pieChart.getData().getColors();
+            int i = 0;
+            for (PieEntry pieEntry : pieEntries) {
+                Task t = (Task)pieEntry.getData();
+                Pair<Integer, String> pair = new Pair(colors[i], t.getName());
+                list.add(pair);
+                i++;
+            }
+            adapter.setPairs(list);
+            recyclerView.invalidate();
+        }
+
+        pieChart.setCenterText("");
+        pieChart.setOnChartValueSelectedListener(this);
         pieChart.notifyDataSetChanged();
         pieChart.invalidate();
     }
@@ -376,11 +430,22 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
 
     @Override
     public void onValueSelected(Entry e, Highlight h) {
-        Float indexInFloat = e.getX();
-        Integer index = indexInFloat.intValue();
 
-        String indexDate = dateIndex.get(index);
-        setPieDayData( indexDate );
+        if (e instanceof PieEntry) {
+            Task t = (Task)e.getData();
+            String name = t.getName();
+            if (name == null) {
+                name = "";
+            }
+            SpannableString s = new SpannableString(name);
+            pieChart.setCenterText(s);
+        } else {
+            Float indexInFloat = e.getX();
+            Integer index = indexInFloat.intValue();
+
+            String indexDate = dateIndex.get(index);
+            setPieDayData( indexDate );
+        }
     }
 
     @Override

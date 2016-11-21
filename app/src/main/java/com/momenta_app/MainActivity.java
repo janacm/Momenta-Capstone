@@ -53,6 +53,11 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
         ref = FirebaseProvider.getInstance().getReference();
 
         helperPreferences = new helperPreferences(this);
+        if (user.getPath()!=null) {
+            helperPreferences.savePreferences(Constants.ACCOUNT_NAME,
+                    user.getPath().replace(",","."));
+        }
+
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         fragmentManager = new ManagerFragmentPagerAdapter(getSupportFragmentManager(),
