@@ -1,79 +1,35 @@
 {
   "project_info": {
-    "project_number": "670328591705",
-    "firebase_url": "https://momenta-59600.firebaseio.com",
-    "project_id": "momenta-59600",
-    "storage_bucket": "momenta-59600.appspot.com"
+    "project_number": "646828662360",
+    "firebase_url": "https://momenta-production.firebaseio.com",
+    "project_id": "momenta-production",
+    "storage_bucket": "momenta-production.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:670328591705:android:54a168c714488144",
-        "android_client_info": {
-          "package_name": "com.momenta"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "670328591705-s3auga4ft35uid6fnmuujt56njud54np.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.momenta",
-            "certificate_hash": "CA99D7CCA0E471469F2EEFDD6E1A1B167FF5DA71"
-          }
-        },
-        {
-          "client_id": "670328591705-c9l2crk7020mh76p9v3q4v6ajoo6edp5.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBsW2esljGQkY1HKmIKLvAiupzyr8qXmLU"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "670328591705-c9l2crk7020mh76p9v3q4v6ajoo6edp5.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        },
-        "ads_service": {
-          "status": 2
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:670328591705:android:dc4e856951bb0b3e",
+        "mobilesdk_app_id": "1:646828662360:android:dc4e856951bb0b3e",
         "android_client_info": {
           "package_name": "com.momenta_app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "670328591705-o61lltqorcqfgdkkjo0ql744ruini7qi.apps.googleusercontent.com",
+          "client_id": "646828662360-qfdbr0gdja53fdpvf513o8v07kda5n5u.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.momenta_app",
-            "certificate_hash": "CA99D7CCA0E471469F2EEFDD6E1A1B167FF5DA71"
+            "certificate_hash": "466C6C8FBA02312694BFF43E8EFCC332EF4FB05B"
           }
         },
         {
-          "client_id": "670328591705-c9l2crk7020mh76p9v3q4v6ajoo6edp5.apps.googleusercontent.com",
+          "client_id": "646828662360-9ik2oopmrgi8qabbmq6vufshqbe46car.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBsW2esljGQkY1HKmIKLvAiupzyr8qXmLU"
+          "current_key": "AIzaSyA1J97MosF0fbJyN1H4UAvQFSyegNZiCBY"
         }
       ],
       "services": {
@@ -84,7 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "670328591705-c9l2crk7020mh76p9v3q4v6ajoo6edp5.apps.googleusercontent.com",
+              "client_id": "646828662360-9ik2oopmrgi8qabbmq6vufshqbe46car.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
