@@ -14,6 +14,8 @@ public class Constants {
     public static final String SHPREF_PRODUCTIVE_AWARD_ID = "productive_award_id";
     public static final String SHPREF_PERFECTIONIST_AWARD_ID = "perfectionnist_award_id";
     public static final String SHPREF_PUNCTUAL_AWARD_ID = "punctual_award_id";
+    public static final String SHPREF_INTERVAL_OVER_SNOOZE_HOURS = "interval_over_snooze_hours";
+    public static final String SHPREF_INTERVAL_OVER_SNOOZE_MINS = "interval_over_snooze_mins";
 
 
     public static final String USER_ID ="user_id";

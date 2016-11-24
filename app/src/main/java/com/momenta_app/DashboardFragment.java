@@ -25,7 +25,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -162,7 +161,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
 
                         /***Updating the Goal Progress card's fields**/
                         progressBar.setMax(totalGoal);
-                        progressBar.setPadding(10);
                         progressBar.setProgress(totalTime);
 
                         if(isAdded()) {
@@ -176,6 +174,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
                         int tgh = totalGoal/60;
                         int tgm = totalGoal % 60;
 
+                        //TODO Keeps crahsing in the timeSetText call, meybe add is added call.
                         totalTimeSpent.setText(timeSetText(ttsh,ttsm));
                         totalGoalTime.setText(timeSetText(tgh,tgm));
                     }
@@ -221,7 +220,11 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
             return minutes + " " + getResources().getString(R.string.add_time_to_task_minutes);
         }
         else {
-            return minutes + " " + getResources().getString(R.string.add_time_to_task_minutes);
+            if(isAdded()){
+                return minutes + " " + getResources().getString(R.string.add_time_to_task_minutes);
+            }else{
+                return minutes + " " + "m";
+            }
         }
     }
 

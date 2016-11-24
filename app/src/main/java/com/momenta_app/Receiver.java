@@ -71,7 +71,7 @@ public class Receiver extends WakefulBroadcastReceiver {
 
         Log.d("Receiver", "Notifying!!");
         Intent sIntent = new Intent(context, ScreenTakeOverActivity.class);
-        sIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+        sIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.getApplicationContext().startActivity(sIntent);
     }
 }

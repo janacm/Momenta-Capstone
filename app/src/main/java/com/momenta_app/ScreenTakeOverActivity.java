@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -52,6 +53,8 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
 
     // Firebase Instance
     private DatabaseReference databaseReference;
+
+    private helperPreferences helperPreferences;
 
     public Button goButton;
     private List<Task> taskList;
@@ -109,6 +112,8 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        helperPreferences = new helperPreferences(this);
+
         setContentView(R.layout.activity_screen_take_over);
 
         mVisible = true;
@@ -117,8 +122,7 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
         goButton = (Button)findViewById(R.id.dummy_button);
         goButton.setOnTouchListener(mDelayHideTouchListener);
         taskList = new ArrayList<>();
-
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+;        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
@@ -196,6 +200,7 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
     }
 
     public void go_button_click(View view) {
+
         if (taskList.size() > 1) {
             Intent intent = new Intent(this, SelectTasksActivity.class);
             startActivity(intent);
@@ -216,6 +221,9 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
     }
 
     public void later_button_click(View view) {
+        helperPreferences.savePreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_MINS,String.valueOf(Integer.parseInt(helperPreferences.getPreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_MINS,"0"))+Integer.parseInt(helperPreferences.getPreferences(Constants.SHPREF_INTERVAL_MINS,"0"))));
+        helperPreferences.savePreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_HOURS,String.valueOf(Integer.parseInt(helperPreferences.getPreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_HOURS,"0"))+Integer.parseInt(helperPreferences.getPreferences(Constants.SHPREF_INTERVAL_HOURS,"0"))));
+        Log.d("mins",helperPreferences.getPreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_HOURS,"0")+","+helperPreferences.getPreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_MINS,"0"));
         finish();
     }
 

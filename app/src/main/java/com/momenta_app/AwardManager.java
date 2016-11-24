@@ -159,7 +159,13 @@ public class AwardManager {
         return false;
     }
 
-    public void handleAwardsProgress(Long progressIncrease, Task task){
+    public void handleAwardsProgress(Long progressIncrease, Task t){
+
+        Task task = new Task();
+        task.setTimeSpent(t.getTimeSpent());
+        task.setDeadlineValue(t.getDeadlineValue());
+        task.setGoal(t.getGoal());
+        task.setId(t.getId());
 
         //Increase the Neophyte award
         increaseAwardProgress(Constants.SHPREF_NEOPHYTE_AWARD_ID,1, task);
@@ -176,7 +182,7 @@ public class AwardManager {
         //Increase the committed award
         increaseAwardProgress(Constants.SHARE_COMMITTED_AWARD_ID,1, task);
 
-        //Increase the punctual award
+        //Increase the punctual award TODO: Calling task.setTimeSpent() causes a bug when called from TaskActivity
         task.setTimeSpent(progressIncrease.intValue());
         if(task.getTimeSpent() >= task.getGoal() && Calendar.getInstance().getTime().before(task.getDeadlineValue().getTime())) {
             increaseAwardProgress(Constants.SHPREF_PUNCTUAL_AWARD_ID, 1, task);

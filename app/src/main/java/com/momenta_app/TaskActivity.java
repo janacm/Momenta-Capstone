@@ -52,7 +52,6 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
     static final int REQUEST_AUTHORIZATION = 1000;
     static final int REQUEST_CONTACTS = 1001;
     static final int REQUEST_INVITE = 1002;
-    static final int REQUEST_FAILED = 1003;
 
     private EditText activityName;
     private TextView activityDeadline;
@@ -62,6 +61,9 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
     private Integer goalHours = 2;
     private Integer goalMins = 30;
     private Integer timeLogged = 0;
+    private TextRoundCornerProgressBar pBar;
+    private TextView progressText;
+    private TextView maxText;
 
     private boolean wasEdited = false;
     private Task.Priority priority;
@@ -134,6 +136,9 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         activityName = (EditText)findViewById(R.id.task_name_edit_text);
         activityGoal = (TextView)findViewById(R.id.task_goal_value);
         activityDeadline = (TextView) findViewById(R.id.task_deadline_value);
+        pBar = (TextRoundCornerProgressBar)findViewById(R.id.progressBar);
+        progressText = (TextView)findViewById(R.id.progress_text_value);
+        maxText = (TextView)findViewById(R.id.max_text_value);
 
         awardManager = AwardManager.getInstance(this);
         helperPreferences = new helperPreferences(this);
@@ -150,7 +155,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
             goalHours = goalMins/60;
             goalMins = goalMins%60;
         }
-        String goalText = timeSetText(goalHours, goalMins);
+        String goalText = formatTime(goalHours, goalMins, true);
         activityGoal.setText(goalText);
 
         Spinner spinner = (Spinner)findViewById(R.id.task_priority_spinner);
@@ -161,10 +166,12 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     private void initializeProgressBar() {
-        TextRoundCornerProgressBar pBar = (TextRoundCornerProgressBar)findViewById(R.id.progressBar);
+        pBar = (TextRoundCornerProgressBar)findViewById(R.id.progressBar);
         pBar.setMax(task.getGoal());
         pBar.setProgress(task.getTimeSpent());
-        pBar.setProgressText(task.getTimeSpent() + "/" + task.getGoal() + " mins");
+        maxText.setText( formatTime(goalHours, goalMins, false));
+        String progString = formatTime(task.getTimeSpent()/60, task.getTimeSpent()%60, false);
+        progressText.setText(progString);
     }
 
     private void delete() {
@@ -242,7 +249,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                 } else {
                     goalMins = Integer.valueOf(minute);
                 }
-                activityGoal.setText(timeSetText(goalHours, goalMins));
+                activityGoal.setText(formatTime(goalHours, goalMins, true));
                 task.setGoal( (goalHours*60) + goalMins );
                 initializeProgressBar();
             }
@@ -286,7 +293,6 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
      * @param view view being clicked
      */
     public void timeSpentOnClick(View view) {
-        //TODO: Changed @string/timespent_string to Add time spent (FR)
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogCustom);
         LayoutInflater inflater = this.getLayoutInflater();
 
@@ -499,34 +505,33 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
      * @param minutes minute value that is being set
      * @return the string containing the minute and hour values that will be set in the TextView
      */
-    private String timeSetText(int hours, int minutes) {
-        if (minutes > 1 && hours > 1) {
-            return hours + " " + getResources().getString(R.string.timeentry_dialog_hours_label) + " & " +
-                    minutes + " " +  getResources().getString(R.string.timeentry_dialog_minutes_label) ;
-        } else if (minutes == 0 && hours > 1) {
-            return hours + " " + getResources().getString(R.string.timeentry_dialog_hours_label);
+    private String formatTime(int hours, int minutes, boolean fullText) {
+        String hourLabel, minuteLabel, result = "";
+        if (fullText) {
+            if (hours != 1) {
+                hourLabel = " " + getResources().getString(R.string.timeentry_dialog_hours_label);
+            } else {
+                hourLabel = " " + getResources().getString(R.string.timeentry_dialog_hour_label);
+            }
+
+            if (minutes != 1) {
+                minuteLabel = " " + getResources().getString(R.string.timeentry_dialog_minutes_label);
+            } else {
+                minuteLabel = " " + getResources().getString(R.string.timeentry_dialog_minute_label);
+            }
+        } else {
+            hourLabel = getResources().getString(R.string.add_time_to_task_hours);
+            minuteLabel = getResources().getString(R.string.add_time_to_task_minutes);
         }
-        else if (minutes == 1 && hours > 1) {
-            return hours + " " + getResources().getString(R.string.timeentry_dialog_hours_label) + " & " +
-                    minutes + " " + getResources().getString(R.string.timeentry_dialog_minute_label);
+
+        if (hours > 0 && minutes > 0) {
+            result =  hours + hourLabel + " & " + minutes + minuteLabel ;
+        } else if (hours != 0 && minutes == 0) {
+            result = hours + hourLabel;
+        } else {
+            result =  minutes + minuteLabel;
         }
-        else if (hours == 1 && minutes > 1) {
-            return hours + " " + getResources().getString(R.string.timeentry_dialog_hour_label) + " & " +
-                    minutes + " " + getResources().getString(R.string.timeentry_dialog_minutes_label);
-        }
-        else if (hours == 1 && minutes == 1) {
-            return hours + " " + getResources().getString(R.string.timeentry_dialog_hour_label) + " & " +
-                    minutes + " " + getResources().getString(R.string.timeentry_dialog_minute_label);
-        }
-        else if (hours == 1 && minutes == 0) {
-            return hours + " " + getResources().getString(R.string.timeentry_dialog_hour_label);
-        }
-        else if (minutes == 1 && hours == 0) {
-            return minutes + " " + getResources().getString(R.string.timeentry_dialog_minute_label);
-        }
-        else {
-            return minutes + " " + getResources().getString(R.string.timeentry_dialog_minutes_label);
-        }
+        return result;
     }
 
     @Override

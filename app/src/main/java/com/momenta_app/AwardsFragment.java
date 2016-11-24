@@ -151,7 +151,7 @@ public class AwardsFragment extends Fragment {
 
     private String getStringResourceByName(String aString) {
         if (aString != null) {
-            int resId = getResources().getIdentifier(aString, "string", "com.momenta");
+            int resId = getResources().getIdentifier(aString, "string", "com.momenta_app");
             if (resId != 0) {
                 return getString(resId);
             } else
