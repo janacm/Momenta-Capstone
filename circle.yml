@@ -6,6 +6,7 @@ machine:
     TERM: "dumb"
     ADB_INSTALL_TIMEOUT: "10"
     GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
+    KEYSTORE: ${HOME}/${CIRCLE_PROJECT_REPONAME}/signing.keystore
     
 deployment:
     alpha:
@@ -15,6 +16,7 @@ deployment:
            
 dependencies:
   pre:
+    - bash ./misc/download_keystore.sh
     - wget "https://services.gradle.org/distributions/gradle-2.9-bin.zip"; unzip gradle-2.9-bin.zip
     - echo y | android update sdk --no-ui --all --filter tool,extra-android-m2repository,extra-android-support,extra-google-google_play_services,extra-google-m2repository,android-25
     - echo y | android update sdk --no-ui --all --filter build-tools-24.0.2
