@@ -15,10 +15,10 @@ android {
 
     signingConfigs {
         release {
-            storeFile file("MomentaKeystore.jks")
-            storePassword "momenta"
-            keyAlias "MomentaKeystoreAlias"
-            keyPassword "momenta"
+            storeFile file(String.valueOf(System.getenv("KEYSTORE")))
+            storePassword System.getenv("KEYSTORE_PASSWORD")
+            keyAlias System.getenv("KEY_ALIAS")
+            keyPassword System.getenv("KEY_PASSWORD")
         }
     }
 
@@ -108,9 +108,7 @@ configurations.all {
 apply plugin: 'com.github.triplet.play'
 
 play {
-    track = 'alpha'
-    serviceAccountEmail = '736122607629-compute@developer.gserviceaccount.com'
-    pk12File = file('Google Play Android Developer-04b006574b67.p12')
+    jsonFile = file('Google Play Android Developer-396a85b2122c.json')
 }
 
 apply plugin: 'com.google.gms.google-services'
