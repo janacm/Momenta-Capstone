@@ -222,7 +222,11 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
             return minutes + " " + getResources().getString(R.string.add_time_to_task_minutes);
         }
         else {
-            return minutes + " " + getResources().getString(R.string.add_time_to_task_minutes);
+            if(isAdded()){
+                return minutes + " " + getResources().getString(R.string.add_time_to_task_minutes);
+            }else{
+                return minutes + " " + "m";
+            }
         }
     }
 

@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -109,8 +110,8 @@ public class SelectTasksActivity extends AppCompatActivity {
         );
 
         hp = new helperPreferences(this);
-        intervalHours = Integer.parseInt(hp.getPreferences(Constants.SHPREF_INTERVAL_HOURS, "0"));
-        intervalMins = Integer.parseInt(hp.getPreferences(Constants.SHPREF_INTERVAL_MINS, "0"));
+        intervalHours = Integer.parseInt(hp.getPreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_HOURS, "0"));
+        intervalMins = Integer.parseInt(hp.getPreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_MINS, "0"));
     }
 
     @Override
