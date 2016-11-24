@@ -96,8 +96,11 @@ public class AddTaskTimeActivity extends AppCompatActivity {
 
         //Initialize helperPreferences and extract interval values from preferences
         hp = new helperPreferences(this);
-        intervalHours = Integer.parseInt(hp.getPreferences(Constants.SHPREF_INTERVAL_HOURS, "0"));
-        intervalMins = Integer.parseInt(hp.getPreferences(Constants.SHPREF_INTERVAL_MINS, "0"));
+        intervalHours = Integer.parseInt(hp.getPreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_HOURS, "0"));
+        intervalMins = Integer.parseInt(hp.getPreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_MINS, "0"));
+
+        hp.savePreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_MINS,hp.getPreferences(Constants.SHPREF_INTERVAL_MINS, "0"));
+        hp.savePreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_HOURS,hp.getPreferences(Constants.SHPREF_INTERVAL_HOURS, "0"));
 
         //Initialize the time interval for each task, the initial step value and task position
         intervalTime = (intervalHours * 60) + intervalMins;
@@ -201,16 +204,9 @@ public class AddTaskTimeActivity extends AppCompatActivity {
 
     //Method for setting up the seekbar intervals for a given task
     public void setUpSeekbar() {
-        animate(seekbarText, formatSeekbarValue((intervalTime / 2)), 300);
+        animate(seekbarText, formatSeekbarValue(0), 300);
 
-
-        if ((intervalTime % 2) == 0) {
-            seekbar.setProgress(intervalTime / 2);
-            seekbarValue = intervalTime/2;
-        } else {
-            seekbar.setProgress((intervalTime / 2) + 1);
-            seekbarValue = (intervalTime/2) + 1;
-        }
+        seekbar.setProgress(0);
 
         intervalHours = intervalTime / 60;
         intervalMins = intervalTime % 60;
@@ -508,7 +504,7 @@ public class AddTaskTimeActivity extends AppCompatActivity {
      */
     private void startMainActivity() {
         Intent intent = new Intent(AddTaskTimeActivity.this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
 
 
