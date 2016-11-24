@@ -159,7 +159,13 @@ public class AwardManager {
         return false;
     }
 
-    public void handleAwardsProgress(Long progressIncrease, Task task){
+    public void handleAwardsProgress(Long progressIncrease, Task t){
+
+        Task task = new Task();
+        task.setTimeSpent(t.getTimeSpent());
+        task.setDeadlineValue(t.getDeadlineValue());
+        task.setGoal(t.getGoal());
+        task.setId(t.getId());
 
         //Increase the Neophyte award
         increaseAwardProgress(Constants.SHPREF_NEOPHYTE_AWARD_ID,1, task);
