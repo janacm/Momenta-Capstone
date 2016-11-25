@@ -274,7 +274,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="15dp"
                     android:layout_marginEnd="15dp"
-                    android:paddingTop="8dp"
                     android:tint="#9B9B9B"
                     android:contentDescription="@string/goal_icon_content_description"
                     android:src="@drawable/timer_sand"/>

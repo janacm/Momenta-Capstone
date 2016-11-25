@@ -172,16 +172,6 @@
             android:layout_toRightOf="@+id/newtask_priority_image"
             android:layout_toEndOf="@+id/newtask_priority_image"/>
 
-
-        <!--<TextView
-            android:id="@+id/newtask_priority_value"
-            android:layout_below="@+id/newtask_priority_title"
-            android:layout_width="match_parent"
-            android:text="@string/sample_priority_string"
-            android:layout_toRightOf="@+id/newtask_priority_image"
-            android:layout_toEndOf="@+id/newtask_priority_image"
-            android:layout_height="wrap_content" />-->
-
         <Spinner
             android:id="@+id/newtask_priority_spinner"
             android:layout_below="@+id/newtask_priority_title"
@@ -221,7 +211,7 @@
             android:id="@+id/newtask_timespent_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/timespent_string"
+            android:text="@string/spent_time_already"
             android:textSize="18sp"
             android:layout_marginStart="5dp"
             android:layout_marginLeft="5dp"
