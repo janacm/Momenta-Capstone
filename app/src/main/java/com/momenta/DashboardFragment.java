@@ -158,24 +158,23 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
                         dAdapter = new DashboardTaskStatsAdapter(getContext(), tasks);
                         dRecyclerView.setAdapter(dAdapter);
 
-                        /***Updating the Goal Progress card's fields**/
-                        progressBar.setMax(totalGoal);
-                        progressBar.setPadding(10);
-                        progressBar.setProgress(totalTime);
-
                         if(isAdded()) {
+                            /***Updating the Goal Progress card's fields**/
+                            progressBar.setMax(totalGoal);
+                            progressBar.setPadding(10);
+                            progressBar.setProgress(totalTime);
                             progressBar.setProgressBackgroundColor(ContextCompat.getColor(getContext(), R.color.total_time_goal));
                             progressBar.setProgressColor(ContextCompat.getColor(getContext(), R.color.total_time_spent));
+
+                            int ttsh = totalTime/ 60;
+                            int ttsm = totalTime % 60;
+
+                            int tgh = totalGoal/60;
+                            int tgm = totalGoal % 60;
+
+                            totalTimeSpent.setText(timeSetText(ttsh,ttsm));
+                            totalGoalTime.setText(timeSetText(tgh,tgm));
                         }
-
-                        int ttsh = totalTime/ 60;
-                        int ttsm = totalTime % 60;
-
-                        int tgh = totalGoal/60;
-                        int tgm = totalGoal % 60;
-
-                        totalTimeSpent.setText(timeSetText(ttsh,ttsm));
-                        totalGoalTime.setText(timeSetText(tgh,tgm));
                     }
 
                     @Override
