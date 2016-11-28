@@ -109,7 +109,7 @@
     <string name="ascending">Ascendant</string>
     <string name="award_commited_desc_1">\"Temps enregistré à une activité déjà commencée \"</string>
     <string name="award_commited_title">Engagé</string>
-    <string name="timespent_string">Temps passé</string>
+    <string name="timespent_string">Ajouter du temps</string>
     <string name="timespent_icon_content_description">Temps passé icon</string>
     <string name="award_multi_tasker_desc_1">Temps enregistré dans</string>
     <string name="award_multi_tasker_desc_2">différentes activités</string>
@@ -170,4 +170,7 @@
         <item>Dernière semaine</item>
         <item>Dernier Mois</item>
     </string-array>
+    <string name="discard_changes">Annuler vos changements?</string>
+    <string name="time_in_minutes">Temps en minutes</string>
+    <string name="add_item_string">Ajouter une nouvelle tâche</string>
 </resources>
