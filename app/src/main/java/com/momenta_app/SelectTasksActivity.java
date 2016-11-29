@@ -110,6 +110,11 @@ public class SelectTasksActivity extends AppCompatActivity {
         );
 
         hp = new helperPreferences(this);
+        //Initialize snooze interval time to the base interval time for first run
+        if(Integer.parseInt(hp.getPreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_HOURS, "0")) == 0 && Integer.parseInt(hp.getPreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_MINS, "0")) == 0){
+            hp.savePreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_MINS,hp.getPreferences(Constants.SHPREF_INTERVAL_MINS, "0"));
+            hp.savePreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_HOURS,hp.getPreferences(Constants.SHPREF_INTERVAL_HOURS, "0"));
+        }
         intervalHours = Integer.parseInt(hp.getPreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_HOURS, "0"));
         intervalMins = Integer.parseInt(hp.getPreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_MINS, "0"));
     }
@@ -158,6 +163,7 @@ public class SelectTasksActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         } else {
+            Log.d("interval time", String.valueOf(intervalTime));
             if((size > 0) && (intervalTime/size) < 1)
                 toast(getResources().getString(R.string.select_tasks_cannot_divide_tasks));
             else{

@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
         user = FirebaseProvider.getUser();
         awardsDirectory = user.getPath() + "/awards";
 
-
         ref = FirebaseProvider.getInstance().getReference();
 
         helperPreferences = new helperPreferences(this);
