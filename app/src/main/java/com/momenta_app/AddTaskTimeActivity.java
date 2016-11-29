@@ -98,7 +98,6 @@ public class AddTaskTimeActivity extends AppCompatActivity {
         hp = new helperPreferences(this);
         intervalHours = Integer.parseInt(hp.getPreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_HOURS, "0"));
         intervalMins = Integer.parseInt(hp.getPreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_MINS, "0"));
-
         hp.savePreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_MINS,hp.getPreferences(Constants.SHPREF_INTERVAL_MINS, "0"));
         hp.savePreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_HOURS,hp.getPreferences(Constants.SHPREF_INTERVAL_HOURS, "0"));
 
