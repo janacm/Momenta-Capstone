@@ -8,23 +8,21 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
 
 import java.util.ArrayList;
@@ -39,16 +37,10 @@ import java.util.List;
 public class DashboardFragment extends Fragment implements View.OnClickListener{
     public static final String ARG_PAGE = "ARG_PAGE";
 
-    private NumberPicker numberPicker;
-    private Button button;
     private RoundCornerProgressBar progressBar;
     private TextView totalTimeSpent;
     private TextView totalGoalTime;
 
-    private TextView displayNameText;
-    private ImageView imgView;
-
-    private helperPreferences helperPreferences;
     private DashboardTaskStatsAdapter dAdapter;
     public RecyclerView dRecyclerView;
     DatabaseReference mDatabaseReference;
@@ -69,10 +61,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int mPage = getArguments().getInt(ARG_PAGE);
         mDatabaseReference = FirebaseProvider.getInstance().getReference();
-        helperPreferences = new helperPreferences(getActivity());
-
         mFirebaseUser = FirebaseProvider.getUser();
         if (mFirebaseUser != null) {
             directory = mFirebaseUser.getPath() + "/goals";
@@ -85,7 +74,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
         super.onCreate(savedInstanceState);
 
         View activityView = inflater.inflate(R.layout.fragment_dashboard, container, false);
-        button = (Button) activityView.findViewById(R.id.button1);
+        Button button = (Button) activityView.findViewById(R.id.button1);
         button.setOnClickListener(this);
         totalTimeSpent = (TextView) activityView.findViewById(R.id.dash_goals_total_time_spent_value);
         totalGoalTime = (TextView) activityView.findViewById(R.id.dash_goals_total_goal_value);
@@ -94,14 +83,15 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
         dRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
         if(user != null) {
             String name = user.getDisplayName();
             Uri photo = user.getPhotoUrl();
-            displayNameText = (TextView) activityView.findViewById(R.id.displayName);
+
+            TextView displayNameText = (TextView) activityView.findViewById(R.id.displayName);
             displayNameText.setText(name);
-            imgView = (ImageView) activityView.findViewById(R.id.userImage);
-            Picasso.with(getActivity()).load(photo).into(imgView);
+
+            ImageView imgView = (ImageView) activityView.findViewById(R.id.userImage);
+            Glide.with(this).load(photo).into(imgView);
         }
 
         // New child entries
