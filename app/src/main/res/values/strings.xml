@@ -168,8 +168,10 @@
     <string name="add_time_to_task_next">Next</string>
     <string name="deadline_hint" translatable="false"></string>
     <string name="add_time_to_task_done">Done</string>
+    <string name="spent_time_already">Spent time already?</string>
+
     <!--String related to New Task screen-->
-    <string name="new_task_title">Add New Activity</string>
+    <string name="new_task_title">Add a goal</string>
     <string name="new_task_submit_button">D O N E</string>
     <string name="welcome_to_momenta">Welcome To Momenta</string>
 
