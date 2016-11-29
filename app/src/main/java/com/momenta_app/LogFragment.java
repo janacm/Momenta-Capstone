@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -33,6 +34,7 @@ public class LogFragment extends Fragment {
     private String orderString = ASC;
     private helperPreferences helperPreferences;
     private RecyclerView mRecyclerView;
+    private ProgressBar loadingProgressBar;
 
     // Firebase instance variables
     private String directory = "tests";
@@ -64,8 +66,10 @@ public class LogFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_log, container, false);
+
+        loadingProgressBar = (ProgressBar)view.findViewById(R.id.progressBar);
+        loadingProgressBar.setVisibility(View.VISIBLE);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.activity_recycler_view);
 
         setLayoutManger();
@@ -185,7 +189,7 @@ public class LogFragment extends Fragment {
 
     /**
      * Helper method to build a recycler adapter
-     * @param sortBy the field to sort the taskas by
+     * @param sortBy the field to sort the tasks by
      * @return an adapter
      */
     private FirebaseRecyclerAdapter<Task, TaskViewHolder> buildAdapter(String sortBy) {
@@ -198,6 +202,7 @@ public class LogFragment extends Fragment {
             @Override
             protected void populateViewHolder(TaskViewHolder viewHolder,
                                               Task task, int position) {
+                loadingProgressBar.setVisibility(View.GONE);
                 viewHolder.name.setText(task.getName());
                 viewHolder.timeSpent.setText(task.getFormattedTimeSpent());
                 viewHolder.progressBar.setMax(task.getGoal());
@@ -228,7 +233,7 @@ public class LogFragment extends Fragment {
      */
     private void setLayoutManger() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        orderString = helperPreferences.getPreferences(Constants.ORDER, ASC);
+        orderString = helperPreferences.getPreferences(Constants.ORDER, DESC);
 
         if ( orderString.equals(DESC) ) {
             layoutManager.setReverseLayout(true);
