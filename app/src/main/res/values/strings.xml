@@ -244,4 +244,8 @@
     <string name="title_share_activity">Add Friends</string>
     <string name="calendar_spent">"Spent "</string>
     <string name="calendar_minutes_on">" minutes on "</string>
+
+    <!--Empty State Strings-->
+    <string name="empty_state_no_goals">You have no goals yet.</string>
+    <string name="empty_state_tap_plus_sign">Tap the plus sign to get started.</string>
 </resources>
