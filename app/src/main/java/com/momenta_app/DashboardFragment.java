@@ -52,7 +52,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
     private DashboardTaskStatsAdapter dAdapter;
     public RecyclerView dRecyclerView;
     DatabaseReference mDatabaseReference;
-    User mFirebaseUser;
+    User mUser;
 
 
     // Firebase instance variables
@@ -73,9 +73,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
         mDatabaseReference = FirebaseProvider.getInstance().getReference();
         helperPreferences = new helperPreferences(getActivity());
 
-        mFirebaseUser = FirebaseProvider.getUser();
-        if (mFirebaseUser != null) {
-            directory = mFirebaseUser.getPath() + "/goals";
+        mUser = FirebaseProvider.getUser();
+        if (mUser != null) {
+            directory = mUser.getPath() + "/goals";
         }
     }
 
@@ -84,8 +84,10 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View activityView = inflater.inflate(R.layout.fragment_dashboard, container, false);
-        loadingProgressBar = (ProgressBar)activityView.findViewById(R.id.progressBar);
-        loadingProgressBar.setVisibility(View.VISIBLE);
+        if (mUser.getPath()!= null) {
+            loadingProgressBar = (ProgressBar)activityView.findViewById(R.id.progressBar);
+            loadingProgressBar.setVisibility(View.VISIBLE);
+        }
 
         button = (Button) activityView.findViewById(R.id.button1);
         button.setOnClickListener(this);

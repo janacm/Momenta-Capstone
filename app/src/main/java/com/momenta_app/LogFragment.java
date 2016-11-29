@@ -68,8 +68,10 @@ public class LogFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_log, container, false);
 
-        loadingProgressBar = (ProgressBar)view.findViewById(R.id.progressBar);
-        loadingProgressBar.setVisibility(View.VISIBLE);
+        if ( FirebaseProvider.getUserPath().length() > 0 ) {
+            loadingProgressBar = (ProgressBar)view.findViewById(R.id.progressBar);
+            loadingProgressBar.setVisibility(View.VISIBLE);
+        }
         mRecyclerView = (RecyclerView) view.findViewById(R.id.activity_recycler_view);
 
         setLayoutManger();

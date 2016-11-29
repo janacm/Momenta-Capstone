@@ -49,6 +49,7 @@
             android:indeterminateOnly="true"
             android:layout_gravity="center_horizontal"
             android:layout_margin="10dp"
+            android:visibility="gone"
             />
 
         <android.support.v7.widget.CardView
