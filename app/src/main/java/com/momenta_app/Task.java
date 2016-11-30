@@ -1,7 +1,5 @@
 package com.momenta_app;
 
-import android.content.Context;
-
 import com.google.firebase.database.Exclude;
 
 import java.text.SimpleDateFormat;
@@ -364,23 +362,6 @@ public class Task {
         return team;
     }
 
-
-    /**
-     * Used to add time to the task
-     * @param minutes the time in minutes to be added to the task
-     * @param context
-     */
-    public void logTimeSpent(int minutes, Context context) {
-        if ( minutes < 0 ) {
-            throw new IllegalArgumentException("Goal cannot be negative: " + minutes);
-        }
-        timeSpent += minutes;
-        lastModified = Calendar.getInstance();
-
-        if (context != null) {
-        }
-    }
-
     /**
      * Convenience method to format Calendar objects to strings.
      * @param calendar The calendar object with to be formatted
@@ -410,20 +391,6 @@ public class Task {
         result.put(TEAM, getTeamMembers());
 
         return result;
-    }
-
-    /**
-     * Equals method for comparing if two tasks are the same.
-     * @param another The task object to be compared with
-     * @return true if the tasks are the same and false otherwise
-     */
-    public boolean equals(Task another) {
-        return this.getName().equals(another.getName())
-                && this.getGoal() == another.getGoal()
-                && this.getDeadlineValue().getTimeInMillis() == another.getDeadlineValue().getTimeInMillis()
-                && this.getLastModifiedValue().getTimeInMillis() == another.getLastModifiedValue().getTimeInMillis()
-                && this.getDateCreated() == another.getDateCreated()
-                && this.getPriority().equals(another.getPriority());
     }
 
 }

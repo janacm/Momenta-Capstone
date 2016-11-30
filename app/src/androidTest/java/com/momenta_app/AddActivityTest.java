@@ -85,7 +85,7 @@ public class AddActivityTest {
         onView(withText(ctx.getString(R.string.goal_string))).check(matches(isDisplayed()));
         onView(withText(ctx.getString(R.string.deadline_string))).check(matches(isDisplayed()));
         onView(withText(ctx.getString(R.string.priority_string))).check(matches(isDisplayed()));
-        onView(withText(ctx.getString(R.string.timespent_string))).check(matches(isDisplayed()));
+        onView(withText(ctx.getString(R.string.spent_time_already))).check(matches(isDisplayed()));
     }
 
     @Test
