@@ -13,18 +13,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,8 +37,6 @@ import java.util.List;
 public class DashboardFragment extends Fragment implements View.OnClickListener{
     public static final String ARG_PAGE = "ARG_PAGE";
 
-    private NumberPicker numberPicker;
-    private Button button;
     private RoundCornerProgressBar progressBar;
     private TextView totalTimeSpent;
     private TextView totalGoalTime;
@@ -69,7 +66,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int mPage = getArguments().getInt(ARG_PAGE);
         mDatabaseReference = FirebaseProvider.getInstance().getReference();
         helperPreferences = new helperPreferences(getActivity());
 
@@ -84,12 +80,12 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View activityView = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        Button button = (Button) activityView.findViewById(R.id.button1);
         if (mUser.getPath()!= null) {
             loadingProgressBar = (ProgressBar)activityView.findViewById(R.id.progressBar);
             loadingProgressBar.setVisibility(View.VISIBLE);
         }
 
-        button = (Button) activityView.findViewById(R.id.button1);
         button.setOnClickListener(this);
         totalTimeSpent = (TextView) activityView.findViewById(R.id.dash_goals_total_time_spent_value);
         totalGoalTime = (TextView) activityView.findViewById(R.id.dash_goals_total_goal_value);
@@ -98,14 +94,15 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
         dRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
         if(user != null) {
             String name = user.getDisplayName();
             Uri photo = user.getPhotoUrl();
-            displayNameText = (TextView) activityView.findViewById(R.id.displayName);
+
+            TextView displayNameText = (TextView) activityView.findViewById(R.id.displayName);
             displayNameText.setText(name);
-            imgView = (ImageView) activityView.findViewById(R.id.userImage);
-            Picasso.with(getActivity()).load(photo).into(imgView);
+
+            ImageView imgView = (ImageView) activityView.findViewById(R.id.userImage);
+            Glide.with(this).load(photo).into(imgView);
         }
 
         // New child entries
@@ -166,28 +163,27 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
                         dAdapter = new DashboardTaskStatsAdapter(getContext(), tasks);
                         dRecyclerView.setAdapter(dAdapter);
 
-                        /***Updating the Goal Progress card's fields**/
-                        progressBar.setMax(totalGoal);
-                        progressBar.setProgress(totalTime);
-
-                        if(isAdded()) {
+                        if (isAdded()) {
+                            /***Updating the Goal Progress card's fields**/
+                            progressBar.setMax(totalGoal);
+                            progressBar.setPadding(10);
+                            progressBar.setProgress(totalTime);
                             progressBar.setProgressBackgroundColor(ContextCompat.getColor(getContext(), R.color.total_time_goal));
                             progressBar.setProgressColor(ContextCompat.getColor(getContext(), R.color.total_time_spent));
-                        }
 
-                        int ttsh = totalTime/ 60;
-                        int ttsm = totalTime % 60;
+                            int ttsh = totalTime / 60;
+                            int ttsm = totalTime % 60;
 
-                        int tgh = totalGoal/60;
-                        int tgm = totalGoal % 60;
+                            int tgh = totalGoal / 60;
+                            int tgm = totalGoal % 60;
 
-                        //TODO Keeps crahsing in the timeSetText call, meybe add is added call.
-                        totalTimeSpent.setText(timeSetText(ttsh,ttsm));
-                        totalGoalTime.setText(timeSetText(tgh,tgm));
+                            totalTimeSpent.setText(timeSetText(ttsh, ttsm));
+                            totalGoalTime.setText(timeSetText(tgh, tgm));
 
-                        if ( getView() != null) {
-                            getView().findViewById(R.id.awardsCard).setVisibility(View.VISIBLE);
-                            getView().findViewById(R.id.goalsCompletedCard).setVisibility(View.VISIBLE);
+                            if (getView() != null) {
+                                getView().findViewById(R.id.awardsCard).setVisibility(View.VISIBLE);
+                                getView().findViewById(R.id.goalsCompletedCard).setVisibility(View.VISIBLE);
+                            }
                         }
                     }
 
@@ -232,11 +228,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
             return minutes + " " + getResources().getString(R.string.add_time_to_task_minutes);
         }
         else {
-            if(isAdded()){
-                return minutes + " " + getResources().getString(R.string.add_time_to_task_minutes);
-            }else{
-                return minutes + " " + "m";
-            }
+            return minutes + " " + getResources().getString(R.string.add_time_to_task_minutes);
         }
     }
 
