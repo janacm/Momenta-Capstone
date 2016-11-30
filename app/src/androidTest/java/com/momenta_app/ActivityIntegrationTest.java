@@ -30,6 +30,7 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.replaceText;
+import static android.support.test.espresso.action.ViewActions.swipeLeft;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -118,7 +119,7 @@ public class ActivityIntegrationTest {
         cal.set(year, month, day);
         insertActivity(name, hours, minutes, year, month, day);
 
-        onView(withText(R.string.tab_title_log)).perform(click());
+        onView(withId(R.id.viewpager)).perform(swipeLeft());
         onView(withId(R.id.activity_recycler_view)).perform(
                 RecyclerViewActions.actionOnItemAtPosition(0, click()));
     }

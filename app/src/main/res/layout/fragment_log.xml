@@ -27,7 +27,7 @@
         <ImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/ic_empty_state"/>
+            android:src="@drawable/ic_checkbox_multiple_marked_circle_outline_grey600_48dp"/>
 
         <TextView
             android:id="@+id/empty_state_text"

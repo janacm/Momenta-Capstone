@@ -131,7 +131,6 @@
     <string name="timespent_icon_content_description">Time Spent Icon</string>
     <string name="title_activity_login">Sign in</string>
     <string name="_1h_45m">1H 45M</string>
-    <string name="add_item_string">Add New Task</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -153,7 +152,8 @@
     <string name="toast_problem_updating_activity">There was a problem updating your activity</string>
 
     <!-- Strings related to the Select tasks to add time towards Screen !-->
-    <string name="select_tasks_to_add_time_to_title">Add time to...</string>
+    <string name="add_item_string">Add New Task</string>
+    <string name="select_tasks_to_add_time_to_title">Add time to…</string>
     <string name="select_tasks_no_tasks_selected">No task(s) selected</string>
     <string name="select_tasks_cannot_divide_tasks">Cannot divide tasks evenly within time interval</string>
 
@@ -244,6 +244,9 @@
     <string name="title_share_activity">Add Friends</string>
     <string name="calendar_spent">"Spent "</string>
     <string name="calendar_minutes_on">" minutes on "</string>
+
+    <string name="add_time_task_toast_no_time_remaining">Not enough time left for remaining tasks</string>
+    <string name="add_time_task_toast_value_required">Must add a time value to the task</string>
 
     <!--Empty State Strings-->
     <string name="empty_state_no_goals">You have no goals yet.</string>
