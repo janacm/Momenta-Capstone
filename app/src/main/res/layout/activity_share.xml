@@ -37,7 +37,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/share_mail_field"
-        android:layout_toRightOf="@+id/share_last_modified_text"
         android:layout_toEndOf="@+id/share_last_modified_text"
         android:layout_margin="@dimen/activity_horizontal_margin"
         />
@@ -55,7 +54,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/share_owner_value"
-        android:layout_toRightOf="@+id/share_last_modified_text"
         android:layout_toEndOf="@+id/share_last_modified_text"
         android:layout_margin="@dimen/activity_horizontal_margin"
         />

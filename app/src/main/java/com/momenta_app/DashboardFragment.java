@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
@@ -45,12 +46,13 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
 
     private TextView displayNameText;
     private ImageView imgView;
+    private ProgressBar loadingProgressBar;
 
     private helperPreferences helperPreferences;
     private DashboardTaskStatsAdapter dAdapter;
     public RecyclerView dRecyclerView;
     DatabaseReference mDatabaseReference;
-    User mFirebaseUser;
+    User mUser;
 
 
     // Firebase instance variables
@@ -71,9 +73,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
         mDatabaseReference = FirebaseProvider.getInstance().getReference();
         helperPreferences = new helperPreferences(getActivity());
 
-        mFirebaseUser = FirebaseProvider.getUser();
-        if (mFirebaseUser != null) {
-            directory = mFirebaseUser.getPath() + "/goals";
+        mUser = FirebaseProvider.getUser();
+        if (mUser != null) {
+            directory = mUser.getPath() + "/goals";
         }
     }
 
@@ -81,8 +83,12 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         View activityView = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        if (mUser.getPath()!= null) {
+            loadingProgressBar = (ProgressBar)activityView.findViewById(R.id.progressBar);
+            loadingProgressBar.setVisibility(View.VISIBLE);
+        }
+
         button = (Button) activityView.findViewById(R.id.button1);
         button.setOnClickListener(this);
         totalTimeSpent = (TextView) activityView.findViewById(R.id.dash_goals_total_time_spent_value);
@@ -108,6 +114,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
                     //TODO Change to ChildEventListener --> More efficient
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        loadingProgressBar.setVisibility(View.GONE);
                         Integer totalTime = 0;
                         Integer totalGoal = 0;
 
@@ -177,6 +184,11 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
                         //TODO Keeps crahsing in the timeSetText call, meybe add is added call.
                         totalTimeSpent.setText(timeSetText(ttsh,ttsm));
                         totalGoalTime.setText(timeSetText(tgh,tgm));
+
+                        if ( getView() != null) {
+                            getView().findViewById(R.id.awardsCard).setVisibility(View.VISIBLE);
+                            getView().findViewById(R.id.goalsCompletedCard).setVisibility(View.VISIBLE);
+                        }
                     }
 
                     @Override

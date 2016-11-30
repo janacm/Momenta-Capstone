@@ -45,11 +45,7 @@ import static org.mockito.Mockito.when;
 @RunWith(AndroidJUnit4.class)
 public class ViewActivityTest {
 
-    private static final String TAG = "ViewActivityTest";
-    private String id;
     private Context context;
-    private helperPreferences helperPreferences;
-    private DatabaseReference reference;
     @Rule
     public ActivityTestRule<TaskActivity> rule =
             new ActivityTestRule<TaskActivity>(TaskActivity.class) {
@@ -77,7 +73,6 @@ public class ViewActivityTest {
         Instrumentation instrumentation
                 = InstrumentationRegistry.getInstrumentation();
         context= instrumentation.getTargetContext();
-        helperPreferences = new helperPreferences(context);
     }
 
     @Test
