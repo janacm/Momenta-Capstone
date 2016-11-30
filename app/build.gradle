@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.github.triplet.play'
 
 android {
     compileSdkVersion 25
@@ -105,7 +106,6 @@ configurations.all {
     resolutionStrategy.force 'com.google.code.findbugs:jsr305:2.0.1'
 }
 
-apply plugin: 'com.github.triplet.play'
 
 play {
     jsonFile = file('Google Play Android Developer-396a85b2122c.json')
