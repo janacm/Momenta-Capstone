@@ -1,6 +1,6 @@
 package com.momenta_app;
 
-import android.content.Context;
+
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -11,21 +11,14 @@ import android.support.v4.app.FragmentPagerAdapter;
  */
 public class ManagerFragmentPagerAdapter  extends FragmentPagerAdapter {
     final int PAGE_COUNT = 4;
-    private String tabTitles[] = new String[4];// { "Dashboard","Log", "Awards", "Trends" };
-    private Context context;
+
     private DashboardFragment dashboardFragment;
     private LogFragment logFragment;
     private AwardsFragment awardsFragment;
     private StatsFragment statsFragment;
 
-    public ManagerFragmentPagerAdapter(FragmentManager fm, Context context) {
+    public ManagerFragmentPagerAdapter(FragmentManager fm) {
         super(fm);
-        this.context = context;
-        tabTitles[0] = context.getString(R.string.tab_title_dashboard);
-        tabTitles[1] = context.getString(R.string.tab_title_log);
-        tabTitles[2] = context.getString(R.string.tab_title_awards);
-        tabTitles[3] = context.getString(R.string.tab_title_trends);
-
     }
 
     @Override
@@ -71,12 +64,4 @@ public class ManagerFragmentPagerAdapter  extends FragmentPagerAdapter {
 
         return LogFragment.newInstance(position + 1);
     }
-
-    @Override
-    public CharSequence getPageTitle(int position) {
-        // Generate title based on item position
-        return tabTitles[position];
-    }
-
-
 }

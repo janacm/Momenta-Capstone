@@ -1,9 +1,11 @@
 package com.momenta_app;
 
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -59,8 +61,7 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
 
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         viewPager = (ViewPager) findViewById(R.id.viewpager);
-        fragmentManager = new ManagerFragmentPagerAdapter(getSupportFragmentManager(),
-                MainActivity.this);
+        fragmentManager = new ManagerFragmentPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(fragmentManager);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -89,6 +90,51 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
+
+        //Array of tab icons
+        int tabIcons[] = {R.drawable.ic_bulletin_board_black_24dp, R.drawable.ic_checkbox_multiple_marked_circle_outline_black_24dp,
+                R.drawable.ic_trophy_variant_black_24dp, R.drawable.ic_chart_line_black_24dp};
+
+
+        //Setting tab icons
+        for (int i = 0; i < tabLayout.getTabCount(); i++) {
+            tabLayout.getTabAt(i).setIcon(tabIcons[i]);
+            int tabIconColor = ContextCompat.getColor(viewPager.getContext(), R.color.colorNotSelected);
+            tabLayout.getTabAt(i).getIcon().setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+        }
+
+        //Setting colour for Dashboard Tab Colour initially
+        int selectedTabColour = ContextCompat.getColor(viewPager.getContext(), R.color.colorAccent);
+        tabLayout.getTabAt(0).getIcon().setColorFilter(selectedTabColour, PorterDuff.Mode.SRC_IN);
+        tabLayout.getTabAt(0).select();
+
+        tabLayout.setOnTabSelectedListener(
+                new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
+
+                    @Override
+                    public void onTabSelected(TabLayout.Tab tab) {
+                        super.onTabSelected(tab);
+
+                        //Colour when tab is selected - use the accent colour
+                        int tabIconColor = ContextCompat.getColor(viewPager.getContext(), R.color.colorAccent);
+                        tab.getIcon().setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+                    }
+
+                    @Override
+                    public void onTabUnselected(TabLayout.Tab tab) {
+                        super.onTabUnselected(tab);
+
+                        //Colour when tab is not selected
+                        int tabIconColor = ContextCompat.getColor(viewPager.getContext(), R.color.colorNotSelected);
+                        tab.getIcon().setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+                    }
+
+                    @Override
+                    public void onTabReselected(TabLayout.Tab tab) {
+                        super.onTabReselected(tab);
+                    }
+                }
+        );
 
         mSheetLayout = (SheetLayout)findViewById(R.id.bottom_sheet);
         fab = (FloatingActionButton) findViewById(R.id.fab);
