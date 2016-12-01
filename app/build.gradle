@@ -108,7 +108,7 @@ configurations.all {
 
 
 play {
-    jsonFile = file('Google Play Android Developer-396a85b2122c.json')
+    jsonFile = file('Google Play Android Developer-3baef2a55028.json')
 }
 
 apply plugin: 'com.google.gms.google-services'
