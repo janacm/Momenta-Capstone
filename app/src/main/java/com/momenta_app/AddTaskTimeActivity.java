@@ -315,9 +315,9 @@ public class AddTaskTimeActivity extends AppCompatActivity {
                 setUpScreen(taskStask);
             } else {
                 if(!timeToSpare(numofTasks, position, temp, seekbarValue))
-                    toast("Not enough time left for remaining tasks");
+                    toast(getString(R.string.add_time_task_toast_no_time_remaining));
                 if((temp - seekbarValue) == temp)
-                    toast("Must add a time value to the task");
+                    toast(getString(R.string.add_time_task_toast_value_required));
             }
         } else {
             if ((position == (numofTasks - 1)) && ((temp - seekbarValue) != temp)) {

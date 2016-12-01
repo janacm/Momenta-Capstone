@@ -32,7 +32,6 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.matcher.ViewMatchers.withSpinnerText;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.allOf;
@@ -45,11 +44,7 @@ import static org.mockito.Mockito.when;
 @RunWith(AndroidJUnit4.class)
 public class ViewActivityTest {
 
-    private static final String TAG = "ViewActivityTest";
-    private String id;
     private Context context;
-    private helperPreferences helperPreferences;
-    private DatabaseReference reference;
     @Rule
     public ActivityTestRule<TaskActivity> rule =
             new ActivityTestRule<TaskActivity>(TaskActivity.class) {
@@ -77,7 +72,6 @@ public class ViewActivityTest {
         Instrumentation instrumentation
                 = InstrumentationRegistry.getInstrumentation();
         context= instrumentation.getTargetContext();
-        helperPreferences = new helperPreferences(context);
     }
 
     @Test

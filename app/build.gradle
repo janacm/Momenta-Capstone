@@ -9,8 +9,8 @@ android {
         applicationId "com.momenta_app"
         minSdkVersion 19
         targetSdkVersion 24
-        versionCode 3
-        versionName "0.2.1"
+        versionCode 4
+        versionName "0.2.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -60,10 +60,10 @@ dependencies {
     compile 'com.github.coyarzun89:fabtransitionactivity:0.2.0'
     compile 'com.github.lzyzsd:circleprogress:1.1.0@aar'
     compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'
-    compile 'com.squareup.picasso:picasso:2.2.+'
     compile 'com.diogobernardino:williamchart:2.3.0'
     compile 'com.mikhaellopez:circularimageview:3.0.2'
     compile 'com.github.mancj:SlimChart:0.1.2'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
     compile('com.mikepenz:fastadapter:2.0.0@aar') {
         transitive = true
     }
