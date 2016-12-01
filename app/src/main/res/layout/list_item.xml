@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:autofit="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="80dp"
@@ -16,7 +17,7 @@
         android:layout_height="match_parent"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:text="@string/_1h_45m"
+        tools:text="@string/_1h_45m"
         android:textColor="@color/primary_text"
         android:textSize="15sp"
         android:gravity="center_vertical|center_horizontal"
@@ -27,9 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_toEndOf="@+id/list_item_time_spent"
-        android:layout_toRightOf="@+id/list_item_time_spent"
         android:gravity="center_vertical"
-        android:layout_marginRight="10dp"
         android:layout_marginEnd="10dp"
         android:orientation="vertical">
 
@@ -40,7 +39,7 @@
             android:textSize="16sp"
             android:ellipsize="end"
             android:textColor="@color/black"
-            android:text="@string/dummy_content"
+            tools:text="@string/dummy_content"
             android:maxLines="2"/>
 
         <com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar
@@ -53,7 +52,6 @@
             autofit:rcBackgroundPadding="3dp"
             autofit:rcBackgroundColor="@color/progress_bg"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="10dp"
             android:layout_marginEnd="10dp"/>
 
     </LinearLayout>
