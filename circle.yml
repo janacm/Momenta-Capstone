@@ -11,6 +11,7 @@ deployment:
     alpha:
         branch: production
         commands:
+           - ./gradlew signingReport
            - ./gradlew publishApkRelease
            
 dependencies:
