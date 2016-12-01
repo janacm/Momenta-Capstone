@@ -54,21 +54,11 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.0.0'
     compile 'com.android.support:support-v4:25.0.0'
     compile 'me.grantland:autofittextview:0.2.1'
-    compile 'org.apache.httpcomponents:httpcore:4.4.1'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.0-beta1'
     compile 'com.github.coyarzun89:fabtransitionactivity:0.2.0'
-    compile 'com.github.lzyzsd:circleprogress:1.1.0@aar'
     compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'
-    compile 'com.diogobernardino:williamchart:2.3.0'
     compile 'com.mikhaellopez:circularimageview:3.0.2'
-    compile 'com.github.mancj:SlimChart:0.1.2'
     compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile('com.mikepenz:fastadapter:2.0.0@aar') {
-        transitive = true
-    }
-    compile 'com.mikepenz:fastadapter-extensions:2.0.0@aar'
-    //The tiny Materialize library used for its useful helper classes
-    compile 'com.mikepenz:materialize:1.0.0@aar'
 
     // Testing-only dependencies
     // Force usage of support annotations in the test app, since it is internally used by the runner module.
