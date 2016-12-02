@@ -251,5 +251,9 @@
     <!--Empty State Strings-->
     <string name="empty_state_no_goals">You have no goals yet.</string>
     <string name="empty_state_tap_plus_sign">Tap the plus sign to get started.</string>
-    <string name="goals_icon_content_description">Goals Icon</string>
+    <string name="goals_icon_content_description">Goals Icon</string>invitation_message
+
+    <string name="invitation_title">Hey, checkout Momenta.</string>
+    <string name="invitation_message">No seriously, download momenta!</string>
+    <string name="invitation_cta">Call to action text.</string>
 </resources>
