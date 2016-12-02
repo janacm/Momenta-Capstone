@@ -503,6 +503,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
      * Convenience method for setting the time related values for the goal and time spent fields
      * @param hours hour value that is being set
      * @param minutes minute value that is being set
+     * @param fullText true for the labels to be in full (hour, minute), false for(H,M)
      * @return the string containing the minute and hour values that will be set in the TextView
      */
     private String formatTime(int hours, int minutes, boolean fullText) {
@@ -532,6 +533,22 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
             result =  minutes + minuteLabel;
         }
         return result;
+    }
+
+    /**
+     * Formats time (in minutes) into hours and minutes format
+     * @param minutes the minutes to be formatted
+     * @param fullText true for the labels to be in full (hour, minute), false for(H,M)
+     * @return time represented in hours and minutes
+     */
+    public String formatMinutes(int minutes, boolean fullText) {
+        int mins = minutes, hours = 0;
+
+        if ( ! (mins < 60) ) {
+            hours = mins/60;
+            mins = mins % 60;
+        }
+        return formatTime(hours, mins,fullText);
     }
 
     @Override
@@ -587,7 +604,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         Account account = getAccount();
         if ( account!= null ) {
             String eventSummary = getString(R.string.calendar_spent);
-            eventSummary += timeLogged + getString(R.string.calendar_minutes_on) + task.getName();
+            eventSummary += formatMinutes(timeLogged, true) + getString(R.string.calendar_on) + task.getName();
             GoogleCalendarIntegration gci = new GoogleCalendarIntegration(TaskActivity.this, account,
                     eventSummary, timeLogged);
             gci.execute();

@@ -428,7 +428,8 @@ public class AddTaskTimeActivity extends AppCompatActivity {
         if ( account!= null ) {
             String eventSummary = getString(R.string.calendar_spent);
             for (int i=0; i<taskStask.size(); i++) {
-                eventSummary += intervalValues[i] + getString(R.string.calendar_minutes_on) + taskStask.get(i).getValue();
+                eventSummary += formatMinutes(intervalValues[i], true)
+                        + getString(R.string.calendar_on) + taskStask.get(i).getValue();
                 totalTime += intervalValues[i];
                 if (taskStask.size()-i > 1) {
                     eventSummary += ", ";
@@ -485,6 +486,58 @@ public class AddTaskTimeActivity extends AppCompatActivity {
             }
         }
         return flag;
+    }
+
+    /**
+     * Convenience method for setting the time related values for the goal and time spent fields
+     * @param hours hour value that is being set
+     * @param minutes minute value that is being set
+     * @param fullText true for the labels to be in full (hour, minute), false for(H,M)
+     * @return the string containing the minute and hour values that will be set in the TextView
+     */
+    private String formatTime(int hours, int minutes, boolean fullText) {
+        String hourLabel, minuteLabel, result = "";
+        if (fullText) {
+            if (hours != 1) {
+                hourLabel = " " + getResources().getString(R.string.timeentry_dialog_hours_label);
+            } else {
+                hourLabel = " " + getResources().getString(R.string.timeentry_dialog_hour_label);
+            }
+
+            if (minutes != 1) {
+                minuteLabel = " " + getResources().getString(R.string.timeentry_dialog_minutes_label);
+            } else {
+                minuteLabel = " " + getResources().getString(R.string.timeentry_dialog_minute_label);
+            }
+        } else {
+            hourLabel = getResources().getString(R.string.add_time_to_task_hours);
+            minuteLabel = getResources().getString(R.string.add_time_to_task_minutes);
+        }
+
+        if (hours > 0 && minutes > 0) {
+            result =  hours + hourLabel + " & " + minutes + minuteLabel ;
+        } else if (hours != 0 && minutes == 0) {
+            result = hours + hourLabel;
+        } else {
+            result =  minutes + minuteLabel;
+        }
+        return result;
+    }
+
+    /**
+     * Formats time (in minutes) into hours and minutes format
+     * @param minutes the minutes to be formatted
+     * @param fullText true for the labels to be in full (hour, minute), false for(H,M)
+     * @return time represented in hours and minutes
+     */
+    public String formatMinutes(int minutes, boolean fullText) {
+        int mins = minutes, hours = 0;
+
+        if ( ! (mins < 60) ) {
+            hours = mins/60;
+            mins = mins % 60;
+        }
+        return formatTime(hours, mins,fullText);
     }
 
 

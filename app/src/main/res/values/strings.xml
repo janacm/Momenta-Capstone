@@ -243,7 +243,7 @@
     <string name="share_owner">Owner</string>
     <string name="title_share_activity">Add Friends</string>
     <string name="calendar_spent">"Spent "</string>
-    <string name="calendar_minutes_on">" minutes on "</string>
+    <string name="calendar_on">" on "</string>
 
     <string name="add_time_task_toast_no_time_remaining">Not enough time left for remaining tasks</string>
     <string name="add_time_task_toast_value_required">Must add a time value to the task</string>
