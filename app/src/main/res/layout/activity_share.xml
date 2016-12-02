@@ -39,6 +39,7 @@
         android:layout_below="@+id/share_mail_field"
         android:layout_toEndOf="@+id/share_last_modified_text"
         android:layout_margin="@dimen/activity_horizontal_margin"
+        tools:text="@string/welcome_to_momenta"
         />
 
     <TextView
@@ -56,6 +57,7 @@
         android:layout_below="@+id/share_owner_value"
         android:layout_toEndOf="@+id/share_last_modified_text"
         android:layout_margin="@dimen/activity_horizontal_margin"
+        tools:text="@string/last_modified_placeholder"
         />
     <View
         android:id="@+id/share_divider"

@@ -57,7 +57,6 @@
             android:id="@+id/newtask_goal_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="15dp"
             android:layout_marginEnd="15dp"
             android:paddingTop="8dp"
             android:tint="#9B9B9B"
@@ -70,18 +69,14 @@
             android:text="@string/goal_string"
             android:textSize="18sp"
             android:layout_marginStart="5dp"
-            android:layout_marginLeft="5dp"
             android:textColor="@color/black"
-            android:layout_toRightOf="@+id/newtask_goal_image"
             android:layout_toEndOf="@+id/newtask_goal_image"/>
         <TextView
             android:id="@+id/newtask_goal_value"
             android:layout_width="match_parent"
-            android:text="@string/goal_string"
+            tools:text="@string/goal_string"
             android:layout_marginStart="5dp"
-            android:layout_marginLeft="5dp"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/newtask_goal_image"
             android:layout_toEndOf="@+id/newtask_goal_image"
             android:layout_below="@+id/newtask_goal_title" />
 
@@ -104,7 +99,6 @@
             android:id="@+id/newtask_deadline_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="15dp"
             android:layout_marginEnd="15dp"
             android:paddingTop="8dp"
             android:tint="#9B9B9B"
@@ -115,22 +109,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:layout_marginLeft="5dp"
             android:text="@string/deadline_string"
             android:textSize="18sp"
             android:textColor="@color/black"
-            android:layout_toRightOf="@+id/newtask_deadline_image"
             android:layout_toEndOf="@+id/newtask_deadline_image"/>
         <TextView
             android:id="@+id/newtask_deadline_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:layout_marginLeft="5dp"
             android:layout_below="@+id/newtask_deadline_title"
-            android:layout_toRightOf="@+id/newtask_deadline_title"
             android:layout_toEndOf="@+id/newtask_deadline_image"
-            android:text="@string/sample_deadline_string"/>
+            tools:text="@string/sample_deadline_string"/>
 
     </RelativeLayout>
 
@@ -140,9 +130,7 @@
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
         android:layout_below="@id/newtask_deadline_layout"
-        android:paddingLeft="14dp"
         android:paddingStart="14dp"
-        android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingEnd="@dimen/activity_horizontal_margin"
         android:background="?attr/selectableItemBackground"
         android:layout_height="wrap_content">
@@ -151,10 +139,8 @@
             android:id="@+id/newtask_priority_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="15dp"
             android:layout_marginEnd="15dp"
             android:layout_marginStart="1dp"
-            android:layout_marginLeft="1dp"
             android:paddingTop="8dp"
             android:tint="#9B9B9B"
             android:contentDescription="@string/priority_icon_content_description"
@@ -167,9 +153,7 @@
             android:text="@string/priority_string"
             android:textSize="18sp"
             android:layout_marginStart="5dp"
-            android:layout_marginLeft="5dp"
             android:textColor="@color/black"
-            android:layout_toRightOf="@+id/newtask_priority_image"
             android:layout_toEndOf="@+id/newtask_priority_image"/>
 
         <Spinner
@@ -177,8 +161,6 @@
             android:layout_below="@+id/newtask_priority_title"
             android:layout_width="match_parent"
             android:layout_marginStart="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_toRightOf="@+id/newtask_priority_image"
             android:layout_toEndOf="@+id/newtask_priority_image"
             android:layout_height="25dp"
             android:entries="@array/Priorities"
@@ -201,7 +183,6 @@
             android:id="@+id/newtask_timespent_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="15dp"
             android:layout_marginEnd="15dp"
             android:paddingTop="8dp"
             android:tint="#9B9B9B"
@@ -214,18 +195,14 @@
             android:text="@string/spent_time_already"
             android:textSize="18sp"
             android:layout_marginStart="5dp"
-            android:layout_marginLeft="5dp"
             android:textColor="@color/black"
-            android:layout_toRightOf="@+id/newtask_timespent_image"
             android:layout_toEndOf="@+id/newtask_timespent_image"/>
         <TextView
             android:id="@+id/newtask_timespent_value"
             android:layout_width="match_parent"
-            android:text="@string/timespent_string"
+            tools:text="@string/timespent_string"
             android:layout_marginStart="5dp"
-            android:layout_marginLeft="5dp"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/newtask_timespent_image"
             android:layout_toEndOf="@+id/newtask_timespent_image"
             android:layout_below="@+id/newtask_timespent_title" />
 

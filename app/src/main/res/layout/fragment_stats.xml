@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/grey">
 
     <RelativeLayout
@@ -78,7 +79,7 @@
                     android:padding="7dp"
                     android:textColor="@color/black"
                     android:textSize="18sp"
-                    android:text="@string/dummy_content"/>
+                    tools:text="@string/dummy_content"/>
 
                 <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/trends_piechart"

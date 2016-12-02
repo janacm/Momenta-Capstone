@@ -27,6 +27,7 @@
         <ImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:contentDescription="@string/goals_icon_content_description"
             android:src="@drawable/ic_checkbox_multiple_marked_circle_outline_grey600_48dp"/>
 
         <TextView
