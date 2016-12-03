@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/activity_newtask"
     tools:context="com.momenta_app.AddNewTaskActivity">
 
     <include
@@ -22,7 +21,6 @@
         android:background="@color/colorAccent"
         android:layout_height="wrap_content">
         <TextView
-            android:id="@+id/newtask_activity_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/activity_string"
@@ -168,7 +166,6 @@
 
     </RelativeLayout>
     <RelativeLayout
-        android:id="@+id/newtask_timespent_layout"
         android:layout_width="match_parent"
         android:paddingTop="20dp"
         android:paddingBottom="20dp"

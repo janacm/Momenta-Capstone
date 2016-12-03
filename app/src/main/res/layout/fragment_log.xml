@@ -31,14 +31,12 @@
             android:src="@drawable/ic_checkbox_multiple_marked_circle_outline_grey600_48dp"/>
 
         <TextView
-            android:id="@+id/empty_state_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="28sp"
             android:text="@string/empty_state_no_goals"/>
 
         <TextView
-            android:id="@+id/empty_state_instruction"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"

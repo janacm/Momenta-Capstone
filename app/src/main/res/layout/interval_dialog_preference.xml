@@ -18,7 +18,6 @@
                 android:maxLength="2"
                 android:textSize="@dimen/dialog_time_text_size"/>
             <TextView
-                android:id="@+id/activity_H_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="bottom"
@@ -34,7 +33,6 @@
                 android:gravity="end"
                 android:textSize="@dimen/dialog_time_text_size"/>
             <TextView
-                android:id="@+id/activity_M_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="bottom"

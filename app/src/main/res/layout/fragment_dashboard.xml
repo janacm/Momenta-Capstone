@@ -13,7 +13,6 @@
         android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@+id/profile_layout"
             android:layout_width="match_parent"
             android:layout_height="220dp"
             android:background="@color/total_time_goal"
@@ -98,7 +97,6 @@
                     android:orientation="horizontal">
 
                     <View
-                        android:id="@+id/total_time_spent_circle"
                         android:layout_width="15dp"
                         android:layout_height="15dp"
                         android:layout_gravity="center_vertical"
@@ -107,7 +105,6 @@
                         android:tint="@color/total_time_spent" />
 
                     <TextView
-                        android:id="@+id/dash_goals_total_time_spent_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
@@ -124,7 +121,6 @@
                         android:textSize="15sp" />
 
                     <View
-                        android:id="@+id/total_goal_circle"
                         android:layout_width="15dp"
                         android:layout_height="15dp"
                         android:layout_gravity="center_vertical"
@@ -133,7 +129,6 @@
                         android:gravity="center_vertical" />
 
                     <TextView
-                        android:id="@+id/dash_goals_total_goal_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
@@ -191,7 +186,6 @@
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
-            android:id="@+id/trendsCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
@@ -214,7 +208,6 @@
                     android:text="@string/dash_trends_card_title" />
 
                 <TextView
-                    android:id="@+id/dash_trends_card_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/dash_trends_card_title" />
@@ -222,7 +215,6 @@
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
-            android:id="@+id/totalTimeLeftCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -246,7 +238,6 @@
                     android:text="@string/dash_time_left_card_title" />
 
                 <TextView
-                    android:id="@+id/dash_time_left_card_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/dash_time_left_card_title" />

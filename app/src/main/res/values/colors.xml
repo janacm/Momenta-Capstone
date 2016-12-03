@@ -12,19 +12,13 @@
     <color name="white">#FFFFFF</color>
     <color name="accent_material_light_1">#3597dA</color>
     <color name="blue_transparent">#801976D2</color>
-    <color name="accent_material_light_2">#2D756E</color>
-    <color name="primary_dark_material_dark_1">#3597dA</color>
     <color name="primary_text">#77BEF5</color>
     <color name="black_overlay">#66000000</color>
     <color name="hint_text">#BBDEFB</color>
-    <color name="error_red">#d81919</color>
-    <color name="success_green">#4CAF50</color>
     <color name="grey">#DDDDDD</color>
-    <color name="dark_grey">#9B9B9B</color>
     <color name="deep_purple">#673AB7</color>
     <color name="progress_bg">#70748f</color>
     <color name="latest_tasks_modified_card">#BE3144</color>
-    <color name="total_time_spent_card">#25A55F</color>
     <color name="total_time_spent">#17B794</color>
     <color name="total_time_goal">#28518A</color>
 </resources>
