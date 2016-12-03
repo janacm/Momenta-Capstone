@@ -34,7 +34,7 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 public class SettingsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     //Constants
-    private static final String PREFS_NAME = "momenta_prefs";
+    static final String PREFS_NAME = "momenta_prefs";
     public static final String AM_TIME_FORMAT = "hh:mm a";
     public static final String TWENTY_FOUR_HOUR_FORMAT = "HH:mm";
     private static final int P_REQUEST = 900;
@@ -259,7 +259,11 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                //Save time in preferences.
+                helperBroadcast broadcast = new helperBroadcast(SettingsActivity.this);
+                // Get the previous schedule time.
+                helperBroadcast.SCHEDULE_TIME previousTime = broadcast.scheduleTime();
+
+                // Save time in preferences.
                 String timeSet = hourOfDay + ":" + minute;
                 Date timeSetDate = parseStringToDate(timeSet, TWENTY_FOUR_HOUR_FORMAT);
                 helperPreferences.savePreferences(TIME.toString(), simpleDateFormat.format(timeSetDate));
@@ -270,6 +274,14 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
                     Preference notificationEndTime = findPreference("notification_end_time");
                     notificationEndTime.setSummary( helperPreferences.getPreferences(NOTIFICATION_TIME.END_TIME.toString(), "08:30 PM") );
                 }
+                helperBroadcast.SCHEDULE_TIME scheduleTime = broadcast.scheduleTime();
+                // If the previous time and the current time are both scheduled for now
+                // do not reschedule the alarm.
+                if ( !(previousTime.equals(helperBroadcast.SCHEDULE_TIME.NOW) &&
+                            scheduleTime.equals(helperBroadcast.SCHEDULE_TIME.NOW)) ) {
+                    broadcast.sendBroadcast();
+                }
+
             }
         }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false);
         timePickerDialog.show();
