@@ -1,4 +1,4 @@
-MANIFEST_FILE='.\app\src\mainAndroidManifest.xml'
+MANIFEST_FILE=${HOME}'/'${CIRCLE_PROJECT_REPONAME}'/app/src/mainAndroidManifest.xml'
 VERSIONCODE=`grep versionCode $MANIFEST_FILE | sed 's/.*versionCode="//;s/".*//'`
 VERSIONNAME=`grep versionName $MANIFEST_FILE | sed 's/.*versionName="//;s/\.[0-9]*".*//'`
 NEWCODE=$BUILD_NUMBER
