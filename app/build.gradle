@@ -4,7 +4,7 @@ import java.util.regex.Pattern
 
 task incrementVersionCode << {
     println(":incrementVersionCode - Incrementing Version Code...")
-    def buildGradleFile = file("srcbuild.gradle")
+    def buildGradleFile = file("build.gradle")
     def patternVersionCode = Pattern.compile("versionCode (\\d+)")
     def buildGradleFileText = buildGradleFile.getText()
     def matcherVersionCode = patternVersionCode.matcher(buildGradleFileText)
