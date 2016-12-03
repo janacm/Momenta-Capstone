@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import java.util.Calendar;
@@ -14,10 +15,12 @@ import java.util.concurrent.TimeUnit;
  * For Momenta-Capstone
  */
 public class helperBroadcast {
+    private static final String TAG = "HelperBroadcast";
+    enum SCHEDULE_TIME{CANCEL, NOW, START_TIME, TOMORROW}
 
     private Context context;
-    helperPreferences sharedPrefs;
-    PendingIntent pendingIntent;
+    private  helperPreferences sharedPrefs;
+    private PendingIntent pendingIntent;
     helperPreferences helperPreferences;
 
 
@@ -30,61 +33,40 @@ public class helperBroadcast {
     }
 
     public void sendBroadcast() {
-        Log.d("Dashboard", "Setting Alarm.");
+        Log.d(TAG, "Setting Alarm.");
         String minutes = sharedPrefs.getPreferences(Constants.SHPREF_INTERVAL_MINS, "0");
         String hours = sharedPrefs.getPreferences(Constants.SHPREF_INTERVAL_HOURS, "0");
 
-        Log.d("Dashboard", "Setting Alarm..." + hours + minutes);
+        Log.d(TAG, "Setting Alarm..." + hours + minutes);
         Calendar currentCal = Calendar.getInstance();
         int time = Integer.parseInt(hours) * 60 * 60 * 1000 + Integer.parseInt(minutes) * 60 * 1000;
         if (time != 0) {
-            //Get start time from preference
-            SettingsActivity.NOTIFICATION_TIME START_TIME = SettingsActivity.NOTIFICATION_TIME.START_TIME;
-            String startTimeString = helperPreferences.getPreferences(START_TIME.toString(), "08:30 AM");
+            SCHEDULE_TIME scheduleTime = scheduleTime();
+            Calendar calendars[] = getAlarmStartEndTime();
+            Calendar alarmStartCal = calendars[0];
 
-            //Get end time from preference
-            SettingsActivity.NOTIFICATION_TIME END_TIME = SettingsActivity.NOTIFICATION_TIME.END_TIME;
-            String endTimeString = helperPreferences.getPreferences(END_TIME.toString(), "08:30 PM");
-
-            //Calculate time to set alarm in milliseconds
-            // START_TIME - CURRENT_TIME + INTERVAL_TIME
-            Calendar alarmStartCal = Calendar.getInstance(); //Variable used to hold the alarm start time
-            Calendar tempCal = Calendar.getInstance();
-            tempCal.setTime(SettingsActivity.parseStringToDate(startTimeString, SettingsActivity.AM_TIME_FORMAT));
-            alarmStartCal.set(Calendar.HOUR_OF_DAY, tempCal.get(Calendar.HOUR_OF_DAY));
-            alarmStartCal.set(Calendar.MINUTE, tempCal.get(Calendar.MINUTE));
-
-            Calendar alarmEndCal = Calendar.getInstance();
-            tempCal.setTime(SettingsActivity.parseStringToDate(endTimeString, SettingsActivity.AM_TIME_FORMAT));
-            alarmEndCal.set(Calendar.HOUR_OF_DAY, tempCal.get(Calendar.HOUR_OF_DAY));
-            alarmEndCal.set(Calendar.MINUTE, tempCal.get(Calendar.MINUTE));
-
-            Calendar triggerCal = Calendar.getInstance();
-            //If current time is greater than start time, then start the alarm tomorrow
-            if ( currentCal.getTimeInMillis() > alarmStartCal.getTimeInMillis() ) {
-
-                if ( currentCal.getTimeInMillis() >= alarmEndCal.getTimeInMillis() ) {
-                    //current time is greater than start and end time
-                    //schedule alarm for start time tomorrow + interval time
-                    triggerCal.setTimeInMillis( alarmStartCal.getTimeInMillis()
+            switch (scheduleTime) {
+                case NOW:
+                    Log.d(TAG, "Setting alarm right now: " + currentCal.getTimeInMillis());
+                    currentCal.setTimeInMillis( currentCal.getTimeInMillis() + time );
+                    break;
+                case START_TIME:
+                    Log.d(TAG, "Setting alarm at start time: " + currentCal.getTimeInMillis());
+                    currentCal.setTimeInMillis( alarmStartCal.getTimeInMillis() + time );
+                    break;
+                case TOMORROW:
+                    Log.d(TAG, "Setting alarm tomorrow: " + currentCal.getTimeInMillis());
+                    currentCal.setTimeInMillis( alarmStartCal.getTimeInMillis()
                             + TimeUnit.MILLISECONDS.convert(1L, TimeUnit.DAYS)
                             + time );
-                    Log.d("helperBroadcast", "Setting alarm tomorrow: " + triggerCal.getTimeInMillis());
-                } else if ( currentCal.getTimeInMillis() <= alarmEndCal.getTimeInMillis() ) {
-                    //current time is greater than start time, but less than end time
-                    //schedule alarm for current time + interval time
-                    triggerCal.setTimeInMillis( triggerCal.getTimeInMillis() + time );
-                    Log.d("helperBroadcast", "Setting alarm right now: " + triggerCal.getTimeInMillis());
-                }
-            } else if ( currentCal.getTimeInMillis() <= alarmStartCal.getTimeInMillis() ) {
-                //current time is less than or equal to the alarm start time
-                //schedule alarm for start time + interval time (same day)
-                triggerCal.setTimeInMillis( alarmStartCal.getTimeInMillis() + time );
-                Log.d("helperBroadcast", "Setting alarm at start time: " + triggerCal.getTimeInMillis());
+                    break;
+                default:
+                    Log.d(TAG, "Invalid case");
+                    return;
             }
 
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, triggerCal.getTimeInMillis(),
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, currentCal.getTimeInMillis(),
                     time, pendingIntent);
         }
     }
@@ -92,6 +74,78 @@ public class helperBroadcast {
     public void cancelAlarm() {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
+    }
 
+    /**
+     * Finds when the next alarm should be scheduled for
+     * @return SCHEDULE_TIME for the next alarm.
+     *          NOW: the alarm should be scheduled right away
+     *          START_TIME: the alarm should be scheduled at the start time today
+     *          TOMORROW: the alarm should be scheduled at the start time tomorrow
+     */
+    SCHEDULE_TIME scheduleTime() {
+        SCHEDULE_TIME result;
+        SharedPreferences sharedPrefs = context.getSharedPreferences(SettingsActivity.PREFS_NAME, 0);
+        String hours = sharedPrefs.getString(Constants.SHPREF_INTERVAL_HOURS, "0");
+        String minutes = sharedPrefs.getString(Constants.SHPREF_INTERVAL_MINS, "0");
+        if ((hours.equals("0") || hours.equals("00")) && (minutes.equals("0") || minutes.equals("00"))) {
+            result = SCHEDULE_TIME.CANCEL;
+            return result;
+        }
+
+        Calendar calendars[] = getAlarmStartEndTime();
+        Calendar alarmStartCal = calendars[0];
+        Calendar alarmEndCal = calendars[1];
+        Calendar currentCal = Calendar.getInstance();
+
+        if ( currentCal.getTimeInMillis() >= alarmStartCal.getTimeInMillis() ) {
+
+            if ( currentCal.getTimeInMillis() >= alarmEndCal.getTimeInMillis() ) {
+                // If (currentTime > startTime) & (currentTime > endTime)
+                // the alarm should be scheduled for tomorrow
+                result = SCHEDULE_TIME.TOMORROW;
+            } else {
+                // If (currentTime > startTime) & !(currentTime > endTime)
+                // the alarm should be scheduled for right now + interval_time
+                result = SCHEDULE_TIME.NOW;
+            }
+        } else {
+            // Current time is less the alarm start time
+            // schedule alarm for start time + interval time (same day)
+            result = SCHEDULE_TIME.START_TIME;
+        }
+        return result;
+    }
+
+    /**
+     * Gets the start and end time of the notification alarms.
+     * @return An array with two calendar.
+     *          result[0]: Start time Calendar
+     *          result[1]: End time Calendar
+     */
+    private Calendar[] getAlarmStartEndTime() {
+        SettingsActivity.NOTIFICATION_TIME START_TIME = SettingsActivity.NOTIFICATION_TIME.START_TIME;
+        String startTimeString = helperPreferences.getPreferences(START_TIME.toString(), "08:30 AM");
+        SettingsActivity.NOTIFICATION_TIME END_TIME = SettingsActivity.NOTIFICATION_TIME.END_TIME;
+        String endTimeString = helperPreferences.getPreferences(END_TIME.toString(), "08:30 PM");
+
+        // The calendars to represent the start and end times.
+        Calendar alarmStartCal = Calendar.getInstance();
+        Calendar alarmEndCal = Calendar.getInstance();
+
+        // Temp calendar reused to store hour of day.
+        Calendar tempCal = Calendar.getInstance();
+
+        // Set the time of day for the start cal.
+        tempCal.setTime(SettingsActivity.parseStringToDate(startTimeString, SettingsActivity.AM_TIME_FORMAT));
+        alarmStartCal.set(Calendar.HOUR_OF_DAY, tempCal.get(Calendar.HOUR_OF_DAY));
+        alarmStartCal.set(Calendar.MINUTE, tempCal.get(Calendar.MINUTE));
+
+        // Set the time of day for the end cal.
+        tempCal.setTime(SettingsActivity.parseStringToDate(endTimeString, SettingsActivity.AM_TIME_FORMAT));
+        alarmEndCal.set(Calendar.HOUR_OF_DAY, tempCal.get(Calendar.HOUR_OF_DAY));
+        alarmEndCal.set(Calendar.MINUTE, tempCal.get(Calendar.MINUTE));
+
+        return new Calendar[]{alarmStartCal, alarmEndCal};
     }
 }
