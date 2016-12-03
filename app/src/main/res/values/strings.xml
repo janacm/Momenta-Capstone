@@ -126,7 +126,26 @@
     <string name="time_in_minutes">Time in minutes</string>
 
     <!-- Awards titles and descriptions -->
+    <string name="award_commited_title">Committed</string>
+    <string name="award_neophyte_title">Neophyte</string>
+    <string name="award_trend_setter_title">Trend Setter</string>
+    <string name="award_multi_tasker_title">Multi-Tasker</string>
+    <string name="award_productive_title">Productive</string>
+    <string name="award_perfectionnist_title">Perfectionist</string>
+    <string name="award_ponctual_title">Punctual</string>
 
+    <string name="award_commited_desc_1">Logged time towards an activity you previously committed to </string>
+    <string name="award_neophyte_desc_1">Logged time for the first time towards an activity </string>
+    <string name="award_trend_setter_desc_1">Completed 5 hours towards a productive activity </string>
+    <string name="award_multi_tasker_desc_1">Log time in </string>
+    <string name="award_productive_desc_1">Successfully log time towards an activity after seeing the notification </string>
+    <string name="award_perfectionnist_desc_1">Spend more than </string>
+    <string name="award_ponctual_desc_1">Achieve time goal before deadline on </string>
+
+    <string name="award_multi_tasker_desc_2">different activities</string>
+    <string name="award_productive_desc_2">times</string>
+    <string name="award_perfectionnist_desc_2">hours towards an activity</string>
+    <string name="award_ponctual_desc_2">activities</string>
 
     <!--Sign in credentials for Integration testing with Firebase-->
 

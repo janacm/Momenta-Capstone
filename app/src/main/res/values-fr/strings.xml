@@ -86,4 +86,22 @@
     <string name="discard_changes">Annuler vos changements?</string>
     <string name="time_in_minutes">Temps en minutes</string>
     <string name="add_item_string">Ajouter une nouvelle tâche</string>
+    <string name="award_commited_desc_1">\"Temps enregistré à une activité déjà commencée \"</string>
+    <string name="award_commited_title">Engagé</string>
+    <string name="award_multi_tasker_desc_1">Temps enregistré dans</string>
+    <string name="award_multi_tasker_desc_2">différentes activités</string>
+    <string name="award_multi_tasker_title">Polyvalent</string>
+    <string name="award_neophyte_title">Neophyte</string>
+    <string name="award_perfectionnist_desc_1">Passer plus de</string>
+    <string name="award_perfectionnist_desc_2">heures sur une activité</string>
+    <string name="award_perfectionnist_title">Perfectionnist</string>
+    <string name="award_ponctual_desc_2">activitées</string>
+    <string name="award_ponctual_title">Ponctuel</string>
+    <string name="award_productive_desc_2">fois</string>
+    <string name="award_productive_title">Productif</string>
+    <string name="award_trend_setter_title">Novateur</string>
+    <string name="award_trend_setter_desc_1">Compléter 5 heures d\'une activité productive</string>
+    <string name="award_productive_desc_1">Enregistrer du temps après avoir vu la notification</string>
+    <string name="award_ponctual_desc_1">Atteindre l\'objectif de temps avant la date limite sur</string>
+    <string name="award_neophyte_desc_1">Enregistrer du temps pour la première fois envers une activité</string>
 </resources>
