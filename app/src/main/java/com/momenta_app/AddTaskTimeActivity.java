@@ -302,7 +302,6 @@ public class AddTaskTimeActivity extends AppCompatActivity {
     }
 
     // Method for handling the clicking of the next button
-//    TODO: Extract toast messages for translations
     public void moveNext() {
         int temp = intervalTime;
         if ((position < numofTasks - 1) && ((temp - seekbarValue) != temp)) {
@@ -404,6 +403,10 @@ public class AddTaskTimeActivity extends AppCompatActivity {
 
                             mFirebaseDatabaseReference.child(tempGoalDir + "/" +Task.TIME_SPENT)
                                     .setValue(updatedTimeSpent);
+                            mFirebaseDatabaseReference.child(tempGoalDir + "/" +Task.LAST_MODIFIED)
+                                    .setValue(Calendar.getInstance().getTimeInMillis());
+                            mFirebaseDatabaseReference.child(tempGoalDir + "/" +Task.LAST_MODIFIED_BY)
+                                    .setValue(FirebaseProvider.getUserPath());
                         }
 
                         @Override
@@ -559,7 +562,7 @@ public class AddTaskTimeActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
 
-
+        // TODO Extract strings
         if (numofTasks > 1)
             toast("Successfully added time to your tasks");
         else

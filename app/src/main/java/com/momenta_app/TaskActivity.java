@@ -70,7 +70,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
 
     //Firebase instances
     private DatabaseReference mFirebaseDatabaseReference;
-    private String directory = "";
+    private String goalDirectory = "";
     private String timeSpentDirectory = "";
 
 
@@ -90,7 +90,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
 
         Calendar cal = Calendar.getInstance();
         String date = SettingsActivity.formatDate(cal.getTime(), Constants.TIME_SPENT_DATE_FORMAT);
-        directory = FirebaseProvider.getUserPath() + "/goals";
+        goalDirectory = FirebaseProvider.getUserPath() + "/goals";
         timeSpentDirectory = FirebaseProvider.getUserPath() + "/" + Task.TIME_SPENT + "/" + date;
 
         mFirebaseDatabaseReference = FirebaseProvider.getInstance().getReference();
@@ -104,7 +104,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         final String id = bundleId;
 
-        mFirebaseDatabaseReference.child(directory + "/" + id).addListenerForSingleValueEvent(
+        mFirebaseDatabaseReference.child(goalDirectory + "/" + id).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -200,7 +200,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                                 childUpdates.put(teamMember + "/goals/" + task.getId(), task.toMap());
                             }
                             mFirebaseDatabaseReference.updateChildren(childUpdates);
-                            mFirebaseDatabaseReference.child(directory + "/" + task.getId()).removeValue();
+                            mFirebaseDatabaseReference.child(goalDirectory + "/" + task.getId()).removeValue();
                         }
                         finish();
                     }
@@ -341,7 +341,6 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                                 awardManager.handleAwardsProgress(timeLogged.longValue(), task);
                                 mFirebaseDatabaseReference.child(timeSpentDirectory + "/" + Task.TIME_SPENT)
                                         .setValue(totalTimeForDay);
-                                wasEdited = true;
                             }
 
                             @Override
@@ -349,6 +348,14 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                             }
                         }
                 );
+
+                String taskPath = goalDirectory + "/" + task.getId() + "/";
+                mFirebaseDatabaseReference.child(taskPath + Task.TIME_SPENT)
+                        .setValue(task.getTimeSpent());
+                mFirebaseDatabaseReference.child(taskPath + Task.LAST_MODIFIED)
+                        .setValue(Calendar.getInstance().getTimeInMillis());
+                mFirebaseDatabaseReference.child(taskPath + Task.LAST_MODIFIED_BY)
+                        .setValue(FirebaseProvider.getUserPath());
             }
         })
                 .setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
