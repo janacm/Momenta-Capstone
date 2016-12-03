@@ -1,6 +1,21 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.github.triplet.play'
 
+task incrementVersionCode << {
+    println(":incrementVersionCode - Incrementing Version Code...")
+    def buildGradleFile = file("build.gradle")
+    def patternVersionCode = Pattern.compile("versionCode (\\d+)")
+    def buildGradleFileText = buildGradleFile.getText()
+    def matcherVersionCode = patternVersionCode.matcher(buildGradleFileText)
+    matcherVersionCode.find()
+    def mVersionCode = Integer.parseInt(matcherVersionCode.group(1))
+    def mNextVersionCode = mVersionCode + 1
+    def manifestContent = matcherVersionCode.replaceAll("versionCode " + mNextVersionCode)
+    println(":incrementVersionCode - current versionCode=" + mVersionCode);
+    println(":incrementVersionCode - next versionCode=" + mNextVersionCode);
+    buildGradleFile.write(manifestContent)
+}
+
 android {
     compileSdkVersion 25
     buildToolsVersion '25.0.0'

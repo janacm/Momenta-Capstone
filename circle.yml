@@ -21,7 +21,7 @@ dependencies:
     - echo y | android update sdk --no-ui --all --filter build-tools-24.0.2
     - echo y | android update sdk --no-ui --all --filter build-tools-25.0.0
     - bash ./misc/download_keystore.sh
-    - bash ./misc/versionswitch.sh
+    - gradle incrementVersionCode
 
 test:
   override:
