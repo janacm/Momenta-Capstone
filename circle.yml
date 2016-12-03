@@ -11,18 +11,17 @@ machine:
 deployment:
     alpha:
         branch: production
-        commands:
-           - ./gradlew signingReport
+        commands:        
            - ./gradlew publishApkRelease
            
 dependencies:
   pre:
-    - echo ${KEYSTORE}
     - wget "https://services.gradle.org/distributions/gradle-2.9-bin.zip"; unzip gradle-2.9-bin.zip
     - echo y | android update sdk --no-ui --all --filter tool,extra-android-m2repository,extra-android-support,extra-google-google_play_services,extra-google-m2repository,android-25
     - echo y | android update sdk --no-ui --all --filter build-tools-24.0.2
     - echo y | android update sdk --no-ui --all --filter build-tools-25.0.0
     - bash ./misc/download_keystore.sh
+    - bash ./misc/versionswitch.sh
 
 test:
   override:
