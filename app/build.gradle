@@ -1,9 +1,10 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.github.triplet.play'
+import java.util.regex.Pattern
 
 task incrementVersionCode << {
     println(":incrementVersionCode - Incrementing Version Code...")
-    def buildGradleFile = file("build.gradle")
+    def buildGradleFile = file("srcbuild.gradle")
     def patternVersionCode = Pattern.compile("versionCode (\\d+)")
     def buildGradleFileText = buildGradleFile.getText()
     def matcherVersionCode = patternVersionCode.matcher(buildGradleFileText)
