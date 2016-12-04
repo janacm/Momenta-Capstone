@@ -51,6 +51,7 @@ public class DashboardTaskStatsAdapter extends RecyclerView.Adapter<DashboardTas
         SimpleDateFormat sdf = new SimpleDateFormat("dd/M/yyyy");
         String taskLastModString;
 
+        // TODO: Extract string resource (Today, Yesterday)
         //Display 'Today' string if task modified today
         if(Objects.equals(sdf.format(taskLastMod.getTime()), sdf.format(tempDate.getTime()))){
             taskLastModString = "Today";

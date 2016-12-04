@@ -104,7 +104,6 @@ public class GoogleCalendarIntegration extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean created) {
-        //TODO Toast message if a calender event is created?
         super.onPostExecute(created);
         if (created) {
             Toast.makeText(context, R.string.created_event_string, Toast.LENGTH_LONG).show();
