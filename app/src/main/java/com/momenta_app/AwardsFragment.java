@@ -25,7 +25,7 @@ public class AwardsFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private DatabaseReference mFirebaseDatabaseReference;
     private String directory = "";
-    private helperPreferences helperPreferences;
+    private HelperPreferences helperPreferences;
     private FirebaseRecyclerAdapter<Award, AwardsFragment.AwardViewHolder> mFirebaseAdapter;
     public static AwardsFragment newInstance(int page) {
         Bundle args = new Bundle();
@@ -42,7 +42,7 @@ public class AwardsFragment extends Fragment {
         directory = FirebaseProvider.getUserPath() + "/awards";
         mFirebaseDatabaseReference = FirebaseProvider.getInstance().getReference();
         mFirebaseAdapter = buildAdapter();
-        helperPreferences = new helperPreferences(getContext());
+        helperPreferences = new HelperPreferences(getContext());
     }
 
     @Override

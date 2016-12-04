@@ -44,7 +44,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
 
     SimpleDateFormat simpleDateFormat;
-    helperPreferences helperPreferences;
+    HelperPreferences helperPreferences;
 
     /**
      * The fragment argument representing the section number for this
@@ -55,7 +55,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.settings);
         this.getSharedPreferences(PREFS_NAME, 0).registerOnSharedPreferenceChangeListener(this);
-        helperPreferences = new helperPreferences(this);
+        helperPreferences = new HelperPreferences(this);
         simpleDateFormat = new SimpleDateFormat(AM_TIME_FORMAT);
 
         PreferenceManager.setDefaultValues(this, R.xml.settings,
@@ -172,7 +172,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
             if ((hours.equals("0") || hours.equals("00")) && (minutes.equals("0") || minutes.equals("00"))) {
                 summary = getString(R.string.interval_time_summary_never_remind);
-                helperBroadcast helperBroadcast = new helperBroadcast(this);
+                HelperBroadcast helperBroadcast = new HelperBroadcast(this);
                 helperBroadcast.cancelAlarm();
                 Log.d("SettingsActivity", "Cancelling alarm");
             } else if (hours.equals("0") || hours.equals("00")) {
@@ -259,9 +259,9 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                helperBroadcast broadcast = new helperBroadcast(SettingsActivity.this);
+                HelperBroadcast broadcast = new HelperBroadcast(SettingsActivity.this);
                 // Get the previous schedule time.
-                helperBroadcast.SCHEDULE_TIME previousTime = broadcast.scheduleTime();
+                HelperBroadcast.SCHEDULE_TIME previousTime = broadcast.scheduleTime();
 
                 // Save time in preferences.
                 String timeSet = hourOfDay + ":" + minute;
@@ -274,11 +274,11 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
                     Preference notificationEndTime = findPreference("notification_end_time");
                     notificationEndTime.setSummary( helperPreferences.getPreferences(NOTIFICATION_TIME.END_TIME.toString(), "08:30 PM") );
                 }
-                helperBroadcast.SCHEDULE_TIME scheduleTime = broadcast.scheduleTime();
+                HelperBroadcast.SCHEDULE_TIME scheduleTime = broadcast.scheduleTime();
                 // If the previous time and the current time are both scheduled for now
                 // do not reschedule the alarm.
-                if ( !(previousTime.equals(helperBroadcast.SCHEDULE_TIME.NOW) &&
-                            scheduleTime.equals(helperBroadcast.SCHEDULE_TIME.NOW)) ) {
+                if ( !(previousTime.equals(HelperBroadcast.SCHEDULE_TIME.NOW) &&
+                            scheduleTime.equals(HelperBroadcast.SCHEDULE_TIME.NOW)) ) {
                     broadcast.sendBroadcast();
                 }
 

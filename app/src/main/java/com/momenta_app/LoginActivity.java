@@ -38,7 +38,7 @@ public class LoginActivity extends FragmentActivity implements
     private static final int RC_SIGN_IN = 9001;
     private static final int REQUEST_GOOGLE_PLAY_SERVICES = 9002;
 
-    private helperPreferences helperPreferences;
+    private HelperPreferences helperPreferences;
     private ProgressDialog mProgressDialog;
     private SessionManager sm;
 
@@ -50,7 +50,7 @@ public class LoginActivity extends FragmentActivity implements
         setContentView(R.layout.activity_login);
         sm = SessionManager.getInstance(this);
 
-        helperPreferences = new helperPreferences(this);
+        helperPreferences = new HelperPreferences(this);
         // Button listeners
         findViewById(R.id.sign_in_button).setOnClickListener(this);
 

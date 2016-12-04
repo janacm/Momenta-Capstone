@@ -56,7 +56,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
     private EditText activityName;
     private TextView activityDeadline;
     private TextView activityGoal;
-    private helperPreferences helperPreferences;
+    private HelperPreferences helperPreferences;
     private Task task;
     private Integer goalHours = 2;
     private Integer goalMins = 30;
@@ -141,7 +141,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         maxText = (TextView)findViewById(R.id.max_text_value);
 
         awardManager = AwardManager.getInstance(this);
-        helperPreferences = new helperPreferences(this);
+        helperPreferences = new HelperPreferences(this);
     }
 
     private void initializeFields() {

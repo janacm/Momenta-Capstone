@@ -32,7 +32,7 @@ import java.util.Stack;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class AddTaskTimeActivity extends AppCompatActivity {
-    helperPreferences hp;
+    HelperPreferences hp;
 
     private static final String TAG = "AddTaskTimeActivity";
 
@@ -95,7 +95,7 @@ public class AddTaskTimeActivity extends AppCompatActivity {
         nextBtn = (Button) findViewById(R.id.add_time_to_task_nextBtn);
 
         //Initialize helperPreferences and extract interval values from preferences
-        hp = new helperPreferences(this);
+        hp = new HelperPreferences(this);
         intervalHours = Integer.parseInt(hp.getPreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_HOURS, "0"));
         intervalMins = Integer.parseInt(hp.getPreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_MINS, "0"));
         hp.savePreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_MINS,hp.getPreferences(Constants.SHPREF_INTERVAL_MINS, "0"));
