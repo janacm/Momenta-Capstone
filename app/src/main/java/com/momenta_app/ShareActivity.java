@@ -273,16 +273,15 @@ public class ShareActivity extends AppCompatActivity {
      * @param newUsers the list of users to invite to Momenta
      */
     private void sendAppInvitation(ArrayList<String> newUsers) {
-        // TODO translation of these strings.
         String message = "";
         if (newUsers.size() == 1) {
-            message = "Invite " + newUsers.get(0) + " to use Momenta?";
+            message = getString(R.string.invite_title) + " " + newUsers.get(0) + getString(R.string.to_use_momenta);
         } else if (newUsers.size() == 2) {
-            message = "Invite " + newUsers.get(0) + " & " + newUsers.get(1)
-                    + " to use Momenta?";
+            message = getString(R.string.invite_title) + " " + newUsers.get(0) + " & " + newUsers.get(1)
+                    + getString(R.string.to_use_momenta);
         } else {
-            message = "Invite " + newUsers.get(0) + ", " + newUsers.get(1)
-                    + " & others to use Momenta?";
+            message = getString(R.string.invite_title) + " " + newUsers.get(0) + ", " + newUsers.get(1)
+                    + getString(R.string.others_to_use_momenta);
         }
         AlertDialog dialog = new AlertDialog.Builder(ShareActivity.this)
                 .setMessage(message)

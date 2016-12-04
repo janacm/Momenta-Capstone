@@ -14,22 +14,22 @@ import java.util.concurrent.TimeUnit;
  * Created by Joe on 2016-03-12.
  * For Momenta-Capstone
  */
-public class helperBroadcast {
+public class HelperBroadcast {
     private static final String TAG = "HelperBroadcast";
     enum SCHEDULE_TIME{CANCEL, NOW, START_TIME, TOMORROW}
 
     private Context context;
-    private  helperPreferences sharedPrefs;
+    private HelperPreferences sharedPrefs;
     private PendingIntent pendingIntent;
-    helperPreferences helperPreferences;
+    HelperPreferences helperPreferences;
 
 
-    public helperBroadcast(Context context) {
+    public HelperBroadcast(Context context) {
         this.context = context;
-        sharedPrefs = new helperPreferences(context);
+        sharedPrefs = new HelperPreferences(context);
         Intent intentAlarm = new Intent(context, Receiver.class);
         pendingIntent = PendingIntent.getBroadcast(context, 0, intentAlarm, PendingIntent.FLAG_UPDATE_CURRENT);
-        helperPreferences = new helperPreferences(context);
+        helperPreferences = new HelperPreferences(context);
     }
 
     public void sendBroadcast() {

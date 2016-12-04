@@ -160,8 +160,7 @@ public class LoginActivity extends FragmentActivity implements
     private void showProgressDialog() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this);
-            // TODO: Extract string resource
-            mProgressDialog.setMessage("Loading");
+            mProgressDialog.setMessage(getString(R.string.loading));
             mProgressDialog.setIndeterminate(true);
         }
 
