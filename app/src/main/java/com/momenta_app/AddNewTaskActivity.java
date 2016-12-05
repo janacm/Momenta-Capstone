@@ -298,7 +298,7 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
         String user = FirebaseProvider.getUserPath();
         Task task = new Task(name, totalGoalMinutes.intValue(),
                 deadlineCalendar, Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
-        task.logTimeSpent(totalTimeSpentMinutes.intValue(), this);
+        task.setTimeSpent(totalTimeSpentMinutes.intValue());
         task.setPriorityValue(PRIORITY);
         task.setOwner(user);
         task.setLastModifiedBy(user);
