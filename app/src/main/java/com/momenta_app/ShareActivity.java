@@ -3,16 +3,19 @@ package com.momenta_app;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +27,7 @@ import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,8 +37,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static com.momenta_app.TaskActivity.REQUEST_INVITE;
 
 public class ShareActivity extends AppCompatActivity {
+    private static final String TAG = "ShareActivity";
 
     MultiAutoCompleteTextView textView;
     private boolean usersValid = true;
@@ -128,6 +134,38 @@ public class ShareActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult: requestCode=" + requestCode +
+                ", resultCode=" + resultCode);
+
+        if (requestCode == REQUEST_INVITE) {
+            if (resultCode == RESULT_OK) {
+                // Check how many invitations were sent.
+                String[] ids = AppInviteInvitation
+                        .getInvitationIds(resultCode, data);
+                Log.d(TAG, "Invitations sent: " + ids.length);
+                finish();
+            } else {
+                // Sending failed or it was canceled, show failure message to
+                // the user
+                Log.d(TAG, "Failed to send invitation.");
+            }
+        }
+    }
+
+    @Override
+    public void finish() {
+        if (result == null) {
+            result = new ArrayList<>();
+        }
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra(Task.TEAM, result);
+        setResult(Activity.RESULT_OK, returnIntent);
+        super.finish();
+    }
+
     /**
      * Sets the owner text view
      * @param data The dataSnapshot to get the owner info from
@@ -202,6 +240,7 @@ public class ShareActivity extends AppCompatActivity {
     private void validateUsers(final String[] mails) {
         DatabaseReference ref = FirebaseProvider.getInstance().getReference();
         result = new ArrayList<>();
+        final ArrayList<String> newUsers = new ArrayList<>();
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -211,18 +250,62 @@ public class ShareActivity extends AppCompatActivity {
                     boolean exists = dataSnapshot.child(mail).exists();
                     if (exists) {
                         result.add(mail);
+                    } else {
+                        newUsers.add(mail);
                     }
                     usersValid = usersValid && exists;
                 }
-                Intent returnIntent = new Intent();
-                returnIntent.putExtra(Task.TEAM, result);
-                setResult(Activity.RESULT_OK, returnIntent);
-                finish();
+
+                if ( !newUsers.isEmpty() ) {
+                    sendAppInvitation(newUsers);
+                } else {
+                    finish();
+                }
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+    }
+
+    /**
+     * Invites a list of users to Momenta
+     * @param newUsers the list of users to invite to Momenta
+     */
+    private void sendAppInvitation(ArrayList<String> newUsers) {
+        String message = "";
+        if (newUsers.size() == 1) {
+            message = getString(R.string.invite_title) + " " + newUsers.get(0) + getString(R.string.to_use_momenta);
+        } else if (newUsers.size() == 2) {
+            message = getString(R.string.invite_title) + " " + newUsers.get(0) + " & " + newUsers.get(1)
+                    + getString(R.string.to_use_momenta);
+        } else {
+            message = getString(R.string.invite_title) + " " + newUsers.get(0) + ", " + newUsers.get(1)
+                    + getString(R.string.others_to_use_momenta);
+        }
+        AlertDialog dialog = new AlertDialog.Builder(ShareActivity.this)
+                .setMessage(message)
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        startInviteActivity();
+                    }
+                })
+                .setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                })
+                .create();
+        dialog.show();
+    }
+
+    private void startInviteActivity(){
+        Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
+                .setMessage(getString(R.string.invitation_message))
+                .setCallToActionText(getString(R.string.invitation_cta))
+                .build();
+        startActivityForResult(intent, REQUEST_INVITE);
     }
 
     /**

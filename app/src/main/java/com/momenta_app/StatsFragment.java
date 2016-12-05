@@ -312,7 +312,12 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
 
         Log.d("Stats", "Getting data for " + dateString);
         ArrayList<Task> pieDateList = pieData.get(dateString);
-        pieEntries.clear();
+        if (pieEntries == null) {
+            pieEntries = new ArrayList<>();
+        } else {
+            pieEntries.clear();
+        }
+
         if ( pieDateList != null ) {
             Log.d("Stats", "Size of map for " + dateString + " is: " + pieDateList.size());
             for (Task t: pieDateList) {

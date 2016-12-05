@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class AwardManager {
     private Context context;
-    private helperPreferences helperPreferences;
+    private HelperPreferences helperPreferences;
     private static AwardManager instance;
     private DatabaseReference databaseReference;
     private Award award;
@@ -36,7 +36,7 @@ public class AwardManager {
     }
 
     private AwardManager(Context context) {
-        helperPreferences = new helperPreferences(context);
+        helperPreferences = new HelperPreferences(context);
         firebaseDatabase = FirebaseDatabase.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -182,7 +182,7 @@ public class AwardManager {
         //Increase the committed award
         increaseAwardProgress(Constants.SHARE_COMMITTED_AWARD_ID,1, task);
 
-        //Increase the punctual award TODO: Calling task.setTimeSpent() causes a bug when called from TaskActivity
+        //Increase the punctual award
         task.setTimeSpent(progressIncrease.intValue());
         if(task.getTimeSpent() >= task.getGoal() && Calendar.getInstance().getTime().before(task.getDeadlineValue().getTime())) {
             increaseAwardProgress(Constants.SHPREF_PUNCTUAL_AWARD_ID, 1, task);

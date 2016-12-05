@@ -15,13 +15,13 @@ public class IntervalDialogPreference extends DialogPreference {
 
     private EditText hours_tv;
     private EditText mins_tv;
-    private helperPreferences sharedPrefs;
-    private helperBroadcast broadcast;
+    private HelperPreferences sharedPrefs;
+    private HelperBroadcast broadcast;
 
     public IntervalDialogPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
-        sharedPrefs = new helperPreferences(context);
-        broadcast = new helperBroadcast(context);
+        sharedPrefs = new HelperPreferences(context);
+        broadcast = new HelperBroadcast(context);
         setDialogLayoutResource(R.layout.interval_dialog_preference);
         setPositiveButtonText(android.R.string.ok);
         setNegativeButtonText(android.R.string.cancel);

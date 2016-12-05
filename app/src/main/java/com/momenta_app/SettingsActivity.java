@@ -34,7 +34,7 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 public class SettingsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     //Constants
-    private static final String PREFS_NAME = "momenta_prefs";
+    static final String PREFS_NAME = "momenta_prefs";
     public static final String AM_TIME_FORMAT = "hh:mm a";
     public static final String TWENTY_FOUR_HOUR_FORMAT = "HH:mm";
     private static final int P_REQUEST = 900;
@@ -44,7 +44,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
 
     SimpleDateFormat simpleDateFormat;
-    helperPreferences helperPreferences;
+    HelperPreferences helperPreferences;
 
     /**
      * The fragment argument representing the section number for this
@@ -55,7 +55,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.settings);
         this.getSharedPreferences(PREFS_NAME, 0).registerOnSharedPreferenceChangeListener(this);
-        helperPreferences = new helperPreferences(this);
+        helperPreferences = new HelperPreferences(this);
         simpleDateFormat = new SimpleDateFormat(AM_TIME_FORMAT);
 
         PreferenceManager.setDefaultValues(this, R.xml.settings,
@@ -172,7 +172,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
             if ((hours.equals("0") || hours.equals("00")) && (minutes.equals("0") || minutes.equals("00"))) {
                 summary = getString(R.string.interval_time_summary_never_remind);
-                helperBroadcast helperBroadcast = new helperBroadcast(this);
+                HelperBroadcast helperBroadcast = new HelperBroadcast(this);
                 helperBroadcast.cancelAlarm();
                 Log.d("SettingsActivity", "Cancelling alarm");
             } else if (hours.equals("0") || hours.equals("00")) {
@@ -259,7 +259,11 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                //Save time in preferences.
+                HelperBroadcast broadcast = new HelperBroadcast(SettingsActivity.this);
+                // Get the previous schedule time.
+                HelperBroadcast.SCHEDULE_TIME previousTime = broadcast.scheduleTime();
+
+                // Save time in preferences.
                 String timeSet = hourOfDay + ":" + minute;
                 Date timeSetDate = parseStringToDate(timeSet, TWENTY_FOUR_HOUR_FORMAT);
                 helperPreferences.savePreferences(TIME.toString(), simpleDateFormat.format(timeSetDate));
@@ -270,6 +274,14 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
                     Preference notificationEndTime = findPreference("notification_end_time");
                     notificationEndTime.setSummary( helperPreferences.getPreferences(NOTIFICATION_TIME.END_TIME.toString(), "08:30 PM") );
                 }
+                HelperBroadcast.SCHEDULE_TIME scheduleTime = broadcast.scheduleTime();
+                // If the previous time and the current time are both scheduled for now
+                // do not reschedule the alarm.
+                if ( !(previousTime.equals(HelperBroadcast.SCHEDULE_TIME.NOW) &&
+                            scheduleTime.equals(HelperBroadcast.SCHEDULE_TIME.NOW)) ) {
+                    broadcast.sendBroadcast();
+                }
+
             }
         }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false);
         timePickerDialog.show();

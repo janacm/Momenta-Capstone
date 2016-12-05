@@ -8,7 +8,7 @@
     android:background="@drawable/list_item_line">
     <me.grantland.widget.AutofitTextView
         android:id="@+id/dash_task_stat_item_task_name"
-        android:singleLine="true"
+        android:maxLines="1"
         autofit:minTextSize="14sp"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -22,7 +22,6 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:id="@+id/dash_task_stat_item_task_value"
         android:gravity="center_vertical|center_horizontal"
         />

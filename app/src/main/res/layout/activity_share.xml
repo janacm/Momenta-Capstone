@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_share"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.momenta_app.ShareActivity">
@@ -25,7 +24,6 @@
         android:layout_marginEnd="@dimen/activity_horizontal_margin"/>
 
     <TextView
-        android:id="@+id/share_owner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/activity_horizontal_margin"
@@ -37,9 +35,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/share_mail_field"
-        android:layout_toRightOf="@+id/share_last_modified_text"
         android:layout_toEndOf="@+id/share_last_modified_text"
         android:layout_margin="@dimen/activity_horizontal_margin"
+        tools:text="@string/welcome_to_momenta"
         />
 
     <TextView
@@ -55,9 +53,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/share_owner_value"
-        android:layout_toRightOf="@+id/share_last_modified_text"
         android:layout_toEndOf="@+id/share_last_modified_text"
         android:layout_margin="@dimen/activity_horizontal_margin"
+        tools:text="@string/last_modified_placeholder"
         />
     <View
         android:id="@+id/share_divider"

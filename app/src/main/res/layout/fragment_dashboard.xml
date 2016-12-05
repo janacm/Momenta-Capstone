@@ -1,163 +1,194 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView android:layout_height="match_parent"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:layout_height="match_parent"
     android:tag="dashboard"
-    android:layout_width="match_parent"
-    android:background="@color/grey"
-    android:layout_height="wrap_content">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="220dp"
-        android:background="@color/colorPrimaryDark"
-        android:elevation="3dp"
-        >
-        <com.mikhaellopez.circularimageview.CircularImageView
-            android:id="@+id/userImage"
-            android:layout_width="130dp"
-            android:layout_height="130dp"
-            android:layout_centerInParent="true"
-            app:civ_border_color="#EEEEEE"
-            app:civ_border_width="5dp"
-            app:civ_shadow="true"
-            app:civ_shadow_radius="5"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/dummy_content"
-            android:id="@+id/displayName"
-            android:textSize="17sp"
-            android:textColor="@color/white"
-            android:layout_centerInParent="true"
-            android:layout_below="@id/userImage"
-            android:padding="5dp"
-            />
-    </RelativeLayout>
-    <android.support.v7.widget.CardView
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/grey">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="10dp"
-        android:id="@+id/awardsCard">
-        <LinearLayout
+        android:orientation="vertical">
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-            <View android:layout_height="3dp"
-                android:layout_width="match_parent"
-                android:background="@color/total_time_spent">
-            </View>
+            android:layout_height="220dp"
+            android:background="@color/total_time_goal"
+            android:elevation="3dp">
+
+            <com.mikhaellopez.circularimageview.CircularImageView
+                android:id="@+id/userImage"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:layout_centerInParent="true"
+                app:civ_border_color="#EEEEEE"
+                app:civ_border_width="5dp"
+                app:civ_shadow="true"
+                app:civ_shadow_radius="5" />
+
             <TextView
+                android:id="@+id/displayName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/dash_goals_progress_card_title"
-                android:gravity="center_vertical"
-                android:textColor="@color/black"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="15dp"
-                android:textSize="19sp" />
-            <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
-                android:id="@+id/dash_goals_progress_bar"
-                android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:layout_marginTop="20dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp"/>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_horizontal">
-                <View
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
-                    android:background="@drawable/total_time_spent_circle"
-                    android:id="@+id/total_time_spent_circle"
-                    android:gravity="center_vertical"
-                    android:layout_gravity="center_vertical"
-                    android:tint="@color/total_time_spent"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/timespent_string2"
-                    android:textSize="13.5sp"
-                    android:id="@+id/dash_goals_total_time_spent_text"
-                    android:gravity="center_vertical"
-                    android:padding="10dp"
-                    android:textColor="@color/black"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/dash_goals_total_time_spent_value"
-                    android:textSize="13.5sp"
-                    android:textColor="@color/black" />
-                <View
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
-                    android:background="@drawable/total_goal_circle"
-                    android:id="@+id/total_goal_circle"
-                    android:gravity="center_vertical"
-                    android:layout_marginStart="25dp"
-                    android:layout_gravity="center_vertical"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/goal_string2"
-                    android:textSize="13.5sp"
-                    android:id="@+id/dash_goals_total_goal_text"
-                    android:gravity="center_vertical"
-                    android:padding="10dp"
-                    android:textColor="@color/black"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/dash_goals_total_goal_value"
-                    android:textSize="13.5sp"
-                    android:textColor="@color/black" />
-            </LinearLayout>
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
-    <android.support.v7.widget.CardView
+                android:layout_below="@id/userImage"
+                android:layout_centerInParent="true"
+                android:padding="5dp"
+                tools:text="@string/dummy_content"
+                android:textColor="@color/white"
+                android:textSize="17sp" />
+
+        </RelativeLayout>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="@style/Base.Widget.AppCompat.ProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateOnly="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="20dp"
+            android:visibility="gone"
+            />
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/awardsCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            app:cardCornerRadius="3dp"
             android:layout_margin="10dp"
-            android:id="@+id/goalsCompletedCard">
+            android:visibility="gone">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-            <View android:layout_height="3dp"
-                android:layout_width="match_parent"
-                android:background="@color/latest_tasks_modified_card">
-            </View>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="@color/total_time_spent"/>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/dash_latest_tasks_card_title"
-                    android:gravity="center_vertical"
-                    android:textColor="@color/black"
                     android:layout_marginStart="15dp"
                     android:layout_marginTop="15dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/dash_goals_progress_card_title"
+                    android:textColor="@color/black"
                     android:textSize="19sp" />
-            <android.support.v7.widget.RecyclerView
-                    android:padding="16dp"
-                    android:id="@+id/dashboard_tasks_stats_recycler_view"
+
+                <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+                    android:id="@+id/dash_goals_progress_bar"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="35dp"
+                    android:layout_marginTop="20dp"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="30dp"
+                    android:paddingRight="30dp"
+                    android:paddingTop="10dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/total_time_spent_circle"
+                        android:gravity="center_vertical"
+                        android:tint="@color/total_time_spent" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:padding="10dp"
+                        android:text="@string/timespent_string2"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/dash_goals_total_time_spent_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
+
+                    <View
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="25dp"
+                        android:background="@drawable/total_goal_circle"
+                        android:gravity="center_vertical" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:padding="10dp"
+                        android:text="@string/goal_string2"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/dash_goals_total_goal_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
+                </LinearLayout>
             </LinearLayout>
         </android.support.v7.widget.CardView>
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        android:text="@string/dummy_button" />
-</LinearLayout>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/goalsCompletedCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:visibility="gone"
+            app:cardCornerRadius="3dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="@color/latest_tasks_modified_card"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/dash_latest_tasks_card_title"
+                    android:textColor="@color/black"
+                    android:textSize="19sp" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/dashboard_tasks_stats_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp" />
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dummy_button"
+            android:visibility="invisible"/>
+    </LinearLayout>
 </ScrollView>

@@ -2,10 +2,6 @@
     <!--GENERAL NOTE: E SURE TO DO A REFACTOR WHEN CHANGING STRING NAMES-->
     <!-- General strings-->
     <string name="app_name">Momenta</string>
-    <string name="tab_title_dashboard">Dashboard</string>
-    <string name="tab_title_log">Goals</string>
-    <string name="tab_title_awards">Awards</string>
-    <string name="tab_title_trends">Trends</string>
 
     <!--Sort Dialog Strings-->
     <string name="sort_by">Sort by</string>
@@ -24,17 +20,10 @@
     <string name="timeentry_dialog_minutes_label">minutes</string>
     <string name="timeentry_dialog_hour_label">hour</string>
     <string name="timeentry_dialog_minute_label">minute</string>
-    <string name="timeentry_dialog_title">Set a goal time</string>
-    <string name="timeentry_dialog_positive">OK</string>
-    <string name="timeentry_dialog_negative">Cancel</string>
-    <string name="timeentry_dialog_and">and</string>
 
     <!-- Text View strings-->
-    <string name="ongoing_activity_string">Goals</string>
     <string name="H_string">H</string>
     <string name="M_string">M</string>
-    <string name="set_goal_String">Set your goal for</string>
-    <string name="set_interval_time">Set your interval time</string>
 
     <!--Task Actiivty -->
     <string name="delete_string">Delete</string>
@@ -42,8 +31,6 @@
     <string name="discard_changes">Discard your changes?</string>
     <string name="no">No</string>
     <string name="yes">Yes</string>
-    <string name="undo">Undo</string>
-    <string name="actvity_deleted">Activity deleted</string>
     <string name="priority_spinner_title">Priority</string>
     <string-array name="Priorities">
         <item>Very Low</item>
@@ -54,28 +41,14 @@
     </string-array>
 
     <!-- Log strings-->
-    <string name="sort_button_content_description">Sort Button</string>
-    <string name="asc_desc_button_content_description">Ascending/descending button</string>
 
     <!-- Button strings-->
     <string name="dialog_done">Done</string>
-    <string name="dialog_more">More</string>
     <string name="dialog_ok" translatable="false">Ok</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_hour_string">00</string>
     <string name="activity_string">Activity</string>
     <string name="goal_string">Goal</string>
-
-    <string name="one">1</string>
-    <string name="two">2</string>
-    <string name="three">3</string>
-    <string name="four">4</string>
-    <string name="five">5</string>
-    <string name="six">6</string>
-    <string name="seven">7</string>
-    <string name="eight">8</string>
-    <string name="nine">9</string>
-    <string name="zero">0</string>
 
     <!-- Settings strings-->
     <string name="interval_time_title">Interval Time</string>
@@ -94,62 +67,33 @@
 
     <!-- EditText strings-->
     <string name="new_activity_hint"><i>Go to the gym...</i></string>
-    <string name="activity_hour_label">hr</string>
-    <string name="activity_minute_label">min</string>
 
     <!-- Menu strings-->
     <string name="action_settings">Settings</string>
 
     <!-- Screen take over activity strings-->
-    <string name="dashboard_demo_select_time">Select time</string>
     <string name="title_activity_screen_take_over">ScreenTakeOverActivity</string>
     <string name="title_activity_settings">SettingsActivity</string>
-    <string name="add_activity_content_description">Add activity button</string>
     <string name="log_your_progess">Log your progess!</string>
     <string name="screen_take_over_m">M</string>
 
     <!-- Demo/Sample strings-->
-    <string name="sample_duration_string">1h 45m</string>
     <string name="dummy_button">Go</string>
-    <string name="demo_activty">Go swimming</string>
     <string name="later">Later</string>
     <string name="sampleQuote">\"It does not matter how slowly you go as long as you do not stop.\"</string>
     <string name="quoteCredit">- Confucius</string>
-    <string name="title_activity_fullscreen">FullscreenActivity</string>
     <string name="dummy_content">DUMMY CONTENT</string>
-    <string name="title_activity_task">TaskActivity</string>
     <string name="deadline_string">Deadline</string>
-    <string name="sample_time_string">50 hours</string>
     <string name="priority_string">Priority</string>
     <string name="timespent_string">Add time spent</string>
-    <string name="sample_deadline_string">March 12 5PM</string>
-    <string name="sample_priority_string">Priority 1</string>
     <string name="goal_icon_content_description">Icon for Goal</string>
-    <string name="task_name_hint">Activity Name</string>
     <string name="deadline_icon_content_description">Deadline Icon</string>
     <string name="priority_icon_content_description">Priority Icon</string>
-    <string name="timespent_icon_content_description">Time Spent Icon</string>
-    <string name="title_activity_login">Sign in</string>
-    <string name="_1h_45m">1H 45M</string>
 
     <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
     <string name="action_signout">Sign Out</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
     <string name="toast_no_name_activity_added">Please enter an activity name</string>
-    <string name="toast_activity_added">Activity added!</string>
     <string name="toast_enter_goal">Please enter a goal</string>
-    <string name="toast_activity_updated">Activity has been updated</string>
-    <string name="toast_problem_updating_activity">There was a problem updating your activity</string>
 
     <!-- Strings related to the Select tasks to add time towards Screen !-->
     <string name="add_item_string">Add New Task</string>
@@ -166,25 +110,14 @@
     <string name="add_time_to_task_hours"> h </string>
     <string name="add_time_to_task_min">0m</string>
     <string name="add_time_to_task_next">Next</string>
-    <string name="deadline_hint" translatable="false"></string>
     <string name="add_time_to_task_done">Done</string>
+    <string name="spent_time_already">Spent time already?</string>
+
     <!--String related to New Task screen-->
-    <string name="new_task_title">Add New Activity</string>
+    <string name="new_task_title">Add a goal</string>
     <string name="new_task_submit_button">D O N E</string>
     <string name="welcome_to_momenta">Welcome To Momenta</string>
-
-    <string-array name="suggestions">
-        <item>Go to the gym </item>
-        <item>Go Running</item>
-        <item>Go Catch Pokemon</item>
-        <item>Eat a lot of food</item>
-        <item>Explore</item>
-        <item>Code in Java</item>
-        <item>Work on this android project</item>
-        <item>Explore </item>
-        <item>Learn to </item>
-        <item>Work on </item>
-    </string-array>
+    <string name="loading">Loading</string>
 
     <!--Trends Strings-->
     <string-array name="trends_spinner">
@@ -194,7 +127,6 @@
     <string name="time_in_minutes">Time in minutes</string>
 
     <!-- Awards titles and descriptions -->
-
     <string name="award_commited_title">Committed</string>
     <string name="award_neophyte_title">Neophyte</string>
     <string name="award_trend_setter_title">Trend Setter</string>
@@ -216,10 +148,7 @@
     <string name="award_perfectionnist_desc_2">hours towards an activity</string>
     <string name="award_ponctual_desc_2">activities</string>
 
-
     <!--Sign in credentials for Integration testing with Firebase-->
-    <string name="email">digging62@yahoo.com</string>
-    <string name="password">MomentaFirebase</string>
 
     <!--Dashboard cards strings-->
     <string name="dash_latest_tasks_card_title">Latest tasks worked on</string>
@@ -228,6 +157,8 @@
     <string name="dash_trends_card_title">Overall productivity trend</string>
     <string name="timespent_string2">Time Spent:</string>
     <string name="goal_string2">Goal:</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
 
     <!--Integration Strings-->
     <string name="created_event_string">Created event in your Calendar</string>
@@ -235,13 +166,24 @@
     <string name="invite_title">Invite</string>
     <string name="share_add_people">Add People</string>
     <string name="enter_valid_email">" is not a valid email address"</string>
-    <string name="last_modified_placeholder">Sept 13 by Earl Ragnar</string>
     <string name="team_members_text">Team members</string>
     <string name="share_by">by</string>
     <string name="share_owner">Owner</string>
     <string name="title_share_activity">Add Friends</string>
     <string name="calendar_spent">"Spent "</string>
-    <string name="calendar_minutes_on">" minutes on "</string>
+    <string name="calendar_on">" on "</string>
+    <string name="to_use_momenta">" to use Momenta?"</string>
+    <string name="others_to_use_momenta"><![CDATA[" & others to use Momenta?"]]></string>
+
     <string name="add_time_task_toast_no_time_remaining">Not enough time left for remaining tasks</string>
     <string name="add_time_task_toast_value_required">Must add a time value to the task</string>
+
+    <!--Empty State Strings-->
+    <string name="empty_state_no_goals">You have no goals yet.</string>
+    <string name="empty_state_tap_plus_sign">Tap the plus sign to get started.</string>
+    <string name="goals_icon_content_description">Goals Icon</string>invitation_message
+
+    <string name="invitation_title">Hey, checkout Momenta.</string>
+    <string name="invitation_message">No seriously, download momenta!</string>
+    <string name="invitation_cta">Call to action text.</string>
 </resources>

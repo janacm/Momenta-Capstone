@@ -13,12 +13,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * Created by Joe on 2016-01-31.
@@ -31,8 +35,9 @@ public class LogFragment extends Fragment {
     public static final String DESC = "DESC";
     private String sortString = Task.LAST_MODIFIED;
     private String orderString = ASC;
-    private helperPreferences helperPreferences;
+    private HelperPreferences helperPreferences;
     private RecyclerView mRecyclerView;
+    private ProgressBar loadingProgressBar;
 
     // Firebase instance variables
     private String directory = "tests";
@@ -50,7 +55,7 @@ public class LogFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        helperPreferences = new helperPreferences(getActivity());
+        helperPreferences = new HelperPreferences(getActivity());
 
         directory = FirebaseProvider.getUserPath() + "/goals";
 
@@ -64,12 +69,35 @@ public class LogFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        final View view = inflater.inflate(R.layout.fragment_log, container, false);
 
-        View view = inflater.inflate(R.layout.fragment_log, container, false);
+        if ( FirebaseProvider.getUserPath().length() > 0 ) {
+            loadingProgressBar = (ProgressBar)view.findViewById(R.id.progressBar);
+            loadingProgressBar.setVisibility(View.VISIBLE);
+        }
         mRecyclerView = (RecyclerView) view.findViewById(R.id.activity_recycler_view);
 
         setLayoutManger();
         mRecyclerView.setAdapter(mFirebaseAdapter);
+
+        mFirebaseDatabaseReference.child(directory).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                loadingProgressBar.setVisibility(View.GONE);
+
+                if (!dataSnapshot.hasChildren()) {
+                    view.findViewById(R.id.empty_state_layout).setVisibility(View.VISIBLE);
+                }
+
+                addObserver();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
 
         return view;
     }
@@ -185,7 +213,7 @@ public class LogFragment extends Fragment {
 
     /**
      * Helper method to build a recycler adapter
-     * @param sortBy the field to sort the taskas by
+     * @param sortBy the field to sort the tasks by
      * @return an adapter
      */
     private FirebaseRecyclerAdapter<Task, TaskViewHolder> buildAdapter(String sortBy) {
@@ -228,7 +256,7 @@ public class LogFragment extends Fragment {
      */
     private void setLayoutManger() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        orderString = helperPreferences.getPreferences(Constants.ORDER, ASC);
+        orderString = helperPreferences.getPreferences(Constants.ORDER, DESC);
 
         if ( orderString.equals(DESC) ) {
             layoutManager.setReverseLayout(true);
@@ -238,6 +266,29 @@ public class LogFragment extends Fragment {
             mRecyclerView.setLayoutManager(layoutManager);
         }
 
+    }
+
+    /**
+     *  Adds an observer too the RecyclerView.Adapter, listens for an empty adapter
+     *  and sets the visibility of the empty state layout.
+     */
+    private void addObserver() {
+        RecyclerView.AdapterDataObserver mObserver = new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                if (itemCount != 0 && getView()!=null) {
+                    getView().findViewById(R.id.empty_state_layout).setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                if (positionStart == 0 && getView()!=null) {
+                    getView().findViewById(R.id.empty_state_layout).setVisibility(View.VISIBLE);
+                }
+            }
+        };
+        mFirebaseAdapter.registerAdapterDataObserver(mObserver);
     }
 
     /**

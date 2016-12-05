@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:autofit="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/activity_task"
     tools:context="com.momenta_app.TaskActivity">
 
     <include
@@ -64,7 +63,6 @@
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
             android:background="@drawable/task_time_spent_circle"/>
@@ -72,7 +70,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
-            android:layout_marginRight="5dp"
             android:textSize="15sp"
             android:text="@string/timespent_string2"/>
         <TextView
@@ -84,16 +81,13 @@
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginRight="10dp"
             android:background="@drawable/total_goal_circle"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="15sp"
             android:layout_marginEnd="5dp"
-            android:layout_marginRight="5dp"
             android:text="@string/goal_string2"/>
         <TextView
             android:id="@+id/max_text_value"
@@ -103,7 +97,6 @@
     </LinearLayout>
 
     <ScrollView
-        android:id="@+id/task_scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/progress_detail_layout">
@@ -128,7 +121,6 @@
                     android:id="@+id/task_goal_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="15dp"
                     android:layout_marginEnd="15dp"
                     android:paddingTop="8dp"
                     android:tint="#9B9B9B"
@@ -141,18 +133,14 @@
                     android:text="@string/goal_string"
                     android:textSize="18sp"
                     android:layout_marginStart="5dp"
-                    android:layout_marginLeft="5dp"
                     android:textColor="@color/black"
-                    android:layout_toRightOf="@+id/task_goal_image"
                     android:layout_toEndOf="@+id/task_goal_image"/>
                 <TextView
                     android:id="@+id/task_goal_value"
                     android:layout_width="match_parent"
-                    android:text="@string/goal_string"
+                    tools:text="@string/goal_string"
                     android:layout_marginStart="5dp"
-                    android:layout_marginLeft="5dp"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/task_goal_image"
                     android:layout_toEndOf="@+id/task_goal_image"
                     android:layout_below="@+id/task_goal_title" />
 
@@ -174,7 +162,6 @@
                     android:id="@+id/task_deadline_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="15dp"
                     android:layout_marginEnd="15dp"
                     android:paddingTop="8dp"
                     android:tint="#9B9B9B"
@@ -185,22 +172,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:layout_marginLeft="5dp"
                     android:text="@string/deadline_string"
                     android:textSize="18sp"
                     android:textColor="@color/black"
-                    android:layout_toRightOf="@+id/task_deadline_image"
                     android:layout_toEndOf="@+id/task_deadline_image"/>
                 <TextView
                     android:id="@+id/task_deadline_value"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:layout_marginLeft="5dp"
                     android:layout_below="@+id/task_deadline_title"
-                    android:layout_toRightOf="@+id/task_deadline_title"
                     android:layout_toEndOf="@+id/task_deadline_image"
-                    android:text="@string/sample_deadline_string"/>
+                    tools:text="@string/sample_deadline_string"/>
 
             </RelativeLayout>
 
@@ -210,9 +193,7 @@
                 android:paddingTop="20dp"
                 android:paddingBottom="20dp"
                 android:layout_below="@id/task_deadline_layout"
-                android:paddingLeft="14dp"
                 android:paddingStart="14dp"
-                android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingEnd="@dimen/activity_horizontal_margin"
                 android:background="?attr/selectableItemBackground"
                 android:layout_height="wrap_content">
@@ -221,10 +202,8 @@
                     android:id="@+id/task_priority_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="15dp"
                     android:layout_marginEnd="15dp"
                     android:layout_marginStart="1dp"
-                    android:layout_marginLeft="1dp"
                     android:paddingTop="8dp"
                     android:tint="#9B9B9B"
                     android:contentDescription="@string/priority_icon_content_description"
@@ -237,9 +216,7 @@
                     android:text="@string/priority_string"
                     android:textSize="18sp"
                     android:layout_marginStart="5dp"
-                    android:layout_marginLeft="5dp"
                     android:textColor="@color/black"
-                    android:layout_toRightOf="@+id/task_priority_image"
                     android:layout_toEndOf="@+id/task_priority_image"/>
 
                 <Spinner
@@ -247,8 +224,6 @@
                     android:layout_below="@+id/task_priority_title"
                     android:layout_width="match_parent"
                     android:layout_marginStart="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_toRightOf="@+id/task_priority_image"
                     android:layout_toEndOf="@+id/task_priority_image"
                     android:layout_height="25dp"
                     android:entries="@array/Priorities"
@@ -272,22 +247,17 @@
                     android:id="@+id/task_timespent_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="15dp"
                     android:layout_marginEnd="15dp"
-                    android:paddingTop="8dp"
                     android:tint="#9B9B9B"
                     android:contentDescription="@string/goal_icon_content_description"
                     android:src="@drawable/timer_sand"/>
                 <TextView
-                    android:id="@+id/task_timespent_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/timespent_string"
                     android:textSize="18sp"
                     android:layout_marginStart="5dp"
-                    android:layout_marginLeft="5dp"
                     android:textColor="@color/black"
-                    android:layout_toRightOf="@+id/task_timespent_image"
                     android:layout_toEndOf="@+id/task_timespent_image"/>
 
             </RelativeLayout>

@@ -54,7 +54,7 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
     // Firebase Instance
     private DatabaseReference databaseReference;
 
-    private helperPreferences helperPreferences;
+    private HelperPreferences helperPreferences;
 
     public Button goButton;
     private List<Task> taskList;
@@ -112,7 +112,7 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        helperPreferences = new helperPreferences(this);
+        helperPreferences = new HelperPreferences(this);
 
         setContentView(R.layout.activity_screen_take_over);
 

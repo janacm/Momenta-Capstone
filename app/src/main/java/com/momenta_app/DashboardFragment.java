@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
@@ -23,7 +24,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,10 +41,15 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
     private TextView totalTimeSpent;
     private TextView totalGoalTime;
 
+    private TextView displayNameText;
+    private ImageView imgView;
+    private ProgressBar loadingProgressBar;
+
+    private HelperPreferences helperPreferences;
     private DashboardTaskStatsAdapter dAdapter;
     public RecyclerView dRecyclerView;
     DatabaseReference mDatabaseReference;
-    User mFirebaseUser;
+    User mUser;
 
 
     // Firebase instance variables
@@ -62,9 +67,11 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mDatabaseReference = FirebaseProvider.getInstance().getReference();
-        mFirebaseUser = FirebaseProvider.getUser();
-        if (mFirebaseUser != null) {
-            directory = mFirebaseUser.getPath() + "/goals";
+        helperPreferences = new HelperPreferences(getActivity());
+
+        mUser = FirebaseProvider.getUser();
+        if (mUser != null) {
+            directory = mUser.getPath() + "/goals";
         }
     }
 
@@ -72,9 +79,13 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         View activityView = inflater.inflate(R.layout.fragment_dashboard, container, false);
         Button button = (Button) activityView.findViewById(R.id.button1);
+        if (mUser.getPath()!= null) {
+            loadingProgressBar = (ProgressBar)activityView.findViewById(R.id.progressBar);
+            loadingProgressBar.setVisibility(View.VISIBLE);
+        }
+
         button.setOnClickListener(this);
         totalTimeSpent = (TextView) activityView.findViewById(R.id.dash_goals_total_time_spent_value);
         totalGoalTime = (TextView) activityView.findViewById(R.id.dash_goals_total_goal_value);
@@ -101,6 +112,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
                     //TODO Change to ChildEventListener --> More efficient
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        loadingProgressBar.setVisibility(View.GONE);
                         Integer totalTime = 0;
                         Integer totalGoal = 0;
 
@@ -152,7 +164,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
                         dAdapter = new DashboardTaskStatsAdapter(getContext(), tasks);
                         dRecyclerView.setAdapter(dAdapter);
 
-                        if(isAdded()) {
+                        if (isAdded()) {
                             /***Updating the Goal Progress card's fields**/
                             progressBar.setMax(totalGoal);
                             progressBar.setPadding(10);
@@ -160,14 +172,19 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
                             progressBar.setProgressBackgroundColor(ContextCompat.getColor(getContext(), R.color.total_time_goal));
                             progressBar.setProgressColor(ContextCompat.getColor(getContext(), R.color.total_time_spent));
 
-                            int ttsh = totalTime/ 60;
+                            int ttsh = totalTime / 60;
                             int ttsm = totalTime % 60;
 
-                            int tgh = totalGoal/60;
+                            int tgh = totalGoal / 60;
                             int tgm = totalGoal % 60;
 
-                            totalTimeSpent.setText(timeSetText(ttsh,ttsm));
-                            totalGoalTime.setText(timeSetText(tgh,tgm));
+                            totalTimeSpent.setText(timeSetText(ttsh, ttsm));
+                            totalGoalTime.setText(timeSetText(tgh, tgm));
+
+                            if (getView() != null) {
+                                getView().findViewById(R.id.awardsCard).setVisibility(View.VISIBLE);
+                                getView().findViewById(R.id.goalsCompletedCard).setVisibility(View.VISIBLE);
+                            }
                         }
                     }
 

@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
     private User user;
     private String awardsDirectory = null;
 
-    private helperPreferences helperPreferences;
+    private HelperPreferences helperPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
 
         ref = FirebaseProvider.getInstance().getReference();
 
-        helperPreferences = new helperPreferences(this);
+        helperPreferences = new HelperPreferences(this);
         if (user.getPath()!=null) {
             helperPreferences.savePreferences(Constants.ACCOUNT_NAME,
                     user.getPath().replace(",","."));
