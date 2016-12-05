@@ -44,7 +44,7 @@
         autofit:rcRadius="20dp"
         autofit:rcReverse="false"
         autofit:rcBackgroundPadding="3dp"
-        autofit:rcProgressColor="@color/total_time_spent"
+        autofit:rcProgressColor="@color/colorAccent"
         autofit:rcBackgroundColor="@color/total_time_goal"
         android:layout_margin="15dp"/>
 
@@ -67,7 +67,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
-            android:background="@drawable/total_time_spent_circle"/>
+            android:background="@drawable/task_time_spent_circle"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
