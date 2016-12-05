@@ -81,8 +81,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
         progressBar = (RoundCornerProgressBar) activityView.findViewById(R.id.dash_goals_progress_bar);
         dRecyclerView = (RecyclerView) activityView.findViewById(R.id.dashboard_tasks_stats_recycler_view);
         dRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
+        dRecyclerView.setNestedScrollingEnabled(false);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
         if(user != null) {
             String name = user.getDisplayName();
             Uri photo = user.getPhotoUrl();

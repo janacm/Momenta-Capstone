@@ -12,7 +12,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="220dp"
-        android:background="@color/colorAccent"
+        android:background="@color/colorPrimaryDark"
         android:elevation="3dp"
         >
         <com.mikhaellopez.circularimageview.CircularImageView
@@ -157,7 +157,7 @@
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
+        android:visibility="invisible"
         android:text="@string/dummy_button" />
 </LinearLayout>
 </ScrollView>
