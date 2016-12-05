@@ -3,55 +3,29 @@
     <string name="app_name">Momenta</string>
     <string name="H_string">h</string>
     <string name="M_string">m</string>
-    <string name="_1h_45m">1h45m</string>
     <string name="action_settings">Paramètres</string>
-    <string name="action_sign_in">S\'enregistrer</string>
-    <string name="action_sign_in_short">S\'identifier</string>
     <string name="action_signout">Déconnexion</string>
-    <string name="activity_hour_label">h</string>
-    <string name="activity_minute_label">min</string>
     <string name="activity_string">Activité</string>
-    <string name="actvity_deleted">Activité supprimée</string>
-    <string name="add_activity_content_description">Bouton ajouter activité</string>
     <string name="add_time_to_task_title1">Combien de temps j\'ai</string>
     <string name="add_time_to_task_next">Prochain</string>
     <string name="add_time_to_task_minutes">m</string>
     <string name="add_time_to_task_min">0m</string>
     <string name="add_time_to_task_hours">h</string>
     <string name="add_time_to_task_title2">consacré à</string>
-    <string name="asc_desc_button_content_description">"Bouton ascendant/descendant "</string>
-    <string name="dashboard_demo_select_time">Selectionne le temps</string>
-    <string name="deadline_hint"></string>
     <string name="deadline_icon_content_description">Icône échéance</string>
     <string name="version_name_title">Version</string>
     <string name="yes">Oui</string>
-    <string name="zero">0</string>
-    <string name="undo">Annuler</string>
-    <string name="two">2</string>
     <string name="toast_no_name_activity_added">S\'il vous plaît entrer un nom</string>
     <string name="toast_enter_goal">S\'il vous plaît entrer un but</string>
-    <string name="toast_activity_updated">L\'activité a été mise à jour</string>
-    <string name="toast_activity_added">L\'activité a été ajoutée</string>
-    <string name="title_activity_task">TaskActivity</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="title_activity_screen_take_over">ScreenTakeOverActivity</string>
-    <string name="title_activity_login">S\'identifier</string>
-    <string name="title_activity_fullscreen">FullscreenActivity</string>
-    <string name="three">3</string>
-    <string name="tab_title_trends">Tendance</string>
-    <string name="toast_problem_updating_activity">Il y avait un problème de mise à jour de votre activité</string>
     <string name="priority_icon_content_description">Icône priorité</string>
     <string name="priority_spinner_title">Priorité</string>
     <string name="priority_string">Priorité</string>
-    <string name="prompt_email">Email</string>
     <string name="quoteCredit">- Confucius</string>
     <string name="sampleQuote">\"Peu importe si vous allez lentement aussi longtemps que vous ne vous arrêtez pas.\"</string>
-    <string name="prompt_password">Password (optional)</string>
-    <string name="ongoing_activity_string">Buts</string>
-    <string name="one">1</string>
     <string name="no_tasks_available">"On dirait que vous ne disposez pas des tâches "</string>
     <string name="no">Non</string>
-    <string name="nine">9</string>
     <string name="new_activity_hint"><i> Aller au gym ... </i></string>
     <string name="later">Plus tard</string>
     <string name="interval_time_title">Temps d\'interval</string>
@@ -59,58 +33,61 @@
     <string name="sort_dialog_last_modified">Dernière modification</string>
     <string name="sort_dialog_dealine">Échéance</string>
     <string name="sort_dialog_date_created">Date de création</string>
-    <string name="sort_button_content_description">Bouton Trier</string>
-    <string name="six">6</string>
-    <string name="seven">7</string>
     <string name="settings_notification">Notifications</string>
     <string name="settings_about">À Propos</string>
-    <string name="sample_time_string">50 heures</string>
-    <string name="sample_priority_string">Priorité 1</string>
-    <string name="sample_duration_string">1h 45m</string>
-    <string name="sample_deadline_string">12 mars 17h</string>
     <string name="interval_time_summary_minutes">minutes</string>
     <string name="interval_time_summary_never_remind">Ne jamais me rappeler</string>
     <string name="interval_time_summary_hours">heures</string>
     <string name="goal_string">But</string>
     <string name="goal_icon_content_description">Icône pour but</string>
-    <string name="error_invalid_password">Ce mot de passe est trop court</string>
-    <string name="error_invalid_email">Addresse email invalide</string>
-    <string name="error_incorrect_password">Ce mot de passe est invalide</string>
-    <string name="error_field_required">Ce champ est requis</string>
     <string name="end_time_title">Heure de fin</string>
-    <string name="eight">8</string>
     <string name="dummy_button_add_new_task">Ajouté une nouvelle activité</string>
     <string name="dummy_button">GO!</string>
-    <string name="dialog_more">Plus</string>
     <string name="dialog_hour_string">00</string>
     <string name="dialog_done">Terminé</string>
     <string name="dialog_cancel">Annuler</string>
-    <string name="demo_activty">Aller nager</string>
     <string name="delete_string">Supprimer</string>
     <string name="deadline_string">Échéance</string>
     <string name="dummy_content">CONTENU DUMMY</string>
-    <string name="five">5</string>
-    <string name="four">4</string>
     <string name="interval_time_summary">Rappelez-moi tous les</string>
     <string name="log_your_progess">Enregistrer vos progrès!</string>
-    <string name="permission_rationale">\"Une autorisation pour accéder aux contacts est nécessaire pour fournir la complétion email.\"</string>
     <string name="screen_take_over_m">M</string>
     <string name="select_tasks_to_add_time_to_title">Sélectionnez les tâches pour ajouter du temps</string>
-    <string name="set_goal_String">Définissez votre objectif pour</string>
-    <string name="set_interval_time">Réglez votre intervalle de temps</string>
     <string name="start_time_title">Heure de début</string>
-    <string name="tab_title_awards">Médailles</string>
-    <string name="tab_title_dashboard">Tableau de bord</string>
-    <string name="tab_title_log">Carnet de Bord</string>
-    <string name="task_name_hint">Nom de l\'activité</string>
     <string name="welcome_to_momenta">Bienvenue à Momenta</string>
     <string name="sort_by">Trier par</string>
     <string name="add_time_to_task_done">Terminé</string>
     <string name="ascending">Ascendant</string>
+    <string name="timespent_string">Ajouter du temps</string>
+    <string name="descending">Descendant</string>
+    <string name="select_tasks_no_tasks_selected">Aucune tâche selectionnée</string>
+    <string name="timeentry_dialog_goal_title">Quel est votre but?</string>
+    <string name="timeentry_dialog_hour_label">heure</string>
+    <string name="timeentry_dialog_hours_label">heures</string>
+    <string name="timeentry_dialog_minutes_label">minutes</string>
+    <string name="timeentry_dialog_minute_label">minute</string>
+    <string name="timeentry_dialog_timespent_title">Combien de temps avez-vous consacré?</string>
+    <string name="new_task_submit_button">T E R M I N É</string>
+    <string name="new_task_title">Ajouter nouvelle activité</string>
+    <string name="order">Ordre</string>
+    <string name="select_tasks_cannot_divide_tasks">Impossible de diviser le temps à travers les tâches également</string>
+    <string-array name="Priorities">
+        <item>Très Basse</item>
+        <item>Basse</item>
+        <item>Medium</item>
+        <item>Haute</item>
+        <item>Très Haute</item>
+    </string-array>
+
+    <string-array name="trends_spinner">
+        <item>Dernière semaine</item>
+        <item>Dernier Mois</item>
+    </string-array>
+    <string name="discard_changes">Annuler vos changements?</string>
+    <string name="time_in_minutes">Temps en minutes</string>
+    <string name="add_item_string">Ajouter une nouvelle tâche</string>
     <string name="award_commited_desc_1">\"Temps enregistré à une activité déjà commencée \"</string>
     <string name="award_commited_title">Engagé</string>
-    <string name="timespent_string">Ajouter du temps</string>
-    <string name="timespent_icon_content_description">Temps passé icon</string>
     <string name="award_multi_tasker_desc_1">Temps enregistré dans</string>
     <string name="award_multi_tasker_desc_2">différentes activités</string>
     <string name="award_multi_tasker_title">Polyvalent</string>
@@ -123,54 +100,8 @@
     <string name="award_productive_desc_2">fois</string>
     <string name="award_productive_title">Productif</string>
     <string name="award_trend_setter_title">Novateur</string>
-    <string name="descending">Descendant</string>
-    <string name="select_tasks_no_tasks_selected">Aucune tâche selectionnée</string>
-    <string name="timeentry_dialog_and">et</string>
-    <string name="timeentry_dialog_goal_title">Quel est votre but?</string>
-    <string name="timeentry_dialog_hour_label">heure</string>
-    <string name="timeentry_dialog_hours_label">heures</string>
-    <string name="timeentry_dialog_minutes_label">minutes</string>
-    <string name="timeentry_dialog_minute_label">minute</string>
-    <string name="timeentry_dialog_negative">Annuler</string>
-    <string name="timeentry_dialog_positive">Ok</string>
-    <string name="timeentry_dialog_timespent_title">Combien de temps avez-vous consacré?</string>
-    <string name="timeentry_dialog_title">Définir un but de temps</string>
     <string name="award_trend_setter_desc_1">Compléter 5 heures d\'une activité productive</string>
     <string name="award_productive_desc_1">Enregistrer du temps après avoir vu la notification</string>
     <string name="award_ponctual_desc_1">Atteindre l\'objectif de temps avant la date limite sur</string>
     <string name="award_neophyte_desc_1">Enregistrer du temps pour la première fois envers une activité</string>
-    <string name="email">digging62@yahoo.com</string>
-    <string name="new_task_submit_button">T E R M I N É</string>
-    <string name="new_task_title">Ajouter nouvelle activité</string>
-    <string name="order">Ordre</string>
-    <string name="password">MomentaFirebase</string>
-    <string name="select_tasks_cannot_divide_tasks">Impossible de diviser le temps à travers les tâches également</string>
-    <string-array name="Priorities">
-        <item>Très Basse</item>
-        <item>Basse</item>
-        <item>Medium</item>
-        <item>Haute</item>
-        <item>Très Haute</item>
-    </string-array>
-
-    <string-array name="suggestions">
-        <item>Aller au gym </item>
-        <item>Aller courrir</item>
-        <item>Attraper des Pokemon</item>
-        <item>Manger </item>
-        <item>Explorer</item>
-        <item>Code in Java</item>
-        <item>Travailer sur ce projet android </item>
-        <item>Explorer </item>
-        <item>Apprendre à </item>
-        <item>Travailler sur </item>
-    </string-array>
-
-    <string-array name="trends_spinner">
-        <item>Dernière semaine</item>
-        <item>Dernier Mois</item>
-    </string-array>
-    <string name="discard_changes">Annuler vos changements?</string>
-    <string name="time_in_minutes">Temps en minutes</string>
-    <string name="add_item_string">Ajouter une nouvelle tâche</string>
 </resources>

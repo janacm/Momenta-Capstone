@@ -18,7 +18,7 @@ public class Receiver extends WakefulBroadcastReceiver {
         //On boot
         if ("android.intent.action.BOOT_COMPLETED".equals(intent.getAction())) {
             Log.d("BootBroadcast","BootBroadcast received");
-            helperBroadcast helperBroadcast = new helperBroadcast(context);
+            HelperBroadcast helperBroadcast = new HelperBroadcast(context);
             helperBroadcast.sendBroadcast();
             return;
         }
@@ -26,7 +26,7 @@ public class Receiver extends WakefulBroadcastReceiver {
         //Check to see if the alarm is still valid & is within its time limits
         Calendar currentCal = Calendar.getInstance();
         Calendar notifCal = Calendar.getInstance();
-        helperPreferences helperPreferences = new helperPreferences(context.getApplicationContext());
+        HelperPreferences helperPreferences = new HelperPreferences(context.getApplicationContext());
         SettingsActivity.NOTIFICATION_TIME START_TIME = SettingsActivity.NOTIFICATION_TIME.START_TIME;
         SettingsActivity.NOTIFICATION_TIME END_TIME = SettingsActivity.NOTIFICATION_TIME.END_TIME;
 
@@ -45,7 +45,7 @@ public class Receiver extends WakefulBroadcastReceiver {
         if ( (cHourOfDay < nHourOfDay) ||
                 ( (cHourOfDay==nHourOfDay) && (cMinute < nMinute) ) ) {
             Log.d("Receiver", "Skipping notification, to early to notify");
-            helperBroadcast helperBroadcast = new helperBroadcast(context);
+            HelperBroadcast helperBroadcast = new HelperBroadcast(context);
             helperBroadcast.sendBroadcast();
             return;
         }
@@ -63,7 +63,7 @@ public class Receiver extends WakefulBroadcastReceiver {
                 ( (cHourOfDay==nHourOfDay) && (cMinute > nMinute) ) ) {
             Log.d("Receiver", "Skipping notification, to late to notify");
 
-            helperBroadcast helperBroadcast = new helperBroadcast(context);
+            HelperBroadcast helperBroadcast = new HelperBroadcast(context);
             helperBroadcast.sendBroadcast();
             return;
         }

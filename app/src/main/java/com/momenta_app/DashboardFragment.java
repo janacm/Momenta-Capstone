@@ -45,7 +45,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
     private ImageView imgView;
     private ProgressBar loadingProgressBar;
 
-    private helperPreferences helperPreferences;
+    private HelperPreferences helperPreferences;
     private DashboardTaskStatsAdapter dAdapter;
     public RecyclerView dRecyclerView;
     DatabaseReference mDatabaseReference;
@@ -67,7 +67,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mDatabaseReference = FirebaseProvider.getInstance().getReference();
-        helperPreferences = new helperPreferences(getActivity());
+        helperPreferences = new HelperPreferences(getActivity());
 
         mUser = FirebaseProvider.getUser();
         if (mUser != null) {

@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:autofit="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/activity_task"
     tools:context="com.momenta_app.TaskActivity">
 
     <include
@@ -97,7 +96,6 @@
     </LinearLayout>
 
     <ScrollView
-        android:id="@+id/task_scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/progress_detail_layout">
@@ -139,7 +137,7 @@
                 <TextView
                     android:id="@+id/task_goal_value"
                     android:layout_width="match_parent"
-                    android:text="@string/goal_string"
+                    tools:text="@string/goal_string"
                     android:layout_marginStart="5dp"
                     android:layout_height="wrap_content"
                     android:layout_toEndOf="@+id/task_goal_image"
@@ -184,7 +182,7 @@
                     android:layout_marginStart="5dp"
                     android:layout_below="@+id/task_deadline_title"
                     android:layout_toEndOf="@+id/task_deadline_image"
-                    android:text="@string/sample_deadline_string"/>
+                    tools:text="@string/sample_deadline_string"/>
 
             </RelativeLayout>
 
@@ -253,7 +251,6 @@
                     android:contentDescription="@string/goal_icon_content_description"
                     android:src="@drawable/timer_sand"/>
                 <TextView
-                    android:id="@+id/task_timespent_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/timespent_string"

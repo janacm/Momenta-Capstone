@@ -59,14 +59,14 @@ public class AddActivityTest {
         }
     };
     Context ctx;
-    helperPreferences helperPreferences;
+    HelperPreferences helperPreferences;
 
     @Before
     public void before() {
         Instrumentation instrumentation
                 = InstrumentationRegistry.getInstrumentation();
         ctx = instrumentation.getTargetContext();
-        helperPreferences = new helperPreferences(ctx);
+        helperPreferences = new HelperPreferences(ctx);
     }
 
     @Test

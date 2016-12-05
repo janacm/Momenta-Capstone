@@ -35,7 +35,7 @@ public class LogFragment extends Fragment {
     public static final String DESC = "DESC";
     private String sortString = Task.LAST_MODIFIED;
     private String orderString = ASC;
-    private helperPreferences helperPreferences;
+    private HelperPreferences helperPreferences;
     private RecyclerView mRecyclerView;
     private ProgressBar loadingProgressBar;
 
@@ -55,7 +55,7 @@ public class LogFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        helperPreferences = new helperPreferences(getActivity());
+        helperPreferences = new HelperPreferences(getActivity());
 
         directory = FirebaseProvider.getUserPath() + "/goals";
 

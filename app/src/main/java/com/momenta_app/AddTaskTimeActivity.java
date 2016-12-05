@@ -32,7 +32,7 @@ import java.util.Stack;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class AddTaskTimeActivity extends AppCompatActivity {
-    helperPreferences hp;
+    HelperPreferences hp;
 
     private static final String TAG = "AddTaskTimeActivity";
 
@@ -95,7 +95,7 @@ public class AddTaskTimeActivity extends AppCompatActivity {
         nextBtn = (Button) findViewById(R.id.add_time_to_task_nextBtn);
 
         //Initialize helperPreferences and extract interval values from preferences
-        hp = new helperPreferences(this);
+        hp = new HelperPreferences(this);
         intervalHours = Integer.parseInt(hp.getPreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_HOURS, "0"));
         intervalMins = Integer.parseInt(hp.getPreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_MINS, "0"));
         hp.savePreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_MINS,hp.getPreferences(Constants.SHPREF_INTERVAL_MINS, "0"));
@@ -302,7 +302,6 @@ public class AddTaskTimeActivity extends AppCompatActivity {
     }
 
     // Method for handling the clicking of the next button
-//    TODO: Extract toast messages for translations
     public void moveNext() {
         int temp = intervalTime;
         if ((position < numofTasks - 1) && ((temp - seekbarValue) != temp)) {
@@ -404,6 +403,10 @@ public class AddTaskTimeActivity extends AppCompatActivity {
 
                             mFirebaseDatabaseReference.child(tempGoalDir + "/" +Task.TIME_SPENT)
                                     .setValue(updatedTimeSpent);
+                            mFirebaseDatabaseReference.child(tempGoalDir + "/" +Task.LAST_MODIFIED)
+                                    .setValue(Calendar.getInstance().getTimeInMillis());
+                            mFirebaseDatabaseReference.child(tempGoalDir + "/" +Task.LAST_MODIFIED_BY)
+                                    .setValue(FirebaseProvider.getUserPath());
                         }
 
                         @Override
@@ -428,7 +431,8 @@ public class AddTaskTimeActivity extends AppCompatActivity {
         if ( account!= null ) {
             String eventSummary = getString(R.string.calendar_spent);
             for (int i=0; i<taskStask.size(); i++) {
-                eventSummary += intervalValues[i] + getString(R.string.calendar_minutes_on) + taskStask.get(i).getValue();
+                eventSummary += formatMinutes(intervalValues[i], true)
+                        + getString(R.string.calendar_on) + taskStask.get(i).getValue();
                 totalTime += intervalValues[i];
                 if (taskStask.size()-i > 1) {
                     eventSummary += ", ";
@@ -487,6 +491,58 @@ public class AddTaskTimeActivity extends AppCompatActivity {
         return flag;
     }
 
+    /**
+     * Convenience method for setting the time related values for the goal and time spent fields
+     * @param hours hour value that is being set
+     * @param minutes minute value that is being set
+     * @param fullText true for the labels to be in full (hour, minute), false for(H,M)
+     * @return the string containing the minute and hour values that will be set in the TextView
+     */
+    private String formatTime(int hours, int minutes, boolean fullText) {
+        String hourLabel, minuteLabel, result = "";
+        if (fullText) {
+            if (hours != 1) {
+                hourLabel = " " + getResources().getString(R.string.timeentry_dialog_hours_label);
+            } else {
+                hourLabel = " " + getResources().getString(R.string.timeentry_dialog_hour_label);
+            }
+
+            if (minutes != 1) {
+                minuteLabel = " " + getResources().getString(R.string.timeentry_dialog_minutes_label);
+            } else {
+                minuteLabel = " " + getResources().getString(R.string.timeentry_dialog_minute_label);
+            }
+        } else {
+            hourLabel = getResources().getString(R.string.add_time_to_task_hours);
+            minuteLabel = getResources().getString(R.string.add_time_to_task_minutes);
+        }
+
+        if (hours > 0 && minutes > 0) {
+            result =  hours + hourLabel + " & " + minutes + minuteLabel ;
+        } else if (hours != 0 && minutes == 0) {
+            result = hours + hourLabel;
+        } else {
+            result =  minutes + minuteLabel;
+        }
+        return result;
+    }
+
+    /**
+     * Formats time (in minutes) into hours and minutes format
+     * @param minutes the minutes to be formatted
+     * @param fullText true for the labels to be in full (hour, minute), false for(H,M)
+     * @return time represented in hours and minutes
+     */
+    public String formatMinutes(int minutes, boolean fullText) {
+        int mins = minutes, hours = 0;
+
+        if ( ! (mins < 60) ) {
+            hours = mins/60;
+            mins = mins % 60;
+        }
+        return formatTime(hours, mins,fullText);
+    }
+
 
     /**
      * Convenience method for toasting messages to the user
@@ -506,7 +562,7 @@ public class AddTaskTimeActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
 
-
+        // TODO Extract strings
         if (numofTasks > 1)
             toast("Successfully added time to your tasks");
         else
