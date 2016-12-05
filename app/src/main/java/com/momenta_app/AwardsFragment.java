@@ -1,7 +1,9 @@
 package com.momenta_app;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -25,7 +27,8 @@ public class AwardsFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private DatabaseReference mFirebaseDatabaseReference;
     private String directory = "";
-    private helperPreferences helperPreferences;
+    Context context;
+    private HelperPreferences helperPreferences;
     private FirebaseRecyclerAdapter<Award, AwardsFragment.AwardViewHolder> mFirebaseAdapter;
     public static AwardsFragment newInstance(int page) {
         Bundle args = new Bundle();
@@ -42,7 +45,7 @@ public class AwardsFragment extends Fragment {
         directory = FirebaseProvider.getUserPath() + "/awards";
         mFirebaseDatabaseReference = FirebaseProvider.getInstance().getReference();
         mFirebaseAdapter = buildAdapter();
-        helperPreferences = new helperPreferences(getContext());
+        helperPreferences = new HelperPreferences(getContext());
     }
 
     @Override
@@ -50,6 +53,8 @@ public class AwardsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_awards, container, false);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+
+        context = container.getContext();
 
         setLayoutManger();
         mRecyclerView.setAdapter(mFirebaseAdapter);
@@ -82,7 +87,7 @@ public class AwardsFragment extends Fragment {
                     viewHolder.description.setText(getStringResourceByName(award.getDescription_1()) + " " +
                             getStringResourceByName(award.getDescription_2()));
                 }
-                viewHolder.awardImage.setImageDrawable(getResources().getDrawable(R.mipmap.momenta_icon));
+                viewHolder.awardImage.setImageDrawable(ContextCompat.getDrawable(context, award.getIconId()));
 
                 viewHolder.progressText.setText(award.getCurrentLevel() + 1 + "/" + award.getMaxLevel());
 

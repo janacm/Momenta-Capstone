@@ -45,7 +45,7 @@ public class GoogleCalendarIntegration extends AsyncTask<Void, Void, Boolean> {
         JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
         this.summary = summary;
         this.context = context;
-        com.momenta_app.helperPreferences helperPreferences = new helperPreferences(context);
+        HelperPreferences helperPreferences = new HelperPreferences(context);
 
         GoogleAccountCredential mCredential = GoogleAccountCredential.usingOAuth2(
                 context.getApplicationContext(), Arrays.asList(SCOPES))
@@ -104,7 +104,6 @@ public class GoogleCalendarIntegration extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean created) {
-        //TODO Toast message if a calender event is created?
         super.onPostExecute(created);
         if (created) {
             Toast.makeText(context, R.string.created_event_string, Toast.LENGTH_LONG).show();

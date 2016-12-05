@@ -272,7 +272,6 @@ public class Task {
     /**
      * Used to get the taskHour and taskMinutes values in a string
      * @return String in format 0H 00M
-     * TODO is method useful?
      */
     @Exclude
     public String getFormattedGoal() {

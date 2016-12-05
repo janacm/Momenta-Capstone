@@ -2,17 +2,17 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:tag="dashboard"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/grey">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:tag="dashboard">
+        android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@+id/profile_layout"
             android:layout_width="match_parent"
             android:layout_height="220dp"
             android:background="@color/total_time_goal"
@@ -35,7 +35,7 @@
                 android:layout_below="@id/userImage"
                 android:layout_centerInParent="true"
                 android:padding="5dp"
-                android:text="@string/dummy_content"
+                tools:text="@string/dummy_content"
                 android:textColor="@color/white"
                 android:textSize="17sp" />
 
@@ -73,7 +73,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
                     android:layout_marginStart="15dp"
                     android:layout_marginTop="15dp"
                     android:gravity="center_vertical"
@@ -98,7 +97,6 @@
                     android:orientation="horizontal">
 
                     <View
-                        android:id="@+id/total_time_spent_circle"
                         android:layout_width="15dp"
                         android:layout_height="15dp"
                         android:layout_gravity="center_vertical"
@@ -107,7 +105,6 @@
                         android:tint="@color/total_time_spent" />
 
                     <TextView
-                        android:id="@+id/dash_goals_total_time_spent_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
@@ -124,17 +121,14 @@
                         android:textSize="15sp" />
 
                     <View
-                        android:id="@+id/total_goal_circle"
                         android:layout_width="15dp"
                         android:layout_height="15dp"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="25dp"
                         android:layout_marginStart="25dp"
                         android:background="@drawable/total_goal_circle"
                         android:gravity="center_vertical" />
 
                     <TextView
-                        android:id="@+id/dash_goals_total_goal_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
@@ -164,7 +158,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <View
@@ -175,7 +169,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
                     android:layout_marginStart="15dp"
                     android:layout_marginTop="15dp"
                     android:gravity="center_vertical"
@@ -186,80 +179,16 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/dashboard_tasks_stats_recycler_view"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="16dp"
-                    android:scrollbars="vertical" />
+                    android:layout_height="wrap_content"
+                    android:padding="16dp" />
             </LinearLayout>
         </android.support.v7.widget.CardView>
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/trendsCard"
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_margin="10dp">
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/holo_orange_dark" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="16dp">
-
-                <TextView
-                    android:id="@+id/dash_trends_card_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/dash_trends_card_title" />
-
-                <TextView
-                    android:id="@+id/dash_trends_card_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/dash_trends_card_title" />
-            </RelativeLayout>
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/totalTimeLeftCard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            android:layout_margin="10dp">
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/holo_purple" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="16dp">
-
-                <TextView
-                    android:id="@+id/dash_time_left_card_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/dash_time_left_card_title" />
-
-                <TextView
-                    android:id="@+id/dash_time_left_card_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/dash_time_left_card_title" />
-            </RelativeLayout>
-        </android.support.v7.widget.CardView>
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
-        android:visibility="gone"
-        android:text="@string/dummy_button" />
-</LinearLayout>
+            android:text="@string/dummy_button"
+            android:visibility="invisible"/>
+    </LinearLayout>
 </ScrollView>

@@ -32,7 +32,7 @@ public class SelectTasksActivity extends AppCompatActivity {
     public RecyclerView mRecyclerView;
     private SelectTasksAdapter mAdapter;
 
-    helperPreferences hp;
+    HelperPreferences hp;
 
     int intervalHours, intervalMins;
 
@@ -109,7 +109,7 @@ public class SelectTasksActivity extends AppCompatActivity {
                 }
         );
 
-        hp = new helperPreferences(this);
+        hp = new HelperPreferences(this);
         //Initialize snooze interval time to the base interval time for first run
         if(Integer.parseInt(hp.getPreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_HOURS, "0")) == 0 && Integer.parseInt(hp.getPreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_MINS, "0")) == 0){
             hp.savePreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_MINS,hp.getPreferences(Constants.SHPREF_INTERVAL_MINS, "0"));

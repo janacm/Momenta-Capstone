@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class AwardManager {
     private Context context;
-    private helperPreferences helperPreferences;
+    private HelperPreferences helperPreferences;
     private static AwardManager instance;
     private DatabaseReference databaseReference;
     private Award award;
@@ -36,7 +36,7 @@ public class AwardManager {
     }
 
     private AwardManager(Context context) {
-        helperPreferences = new helperPreferences(context);
+        helperPreferences = new HelperPreferences(context);
         firebaseDatabase = FirebaseDatabase.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
 

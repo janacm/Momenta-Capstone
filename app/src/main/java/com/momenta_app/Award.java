@@ -22,6 +22,7 @@ public class Award {
     public static final String MAX_LEVEL = "maxLevel";
     public static final String PROGRESS_LIMIT_EACH_LEVEL = "progressLimitEachLevel";
     public static final String TASK_IDS = "taskIDs";
+    public static final String ICON_ID = "iconId";
 
     private String id;
     private String name;
@@ -30,6 +31,7 @@ public class Award {
     private double currentProgress;
     private int currentLevel;
     private int maxLevel;
+    private int iconId;
     private ArrayList<Integer> progressLimitEachLevel;
     private ArrayList<String> taskIDs;
 
@@ -47,7 +49,7 @@ public class Award {
      * @param description_2          the second part of the description of the award
      * @param progressLimitEachLevel the maximum limit that has to be reached at each level to progress to the each level
      */
-    public Award(String name, String description_1, String description_2, ArrayList<Integer> progressLimitEachLevel, ArrayList<String> taskIDs) {
+    public Award(String name, String description_1, String description_2, int iconId, ArrayList<Integer> progressLimitEachLevel, ArrayList<String> taskIDs) {
         this.name = name;
         this.description_1 = description_1;
         this.description_2 = description_2;
@@ -56,6 +58,7 @@ public class Award {
         this.maxLevel = progressLimitEachLevel.size();
         this.progressLimitEachLevel = progressLimitEachLevel;
         this.taskIDs = taskIDs;
+        this.iconId = iconId;
 
     }
 
@@ -67,8 +70,8 @@ public class Award {
      * @param description_2          the second part of the description of the award
      * @param progressLimitEachLevel the maximum limit that has to be reached at each level to progress to the each level
      */
-    public Award(String id, String name, String description_1, String description_2, ArrayList<Integer> progressLimitEachLevel, ArrayList<String> taskIDs) {
-        this(name, description_1, description_2, progressLimitEachLevel, taskIDs);
+    public Award(String id, String name, String description_1, String description_2, int iconId, ArrayList<Integer> progressLimitEachLevel, ArrayList<String> taskIDs) {
+        this(name, description_1, description_2, iconId, progressLimitEachLevel, taskIDs);
         this.id = id;
     }
 
@@ -100,7 +103,13 @@ public class Award {
         return currentProgress;
     }
 
+    public int getIconId(){
+        return iconId;
+    }
 
+    public void setIconId(int id){
+        iconId = id;
+    }
     public int getCurrentLevel() {
         return currentLevel;
     }
@@ -162,6 +171,7 @@ public class Award {
         result.put(MAX_LEVEL, getMaxLevel());
         result.put(PROGRESS_LIMIT_EACH_LEVEL, getProgressLimitEachLevel());
         result.put(TASK_IDS, getTaskIDs());
+        result.put(ICON_ID, getIconId());
 
         return result;
     }

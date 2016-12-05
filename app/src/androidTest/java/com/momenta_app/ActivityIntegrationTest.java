@@ -91,14 +91,14 @@ public class ActivityIntegrationTest {
 
     private static final String TAG = "ActivityIntegrationTest";
     Context context;
-    helperPreferences helperPreferences;
+    HelperPreferences helperPreferences;
 
     @Before
     public void before() {
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         context = instrumentation.getTargetContext();
 
-        helperPreferences = new helperPreferences(context);
+        helperPreferences = new HelperPreferences(context);
     }
 
 

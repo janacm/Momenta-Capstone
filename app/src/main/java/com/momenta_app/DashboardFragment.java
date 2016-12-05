@@ -45,7 +45,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
     private ImageView imgView;
     private ProgressBar loadingProgressBar;
 
-    private helperPreferences helperPreferences;
+    private HelperPreferences helperPreferences;
     private DashboardTaskStatsAdapter dAdapter;
     public RecyclerView dRecyclerView;
     DatabaseReference mDatabaseReference;
@@ -67,7 +67,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mDatabaseReference = FirebaseProvider.getInstance().getReference();
-        helperPreferences = new helperPreferences(getActivity());
+        helperPreferences = new HelperPreferences(getActivity());
 
         mUser = FirebaseProvider.getUser();
         if (mUser != null) {
@@ -92,8 +92,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
         progressBar = (RoundCornerProgressBar) activityView.findViewById(R.id.dash_goals_progress_bar);
         dRecyclerView = (RecyclerView) activityView.findViewById(R.id.dashboard_tasks_stats_recycler_view);
         dRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
+        dRecyclerView.setNestedScrollingEnabled(false);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
         if(user != null) {
             String name = user.getDisplayName();
             Uri photo = user.getPhotoUrl();
