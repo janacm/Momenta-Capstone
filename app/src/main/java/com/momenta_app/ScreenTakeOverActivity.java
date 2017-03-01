@@ -122,7 +122,7 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
         goButton = (Button)findViewById(R.id.dummy_button);
         goButton.setOnTouchListener(mDelayHideTouchListener);
         taskList = new ArrayList<>();
-;        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
                 WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                 WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
@@ -214,8 +214,9 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
             Intent intent = new Intent(this, AddTaskTimeActivity.class);
             intent.putExtras(extras);
             startActivity(intent);
-        } else {
-            Intent intent = new Intent(this, MainActivity.class);
+        }
+        else {
+            Intent intent = new Intent(this, AddNewTaskActivity.class);
             startActivity(intent);
         }
     }
