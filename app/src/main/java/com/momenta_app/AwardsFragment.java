@@ -87,7 +87,9 @@ public class AwardsFragment extends Fragment {
                     viewHolder.description.setText(getStringResourceByName(award.getDescription_1()) + " " +
                             getStringResourceByName(award.getDescription_2()));
                 }
-                viewHolder.awardImage.setImageDrawable(ContextCompat.getDrawable(context, award.getIconId()));
+
+                int iconId = getResources().getIdentifier(award.getIconId(),"drawable","com.momenta_app");
+                viewHolder.awardImage.setImageDrawable(ContextCompat.getDrawable(context, iconId));
 
                 viewHolder.progressText.setText(award.getCurrentLevel() + 1 + "/" + award.getMaxLevel());
 
