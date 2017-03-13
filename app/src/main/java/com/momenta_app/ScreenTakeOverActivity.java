@@ -2,6 +2,7 @@ package com.momenta_app;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -25,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Full-screen activity that pops up at user defined intervals,
@@ -58,6 +60,13 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
 
     public Button goButton;
     private List<Task> taskList;
+
+    TextView quoteSpace, quoteCreditSpace;
+    public String[] quoteArray, quoteCreditArray;
+    int quoteCreditNumber;
+    String quoteCredit, displayQuote;
+    //Random generator to randomly pick from a given list of quotes
+    private static final Random rgen = new Random();
 
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
@@ -112,9 +121,30 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Resources res = getResources();
+        //Hold all quotes and quoteCredits in the following arrays for local use
+        quoteArray = res.getStringArray(R.array.quotes);
+        quoteCreditArray = res.getStringArray(R.array.quoteCredits);
+
+        //Choose a random quote from the Strings.xml file
+        displayQuote = quoteArray[rgen.nextInt(quoteArray.length)];
+
+        //Subtract one because of indexing, or we can just start the indexing at 0 in the string.xml file
+        quoteCreditNumber = Integer.parseInt(displayQuote.substring(0,1)) - 1;
+        //Get the whole quote except the index number added at the front
+        displayQuote = displayQuote.substring(1);
+        //Quotes should have a number infront of them. Using this number is how we distinguish who said the particular quote
+        quoteCredit = quoteCreditArray[quoteCreditNumber];
+
         helperPreferences = new HelperPreferences(this);
 
         setContentView(R.layout.activity_screen_take_over);
+
+        //Set random quote and quoteCredit in the activity
+        quoteSpace = (TextView)findViewById(R.id.quoteSpace);
+        quoteSpace.setText(displayQuote);
+        quoteCreditSpace = (TextView)findViewById(R.id.quoteCredit);
+        quoteCreditSpace.setText(quoteCredit);
 
         mVisible = true;
         mContentView = findViewById(R.id.st_fullscreen_content);
