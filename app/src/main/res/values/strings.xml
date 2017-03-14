@@ -186,4 +186,21 @@
     <string name="invitation_title">Hey, checkout Momenta.</string>
     <string name="invitation_message">No seriously, download momenta!</string>
     <string name="invitation_cta">Call to action text.</string>
+    <!-- All quotes go here. Will be chosen randomly from the popup screen-->
+    <string-array name="quotes">
+        <item>1Put your heart, mind, and soul into even your smallest acts. This is the secret of success.</item>
+        <item>2Keep you face always toward the sunshine - and shadows will fall behind you.</item>
+        <item>3Nothing is impossible, the word itself says im possible!</item>
+        <item>4It does not matter how slowly you go as long as you do not stop.</item>
+    </string-array>
+
+    <!-- Make sure you add the names in the correct order as the quotes -->
+    <string-array name="quoteCredits">
+        <item>-Swami Sivananda </item>
+        <item>-Walt Whitman </item>
+        <item>-Audrey Hepburn </item>
+        <item>-Confucius </item>
+    </string-array>
+
+
 </resources>

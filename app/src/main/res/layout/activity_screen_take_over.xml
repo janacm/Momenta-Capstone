@@ -32,24 +32,23 @@
             android:layout_gravity="center" />
 
         <TextView
+            android:id="@+id/quoteSpace"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="40dp"
+            android:gravity="center"
             android:paddingEnd="40dp"
-            android:textSize="14sp"
+            android:paddingStart="40dp"
             android:textColor="#FFFFFF"
-            android:text="@string/sampleQuote"
-            android:textStyle="italic"
-            android:gravity="center" />
+            android:textSize="14sp"
+            android:textStyle="italic" />
 
         <TextView
+            android:id="@+id/quoteCredit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
             android:paddingTop="10dp"
             android:textColor="#FFFFFF"
-            android:text="@string/quoteCredit"
-            />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/no_tasks_available_text"
