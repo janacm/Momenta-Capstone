@@ -24,7 +24,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * Created by joesi on 2016-07-12.
@@ -37,7 +39,7 @@ public class LoginActivity extends FragmentActivity implements
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
     private static final int REQUEST_GOOGLE_PLAY_SERVICES = 9002;
-
+    private FirebaseAuth.AuthStateListener mAuthListener;
     private HelperPreferences helperPreferences;
     private ProgressDialog mProgressDialog;
     private SessionManager sm;
@@ -49,7 +51,7 @@ public class LoginActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         sm = SessionManager.getInstance(this);
-
+//TODO: If current user is null and cellphone is offline, hide sign in button
         helperPreferences = new HelperPreferences(this);
         // Button listeners
         findViewById(R.id.sign_in_button).setOnClickListener(this);
@@ -66,12 +68,27 @@ public class LoginActivity extends FragmentActivity implements
         signInButton.setScopes(sm.getGoogleServicesObject().getScopeArray());
 
         mFirebaseAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                } else {
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                }
+                // ...
+            }
+        };
     }
 
     @Override
     public void onStart() {
         super.onStart();
 
+        mFirebaseAuth.addAuthStateListener(mAuthListener);
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(sm.getGoogleApiClient());
         if (opr.isDone()) {
             // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
@@ -95,6 +112,13 @@ public class LoginActivity extends FragmentActivity implements
         }
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mFirebaseAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -124,6 +148,7 @@ public class LoginActivity extends FragmentActivity implements
         final String displayName = acct.getDisplayName();
         Log.d(TAG, displayName);
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        Log.d(TAG, "Token" + acct.getIdToken());
         showProgressDialog();
         mFirebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -135,7 +160,8 @@ public class LoginActivity extends FragmentActivity implements
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
                         hideProgressDialog();
-                        if (!task.isSuccessful()) {
+
+                        if (!task.isSuccessful() && FirebaseProvider.getUser() == null) {
                             Log.w(TAG, "signInWithCredential", task.getException());
                             Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();

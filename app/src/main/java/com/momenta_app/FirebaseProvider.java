@@ -18,6 +18,7 @@ public class FirebaseProvider {
     public static FirebaseDatabase getInstance() {
         if ( firebaseDatabase == null ) {
             firebaseDatabase = FirebaseDatabase.getInstance();
+            firebaseDatabase.setPersistenceEnabled(true);
         }
         return firebaseDatabase;
     }
