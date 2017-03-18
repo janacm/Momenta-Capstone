@@ -9,6 +9,8 @@ task incrementVersionCode << {
     def matcher = pattern.matcher(manifestText)
     matcher.find()
     def versionCode = Integer.parseInt(matcher.group(1))
+    println("Current Version Code=${matcher}")
+    println("Next Version Code=${versionCode}")
     def manifestContent = matcher.replaceAll("versionCode " + ++versionCode)
     buildFile.write(manifestContent)
 }
@@ -21,8 +23,8 @@ android {
         applicationId "com.momenta_app"
         minSdkVersion 19
         targetSdkVersion 24
-        versionCode 5
-        versionName "0.2.3"
+        versionCode 6
+        versionName "0."+versionCode+"."+System.getenv('CIRCLE_BUILD_NUM')
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
