@@ -415,6 +415,7 @@ public class AddTaskTimeActivity extends AppCompatActivity {
                     }
             );
         }
+        finish();
     }
 
     /**
