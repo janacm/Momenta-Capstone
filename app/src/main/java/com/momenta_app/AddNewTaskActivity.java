@@ -43,7 +43,7 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
     private  Integer timespentHours = 0;
     private  Integer timespentMins = 0;
     private  Task.Priority PRIORITY = Task.Priority.VERY_LOW;
-
+    private Task.Type goalType = Task.Type.DEADLINE;
     //Firebase Instances
     private DatabaseReference reference;
     private String directory;
@@ -51,7 +51,65 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_newtask);
+        Bundle bundle = getIntent().getExtras();
+        setContentView(R.layout.activity_new_task);
+        //Initialize UI objects depending on type
+        switch(bundle.getInt(Constants.GOAL_TYPE)){
+            case Constants.TYPE_DEADLINE:
+                activityName = (EditText)findViewById(R.id.newtask_name_edit_text);
+                activityGoal = (TextView)findViewById(R.id.newtask_goal_value);
+                activityDeadline = (TextView) findViewById(R.id.newtask_deadline_value);
+                activityTimeSpent = (TextView) findViewById(R.id.newtask_timespent_value);
+
+                deadlineCalendar.setTime(new Date());
+                deadlineCalendar.add(Calendar.WEEK_OF_MONTH, 2);
+
+                activityDeadline.setText(Task.getDateFormat(deadlineCalendar));
+
+                spinner = (Spinner)findViewById(R.id.newtask_priority_spinner);
+
+                assert spinner != null;
+                spinner.setOnItemSelectedListener(this);
+                spinner.setSelection(spinnerPosition(Task.Priority.MEDIUM));
+
+                activityGoal.setText(timeSetText(goalHours,goalMins));
+                activityTimeSpent.setText(timeSetText(timespentHours,timespentMins));
+                goalType = Task.Type.DEADLINE;
+                break;
+            case Constants.TYPE_TODO:
+                findViewById(R.id.newtask_goal_layout).setVisibility(View.GONE);
+                findViewById(R.id.newtask_timespent_layout).setVisibility(View.GONE);
+                activityName = (EditText)findViewById(R.id.newtask_name_edit_text);
+                activityDeadline = (TextView) findViewById(R.id.newtask_deadline_value);
+
+                deadlineCalendar.setTime(new Date());
+                deadlineCalendar.add(Calendar.WEEK_OF_MONTH, 2);
+
+                activityDeadline.setText(Task.getDateFormat(deadlineCalendar));
+
+                spinner = (Spinner)findViewById(R.id.newtask_priority_spinner);
+
+                assert spinner != null;
+                spinner.setOnItemSelectedListener(this);
+                spinner.setSelection(spinnerPosition(Task.Priority.MEDIUM));
+                goalType = Task.Type.TODO;
+                break;
+            case Constants.TYPE_ONGOING:
+                findViewById(R.id.newtask_deadline_layout).setVisibility(View.GONE);
+                findViewById(R.id.newtask_goal_layout).setVisibility(View.GONE);
+                activityName = (EditText)findViewById(R.id.newtask_name_edit_text);
+                activityGoal = (TextView)findViewById(R.id.newtask_goal_value);
+                activityTimeSpent = (TextView) findViewById(R.id.newtask_timespent_value);
+                spinner = (Spinner)findViewById(R.id.newtask_priority_spinner);
+                assert spinner != null;
+                spinner.setOnItemSelectedListener(this);
+                spinner.setSelection(spinnerPosition(Task.Priority.MEDIUM));
+                activityGoal.setText(timeSetText(goalHours,goalMins));
+                activityTimeSpent.setText(timeSetText(timespentHours,timespentMins));
+                goalType = Task.Type.ONGOING;
+                break;
+
+        }
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -60,25 +118,7 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
             actionBar.setTitle(R.string.new_task_title);
         }
 
-        //Initialize UI objects
-        activityName = (EditText)findViewById(R.id.newtask_name_edit_text);
-        activityGoal = (TextView)findViewById(R.id.newtask_goal_value);
-        activityDeadline = (TextView) findViewById(R.id.newtask_deadline_value);
-        activityTimeSpent = (TextView) findViewById(R.id.newtask_timespent_value);
 
-        deadlineCalendar.setTime(new Date());
-        deadlineCalendar.add(Calendar.WEEK_OF_MONTH, 2);
-
-        activityDeadline.setText(Task.getDateFormat(deadlineCalendar));
-
-        spinner = (Spinner)findViewById(R.id.newtask_priority_spinner);
-
-        assert spinner != null;
-        spinner.setOnItemSelectedListener(this);
-        spinner.setSelection(spinnerPosition(Task.Priority.MEDIUM));
-
-        activityGoal.setText(timeSetText(goalHours,goalMins));
-        activityTimeSpent.setText(timeSetText(timespentHours,timespentMins));
 
         reference = FirebaseProvider.getInstance().getReference();
         directory = FirebaseProvider.getUserPath() + "/goals";
@@ -297,7 +337,7 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
 
         String user = FirebaseProvider.getUserPath();
         Task task = new Task(name, totalGoalMinutes.intValue(),
-                deadlineCalendar, Calendar.getInstance().getTimeInMillis(), Calendar.getInstance());
+                deadlineCalendar, Calendar.getInstance().getTimeInMillis(), Calendar.getInstance(), goalType);
         task.setTimeSpent(totalTimeSpentMinutes.intValue());
         task.setPriorityValue(PRIORITY);
         task.setOwner(user);

@@ -68,19 +68,22 @@ public class SelectTasksActivity extends AppCompatActivity {
                         for (DataSnapshot snapshot: dataSnapshot.getChildren() ) {
                             long currentTime = System.currentTimeMillis();
                             //If the deadline hasn't passed
-                            if (currentTime < (Long) snapshot.child("deadline").getValue()) {
+                            if (currentTime < (Long) snapshot.child(Task.DEADLINE).getValue()) {
                                 Task task = new Task();
-                                task.setId((String) snapshot.child("id").getValue());
-                                task.setName((String) snapshot.child("name").getValue());
-                                task.setGoal(snapshot.child("goal").getValue(Integer.class));
-                                task.setDeadline((Long) snapshot.child("deadline").getValue());
-                                task.setDateCreated((Long) snapshot.child("dateCreated").getValue());
-                                task.setLastModified((Long) snapshot.child("lastModified").getValue());
-                                task.setTimeSpent(snapshot.child("timeSpent").getValue(Integer.class));
-                                task.setPriority((String) snapshot.child("priority").getValue());
+                                task.setId((String) snapshot.child(Task.ID).getValue());
+                                task.setName((String) snapshot.child(Task.NAME).getValue());
+                                task.setGoal(snapshot.child(Task.GOAL).getValue(Integer.class));
+                                task.setDeadline((Long) snapshot.child(Task.DEADLINE).getValue());
+                                task.setDateCreated((Long) snapshot.child(Task.DATE_CREATED).getValue());
+                                task.setLastModified((Long) snapshot.child(Task.LAST_MODIFIED).getValue());
+                                task.setTimeSpent(snapshot.child(Task.TIME_SPENT).getValue(Integer.class));
+                                task.setPriority((String) snapshot.child(Task.PRIORITY).getValue());
+                                task.setType((String) snapshot.child(Task.TYPE).getValue());
 
                                 // Add task to the list
-                                tasks.add(task);
+                                if(task.getTypeValue()!=Task.Type.TODO){
+                                    tasks.add(task);
+                                }
                             }
                         }
 

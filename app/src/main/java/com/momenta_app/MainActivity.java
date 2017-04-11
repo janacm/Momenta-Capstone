@@ -3,7 +3,6 @@ package com.momenta_app;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -13,11 +12,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 import com.github.fabtransitionactivity.SheetLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class MainActivity extends AppCompatActivity implements SheetLayout.OnFabAnimationEndListener{
+public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE = 1;
 //    private static boolean persistenceEnabled = false;
 
@@ -35,25 +35,30 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
     private ViewPager viewPager;
     private ManagerFragmentPagerAdapter fragmentManager;
 
-    private SheetLayout mSheetLayout;
-    private FloatingActionButton fab;
+    private FloatingActionMenu fam;
+    private FloatingActionButton fabDeadline,fabTodo,fabOngoing;
     private SessionManager sm;
     private DatabaseReference ref;
     private User user;
     private String awardsDirectory = null;
 
     private HelperPreferences helperPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        final Intent intent = new Intent(this, AddNewTaskActivity.class);
+        final Bundle args = new Bundle();
         sm = SessionManager.getInstance(this);
         user = FirebaseProvider.getUser();
         awardsDirectory = user.getPath() + "/awards";
 
         ref = FirebaseProvider.getInstance().getReference();
-
+        fam = (FloatingActionMenu) findViewById(R.id.fab_menu);
+        fabDeadline = (FloatingActionButton)findViewById(R.id.fab_deadline);
+        fabTodo = (FloatingActionButton)findViewById(R.id.fab_todo);
+        fabOngoing = (FloatingActionButton)findViewById(R.id.fab_ongoing);
         helperPreferences = new HelperPreferences(this);
         if (user.getPath()!=null) {
             helperPreferences.savePreferences(Constants.ACCOUNT_NAME,
@@ -74,7 +79,6 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
 
                 switch (position) {
                     default:
-                        fab.show();
                         break;
                 }
             }
@@ -137,18 +141,45 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
                 }
         );
 
-        mSheetLayout = (SheetLayout)findViewById(R.id.bottom_sheet);
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        //handling menu status (open or close)
+        fam.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
             @Override
-            public void onClick(View view) {
-                mSheetLayout.expandFab();
+            public void onMenuToggle(boolean opened) {
+                if (opened) {
+                } else {
+                }
             }
         });
 
-        mSheetLayout.setFab(fab);
-        mSheetLayout.setFabAnimationEndListener(this);
 
+        fabDeadline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fam.close(false);
+                args.putInt(Constants.GOAL_TYPE, Constants.TYPE_DEADLINE);
+                intent.putExtras(args);
+                startActivityForResult(intent, REQUEST_CODE);
+            }
+        });
+        fabTodo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fam.close(false);
+                args.putInt(Constants.GOAL_TYPE, Constants.TYPE_TODO);
+                intent.putExtras(args);
+                startActivityForResult(intent, REQUEST_CODE);
+            }
+        });
+
+        fabOngoing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fam.close(false);
+                args.putInt(Constants.GOAL_TYPE, Constants.TYPE_ONGOING);
+                intent.putExtras(args);
+                startActivityForResult(intent, REQUEST_CODE);
+            }
+        });
         ref.child(awardsDirectory).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
@@ -253,16 +284,9 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
     }
 
     @Override
-    public void onFabAnimationEnd() {
-        Intent intent = new Intent(this, AddNewTaskActivity.class);
-        startActivityForResult(intent, REQUEST_CODE);
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE) {
-            mSheetLayout.contractFab();
         }
     }
 
@@ -327,4 +351,6 @@ public class MainActivity extends AppCompatActivity implements SheetLayout.OnFab
         }
 
     }
+
+
 }

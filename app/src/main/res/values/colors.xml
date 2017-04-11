@@ -21,4 +21,11 @@
     <color name="latest_tasks_modified_card">#BE3144</color>
     <color name="total_time_spent">#17B794</color>
     <color name="total_time_goal">#28518A</color>
+    <color name="transparent_blue">#883697DB</color>
+    <color name="transparent_white">#88FFFFFF</color>
+    <color name="priority_very_low">#0055FF</color>
+    <color name="priority_low">#00FF44</color>
+    <color name="priority_medium">#EFFF00</color>
+    <color name="priority_high">#FF9A00</color>
+    <color name="priority_very_high">#FF0000</color>
 </resources>

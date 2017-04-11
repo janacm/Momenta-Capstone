@@ -126,7 +126,8 @@ public class ActivityIntegrationTest {
 
     private void insertActivity(String activityName, String hours, String minutes,
                                 int year, int month, int day) {
-        onView(withId(R.id.fab)).perform(click());
+        onView(withId(R.id.fab_menu)).perform(click());
+        onView(withId(R.id.fab_deadline)).perform(click());
         //Delay for a few secs while reveal animation plays
         try {
             Thread.sleep(1200);
