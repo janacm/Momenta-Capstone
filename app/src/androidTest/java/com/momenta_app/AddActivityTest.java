@@ -73,6 +73,12 @@ public class AddActivityTest {
     public void addActivityDefaultStringFieldValuesUITests() {
         //Switching to Log tab
         onView(withId(R.id.fab_menu)).perform(click());
+        //Delay for a few secs while reveal animation plays
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         onView(withId(R.id.fab_deadline)).perform(click());
 
         //Delay for a few secs while reveal animation plays
@@ -93,6 +99,12 @@ public class AddActivityTest {
     public void addActivityActionNoNameUITests() {
         //Click Add Activity button
         onView(withId(R.id.fab_menu)).perform(click());
+        //Delay for a few secs while reveal animation plays
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         onView(withId(R.id.fab_deadline)).perform(click());
 
         //Delay for a few secs while reveal animation plays
@@ -113,6 +125,12 @@ public class AddActivityTest {
         String activityName = "Test Activity1";
         //Click Add Activity Button
         onView(withId(R.id.fab_menu)).perform(click());
+        //Delay for a few secs while reveal animation plays
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         onView(withId(R.id.fab_deadline)).perform(click());
 
         //Delay for a few secs while reveal animation plays
@@ -138,6 +156,12 @@ public class AddActivityTest {
 
         //Click Add Activity Button
         onView(withId(R.id.fab_menu)).perform(click());
+        //Delay for a few secs while reveal animation plays
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         onView(withId(R.id.fab_deadline)).perform(click());
 
         //Delay for a few secs while reveal animation plays
@@ -168,6 +192,12 @@ public class AddActivityTest {
 
         //Click Add Activity Button
         onView(withId(R.id.fab_menu)).perform(click());
+        //Delay for a few secs while reveal animation plays
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         onView(withId(R.id.fab_deadline)).perform(click());
 
         //Delay for a few secs while reveal animation plays
