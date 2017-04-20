@@ -72,7 +72,8 @@ public class AddActivityTest {
     @Test
     public void addActivityDefaultStringFieldValuesUITests() {
         //Switching to Log tab
-        onView(withId(R.id.fab)).perform(click());
+        onView(withId(R.id.fab_menu)).perform(click());
+        onView(withId(R.id.fab_deadline)).perform(click());
 
         //Delay for a few secs while reveal animation plays
         try {
@@ -91,7 +92,8 @@ public class AddActivityTest {
     @Test
     public void addActivityActionNoNameUITests() {
         //Click Add Activity button
-        onView(withId(R.id.fab)).perform(click());
+        onView(withId(R.id.fab_menu)).perform(click());
+        onView(withId(R.id.fab_deadline)).perform(click());
 
         //Delay for a few secs while reveal animation plays
         try {
@@ -110,7 +112,8 @@ public class AddActivityTest {
     public void addActivityActionNameOnlyUITests() {
         String activityName = "Test Activity1";
         //Click Add Activity Button
-        onView(withId(R.id.fab)).perform(click());
+        onView(withId(R.id.fab_menu)).perform(click());
+        onView(withId(R.id.fab_deadline)).perform(click());
 
         //Delay for a few secs while reveal animation plays
         try {
@@ -134,7 +137,8 @@ public class AddActivityTest {
         String activityName = "Test Activity2";
 
         //Click Add Activity Button
-        onView(withId(R.id.fab)).perform(click());
+        onView(withId(R.id.fab_menu)).perform(click());
+        onView(withId(R.id.fab_deadline)).perform(click());
 
         //Delay for a few secs while reveal animation plays
         try {
@@ -163,7 +167,8 @@ public class AddActivityTest {
         String activityName = "Test Activity3";
 
         //Click Add Activity Button
-        onView(withId(R.id.fab)).perform(click());
+        onView(withId(R.id.fab_menu)).perform(click());
+        onView(withId(R.id.fab_deadline)).perform(click());
 
         //Delay for a few secs while reveal animation plays
         try {
@@ -198,7 +203,8 @@ public class AddActivityTest {
         String activityName = "Test Activity4";
 
         //Click Add Activity Button
-        onView(withId(R.id.fab)).perform(click());
+        onView(withId(R.id.fab_menu)).perform(click());
+        onView(withId(R.id.fab_deadline)).perform(click());
 
         //Delay for a few secs while reveal animation plays
         try {
