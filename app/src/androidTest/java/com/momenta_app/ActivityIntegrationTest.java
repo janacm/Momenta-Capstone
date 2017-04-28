@@ -4,6 +4,7 @@ import android.app.Instrumentation;
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
+import android.support.test.espresso.ViewInteraction;
 import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
@@ -36,7 +37,10 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -126,7 +130,11 @@ public class ActivityIntegrationTest {
 
     private void insertActivity(String activityName, String hours, String minutes,
                                 int year, int month, int day) {
-        onView(withId(R.id.fab_menu)).perform(click());
+        ViewInteraction floatingActionButton = onView(
+                allOf(withClassName(is("com.github.clans.fab.FloatingActionButton")),
+                        withParent(withId(R.id.fab_menu)),
+                        isDisplayed()));
+        floatingActionButton.perform(click());
         onView(withId(R.id.fab_deadline)).perform(click());
         //Delay for a few secs while reveal animation plays
         try {
