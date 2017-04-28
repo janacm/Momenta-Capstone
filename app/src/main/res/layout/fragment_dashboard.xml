@@ -90,60 +90,81 @@
                     android:paddingRight="30dp"
                     android:paddingTop="10dp" />
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
+                    android:layout_height="match_parent"
                     android:orientation="horizontal">
 
                     <View
+                        android:id="@+id/time_spent_circle"
                         android:layout_width="15dp"
                         android:layout_height="15dp"
+                        android:layout_marginStart="25dp"
+                        android:layout_marginTop="3dp"
                         android:layout_gravity="center_vertical"
                         android:background="@drawable/total_time_spent_circle"
                         android:gravity="center_vertical"
-                        android:tint="@color/total_time_spent" />
+                        android:tint="@color/total_time_spent"/>
 
                     <TextView
+                        android:id="@+id/dash_goals_total_time_spent_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:padding="10dp"
                         android:text="@string/timespent_string2"
+                        android:layout_marginStart="4dp"
                         android:textColor="@color/black"
-                        android:textSize="15sp" />
+                        android:layout_marginBottom="1dp"
+                        android:textSize="15sp"
+                        android:layout_toRightOf="@+id/time_spent_circle"/>
 
                     <TextView
                         android:id="@+id/dash_goals_total_time_spent_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/black"
-                        android:textSize="15sp" />
+                        android:layout_marginStart="4dp"
+                        android:layout_marginBottom="1dp"
+                        android:textSize="15sp"
+                        android:layout_toRightOf="@+id/dash_goals_total_time_spent_label" />
 
                     <View
+                        android:id="@+id/goal_circle"
                         android:layout_width="15dp"
                         android:layout_height="15dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginTop="6dp"
                         android:layout_marginStart="25dp"
                         android:background="@drawable/total_goal_circle"
-                        android:gravity="center_vertical" />
+                        android:gravity="center_vertical"
+                        android:layout_below="@+id/time_spent_circle"
+                        android:layout_alignRight="@+id/time_spent_circle" />
 
                     <TextView
+                        android:id="@+id/dash_goals_total_goal_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:padding="10dp"
                         android:text="@string/goal_string2"
                         android:textColor="@color/black"
-                        android:textSize="15sp" />
+                        android:textSize="15sp"
+                        android:layout_marginStart="4dp"
+                        android:layout_below="@+id/dash_goals_total_time_spent_label"
+                        android:layout_marginBottom="1dp"
+                        android:layout_toRightOf="@+id/goal_circle" />
 
                     <TextView
                         android:id="@+id/dash_goals_total_goal_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/black"
-                        android:textSize="15sp" />
-                </LinearLayout>
+                        android:textSize="15sp"
+                        android:layout_marginStart="4dp"
+                        android:layout_below="@+id/dash_goals_total_time_spent_value"
+                        android:layout_alignBaseline="@id/goal_circle"
+                        android:layout_marginBottom="10dp"
+                        android:layout_toRightOf="@+id/dash_goals_total_goal_label" />
+                </RelativeLayout>
             </LinearLayout>
         </android.support.v7.widget.CardView>
 

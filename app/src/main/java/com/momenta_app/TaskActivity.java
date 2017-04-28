@@ -16,6 +16,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +25,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,6 +69,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private boolean wasEdited = false;
     private Task.Priority priority;
+    private Task.Type type;
 
     //Firebase instances
     private DatabaseReference mFirebaseDatabaseReference;
@@ -119,7 +122,8 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                         task.setTimeSpent( dataSnapshot.child(Task.TIME_SPENT).getValue(Integer.class) );
                         task.setPriority( (String)dataSnapshot.child(Task.PRIORITY).getValue() );
                         priority = task.getPriorityValue();
-
+                        task.setType( (String)dataSnapshot.child(Task.TYPE).getValue() );
+                        type = task.getTypeValue();
                         for ( DataSnapshot member : dataSnapshot.child(Task.TEAM).getChildren()) {
                             task.addTeamMember(member.getValue().toString());
                         }
@@ -132,6 +136,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                     }
                 }
         );
+
 
         activityName = (EditText)findViewById(R.id.task_name_edit_text);
         activityGoal = (TextView)findViewById(R.id.task_goal_value);
@@ -147,16 +152,33 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
     private void initializeFields() {
         activityName.setText( task.getName() );
         activityDeadline.setText( task.getFormattedDeadline() );
-
-        //Set the goal textView
-        goalMins = task.getGoal();
-        goalHours = 0;
-        if ( goalMins >= 60 ) {
-            goalHours = goalMins/60;
-            goalMins = goalMins%60;
+        switch (task.getTypeValue()){
+            case DEADLINE:
+                //Set the goal textView
+                goalMins = task.getGoal();
+                goalHours = 0;
+                if ( goalMins >= 60 ) {
+                    goalHours = goalMins/60;
+                    goalMins = goalMins%60;
+                }
+                String goalText = formatTime(goalHours, goalMins, true);
+                activityGoal.setText(goalText);
+                break;
+            case TODO:
+                findViewById(R.id.task_goal_layout).setVisibility(View.GONE);
+                findViewById(R.id.task_timespent_layout).setVisibility(View.GONE);
+                findViewById(R.id.progressBar).setVisibility(View.GONE);
+                findViewById(R.id.progress_detail_layout).setVisibility(View.GONE);
+                break;
+            case ONGOING:
+                findViewById(R.id.task_deadline_layout).setVisibility(View.GONE);
+                findViewById(R.id.task_goal_layout).setVisibility(View.GONE);
+                findViewById(R.id.progressBar).setVisibility(View.GONE);
+                findViewById(R.id.progress_detail_layout).setVisibility(View.GONE);
+                break;
+            default:
+                break;
         }
-        String goalText = formatTime(goalHours, goalMins, true);
-        activityGoal.setText(goalText);
 
         Spinner spinner = (Spinner)findViewById(R.id.task_priority_spinner);
         spinner.setOnItemSelectedListener(this);
@@ -388,7 +410,6 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         task.setGoal(totalMinutes.intValue());
         task.setLastModifiedValue(Calendar.getInstance());
         task.setLastModifiedBy(FirebaseProvider.getUserPath());
-
         Map<String, Object> childUpdates = new HashMap<>();
         for (String teamMember : task.getTeamMembers()) {
             childUpdates.put(teamMember + "/goals/" + task.getId(), task.toMap());
