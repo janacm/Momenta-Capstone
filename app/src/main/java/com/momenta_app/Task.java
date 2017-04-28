@@ -27,7 +27,9 @@ public class Task {
     private Priority priority;
     private String owner;
     private ArrayList<String> team;
-
+    public enum Type {TODO,DEADLINE,ONGOING}
+    private Type type;
+    //TODO Add an enum for Task state Ex: public enum GoalState {ACTIVE,DONE,ARCHIVED};
     //Firebase fields
     public static final String ID = "id";
     public static final String NAME = "name";
@@ -39,6 +41,7 @@ public class Task {
     public static final String LAST_MODIFIED_BY = "lastModifiedBy";
     public static final String PRIORITY = "priority";
     public static final String DATE_CREATED = "dateCreated";
+    public static final String TYPE = "type";
     public static final String TEAM = "team";
 
     /**
@@ -53,15 +56,17 @@ public class Task {
      * @param goal the goal in minutes of the task
      * @param deadline the deadline of the task
      * @param dateCreated the time the task was created
+     * @param type the type of the the task was created
      * @param lastModified the last time the activity was modified
      */
     public Task (String name, int goal, Calendar deadline,
-                 long dateCreated, Calendar lastModified) {
+                 long dateCreated, Calendar lastModified, Type type) {
         this.name = name; this.goal = 0; timeSpent =0;
         priority = Priority.MEDIUM;
         setGoal(goal);
         setDeadlineValue(deadline);
         this.dateCreated = dateCreated;
+        this.type = type;
         setLastModifiedValue(lastModified);
     }
 
@@ -76,7 +81,7 @@ public class Task {
      */
     public Task (String id, String name, int goal, Calendar deadline,
                  long dateCreated, Calendar lastModified, int timeSpent) {
-        this(name, goal, deadline, dateCreated, lastModified);
+        this(name, goal, deadline, dateCreated, lastModified, Type.DEADLINE);
         this.id = id;
         this.timeSpent = timeSpent;
     }
@@ -255,6 +260,39 @@ public class Task {
     }
 
     /**
+     * Used by Firebase to get the type to the Task
+     * @return The String value of the Type
+     */
+    public String getType() {
+        return type.toString();
+    }
+
+    /**
+     * Getter method of type
+     * @return The Type of the Task
+     */
+    @Exclude
+    public Type getTypeValue() {
+        return type;
+    }
+
+    /**
+     * Used by Firebase to set Type
+     * @param type the type of the task
+     */
+    public void setType(String type) {
+        this.type = Type.valueOf(type);
+    }
+
+    /**
+     * Setter method for the type
+     * @param type the type to be set
+     */
+    public void setTypeValue(Type type) {
+        this.type = type;
+    }
+
+    /**
      * Returns the deadline in the format MMMM dd, YYYY.
      * Must check deadline is not null first using the getDeadlineValue() method.
      * @return The string value of the deadline date,
@@ -388,6 +426,7 @@ public class Task {
         result.put(TIME_SPENT, getTimeSpent());
         result.put(PRIORITY, getPriority());
         result.put(TEAM, getTeamMembers());
+        result.put(TYPE, getType());
 
         return result;
     }

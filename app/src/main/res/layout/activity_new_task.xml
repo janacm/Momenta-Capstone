@@ -165,43 +165,47 @@
             android:prompt="@string/priority_spinner_title"/>
 
     </RelativeLayout>
+
     <RelativeLayout
+        android:id="@+id/newtask_timespent_layout"
         android:layout_width="match_parent"
-        android:paddingTop="20dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/newtask_priority_layout"
+        android:background="?attr/selectableItemBackground"
+        android:onClick="timespentOnClick"
         android:paddingBottom="20dp"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:onClick="timespentOnClick"
-        android:background="?attr/selectableItemBackground"
-        android:layout_below="@id/newtask_priority_layout"
-        android:layout_height="wrap_content">
+        android:paddingTop="20dp">
 
         <ImageView
             android:id="@+id/newtask_timespent_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="15dp"
-            android:paddingTop="8dp"
-            android:tint="#9B9B9B"
             android:contentDescription="@string/goal_icon_content_description"
-            android:src="@drawable/timer_sand"/>
+            android:paddingTop="8dp"
+            android:src="@drawable/timer_sand"
+            android:tint="#9B9B9B" />
+
         <TextView
             android:id="@+id/newtask_timespent_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/spent_time_already"
-            android:textSize="18sp"
             android:layout_marginStart="5dp"
+            android:layout_toEndOf="@+id/newtask_timespent_image"
+            android:text="@string/spent_time_already"
             android:textColor="@color/black"
-            android:layout_toEndOf="@+id/newtask_timespent_image"/>
+            android:textSize="18sp" />
+
         <TextView
             android:id="@+id/newtask_timespent_value"
             android:layout_width="match_parent"
-            tools:text="@string/timespent_string"
-            android:layout_marginStart="5dp"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/newtask_timespent_title"
+            android:layout_marginStart="5dp"
             android:layout_toEndOf="@+id/newtask_timespent_image"
-            android:layout_below="@+id/newtask_timespent_title" />
+            tools:text="@string/timespent_string" />
 
     </RelativeLayout>
     <RelativeLayout

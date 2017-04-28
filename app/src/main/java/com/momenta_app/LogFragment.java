@@ -7,12 +7,15 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -23,6 +26,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+
+import static com.momenta_app.Task.Priority.HIGH;
+import static com.momenta_app.Task.Priority.LOW;
+import static com.momenta_app.Task.Priority.MEDIUM;
+import static com.momenta_app.Task.Priority.VERY_HIGH;
+import static com.momenta_app.Task.Priority.VERY_LOW;
 
 /**
  * Created by Joe on 2016-01-31.
@@ -226,10 +235,54 @@ public class LogFragment extends Fragment {
             @Override
             protected void populateViewHolder(TaskViewHolder viewHolder,
                                               Task task, int position) {
+                switch (task.getTypeValue()){
+                    case DEADLINE:
+                        viewHolder.progressBar.setVisibility(View.VISIBLE);
+                        viewHolder.todoCheckbox.setVisibility(View.INVISIBLE);
+                        viewHolder.deadline.setVisibility(View.VISIBLE);
+                        viewHolder.timeSpent.setVisibility(View.VISIBLE);
+                        viewHolder.progressBar.setMax(task.getGoal());
+                        viewHolder.progressBar.setProgress(task.getTimeSpent());
+                        break;
+                    case ONGOING:
+                        viewHolder.progressBar.setVisibility(View.GONE);
+                        viewHolder.todoCheckbox.setVisibility(View.INVISIBLE);
+                        viewHolder.deadline.setVisibility(View.INVISIBLE);
+                        viewHolder.timeSpent.setVisibility(View.VISIBLE);
+                        break;
+                    case TODO:
+                        viewHolder.timeSpent.setVisibility(View.INVISIBLE);
+                        viewHolder.todoCheckbox.setVisibility(View.VISIBLE);
+                        viewHolder.progressBar.setVisibility(View.GONE);
+                        viewHolder.todoCheckbox.setChecked(false);//TODO checked state depends on state of task
+                        break;
+                    default:
+                        break;
+
+                }
                 viewHolder.name.setText(task.getName());
                 viewHolder.timeSpent.setText(task.getFormattedTimeSpent());
-                viewHolder.progressBar.setMax(task.getGoal());
-                viewHolder.progressBar.setProgress(task.getTimeSpent());
+                viewHolder.deadline.setText(task.getFormattedDeadline());
+                switch (task.getPriorityValue()) {
+                    case VERY_LOW:
+                        viewHolder.priority.setBackgroundResource(R.drawable.priotity_very_low_circle);
+                        break;
+                    case LOW:
+                        viewHolder.priority.setBackgroundResource(R.drawable.priotity_low_circle);
+                        break;
+                    case MEDIUM:
+                        viewHolder.priority.setBackgroundResource(R.drawable.priotity_medium_circle);
+                        break;
+                    case HIGH:
+                        viewHolder.priority.setBackgroundResource(R.drawable.priotity_high_circle);
+                        break;
+                    case VERY_HIGH:
+                        viewHolder.priority.setBackgroundResource(R.drawable.priotity_very_high_circle);
+                    default:
+                        viewHolder.priority.setBackgroundResource(R.drawable.priotity_very_high_circle);
+                        break;
+                }
+
             }
 
             @Override
@@ -298,6 +351,9 @@ public class LogFragment extends Fragment {
         public TextView name;
         public TextView timeSpent;
         public TextRoundCornerProgressBar progressBar;
+        public TextView deadline;
+        public CheckBox todoCheckbox;
+        public View priority;
 
         public TaskViewHolder(View itemView) {
             super(itemView);
@@ -305,6 +361,9 @@ public class LogFragment extends Fragment {
             name = (TextView) itemView.findViewById(R.id.list_item_name);
             timeSpent = (TextView) itemView.findViewById(R.id.list_item_time_spent);
             progressBar = (TextRoundCornerProgressBar) itemView.findViewById(R.id.progressBar);
+            deadline = (TextView) itemView.findViewById(R.id.deadline_textView);
+            todoCheckbox = (CheckBox) itemView.findViewById(R.id.toDo_checkBox);
+            priority = itemView.findViewById(R.id.priority_imageView);
         }
     }
 

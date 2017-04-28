@@ -24,4 +24,8 @@ public class Constants {
     public static final String TIME_SPENT_DATE_FORMAT = "yyyy-MM-dd";
     public static final String COLUMN = "COLUMN";
     public static final String ORDER = "ORDER";
+    public static final int TYPE_DEADLINE = 0;
+    public static final int TYPE_ONGOING = 1;
+    public static final int TYPE_TODO = 2;
+    public static final String GOAL_TYPE = "GOAL_TYPE";
 }
