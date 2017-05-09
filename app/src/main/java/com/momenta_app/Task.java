@@ -29,7 +29,9 @@ public class Task {
     private ArrayList<String> team;
     public enum Type {TODO,DEADLINE,ONGOING}
     private Type type;
-    //TODO Add an enum for Task state Ex: public enum GoalState {ACTIVE,DONE,ARCHIVED};
+    public enum State {ACTIVE, DONE, ARCHIVED}
+    private State state;
+
     //Firebase fields
     public static final String ID = "id";
     public static final String NAME = "name";
@@ -273,6 +275,11 @@ public class Task {
      */
     @Exclude
     public Type getTypeValue() {
+        // Quick Fix for addition of Goal Types
+        // All goals before Version 493 are assigned DEADLINE
+        if (type == null) {
+            type = Type.DEADLINE;
+        }
         return type;
     }
 
@@ -281,6 +288,11 @@ public class Task {
      * @param type the type of the task
      */
     public void setType(String type) {
+        // Quick Fix for addition of Goal Types
+        // All goals before Version 493 are assigned DEADLINE
+        if (type == null) {
+            type = Type.DEADLINE.toString();
+        }
         this.type = Type.valueOf(type);
     }
 
@@ -290,6 +302,28 @@ public class Task {
      */
     public void setTypeValue(Type type) {
         this.type = type;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public State getStateValue() {
+        if (state == null) {
+            state = State.ACTIVE;
+        }
+        return state;
+    }
+
+    public void setState(String state) {
+        if (state == null) {
+            state = State.ACTIVE.toString();
+        }
+        this.state = State.valueOf(state);
+    }
+
+    public void setStateValue(State state) {
+        this.state = state;
     }
 
     /**
