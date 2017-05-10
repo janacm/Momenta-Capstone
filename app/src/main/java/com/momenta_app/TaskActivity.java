@@ -119,14 +119,13 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                         task.setLastModifiedBy( (String)dataSnapshot.child(Task.LAST_MODIFIED_BY).getValue() );
                         task.setTimeSpent( dataSnapshot.child(Task.TIME_SPENT).getValue(Integer.class) );
                         task.setPriority( (String)dataSnapshot.child(Task.PRIORITY).getValue() );
-                        priority = task.getPriorityValue();
                         task.setType( (String)dataSnapshot.child(Task.TYPE).getValue() );
                         task.setState( (String)dataSnapshot.child(Task.STATE).getValue() );
                         type = task.getTypeValue();
                         for ( DataSnapshot member : dataSnapshot.child(Task.TEAM).getChildren()) {
                             task.addTeamMember(member.getValue().toString());
                         }
-                        initializeFields();
+                        initializeFields(task);
                         initializeProgressBar();
                     }
 
@@ -148,7 +147,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         helperPreferences = new HelperPreferences(this);
     }
 
-    private void initializeFields() {
+    public void initializeFields(Task task) {
         activityName.setText( task.getName() );
         activityDeadline.setText( task.getFormattedDeadline() );
         switch (task.getTypeValue()){
@@ -183,7 +182,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         Spinner spinner = (Spinner)findViewById(R.id.task_priority_spinner);
         spinner.setOnItemSelectedListener(this);
         spinner.setSelection(spinnerPosition(task.getPriorityValue()));
-
+        priority = task.getPriorityValue();
     }
 
 
