@@ -44,6 +44,7 @@ public class Task {
     public static final String PRIORITY = "priority";
     public static final String DATE_CREATED = "dateCreated";
     public static final String TYPE = "type";
+    public static final String STATE = "state";
     public static final String TEAM = "team";
 
     /**
@@ -266,6 +267,9 @@ public class Task {
      * @return The String value of the Type
      */
     public String getType() {
+        if (type==null) {
+            type = Type.DEADLINE;
+        }
         return type.toString();
     }
 
@@ -304,8 +308,11 @@ public class Task {
         this.type = type;
     }
 
-    public State getState() {
-        return state;
+    public String getState() {
+        if (state==null) {
+            state = State.ACTIVE;
+        }
+        return state.toString();
     }
 
     public State getStateValue() {
@@ -461,6 +468,7 @@ public class Task {
         result.put(PRIORITY, getPriority());
         result.put(TEAM, getTeamMembers());
         result.put(TYPE, getType());
+        result.put(STATE, getState());
 
         return result;
     }

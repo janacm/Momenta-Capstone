@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,7 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.ImageView;
+import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -26,12 +25,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-
-import static com.momenta_app.Task.Priority.HIGH;
-import static com.momenta_app.Task.Priority.LOW;
-import static com.momenta_app.Task.Priority.MEDIUM;
-import static com.momenta_app.Task.Priority.VERY_HIGH;
-import static com.momenta_app.Task.Priority.VERY_LOW;
 
 /**
  * Created by Joe on 2016-01-31.
@@ -254,7 +247,6 @@ public class LogFragment extends Fragment {
                         viewHolder.timeSpent.setVisibility(View.INVISIBLE);
                         viewHolder.todoCheckbox.setVisibility(View.VISIBLE);
                         viewHolder.progressBar.setVisibility(View.GONE);
-                        viewHolder.todoCheckbox.setChecked(false);//TODO checked state depends on state of task
                         break;
                     default:
                         break;
@@ -297,6 +289,21 @@ public class LogFragment extends Fragment {
                         Intent intent = new Intent(getContext(), TaskActivity.class);
                         intent.putExtra(Task.ID, task.getId());
                         getContext().startActivity(intent);
+                    }
+                });
+                viewHolder.todoCheckbox.setOnCheckedChangeListener(null);
+                viewHolder.todoCheckbox.setChecked(!task.getStateValue().equals(Task.State.ACTIVE));
+                viewHolder.todoCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                        if (b) {
+                            task.setStateValue(Task.State.DONE);
+                        } else {
+                            task.setStateValue(Task.State.ACTIVE);
+                        }
+                        // TODO: Changes only saved on this directory, team members?
+                        mFirebaseDatabaseReference.child(directory + "/" + task.getId() + "/"
+                                + Task.STATE).setValue(task.getState());
                     }
                 });
             }

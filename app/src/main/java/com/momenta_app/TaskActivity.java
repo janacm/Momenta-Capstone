@@ -16,7 +16,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,7 +24,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -123,6 +121,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                         task.setPriority( (String)dataSnapshot.child(Task.PRIORITY).getValue() );
                         priority = task.getPriorityValue();
                         task.setType( (String)dataSnapshot.child(Task.TYPE).getValue() );
+                        task.setState( (String)dataSnapshot.child(Task.STATE).getValue() );
                         type = task.getTypeValue();
                         for ( DataSnapshot member : dataSnapshot.child(Task.TEAM).getChildren()) {
                             task.addTeamMember(member.getValue().toString());
@@ -163,18 +162,19 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
                 String goalText = formatTime(goalHours, goalMins, true);
                 activityGoal.setText(goalText);
+                findViewById(R.id.task_goal_layout).setVisibility(View.VISIBLE);
+                findViewById(R.id.task_deadline_layout).setVisibility(View.VISIBLE);
+                findViewById(R.id.task_priority_layout).setVisibility(View.VISIBLE);
+                findViewById(R.id.task_timespent_layout).setVisibility(View.VISIBLE);
+                findViewById(R.id.progress_layout).setVisibility(View.VISIBLE);
                 break;
             case TODO:
-                findViewById(R.id.task_goal_layout).setVisibility(View.GONE);
-                findViewById(R.id.task_timespent_layout).setVisibility(View.GONE);
-                findViewById(R.id.progressBar).setVisibility(View.GONE);
-                findViewById(R.id.progress_detail_layout).setVisibility(View.GONE);
+                findViewById(R.id.task_deadline_layout).setVisibility(View.VISIBLE);
+                findViewById(R.id.task_priority_layout).setVisibility(View.VISIBLE);
                 break;
             case ONGOING:
-                findViewById(R.id.task_deadline_layout).setVisibility(View.GONE);
-                findViewById(R.id.task_goal_layout).setVisibility(View.GONE);
-                findViewById(R.id.progressBar).setVisibility(View.GONE);
-                findViewById(R.id.progress_detail_layout).setVisibility(View.GONE);
+                findViewById(R.id.task_priority_layout).setVisibility(View.VISIBLE);
+                findViewById(R.id.task_timespent_layout).setVisibility(View.VISIBLE);
                 break;
             default:
                 break;
