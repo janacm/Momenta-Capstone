@@ -377,6 +377,7 @@ public class LogFragment extends Fragment {
     /**
      * Sets the adapter of the recycler view
      * @param adapter the new adapter to change to
+     *  TODO: Get ride of method
      */
     public void setAdapter(final RecyclerView.Adapter adapter) {
         getActivity().runOnUiThread(new Runnable() {

@@ -28,6 +28,9 @@ android {
         versionCode 4
         versionName "0.2.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        jackOptions {
+            enabled true
+        }
     }
 
     signingConfigs {
@@ -59,6 +62,10 @@ android {
         disable 'MissingTranslation'
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
