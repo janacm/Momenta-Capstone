@@ -218,7 +218,8 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
 
         ArrayList<Task> dayTaskList = new ArrayList<>();
         for (Task t : tasks) {
-            if (t.getDeadline() >= startOfDay && t.getDeadline() < endOfDay) {
+            if (t.getDeadline() >= startOfDay && t.getDeadline() < endOfDay
+                    && !t.getTypeValue().equals(Task.Type.ONGOING)) {
                 dayTaskList.add(t);
             }
         }
