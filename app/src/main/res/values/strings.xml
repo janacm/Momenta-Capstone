@@ -187,6 +187,7 @@
     <string name="invitation_message">No seriously, download momenta!</string>
     <string name="invitation_cta">Call to action text.</string>
     <string name="sample_deadline_string" />
+    <string name="tasks_for_the_day">Tasks for the day</string>
     <!-- All quotes go here. Will be chosen randomly from the popup screen-->
     <string-array name="quotes">
         <item>1Put your heart, mind, and soul into even your smallest acts. This is the secret of success.</item>

@@ -76,7 +76,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
                     android:gravity="center_vertical"
-                    android:text="Tasks for the day"
+                    android:text="@string/tasks_for_the_day"
                     android:textColor="@color/black"
                     android:textSize="19sp"/>
 

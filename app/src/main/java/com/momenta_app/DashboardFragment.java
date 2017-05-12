@@ -96,11 +96,11 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
 
         taskStatRecyclerView = (RecyclerView) activityView.findViewById(R.id.dashboard_tasks_stats_recycler_view);
         taskStatRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        taskStatRecyclerView.setNestedScrollingEnabled(false);
+//        taskStatRecyclerView.setNestedScrollingEnabled(false);
 
         taskDayRecyclerView = (RecyclerView) activityView.findViewById(R.id.task_for_day_recycler);
         taskDayRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        taskDayRecyclerView.setNestedScrollingEnabled(false);
+//        taskDayRecyclerView.setNestedScrollingEnabled(false);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -146,54 +146,9 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
                             tasks.add(task);
                         }
 
-                        //Sort ArrayList items based on last modified task
-                        Collections.sort(tasks, (t1, t2) -> {
-                            if (t1.getLastModified() > t2.getLastModified())
-                                return 1;
-                            if (t1.getLastModified() < t2.getLastModified())
-                                return -1;
-                            return 0;
-                        });
-
-                        //Reverse tasks list to be in descending order
-                        Collections.reverse(tasks);
-
                         setupTaskForDayCard(tasks);
-
-                        //Sublist of top 5 tasks is displayed in adapter
-                        if (!tasks.isEmpty()) {
-                            if (tasks.size() <= 5) {
-                                tasks = tasks.subList(0, tasks.size());
-                            } else {
-                                tasks = tasks.subList(0, 4);
-                            }
-                        }
-
-                        taskStatAdapter = new DashboardTaskStatsAdapter(getContext(), tasks);
-                        taskStatRecyclerView.setAdapter(taskStatAdapter);
-
-                        if (isAdded()) {
-                            /***Updating the Goal Progress card's fields**/
-                            progressBar.setMax(totalGoal);
-                            progressBar.setPadding(10);
-                            progressBar.setProgress(totalTime);
-                            progressBar.setProgressBackgroundColor(ContextCompat.getColor(getContext(), R.color.total_time_goal));
-                            progressBar.setProgressColor(ContextCompat.getColor(getContext(), R.color.total_time_spent));
-
-                            int ttsh = totalTime / 60;
-                            int ttsm = totalTime % 60;
-
-                            int tgh = totalGoal / 60;
-                            int tgm = totalGoal % 60;
-
-                            totalTimeSpent.setText(timeSetText(ttsh, ttsm));
-                            totalGoalTime.setText(timeSetText(tgh, tgm));
-
-                            if (getView() != null) {
-                                getView().findViewById(R.id.awardsCard).setVisibility(View.VISIBLE);
-                                getView().findViewById(R.id.goalsCompletedCard).setVisibility(View.VISIBLE);
-                            }
-                        }
+                        setupGoalProgressCard(totalGoal, totalTime);
+                        setupLatestTaskCard(tasks);
                     }
 
                     @Override
@@ -228,6 +183,56 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
         taskDayRecyclerView.setAdapter(taskDayAdapter);
     }
 
+    private void setupLatestTaskCard(List<Task> tasks) {
+        //Reverse tasks list to be in descending order
+        Collections.reverse(tasks);
+
+        //Sort ArrayList items based on last modified task
+        Collections.sort(tasks, (t1, t2) -> {
+            if (t1.getLastModified() > t2.getLastModified())
+                return 1;
+            if (t1.getLastModified() < t2.getLastModified())
+                return -1;
+            return 0;
+        });
+
+        //Sublist of top 5 tasks is displayed in adapter
+        if (!tasks.isEmpty()) {
+            if (tasks.size() <= 5) {
+                tasks = tasks.subList(0, tasks.size());
+            } else {
+                tasks = tasks.subList(0, 4);
+            }
+        }
+
+        taskStatAdapter = new DashboardTaskStatsAdapter(getContext(), tasks);
+        taskStatRecyclerView.setAdapter(taskStatAdapter);
+    }
+
+    private void setupGoalProgressCard(int totalGoal, int totalTime) {
+        if (isAdded()) {
+            /***Updating the Goal Progress card's fields**/
+            progressBar.setMax(totalGoal);
+            progressBar.setPadding(10);
+            progressBar.setProgress(totalTime);
+            progressBar.setProgressBackgroundColor(ContextCompat.getColor(getContext(), R.color.total_time_goal));
+            progressBar.setProgressColor(ContextCompat.getColor(getContext(), R.color.total_time_spent));
+
+            int ttsh = totalTime / 60;
+            int ttsm = totalTime % 60;
+
+            int tgh = totalGoal / 60;
+            int tgm = totalGoal % 60;
+
+            totalTimeSpent.setText(timeSetText(ttsh, ttsm));
+            totalGoalTime.setText(timeSetText(tgh, tgm));
+
+            if (getView() != null) {
+                getView().findViewById(R.id.awardsCard).setVisibility(View.VISIBLE);
+                getView().findViewById(R.id.goalsCompletedCard).setVisibility(View.VISIBLE);
+            }
+        }
+    }
     /**
      * Convenience method for setting the time related values for the goal and time spent fields
      * @param hours hour value that is being set
