@@ -75,10 +75,19 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
-                    android:gravity="center_vertical"
                     android:text="@string/tasks_for_the_day"
                     android:textColor="@color/black"
                     android:textSize="19sp"/>
+
+                <TextView
+                    android:id="@+id/task_for_day_empty_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/no_taks_due_today"
+                    android:textSize="17sp"
+                    android:textStyle="italic" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/task_for_day_recycler"

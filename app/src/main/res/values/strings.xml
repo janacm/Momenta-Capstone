@@ -188,6 +188,7 @@
     <string name="invitation_cta">Call to action text.</string>
     <string name="sample_deadline_string" />
     <string name="tasks_for_the_day">Tasks for the day</string>
+    <string name="no_taks_due_today">No taks due today</string>
     <!-- All quotes go here. Will be chosen randomly from the popup screen-->
     <string-array name="quotes">
         <item>1Put your heart, mind, and soul into even your smallest acts. This is the secret of success.</item>

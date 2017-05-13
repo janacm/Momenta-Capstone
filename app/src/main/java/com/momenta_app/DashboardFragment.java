@@ -206,6 +206,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
         }
 
         taskStatAdapter = new DashboardTaskStatsAdapter(getContext(), tasks);
+        addObserver();
         taskStatRecyclerView.setAdapter(taskStatAdapter);
     }
 
@@ -233,6 +234,30 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
             }
         }
     }
+
+    /**
+     *  Adds an observer too the RecyclerView.Adapter, listens for an empty adapter
+     *  and sets the visibility of the empty state text view.
+     */
+    private void addObserver() {
+        RecyclerView.AdapterDataObserver mObserver = new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                if (itemCount!= 0 && getView()!=null) {
+                    getView().findViewById(R.id.task_for_day_empty_text_view).setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                if (positionStart == 0 && getView()!=null) {
+                    getView().findViewById(R.id.task_for_day_empty_text_view).setVisibility(View.VISIBLE);
+                }
+            }
+        };
+        taskStatAdapter.registerAdapterDataObserver(mObserver);
+    }
+
     /**
      * Convenience method for setting the time related values for the goal and time spent fields
      * @param hours hour value that is being set
