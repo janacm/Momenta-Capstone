@@ -88,6 +88,12 @@ public class DashboardDayTaskAdapter extends RecyclerView.Adapter<RecyclerView.V
         return tasks.size();
     }
 
+    public void updateTasks(List<Task> tasks) {
+        this.tasks.clear();
+        this.tasks.addAll(tasks);
+        notifyDataSetChanged();
+    }
+
     public static class TodoViewHolder extends RecyclerView.ViewHolder {
         public final CheckBox checkBox;
 
