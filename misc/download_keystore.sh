@@ -2,7 +2,6 @@
 # to the path/filename set in $KEYSTORE.
 if [[ $KEYSTORE && ${KEYSTORE} && $KEYSTORE_URI && ${KEYSTORE_URI} ]]
 then
-    echo ${KEYSTORE_URI}
     echo "Keystore detected - downloading..."
     # we're using curl instead of wget because it will not
     # expose the sensitive uri in the build logs:
