@@ -27,6 +27,8 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
+
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -87,8 +89,10 @@ public class ActivityIntegrationTest {
             arrayList.add(t3);
 
             //Setting up the adapter
-            Adapter adapter = new Adapter(arrayList);
+            SectionedRecyclerViewAdapter adapter = new SectionedRecyclerViewAdapter();
+            LogFragment.LogSection section = new LogFragment().new LogSection(String.valueOf("Test"), arrayList);
 
+            adapter.addSection(section);
             logFragment.setAdapter(adapter);
         }
     };
@@ -170,32 +174,5 @@ public class ActivityIntegrationTest {
                 + context.getString(R.string.interval_time_summary_minutes))).check(matches(isDisplayed()));
     }
 
-    private class Adapter extends RecyclerView.Adapter<LogFragment.LogSection.TaskViewHolder>{
 
-        ArrayList<Task> list;
-
-        Adapter(ArrayList<Task> list) {
-            this.list = list;
-        }
-        @Override
-        public LogFragment.LogSection.TaskViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.list_item, parent, false);
-            return new LogFragment.LogSection.TaskViewHolder(itemView);
-        }
-
-        @Override
-        public void onBindViewHolder(LogFragment.LogSection.TaskViewHolder holder, int position) {
-            Task task = list.get(position);
-            holder.name.setText(task.getName());
-            holder.timeSpent.setText(task.getFormattedTimeSpent());
-            holder.progressBar.setMax(task.getGoal());
-            holder.progressBar.setProgress(task.getTimeSpent());
-        }
-
-        @Override
-        public int getItemCount() {
-            return list.size();
-        }
-    }
 }
