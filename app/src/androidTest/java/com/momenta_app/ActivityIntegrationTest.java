@@ -129,7 +129,7 @@ public class ActivityIntegrationTest {
 
         onView(withId(R.id.viewpager)).perform(swipeLeft());
         onView(withId(R.id.activity_recycler_view)).perform(
-                RecyclerViewActions.actionOnItemAtPosition(0, click()));
+                RecyclerViewActions.actionOnItemAtPosition(1, click()));
     }
 
     private void insertActivity(String activityName, String hours, String minutes,
