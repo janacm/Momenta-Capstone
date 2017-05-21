@@ -15,23 +15,27 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
-import static com.momenta_app.Task.Priority.HIGH;
-import static com.momenta_app.Task.Priority.LOW;
-import static com.momenta_app.Task.Priority.MEDIUM;
-import static com.momenta_app.Task.Priority.VERY_HIGH;
-import static com.momenta_app.Task.Priority.VERY_LOW;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+
+import io.github.luizgrp.sectionedrecyclerviewadapter.Section;
+import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
+import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 
 /**
  * Created by Joe on 2016-01-31.
@@ -42,7 +46,7 @@ public class LogFragment extends Fragment {
     public static final String ARG_PAGE = "ARG_PAGE";
     public static final String ASC = "ASC";
     public static final String DESC = "DESC";
-    private String sortString = Task.LAST_MODIFIED;
+    private String sortString = Task.DEADLINE;
     private String orderString = ASC;
     private HelperPreferences helperPreferences;
     private RecyclerView mRecyclerView;
@@ -51,7 +55,19 @@ public class LogFragment extends Fragment {
     // Firebase instance variables
     private String directory = "tests";
     private DatabaseReference mFirebaseDatabaseReference;
-    private FirebaseRecyclerAdapter<Task, TaskViewHolder> mFirebaseAdapter;
+    private SectionedRecyclerViewAdapter sectionAdapter;
+    private ArrayList<Task> overdueTasksList = new ArrayList<>();
+    private ArrayList<Task> tomorrowtasksList = new ArrayList<>();
+    private ArrayList<Task> next7TasksList = new ArrayList<>();
+    private ArrayList<Task> laterTasksList = new ArrayList<>();
+    private ArrayList<Task> ongoingTasksList = new ArrayList<>();
+    private ArrayList<Task> tasksList = new ArrayList<>();
+    private ArrayList<Task> veryLowTasksList = new ArrayList<>();
+    private ArrayList<Task> lowTasksList = new ArrayList<>();
+    private ArrayList<Task> mediumTasksList = new ArrayList<>();
+    private ArrayList<Task> highTasksList = new ArrayList<>();
+    private ArrayList<Task> veryHighTasksList = new ArrayList<>();
+    private List<String> keys = new ArrayList<>();
 
     public static LogFragment newInstance(int page) {
         Bundle args = new Bundle();
@@ -65,13 +81,86 @@ public class LogFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         helperPreferences = new HelperPreferences(getActivity());
-
+        sortString = helperPreferences.getPreferences(Constants.COLUMN, Task.DEADLINE);
+        orderString = helperPreferences.getPreferences(Constants.ORDER, ASC);
         directory = FirebaseProvider.getUserPath() + "/goals";
 
-        // New child entries
         mFirebaseDatabaseReference = FirebaseProvider.getInstance().getReference();
-        mFirebaseAdapter = buildAdapter(helperPreferences.getPreferences(Constants.COLUMN, Task.LAST_MODIFIED));
 
+        mFirebaseDatabaseReference.child(directory).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
+                Task task = dataSnapshot.getValue(Task.class);
+                String key = dataSnapshot.getKey();
+
+                // Insert into the correct location, based on previousChildName
+                if (previousChildName == null) {
+                    tasksList.add(0, task);
+                    keys.add(0, key);
+                } else {
+                    int previousIndex = keys.indexOf(previousChildName);
+                    int nextIndex = previousIndex + 1;
+                    if (nextIndex == tasksList.size()) {
+                        tasksList.add(task);
+                        keys.add(key);
+                    } else {
+                        tasksList.add(nextIndex, task);
+                        keys.add(nextIndex, key);
+                    }
+                }
+                sectionAdapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
+                Log.d("LogFragment","onChildChanged");
+                // One of the tasks changed. Replace it in our list and name mapping
+                Task task = dataSnapshot.getValue(Task.class);
+                String key = dataSnapshot.getKey();
+                int index = keys.indexOf(key);
+                tasksList.set(index,task);
+                sectionAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Log.d("LogFragment","onChildRemoved");
+                // A task was removed from the list. Remove it from our list and the name mapping
+                String key = dataSnapshot.getKey();
+                int index = keys.indexOf(key);
+                keys.remove(index);
+                tasksList.remove(index);
+                sectionAdapter.notifyDataSetChanged();
+
+            }
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
+                // A model changed position in the list. Update our list accordingly
+                String key = dataSnapshot.getKey();
+                Task task = dataSnapshot.getValue(Task.class);
+                int index = keys.indexOf(key);
+                tasksList.remove(index);
+                keys.remove(index);
+                if (previousChildName == null) {
+                    tasksList.add(0, task);
+                    keys.add(0, key);
+                } else {
+                    int previousIndex = keys.indexOf(previousChildName);
+                    int nextIndex = previousIndex + 1;
+                    if (nextIndex == tasksList.size()) {
+                        tasksList.add(task);
+                        keys.add(key);
+                    } else {
+                        tasksList.add(nextIndex, task);
+                        keys.add(nextIndex, key);
+                    }
+                }
+                sectionAdapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         setHasOptionsMenu(true);
     }
 
@@ -79,16 +168,12 @@ public class LogFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_log, container, false);
+        Log.d("LogFragment","onCreateView");
 
-        if ( FirebaseProvider.getUserPath().length() > 0 ) {
-            loadingProgressBar = (ProgressBar)view.findViewById(R.id.progressBar);
+        if (FirebaseProvider.getUserPath().length() > 0) {
+            loadingProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
             loadingProgressBar.setVisibility(View.VISIBLE);
         }
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.activity_recycler_view);
-
-        setLayoutManger();
-        mRecyclerView.setAdapter(mFirebaseAdapter);
-
         mFirebaseDatabaseReference.child(directory).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -97,8 +182,6 @@ public class LogFragment extends Fragment {
                 if (!dataSnapshot.hasChildren()) {
                     view.findViewById(R.id.empty_state_layout).setVisibility(View.VISIBLE);
                 }
-
-                addObserver();
             }
 
             @Override
@@ -107,10 +190,32 @@ public class LogFragment extends Fragment {
             }
         });
 
-
         return view;
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Log.d("LogFragment","onViewCreated");
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.activity_recycler_view);
+        setLayoutManger();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("LogFragment","onResume");
+        buildSortedListAdapter(sortString, orderString);
+    }
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        Log.d("LogFragment","setUserVisibleHint");
+        sectionAdapter = new SectionedRecyclerViewAdapter();
+        if(isVisibleToUser){
+            buildSortedListAdapter(sortString, orderString);
+        }
+    }
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -124,6 +229,60 @@ public class LogFragment extends Fragment {
         });
     }
 
+    private void sortList(List<Task> list, String sortString, String orderString) {
+        switch (sortString){
+            case Task.DEADLINE:
+                //Sort tasks list based on due date
+                Collections.sort(list, new Comparator<Task>() {
+                    @Override
+                    public int compare(Task t1, Task t2) {
+                        if (t1.getDeadline() > t2.getDeadline())
+                            return 1;
+                        if (t1.getDeadline() < t2.getDeadline())
+                            return -1;
+                        return 0;
+                    }
+                });
+                break;
+            case Task.NAME:
+                //Sort tasks list based on name
+                Collections.sort(list, new Comparator<Task>() {
+                    @Override
+                    public int compare(Task t1, Task t2) {
+                        return (t1.getName().compareTo(t2.getName()));
+                    }
+                });
+                break;
+            case Task.PRIORITY:
+                //Sort tasks list based on priority
+                Collections.sort(list, new Comparator<Task>() {
+                    @Override
+                    public int compare(Task t1, Task t2) {
+                        return t1.getPriorityValue().compareTo(t2.getPriorityValue());
+                    }
+                });
+                break;
+        }
+        //Reverse tasks list to be in descending order
+        if(orderString.equals(DESC))
+            Collections.reverse(list);
+    }
+
+    private Date getDateInFuture(int numberOfDaysInFuture) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, numberOfDaysInFuture);
+        return calendar.getTime();
+    }
+
+    private boolean findTaskInList(ArrayList<Task> list, Task taskToFind) {
+        for (Task task : list) {
+            if (taskToFind.getId() == task.getId()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * On click method for the sort by menu option.
      * Inflates the sort by dialog.
@@ -132,7 +291,7 @@ public class LogFragment extends Fragment {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         AlertDialog.Builder sortDialogBuilder = new AlertDialog.Builder(getContext());
 
-        View dialogView =  inflater.inflate(R.layout.sort_dialog, null);
+        View dialogView = inflater.inflate(R.layout.sort_dialog, null);
         sortDialogBuilder.setView(dialogView)
                 .setPositiveButton(R.string.dialog_done, new DialogInterface.OnClickListener() {
                     @Override
@@ -140,9 +299,7 @@ public class LogFragment extends Fragment {
                         helperPreferences.savePreferences(Constants.COLUMN, sortString);
                         helperPreferences.savePreferences(Constants.ORDER, orderString);
 
-                        mFirebaseAdapter = buildAdapter(sortString);
-                        mFirebaseAdapter.notifyDataSetChanged();
-                        mRecyclerView.setAdapter(mFirebaseAdapter);
+                        buildSortedListAdapter(sortString, orderString);
 
                         setLayoutManger();
                     }
@@ -153,26 +310,22 @@ public class LogFragment extends Fragment {
                     }
                 });
 
-        RadioGroup sortRadioGroup = (RadioGroup)dialogView.findViewById(R.id.sort_dialog_group);
-        RadioGroup orderRadioGroup = (RadioGroup)dialogView.findViewById(R.id.order_dialog_group);
-
+        RadioGroup sortRadioGroup = (RadioGroup) dialogView.findViewById(R.id.sort_dialog_group);
+        RadioGroup orderRadioGroup = (RadioGroup) dialogView.findViewById(R.id.order_dialog_group);
 
         sortRadioGroup.setOnCheckedChangeListener(
                 new RadioGroup.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(RadioGroup group, int checkedId) {
-                        switch ( checkedId ) {
+                        switch (checkedId) {
                             case R.id.radio_button_name:
                                 sortString = Task.NAME;
-                                break;
-                            case R.id.radio_button_date_created:
-                                sortString = Task.DATE_CREATED;
                                 break;
                             case R.id.radio_button_deadline:
                                 sortString = Task.DEADLINE;
                                 break;
-                            case R.id.radio_button_last_modified:
-                                sortString = Task.LAST_MODIFIED;
+                            case R.id.radio_button_priority:
+                                sortString = Task.PRIORITY;
                                 break;
                         }
                     }
@@ -181,34 +334,31 @@ public class LogFragment extends Fragment {
 
         orderRadioGroup.setOnCheckedChangeListener(
                 new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int id) {
-                switch (id) {
-                    case R.id.radio_button_ascending:
-                        orderString = ASC;
-                        break;
-                    case R.id.radio_button_descending:
-                        orderString = DESC;
-                }
-            }
-        });
+                    @Override
+                    public void onCheckedChanged(RadioGroup radioGroup, int id) {
+                        switch (id) {
+                            case R.id.radio_button_ascending:
+                                orderString = ASC;
+                                break;
+                            case R.id.radio_button_descending:
+                                orderString = DESC;
+                        }
+                    }
+                });
 
         //Check current sort and order preference
-        switch ( helperPreferences.getPreferences(Constants.COLUMN, Task.LAST_MODIFIED) ) {
+        switch (helperPreferences.getPreferences(Constants.COLUMN, Task.DEADLINE)) {
             case Task.NAME:
                 sortRadioGroup.check(R.id.radio_button_name);
-                break;
-            case Task.LAST_MODIFIED:
-                sortRadioGroup.check(R.id.radio_button_last_modified);
-                break;
-            case Task.DATE_CREATED:
-                sortRadioGroup.check(R.id.radio_button_date_created);
                 break;
             case Task.DEADLINE:
                 sortRadioGroup.check(R.id.radio_button_deadline);
                 break;
+            case Task.PRIORITY:
+                sortRadioGroup.check(R.id.radio_button_priority);
+                break;
         }
-        switch ( helperPreferences.getPreferences(Constants.ORDER, ASC)) {
+        switch (helperPreferences.getPreferences(Constants.ORDER, ASC)) {
             case ASC:
                 orderRadioGroup.check(R.id.radio_button_ascending);
                 break;
@@ -220,89 +370,120 @@ public class LogFragment extends Fragment {
         sortDialogBuilder.create().show();
     }
 
-    /**
-     * Helper method to build a recycler adapter
-     * @param sortBy the field to sort the tasks by
-     * @return an adapter
-     */
-    private FirebaseRecyclerAdapter<Task, TaskViewHolder> buildAdapter(String sortBy) {
-        return new FirebaseRecyclerAdapter<Task, TaskViewHolder>(
-                Task.class,
-                R.layout.list_item,
-                TaskViewHolder.class,
-                mFirebaseDatabaseReference.child(directory).orderByChild(sortBy)) {
-
-            @Override
-            protected void populateViewHolder(TaskViewHolder viewHolder,
-                                              Task task, int position) {
-                switch (task.getTypeValue()){
-                    case DEADLINE:
-                        viewHolder.progressBar.setVisibility(View.VISIBLE);
-                        viewHolder.todoCheckbox.setVisibility(View.INVISIBLE);
-                        viewHolder.deadline.setVisibility(View.VISIBLE);
-                        viewHolder.timeSpent.setVisibility(View.VISIBLE);
-                        viewHolder.progressBar.setMax(task.getGoal());
-                        viewHolder.progressBar.setProgress(task.getTimeSpent());
-                        break;
-                    case ONGOING:
-                        viewHolder.progressBar.setVisibility(View.GONE);
-                        viewHolder.todoCheckbox.setVisibility(View.INVISIBLE);
-                        viewHolder.deadline.setVisibility(View.INVISIBLE);
-                        viewHolder.timeSpent.setVisibility(View.VISIBLE);
-                        break;
-                    case TODO:
-                        viewHolder.timeSpent.setVisibility(View.INVISIBLE);
-                        viewHolder.todoCheckbox.setVisibility(View.VISIBLE);
-                        viewHolder.progressBar.setVisibility(View.GONE);
-                        viewHolder.todoCheckbox.setChecked(false);//TODO checked state depends on state of task
-                        break;
-                    default:
-                        break;
-
+    private void buildSortedListAdapter(String sortString, String orderString) {
+        sectionAdapter.removeAllSections();
+        ongoingTasksList.clear();
+        overdueTasksList.clear();
+        tomorrowtasksList.clear();
+        next7TasksList.clear();
+        laterTasksList.clear();
+        veryLowTasksList.clear();
+        lowTasksList.clear();
+        mediumTasksList.clear();
+        highTasksList.clear();
+        veryHighTasksList.clear();
+        Log.d("LogFragment","buildSortedListAdapter");
+        if (sortString.equals(Task.DEADLINE)) {
+            for (Task task : tasksList) {
+                if (task.getTypeValue() == Task.Type.ONGOING && !findTaskInList(ongoingTasksList, task)) {
+                    ongoingTasksList.add(task);
                 }
-                viewHolder.name.setText(task.getName());
-                viewHolder.timeSpent.setText(task.getFormattedTimeSpent());
-                viewHolder.deadline.setText(task.getFormattedDeadline());
+                else if (task.getDeadlineValue().before(Calendar.getInstance()) && !findTaskInList(overdueTasksList, task) && !findTaskInList(ongoingTasksList, task)) {
+                    overdueTasksList.add(task);
+                }
+                else if (task.getDeadlineValue().getTime().before(getDateInFuture(2)) && !findTaskInList(tomorrowtasksList, task) && !findTaskInList(ongoingTasksList, task) && !findTaskInList(overdueTasksList, task)) {
+                    tomorrowtasksList.add(task);
+                }
+                else if (task.getDeadlineValue().getTime().before(getDateInFuture(8)) && !findTaskInList(next7TasksList, task) && !findTaskInList(ongoingTasksList, task) && !findTaskInList(overdueTasksList, task) && !findTaskInList(tomorrowtasksList, task)) {
+                    next7TasksList.add(task);
+                }
+                else if (!findTaskInList(laterTasksList, task) && !findTaskInList(ongoingTasksList, task) && !findTaskInList(next7TasksList, task) && !findTaskInList(tomorrowtasksList, task) && !findTaskInList(overdueTasksList, task)) {
+                    laterTasksList.add(task);
+                }
+            }
+            LogSection overdueSection = new LogSection(String.valueOf("   "+getContext().getString(R.string.overdue_section)), overdueTasksList);
+            LogSection tomorrowSection = new LogSection(String.valueOf("   "+getContext().getString(R.string.tomorrow_section)), tomorrowtasksList);
+            LogSection next7Section = new LogSection(String.valueOf("   "+getContext().getString(R.string.next7days_section)), next7TasksList);
+            LogSection laterSection = new LogSection(String.valueOf("   "+getContext().getString(R.string.later_section)), laterTasksList);
+            LogSection ongoingSection = new LogSection(String.valueOf("   "+getContext().getString(R.string.ongoing_section)), ongoingTasksList);
+            sortList(overdueTasksList, Task.DEADLINE, orderString);
+            sortList(laterTasksList, Task.DEADLINE, orderString);
+            sortList(next7TasksList, Task.DEADLINE, orderString);
+
+            if (overdueTasksList.size() > 0)
+                sectionAdapter.addSection(overdueSection);
+            if (tomorrowtasksList.size() > 0)
+                sectionAdapter.addSection(tomorrowSection);
+            if (next7TasksList.size() > 0)
+                sectionAdapter.addSection(next7Section);
+            if (laterTasksList.size() > 0)
+                sectionAdapter.addSection(laterSection);
+            if (ongoingTasksList.size() > 0)
+                sectionAdapter.addSection(ongoingSection);
+
+        } else if (sortString.equals(Task.NAME)) {
+                sortList(tasksList, Task.NAME, orderString);
+                LogSection tasksSection = new LogSection(String.valueOf("   "+getContext().getString(R.string.tasks_section)), tasksList);
+                sectionAdapter.addSection(tasksSection);
+
+        } else if (sortString.equals(Task.PRIORITY)) {
+            for (Task task : tasksList) {
                 switch (task.getPriorityValue()) {
                     case VERY_LOW:
-                        viewHolder.priority.setBackgroundResource(R.drawable.priotity_very_low_circle);
+                        if(!findTaskInList(veryLowTasksList, task)) {
+                            veryLowTasksList.add(task);
+                        }
                         break;
                     case LOW:
-                        viewHolder.priority.setBackgroundResource(R.drawable.priotity_low_circle);
+                        if(!findTaskInList(lowTasksList, task)) {
+                            lowTasksList.add(task);
+                        }
                         break;
                     case MEDIUM:
-                        viewHolder.priority.setBackgroundResource(R.drawable.priotity_medium_circle);
+                        if(!findTaskInList(mediumTasksList, task)) {
+                            mediumTasksList.add(task);
+                        }
                         break;
                     case HIGH:
-                        viewHolder.priority.setBackgroundResource(R.drawable.priotity_high_circle);
+                        if(!findTaskInList(highTasksList, task)) {
+                            highTasksList.add(task);
+                        }
                         break;
                     case VERY_HIGH:
-                        viewHolder.priority.setBackgroundResource(R.drawable.priotity_very_high_circle);
-                    default:
-                        viewHolder.priority.setBackgroundResource(R.drawable.priotity_very_high_circle);
+                        if(!findTaskInList(veryHighTasksList, task)) {
+                            veryHighTasksList.add(task);
+                        }
                         break;
                 }
-
             }
+            LogSection veryLowSection = new LogSection(String.valueOf("   "+getContext().getString(R.string.very_low_section)), veryLowTasksList);
+            LogSection lowSection = new LogSection(String.valueOf("   "+getContext().getString(R.string.low_section)), lowTasksList);
+            LogSection mediumSection = new LogSection(String.valueOf("   "+getContext().getString(R.string.medium_section)), mediumTasksList);
+            LogSection highSection = new LogSection(String.valueOf("   "+getContext().getString(R.string.high_section)), highTasksList);
+            LogSection veryHighSection = new LogSection(String.valueOf("   "+getContext().getString(R.string.very_high_section)), veryHighTasksList);
+            sortList(veryLowTasksList, Task.DEADLINE, orderString);
+            sortList(lowTasksList, Task.DEADLINE, orderString);
+            sortList(mediumTasksList, Task.DEADLINE, orderString);
+            sortList(highTasksList, Task.DEADLINE, orderString);
+            sortList(veryHighTasksList, Task.DEADLINE, orderString);
 
-            @Override
-            public void onBindViewHolder(TaskViewHolder viewHolder, int position) {
-                super.onBindViewHolder(viewHolder, position);
+            if (veryLowTasksList.size() > 0)
+                sectionAdapter.addSection(veryLowSection);
+            if (lowTasksList.size() > 0)
+                sectionAdapter.addSection(lowSection);
+            if (mediumTasksList.size() > 0)
+                sectionAdapter.addSection(mediumSection);
+            if (highTasksList.size() > 0)
+                sectionAdapter.addSection(highSection);
+            if (veryHighTasksList.size() > 0)
+                sectionAdapter.addSection(veryHighSection);
 
-                final Task task = getItem(position);
-                //Set onClick listener for each activity
-                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getContext(), TaskActivity.class);
-                        intent.putExtra(Task.ID, task.getId());
-                        getContext().startActivity(intent);
-                    }
-                });
-            }
-
-        };
+        }
+        mRecyclerView.setAdapter(sectionAdapter);
+        sectionAdapter.notifyDataSetChanged();
     }
+
+
 
     /**
      * Used to order the layout of the recycler view.
@@ -310,44 +491,163 @@ public class LogFragment extends Fragment {
     private void setLayoutManger() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         orderString = helperPreferences.getPreferences(Constants.ORDER, DESC);
-
-        if ( orderString.equals(DESC) ) {
-            layoutManager.setReverseLayout(true);
-            layoutManager.setStackFromEnd(true);
-            mRecyclerView.setLayoutManager(layoutManager);
-        } else {
-            mRecyclerView.setLayoutManager(layoutManager);
-        }
-
+        mRecyclerView.setLayoutManager(layoutManager);
     }
 
     /**
-     *  Adds an observer too the RecyclerView.Adapter, listens for an empty adapter
-     *  and sets the visibility of the empty state layout.
+     * Adds an observer too the RecyclerView.Adapter, listens for an empty adapter
+     * and sets the visibility of the empty state layout.
      */
     private void addObserver() {
         RecyclerView.AdapterDataObserver mObserver = new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
-                if (itemCount != 0 && getView()!=null) {
+                if (itemCount != 0 && getView() != null) {
                     getView().findViewById(R.id.empty_state_layout).setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void onItemRangeRemoved(int positionStart, int itemCount) {
-                if (positionStart == 0 && getView()!=null) {
+                if (positionStart == 0 && getView() != null) {
                     getView().findViewById(R.id.empty_state_layout).setVisibility(View.VISIBLE);
                 }
             }
         };
-        mFirebaseAdapter.registerAdapterDataObserver(mObserver);
+        sectionAdapter.registerAdapterDataObserver(mObserver);
+    }
+
+
+    /**
+     * Sets the adapter of the recycler view
+     *
+     * @param adapter the new adapter to change to
+     */
+    public void setAdapter(final RecyclerView.Adapter adapter) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mRecyclerView.setAdapter(adapter);
+                mRecyclerView.invalidate();
+            }
+        });
+    }
+
+class LogSection extends StatelessSection {
+    String title;
+    List<Task> list;
+
+    public LogSection(String title, List<Task> list) {
+        // call constructor with layout resources for this Section header, footer and items
+        super(R.layout.log_section_header, R.layout.list_item);
+
+        this.title = title;
+        this.list = list;
+    }
+
+    @Override
+    public int getContentItemsTotal() {
+        return list.size(); // number of items of this section
+    }
+
+    @Override
+    public RecyclerView.ViewHolder getItemViewHolder(View view) {
+        // return a custom instance of ViewHolder for the items of this section
+        return new TaskViewHolder(view);
+    }
+
+    @Override
+    public void onBindItemViewHolder(RecyclerView.ViewHolder holder, int position) {
+        TaskViewHolder viewHolder = (TaskViewHolder) holder;
+        // bind your view here
+        final Task task = list.get(position);
+
+        switch (task.getTypeValue()) {
+            case DEADLINE:
+                viewHolder.progressBar.setVisibility(View.VISIBLE);
+                viewHolder.todoCheckbox.setVisibility(View.INVISIBLE);
+                viewHolder.deadline.setVisibility(View.VISIBLE);
+                viewHolder.timeSpent.setVisibility(View.VISIBLE);
+                viewHolder.progressBar.setMax(task.getGoal());
+                viewHolder.progressBar.setProgress(task.getTimeSpent());
+                break;
+            case ONGOING:
+                viewHolder.progressBar.setVisibility(View.GONE);
+                viewHolder.todoCheckbox.setVisibility(View.INVISIBLE);
+                viewHolder.deadline.setVisibility(View.INVISIBLE);
+                viewHolder.timeSpent.setVisibility(View.VISIBLE);
+                break;
+            case TODO:
+                viewHolder.timeSpent.setVisibility(View.INVISIBLE);
+                viewHolder.todoCheckbox.setVisibility(View.VISIBLE);
+                viewHolder.progressBar.setVisibility(View.GONE);
+                viewHolder.todoCheckbox.setChecked(false);//TODO checked state depends on state of task
+                break;
+            default:
+                break;
+
+        }
+        viewHolder.name.setText(task.getName());
+        viewHolder.timeSpent.setText(task.getFormattedTimeSpent());
+        viewHolder.deadline.setText(task.getFormattedDeadline());
+        switch (task.getPriorityValue()) {
+            case VERY_LOW:
+                viewHolder.priority.setBackgroundResource(R.drawable.priotity_very_low_circle);
+                break;
+            case LOW:
+                viewHolder.priority.setBackgroundResource(R.drawable.priotity_low_circle);
+                break;
+            case MEDIUM:
+                viewHolder.priority.setBackgroundResource(R.drawable.priotity_medium_circle);
+                break;
+            case HIGH:
+                viewHolder.priority.setBackgroundResource(R.drawable.priotity_high_circle);
+                break;
+            case VERY_HIGH:
+                viewHolder.priority.setBackgroundResource(R.drawable.priotity_very_high_circle);
+            default:
+                viewHolder.priority.setBackgroundResource(R.drawable.priotity_very_high_circle);
+                break;
+        }
+        //Set onClick listener for each activity
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), TaskActivity.class);
+                intent.putExtra(Task.ID, task.getId());
+                getContext().startActivity(intent);
+            }
+        });
+    }
+
+    @Override
+    public RecyclerView.ViewHolder getHeaderViewHolder(View view) {
+        return new HeaderViewHolder(view);
+    }
+
+    @Override
+    public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
+        HeaderViewHolder headerHolder = (HeaderViewHolder) holder;
+
+        // bind your header view here
+        headerHolder.tvTitle.setText(title);
+    }
+
+    public class HeaderViewHolder extends RecyclerView.ViewHolder {
+
+        private final TextView tvTitle;
+
+        public HeaderViewHolder(View view) {
+            super(view);
+
+            tvTitle = (TextView) view.findViewById(R.id.section_name);
+        }
     }
 
     /**
      * ViewHolder class for each item in the recycler view.
      */
-    public static class TaskViewHolder extends RecyclerView.ViewHolder {
+    public class TaskViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
         public TextView timeSpent;
         public TextRoundCornerProgressBar progressBar;
@@ -366,18 +666,6 @@ public class LogFragment extends Fragment {
             priority = itemView.findViewById(R.id.priority_imageView);
         }
     }
+}
 
-    /**
-     * Sets the adapter of the recycler view
-     * @param adapter the new adapter to change to
-     */
-    public void setAdapter(final RecyclerView.Adapter adapter) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mRecyclerView.setAdapter(adapter);
-                mRecyclerView.invalidate();
-            }
-        });
-    }
 }

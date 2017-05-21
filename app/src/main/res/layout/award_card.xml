@@ -5,7 +5,7 @@
     android:layout_height="140dp"
     android:id="@+id/card_view"
     android:layout_margin="6dp"
-    card_view:cardBackgroundColor="@color/colorAccent"
+    card_view:cardBackgroundColor="@color/white"
     card_view:cardCornerRadius="4dp"
     card_view:contentPadding="1dp"
     android:clickable="false">
@@ -54,7 +54,7 @@
             card_view:rcTextProgressColor="@color/black"
             card_view:rcProgressColor="@color/accent_material_light_1"
             card_view:rcBackgroundPadding="3dp"
-            card_view:rcBackgroundColor="@color/progress_bg"
+            card_view:rcBackgroundColor="@color/total_time_goal"
             android:layout_toStartOf="@+id/award_level_progress"
             android:layout_toEndOf="@+id/award_image"
             android:layout_alignEnd="@+id/award_level_progress"
