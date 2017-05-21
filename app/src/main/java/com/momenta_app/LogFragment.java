@@ -647,7 +647,7 @@ class LogSection extends StatelessSection {
     /**
      * ViewHolder class for each item in the recycler view.
      */
-    public class TaskViewHolder extends RecyclerView.ViewHolder {
+    public static class TaskViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
         public TextView timeSpent;
         public TextRoundCornerProgressBar progressBar;

@@ -170,7 +170,7 @@ public class ActivityIntegrationTest {
                 + context.getString(R.string.interval_time_summary_minutes))).check(matches(isDisplayed()));
     }
 
-    private class Adapter extends RecyclerView.Adapter<LogFragment.TaskViewHolder>{
+    private class Adapter extends RecyclerView.Adapter<LogFragment.LogSection.TaskViewHolder>{
 
         ArrayList<Task> list;
 
@@ -178,14 +178,14 @@ public class ActivityIntegrationTest {
             this.list = list;
         }
         @Override
-        public LogFragment.TaskViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public LogFragment.LogSection.TaskViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.list_item, parent, false);
-            return new LogFragment.TaskViewHolder(itemView);
+            return new LogFragment.LogSection.TaskViewHolder(itemView);
         }
 
         @Override
-        public void onBindViewHolder(LogFragment.TaskViewHolder holder, int position) {
+        public void onBindViewHolder(LogFragment.LogSection.TaskViewHolder holder, int position) {
             Task task = list.get(position);
             holder.name.setText(task.getName());
             holder.timeSpent.setText(task.getFormattedTimeSpent());
