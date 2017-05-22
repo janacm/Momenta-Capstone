@@ -533,6 +533,10 @@ public class LogFragment extends Fragment {
         });
     }
 
+    public void setTasksList(ArrayList<Task> tasksList) {
+        this.tasksList = tasksList;
+    }
+
 class LogSection extends StatelessSection {
     String title;
     List<Task> list;

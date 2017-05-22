@@ -88,12 +88,7 @@ public class ActivityIntegrationTest {
             arrayList.add(t2);
             arrayList.add(t3);
 
-            //Setting up the adapter
-            SectionedRecyclerViewAdapter adapter = new SectionedRecyclerViewAdapter();
-            LogFragment.LogSection section = new LogFragment().new LogSection(String.valueOf("Test"), arrayList);
-
-            adapter.addSection(section);
-            logFragment.setAdapter(adapter);
+            logFragment.setTasksList(arrayList);
         }
     };
 
@@ -127,7 +122,9 @@ public class ActivityIntegrationTest {
         cal.set(year, month, day);
         insertActivity(name, hours, minutes, year, month, day);
 
-        onView(withId(R.id.viewpager)).perform(swipeLeft());
+        ViewInteraction viewPager = onView(
+                allOf(withId(R.id.viewpager), isDisplayed()));
+        viewPager.perform(swipeLeft());
         onView(withId(R.id.activity_recycler_view)).perform(
                 RecyclerViewActions.actionOnItemAtPosition(1, click()));
     }
@@ -142,7 +139,7 @@ public class ActivityIntegrationTest {
         onView(withId(R.id.fab_deadline)).perform(click());
         //Delay for a few secs while reveal animation plays
         try {
-            Thread.sleep(1200);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
