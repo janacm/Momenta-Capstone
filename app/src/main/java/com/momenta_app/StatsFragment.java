@@ -291,6 +291,14 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
             colors.add(c);
         for (int c : ColorTemplate.COLORFUL_COLORS)
             colors.add(c);
+        for (int c : ColorTemplate.JOYFUL_COLORS)
+            colors.add(c);
+        for (int c : ColorTemplate.LIBERTY_COLORS)
+            colors.add(c);
+        for (int c : ColorTemplate.PASTEL_COLORS)
+            colors.add(c);
+        for (int c : ColorTemplate.VORDIPLOM_COLORS)
+            colors.add(c);
         colors.add( ContextCompat.getColor(getContext(), R.color.deep_purple) );
 
         pieDataSet.setColors(colors);

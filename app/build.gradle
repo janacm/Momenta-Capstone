@@ -75,6 +75,7 @@ dependencies {
     compile 'com.mikhaellopez:circularimageview:3.0.2'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.github.clans:fab:1.6.4'
+    compile 'com.github.luizgrp:SectionedRecyclerViewAdapter:22e73815e8'
 
     // Testing-only dependencies
     // Force usage of support annotations in the test app, since it is internally used by the runner module.

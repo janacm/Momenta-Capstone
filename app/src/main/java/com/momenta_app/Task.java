@@ -29,7 +29,9 @@ public class Task {
     private ArrayList<String> team;
     public enum Type {TODO,DEADLINE,ONGOING}
     private Type type;
-    //TODO Add an enum for Task state Ex: public enum GoalState {ACTIVE,DONE,ARCHIVED};
+    public enum State {ACTIVE, DONE, ARCHIVED}
+    private State state;
+
     //Firebase fields
     public static final String ID = "id";
     public static final String NAME = "name";
@@ -42,6 +44,7 @@ public class Task {
     public static final String PRIORITY = "priority";
     public static final String DATE_CREATED = "dateCreated";
     public static final String TYPE = "type";
+    public static final String STATE = "state";
     public static final String TEAM = "team";
 
     /**
@@ -264,6 +267,9 @@ public class Task {
      * @return The String value of the Type
      */
     public String getType() {
+        if (type==null) {
+            type = Type.DEADLINE;
+        }
         return type.toString();
     }
 
@@ -273,6 +279,11 @@ public class Task {
      */
     @Exclude
     public Type getTypeValue() {
+        // Quick Fix for addition of Goal Types
+        // All goals before Version 493 are assigned DEADLINE
+        if (type == null) {
+            type = Type.DEADLINE;
+        }
         return type;
     }
 
@@ -281,6 +292,11 @@ public class Task {
      * @param type the type of the task
      */
     public void setType(String type) {
+        // Quick Fix for addition of Goal Types
+        // All goals before Version 493 are assigned DEADLINE
+        if (type == null) {
+            type = Type.DEADLINE.toString();
+        }
         this.type = Type.valueOf(type);
     }
 
@@ -290,6 +306,31 @@ public class Task {
      */
     public void setTypeValue(Type type) {
         this.type = type;
+    }
+
+    public String getState() {
+        if (state==null) {
+            state = State.ACTIVE;
+        }
+        return state.toString();
+    }
+
+    public State getStateValue() {
+        if (state == null) {
+            state = State.ACTIVE;
+        }
+        return state;
+    }
+
+    public void setState(String state) {
+        if (state == null) {
+            state = State.ACTIVE.toString();
+        }
+        this.state = State.valueOf(state);
+    }
+
+    public void setStateValue(State state) {
+        this.state = state;
     }
 
     /**
@@ -427,6 +468,7 @@ public class Task {
         result.put(PRIORITY, getPriority());
         result.put(TEAM, getTeamMembers());
         result.put(TYPE, getType());
+        result.put(STATE, getState());
 
         return result;
     }

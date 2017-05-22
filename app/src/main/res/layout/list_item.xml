@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
+    android:layout_height="60dp"
     android:foreground="?android:attr/selectableItemBackground"
     android:background="@drawable/list_item_line">
 
@@ -28,9 +28,9 @@
         android:id="@+id/toDo_checkBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="25dp" />
+        android:layout_marginEnd="18dp"
+        android:layout_marginTop="15dp"
+        android:layout_toStartOf="@+id/linearLayout" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -67,7 +67,7 @@
             autofit:rcReverse="false"
             autofit:rcProgressColor="@color/accent_material_light_1"
             autofit:rcBackgroundPadding="3dp"
-            autofit:rcBackgroundColor="@color/progress_bg"
+            autofit:rcBackgroundColor="@color/total_time_goal"
             android:layout_below="@+id/list_item_name"
             android:layout_alignParentStart="true"
             android:layout_marginTop="3dp" />
