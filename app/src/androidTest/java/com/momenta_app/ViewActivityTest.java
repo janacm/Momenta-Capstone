@@ -7,6 +7,7 @@ import android.support.test.espresso.Espresso;
 import android.support.test.espresso.contrib.PickerActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.util.Log;
 import android.widget.DatePicker;
 
 import com.google.firebase.database.DatabaseReference;
@@ -64,6 +65,24 @@ public class ViewActivityTest {
                 @Override
                 protected void afterActivityLaunched() {
                     super.afterActivityLaunched();
+                    // TODO: Currently only testing Task.Type.DEADLINE
+                    Calendar calendar = Calendar.getInstance();
+                    final Task testTask = new Task("Learn the Guitar", 500, calendar, calendar.getTimeInMillis(),
+                            calendar, Task.Type.DEADLINE);
+                    testTask.setPriorityValue(Task.Priority.HIGH);
+
+                    try {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                rule.getActivity().initializeFields(testTask);
+                            }
+                        });
+                    } catch (Throwable e) {
+                        Log.getStackTraceString(e);
+                    }
+
+
                 }
             };
 

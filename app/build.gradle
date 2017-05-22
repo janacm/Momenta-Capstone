@@ -1,4 +1,21 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.github.triplet.play'
+import java.util.regex.Pattern
+
+task incrementVersionCode << {
+    println(":incrementVersionCode - Incrementing Version Code...")
+    def buildGradleFile = file("build.gradle")
+    def patternVersionCode = Pattern.compile("versionCode (\\d+)")
+    def buildGradleFileText = buildGradleFile.getText()
+    def matcherVersionCode = patternVersionCode.matcher(buildGradleFileText)
+    matcherVersionCode.find()
+    def mVersionCode = Integer.parseInt(matcherVersionCode.group(1))
+    def mNextVersionCode = mVersionCode + 1
+    def manifestContent = matcherVersionCode.replaceAll("versionCode " + mNextVersionCode)
+    println(":incrementVersionCode - current versionCode=" + mVersionCode);
+    println(":incrementVersionCode - next versionCode=" + mNextVersionCode);
+    buildGradleFile.write(manifestContent)
+}
 
 android {
     compileSdkVersion 25
@@ -15,10 +32,10 @@ android {
 
     signingConfigs {
         release {
-            storeFile file("MomentaKeystore.jks")
-            storePassword "momenta"
-            keyAlias "MomentaKeystoreAlias"
-            keyPassword "momenta"
+            storeFile file((String.valueOf(System.getenv("KEYSTORE"))))
+            storePassword System.getenv("KEYSTORE_PASSWORD")
+            keyAlias System.getenv("KEY_ALIAS")
+            keyPassword System.getenv("KEY_PASSWORD")
         }
     }
 
@@ -98,12 +115,9 @@ configurations.all {
     resolutionStrategy.force 'com.google.code.findbugs:jsr305:2.0.1'
 }
 
-apply plugin: 'com.github.triplet.play'
 
 play {
-    track = 'alpha'
-    serviceAccountEmail = '736122607629-compute@developer.gserviceaccount.com'
-    pk12File = file('Google Play Android Developer-04b006574b67.p12')
+    jsonFile = file('Google Play Android Developer-b7aabafd6c2a.json')
 }
 
 apply plugin: 'com.google.gms.google-services'

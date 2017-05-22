@@ -61,6 +61,12 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
     public Button goButton;
     private List<Task> taskList;
 
+    // ScreenTakeOver is ignored/snoozed
+    private boolean isIgnored = true;
+
+    // Time interval saved when screenTakeOver is ignored.
+    private boolean timeIntervalSaved = false;
+
     TextView quoteSpace, quoteCreditSpace;
     public String[] quoteArray, quoteCreditArray;
     int quoteCreditNumber;
@@ -230,6 +236,7 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
     }
 
     public void go_button_click(View view) {
+        isIgnored = false;
 
         if (taskList.size() > 1) {
             Intent intent = new Intent(this, SelectTasksActivity.class);
@@ -252,6 +259,7 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
     }
 
     public void later_button_click(View view) {
+        timeIntervalSaved = true;
         helperPreferences.savePreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_MINS,String.valueOf(Integer.parseInt(helperPreferences.getPreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_MINS,"0"))+Integer.parseInt(helperPreferences.getPreferences(Constants.SHPREF_INTERVAL_MINS,"0"))));
         helperPreferences.savePreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_HOURS,String.valueOf(Integer.parseInt(helperPreferences.getPreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_HOURS,"0"))+Integer.parseInt(helperPreferences.getPreferences(Constants.SHPREF_INTERVAL_HOURS,"0"))));
         Log.d("mins",helperPreferences.getPreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_HOURS,"0")+","+helperPreferences.getPreferences(Constants.SHPREF_INTERVAL_OVER_SNOOZE_MINS,"0"));
@@ -259,8 +267,13 @@ public class ScreenTakeOverActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        // If the ScreenTakeOver screen is ignored and the interval is not saved
+        // call the method to save interval.
+        if(isIgnored && !timeIntervalSaved) {
+            later_button_click(null);
+        }
+        super.onDestroy();
     }
 
 }

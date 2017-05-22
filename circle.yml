@@ -6,11 +6,13 @@ machine:
     TERM: "dumb"
     ADB_INSTALL_TIMEOUT: "10"
     GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
+    KEYSTORE: ${HOME}/${CIRCLE_PROJECT_REPONAME}/signedKeystoreNov7.keystore
     
 deployment:
     alpha:
         branch: production
-        commands:
+        commands:        
+           - ./gradlew incrementVersionCode
            - ./gradlew publishApkRelease
            
 dependencies:
@@ -19,6 +21,8 @@ dependencies:
     - echo y | android update sdk --no-ui --all --filter tool,extra-android-m2repository,extra-android-support,extra-google-google_play_services,extra-google-m2repository,android-25
     - echo y | android update sdk --no-ui --all --filter build-tools-24.0.2
     - echo y | android update sdk --no-ui --all --filter build-tools-25.0.0
+    - bash ./misc/download_keystore.sh
+
 
 test:
   override:

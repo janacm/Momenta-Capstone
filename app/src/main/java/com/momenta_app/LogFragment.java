@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -483,8 +483,6 @@ public class LogFragment extends Fragment {
         sectionAdapter.notifyDataSetChanged();
     }
 
-
-
     /**
      * Used to order the layout of the recycler view.
      */
@@ -585,7 +583,21 @@ class LogSection extends StatelessSection {
                 viewHolder.timeSpent.setVisibility(View.INVISIBLE);
                 viewHolder.todoCheckbox.setVisibility(View.VISIBLE);
                 viewHolder.progressBar.setVisibility(View.GONE);
-                viewHolder.todoCheckbox.setChecked(false);//TODO checked state depends on state of task
+                viewHolder.todoCheckbox.setOnCheckedChangeListener(null);
+                viewHolder.todoCheckbox.setChecked(!task.getStateValue().equals(Task.State.ACTIVE));
+                viewHolder.todoCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                        if (b) {
+                            task.setStateValue(Task.State.DONE);
+                        } else {
+                            task.setStateValue(Task.State.ACTIVE);
+                        }
+                        // TODO: Changes only saved on this directory, team members?
+                        mFirebaseDatabaseReference.child(directory + "/" + task.getId() + "/"
+                                + Task.STATE).setValue(task.getState());
+                    }
+                });
                 break;
             default:
                 break;

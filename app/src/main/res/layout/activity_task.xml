@@ -35,71 +35,80 @@
 
     </LinearLayout>
 
-    <com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_below="@+id/task_top_layout"
-        autofit:rcRadius="20dp"
-        autofit:rcReverse="false"
-        autofit:rcBackgroundPadding="3dp"
-        autofit:rcProgressColor="@color/colorAccent"
-        autofit:rcBackgroundColor="@color/total_time_goal"
-        android:layout_margin="15dp"/>
-
-    <LinearLayout
-        android:id="@+id/progress_detail_layout"
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:id="@+id/progress_layout"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/progressBar"
-        android:layout_marginLeft="15dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginEnd="15dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_below="@+id/task_top_layout"
+        android:visibility="gone"
+        tools:visibility="visible">
 
-        <View
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/task_time_spent_circle"/>
-        <TextView
-            android:layout_width="wrap_content"
+        <com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            autofit:rcRadius="20dp"
+            autofit:rcReverse="false"
+            autofit:rcBackgroundPadding="3dp"
+            autofit:rcProgressColor="@color/colorAccent"
+            autofit:rcBackgroundColor="@color/total_time_goal"
+            android:layout_margin="15dp"/>
+
+        <LinearLayout
+            android:id="@+id/progress_detail_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:textSize="15sp"
-            android:text="@string/timespent_string2"/>
-        <TextView
-            android:id="@+id/progress_text_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"/>
-        <View
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:background="@drawable/total_goal_circle"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:layout_marginEnd="5dp"
-            android:text="@string/goal_string2"/>
-        <TextView
-            android:id="@+id/max_text_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"/>
-    </LinearLayout>
+            android:layout_below="@+id/progressBar"
+            android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginEnd="15dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/task_time_spent_circle"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:textSize="15sp"
+                android:text="@string/timespent_string2"/>
+            <TextView
+                android:id="@+id/progress_text_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"/>
+            <View
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/total_goal_circle"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:layout_marginEnd="5dp"
+                android:text="@string/goal_string2"/>
+            <TextView
+                android:id="@+id/max_text_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"/>
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/progress_detail_layout">
+        android:layout_below="@+id/progress_layout">
 
         <RelativeLayout
             android:id="@+id/scrollable_relative_laytout"
@@ -115,7 +124,9 @@
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:onClick="goalOnClick"
                 android:background="?attr/selectableItemBackground"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <ImageView
                     android:id="@+id/task_goal_image"
@@ -156,7 +167,9 @@
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:onClick="deadlineOnClick"
                 android:background="?attr/selectableItemBackground"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <ImageView
                     android:id="@+id/task_deadline_image"
@@ -196,7 +209,9 @@
                 android:paddingStart="14dp"
                 android:paddingEnd="@dimen/activity_horizontal_margin"
                 android:background="?attr/selectableItemBackground"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <ImageView
                     android:id="@+id/task_priority_image"
@@ -241,7 +256,9 @@
                 android:onClick="timeSpentOnClick"
                 android:background="?attr/selectableItemBackground"
                 android:layout_below="@id/task_priority_layout"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <ImageView
                     android:id="@+id/task_timespent_image"
