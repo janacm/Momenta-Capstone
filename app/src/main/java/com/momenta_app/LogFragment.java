@@ -112,7 +112,6 @@ public class LogFragment extends Fragment {
             }
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
-                Log.d("LogFragment","onChildChanged");
                 // One of the tasks changed. Replace it in our list and name mapping
                 Task task = dataSnapshot.getValue(Task.class);
                 String key = dataSnapshot.getKey();
@@ -123,7 +122,6 @@ public class LogFragment extends Fragment {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Log.d("LogFragment","onChildRemoved");
                 // A task was removed from the list. Remove it from our list and the name mapping
                 String key = dataSnapshot.getKey();
                 int index = keys.indexOf(key);
@@ -168,7 +166,6 @@ public class LogFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_log, container, false);
-        Log.d("LogFragment","onCreateView");
 
         if (FirebaseProvider.getUserPath().length() > 0) {
             loadingProgressBar = (ProgressBar) view.findViewById(R.id.progressBar);
@@ -196,7 +193,6 @@ public class LogFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d("LogFragment","onViewCreated");
         mRecyclerView = (RecyclerView) view.findViewById(R.id.activity_recycler_view);
         setLayoutManger();
     }
@@ -204,13 +200,11 @@ public class LogFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("LogFragment","onResume");
         buildSortedListAdapter(sortString, orderString);
     }
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        Log.d("LogFragment","setUserVisibleHint");
         sectionAdapter = new SectionedRecyclerViewAdapter();
         if(isVisibleToUser){
             buildSortedListAdapter(sortString, orderString);
@@ -382,7 +376,6 @@ public class LogFragment extends Fragment {
         mediumTasksList.clear();
         highTasksList.clear();
         veryHighTasksList.clear();
-        Log.d("LogFragment","buildSortedListAdapter");
         if (sortString.equals(Task.DEADLINE)) {
             for (Task task : tasksList) {
                 if (task.getTypeValue() == Task.Type.ONGOING && !findTaskInList(ongoingTasksList, task)) {
