@@ -199,6 +199,7 @@
     <string name="medium_section">MEDIUM</string>
     <string name="high_section">HIGH</string>
     <string name="very_high_section">VERY HIGH</string>
+    <string name="completed_section">COMPLETED</string>
     <!-- All quotes go here. Will be chosen randomly from the popup screen-->
     <string-array name="quotes">
         <item>1Put your heart, mind, and soul into even your smallest acts. This is the secret of success.</item>

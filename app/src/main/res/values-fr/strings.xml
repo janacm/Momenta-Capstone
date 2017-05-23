@@ -116,4 +116,5 @@
     <string name="medium_section">MOYENNE</string>
     <string name="high_section">HAUTE</string>
     <string name="very_high_section">TRÈS HAUTE</string>
+    <string name="completed_section">COMPLETÉ</string>
 </resources>

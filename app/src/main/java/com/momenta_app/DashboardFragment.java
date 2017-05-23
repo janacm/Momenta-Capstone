@@ -41,8 +41,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
     private TextView totalTimeSpent;
     private TextView totalGoalTime;
 
-    private TextView displayNameText;
-    private ImageView imgView;
     private ProgressBar loadingProgressBar;
 
     private HelperPreferences helperPreferences;

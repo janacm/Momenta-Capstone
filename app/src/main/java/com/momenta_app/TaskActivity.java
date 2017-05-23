@@ -377,6 +377,10 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                         .setValue(Calendar.getInstance().getTimeInMillis());
                 mFirebaseDatabaseReference.child(taskPath + Task.LAST_MODIFIED_BY)
                         .setValue(FirebaseProvider.getUserPath());
+                if(task.getTimeSpent() >= task.getGoal()){
+                    mFirebaseDatabaseReference.child(taskPath + Task.STATE).setValue(Task.State.DONE);
+                    task.setState(String.valueOf(Task.State.DONE));
+                }
             }
         })
                 .setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
