@@ -189,6 +189,18 @@
     <string name="sample_deadline_string" />
     <string name="tasks_for_the_day">Tasks for the day</string>
     <string name="no_taks_due_today">No taks due today</string>
+    <string name="sort_dialog_priority">Priority</string>
+    <string name="overdue_section">OVERDUE</string>
+    <string name="tomorrow_section">TOMORROW</string>
+    <string name="next7days_section">NEXT 7 DAYS</string>
+    <string name="later_section">LATER</string>
+    <string name="ongoing_section">ONGOING</string>
+    <string name="tasks_section">ACTIVITIES</string>
+    <string name="very_low_section">VERY LOW</string>
+    <string name="low_section">LOW</string>
+    <string name="medium_section">MEDIUM</string>
+    <string name="high_section">HIGH</string>
+    <string name="very_high_section">VERY HIGH</string>
     <!-- All quotes go here. Will be chosen randomly from the popup screen-->
     <string-array name="quotes">
         <item>1Put your heart, mind, and soul into even your smallest acts. This is the secret of success.</item>
