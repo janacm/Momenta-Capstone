@@ -2,6 +2,7 @@ package com.momenta_app;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,12 +59,22 @@ public class DashboardDayTaskAdapter extends RecyclerView.Adapter<RecyclerView.V
             case 1:
                 TodoViewHolder todoViewHolder = (TodoViewHolder)holder;
                 todoViewHolder.checkBox.setText(task.getName());
-                todoViewHolder.checkBox.setChecked(!task.getStateValue().equals(Task.State.ACTIVE));
+                boolean isChecked = !task.getStateValue().equals(Task.State.ACTIVE);
+                if (isChecked) {
+                    todoViewHolder.checkBox.setPaintFlags(todoViewHolder.checkBox.getPaintFlags()
+                            | Paint.STRIKE_THRU_TEXT_FLAG);
+                }
+                todoViewHolder.checkBox.setChecked(isChecked);
                 todoViewHolder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
                     if (b) {
                         task.setStateValue(Task.State.DONE);
+                        todoViewHolder.checkBox.setPaintFlags(todoViewHolder.checkBox.getPaintFlags()
+                                | Paint.STRIKE_THRU_TEXT_FLAG);
+
                     } else {
                         task.setStateValue(Task.State.ACTIVE);
+                        todoViewHolder.checkBox.setPaintFlags(todoViewHolder.checkBox.getPaintFlags()
+                                & (~ Paint.STRIKE_THRU_TEXT_FLAG));
                     }
                     // TODO: Changes only saved on this directory, team members?
                     ref.child(FirebaseProvider.getUserPath() + "/goals" + "/" + task.getId() + "/"
