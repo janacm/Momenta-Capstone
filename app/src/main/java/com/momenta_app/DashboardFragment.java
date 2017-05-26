@@ -230,6 +230,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
             totalGoalTime.setText(timeSetText(tgh, tgm));
 
             if (getView() != null) {
+                getView().findViewById(R.id.task_for_day_card).setVisibility(View.VISIBLE);
                 getView().findViewById(R.id.awardsCard).setVisibility(View.VISIBLE);
                 getView().findViewById(R.id.goalsCompletedCard).setVisibility(View.VISIBLE);
             }
