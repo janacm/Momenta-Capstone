@@ -330,6 +330,7 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
         Long totalGoalMinutes = TimeUnit.MINUTES.convert(goalHours.longValue(), TimeUnit.HOURS) + goalMins.longValue();
         Long totalTimeSpentMinutes = TimeUnit.MINUTES.convert(timespentHours.longValue(), TimeUnit.HOURS) + timespentMins.longValue();
 
+
         if (name.isEmpty()) {
             activityName.setError(getResources().getString(R.string.toast_no_name_activity_added));
             return;
@@ -343,7 +344,9 @@ public class AddNewTaskActivity extends AppCompatActivity implements AdapterView
         task.setOwner(user);
         task.setLastModifiedBy(user);
         task.addTeamMember(user);
-
+        if(totalTimeSpentMinutes >= totalGoalMinutes){
+            task.setState(String.valueOf(Task.State.DONE));
+        }
         String id = reference.child(directory).push().getKey();
         task.setId(id);
 

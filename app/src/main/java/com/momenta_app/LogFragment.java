@@ -33,7 +33,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import io.github.luizgrp.sectionedrecyclerviewadapter.Section;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 
@@ -57,6 +56,7 @@ public class LogFragment extends Fragment {
     private DatabaseReference mFirebaseDatabaseReference;
     private SectionedRecyclerViewAdapter sectionAdapter;
     private ArrayList<Task> overdueTasksList = new ArrayList<>();
+    private ArrayList<Task> todayTasksList = new ArrayList<>();
     private ArrayList<Task> tomorrowtasksList = new ArrayList<>();
     private ArrayList<Task> next7TasksList = new ArrayList<>();
     private ArrayList<Task> laterTasksList = new ArrayList<>();
@@ -67,7 +67,9 @@ public class LogFragment extends Fragment {
     private ArrayList<Task> mediumTasksList = new ArrayList<>();
     private ArrayList<Task> highTasksList = new ArrayList<>();
     private ArrayList<Task> veryHighTasksList = new ArrayList<>();
+    private ArrayList<Task> completedTasksList = new ArrayList<>();
     private List<String> keys = new ArrayList<>();
+    private ArrayList<Task> nameList = new ArrayList<>();
 
     public static LogFragment newInstance(int page) {
         Bundle args = new Bundle();
@@ -186,7 +188,7 @@ public class LogFragment extends Fragment {
 
             }
         });
-
+        addObserver();
         return view;
     }
 
@@ -367,6 +369,7 @@ public class LogFragment extends Fragment {
     private void buildSortedListAdapter(String sortString, String orderString) {
         sectionAdapter.removeAllSections();
         ongoingTasksList.clear();
+        todayTasksList.clear();
         overdueTasksList.clear();
         tomorrowtasksList.clear();
         next7TasksList.clear();
@@ -376,101 +379,128 @@ public class LogFragment extends Fragment {
         mediumTasksList.clear();
         highTasksList.clear();
         veryHighTasksList.clear();
-        if (sortString.equals(Task.DEADLINE)) {
-            for (Task task : tasksList) {
-                if (task.getTypeValue() == Task.Type.ONGOING && !findTaskInList(ongoingTasksList, task)) {
-                    ongoingTasksList.add(task);
+        completedTasksList.clear();
+        nameList.clear();
+
+        for (Task task : tasksList) {
+            if (task.getStateValue() == Task.State.ACTIVE) {
+                switch (sortString) {
+                    case Task.DEADLINE:
+                        if (task.getTypeValue() == Task.Type.ONGOING && !findTaskInList(ongoingTasksList, task)) {
+                            ongoingTasksList.add(task);
+                        } else if (task.getDeadlineValue().before(Calendar.getInstance()) && !findTaskInList(overdueTasksList, task) && !findTaskInList(ongoingTasksList, task)) {
+                            overdueTasksList.add(task);
+                        } else if (task.getDeadlineValue().getTime().before(getDateInFuture(1)) && !findTaskInList(todayTasksList, task) && !findTaskInList(overdueTasksList, task) && !findTaskInList(ongoingTasksList, task)) {
+                            todayTasksList.add(task);
+                        } else if (task.getDeadlineValue().getTime().before(getDateInFuture(2)) && !findTaskInList(todayTasksList, task) && !findTaskInList(tomorrowtasksList, task) && !findTaskInList(ongoingTasksList, task) && !findTaskInList(overdueTasksList, task)) {
+                            tomorrowtasksList.add(task);
+                        } else if (task.getDeadlineValue().getTime().before(getDateInFuture(8)) && !findTaskInList(todayTasksList, task) && !findTaskInList(next7TasksList, task) && !findTaskInList(ongoingTasksList, task) && !findTaskInList(overdueTasksList, task) && !findTaskInList(tomorrowtasksList, task)) {
+                            next7TasksList.add(task);
+                        } else if (!findTaskInList(laterTasksList, task) && !findTaskInList(todayTasksList, task) && !findTaskInList(ongoingTasksList, task) && !findTaskInList(next7TasksList, task) && !findTaskInList(tomorrowtasksList, task) && !findTaskInList(overdueTasksList, task)) {
+                            laterTasksList.add(task);
+                        }
+                        break;
+                    case Task.NAME:
+                        nameList.add(task);
+
+                        break;
+                    case Task.PRIORITY:
+                        switch (task.getPriorityValue()) {
+                            case VERY_LOW:
+                                if (!findTaskInList(veryLowTasksList, task)) {
+                                    veryLowTasksList.add(task);
+                                }
+                                break;
+                            case LOW:
+                                if (!findTaskInList(lowTasksList, task)) {
+                                    lowTasksList.add(task);
+                                }
+                                break;
+                            case MEDIUM:
+                                if (!findTaskInList(mediumTasksList, task)) {
+                                    mediumTasksList.add(task);
+                                }
+                                break;
+                            case HIGH:
+                                if (!findTaskInList(highTasksList, task)) {
+                                    highTasksList.add(task);
+                                }
+                                break;
+                            case VERY_HIGH:
+                                if (!findTaskInList(veryHighTasksList, task)) {
+                                    veryHighTasksList.add(task);
+                                }
+                                break;
+                        }
+                        break;
                 }
-                else if (task.getDeadlineValue().before(Calendar.getInstance()) && !findTaskInList(overdueTasksList, task) && !findTaskInList(ongoingTasksList, task)) {
-                    overdueTasksList.add(task);
-                }
-                else if (task.getDeadlineValue().getTime().before(getDateInFuture(2)) && !findTaskInList(tomorrowtasksList, task) && !findTaskInList(ongoingTasksList, task) && !findTaskInList(overdueTasksList, task)) {
-                    tomorrowtasksList.add(task);
-                }
-                else if (task.getDeadlineValue().getTime().before(getDateInFuture(8)) && !findTaskInList(next7TasksList, task) && !findTaskInList(ongoingTasksList, task) && !findTaskInList(overdueTasksList, task) && !findTaskInList(tomorrowtasksList, task)) {
-                    next7TasksList.add(task);
-                }
-                else if (!findTaskInList(laterTasksList, task) && !findTaskInList(ongoingTasksList, task) && !findTaskInList(next7TasksList, task) && !findTaskInList(tomorrowtasksList, task) && !findTaskInList(overdueTasksList, task)) {
-                    laterTasksList.add(task);
-                }
+
+            } else if (task.getStateValue() == Task.State.DONE) {
+                //COMPLETED SECTION
+                completedTasksList.add(task);
             }
-            LogSection overdueSection = new LogSection(String.valueOf("   "+getContext().getString(R.string.overdue_section)), overdueTasksList);
-            LogSection tomorrowSection = new LogSection(String.valueOf("   "+getContext().getString(R.string.tomorrow_section)), tomorrowtasksList);
-            LogSection next7Section = new LogSection(String.valueOf("   "+getContext().getString(R.string.next7days_section)), next7TasksList);
-            LogSection laterSection = new LogSection(String.valueOf("   "+getContext().getString(R.string.later_section)), laterTasksList);
-            LogSection ongoingSection = new LogSection(String.valueOf("   "+getContext().getString(R.string.ongoing_section)), ongoingTasksList);
+        }
+
+        if (overdueTasksList.size() > 0) {
             sortList(overdueTasksList, Task.DEADLINE, orderString);
-            sortList(laterTasksList, Task.DEADLINE, orderString);
+            LogSection overdueSection = new LogSection(String.valueOf("   " + getContext().getString(R.string.overdue_section)), overdueTasksList);
+            sectionAdapter.addSection(overdueSection);
+        }
+        if (todayTasksList.size() > 0) {
+            LogSection todaySection = new LogSection(String.valueOf("   " + getContext().getString(R.string.today_section)), todayTasksList);
+            sectionAdapter.addSection(todaySection);
+        }
+        if (tomorrowtasksList.size() > 0) {
+            LogSection tomorrowSection = new LogSection(String.valueOf("   " + getContext().getString(R.string.tomorrow_section)), tomorrowtasksList);
+            sectionAdapter.addSection(tomorrowSection);
+        }
+        if (next7TasksList.size() > 0) {
             sortList(next7TasksList, Task.DEADLINE, orderString);
-
-            if (overdueTasksList.size() > 0)
-                sectionAdapter.addSection(overdueSection);
-            if (tomorrowtasksList.size() > 0)
-                sectionAdapter.addSection(tomorrowSection);
-            if (next7TasksList.size() > 0)
-                sectionAdapter.addSection(next7Section);
-            if (laterTasksList.size() > 0)
-                sectionAdapter.addSection(laterSection);
-            if (ongoingTasksList.size() > 0)
-                sectionAdapter.addSection(ongoingSection);
-
-        } else if (sortString.equals(Task.NAME)) {
-                sortList(tasksList, Task.NAME, orderString);
-                LogSection tasksSection = new LogSection(String.valueOf("   "+getContext().getString(R.string.tasks_section)), tasksList);
-                sectionAdapter.addSection(tasksSection);
-
-        } else if (sortString.equals(Task.PRIORITY)) {
-            for (Task task : tasksList) {
-                switch (task.getPriorityValue()) {
-                    case VERY_LOW:
-                        if(!findTaskInList(veryLowTasksList, task)) {
-                            veryLowTasksList.add(task);
-                        }
-                        break;
-                    case LOW:
-                        if(!findTaskInList(lowTasksList, task)) {
-                            lowTasksList.add(task);
-                        }
-                        break;
-                    case MEDIUM:
-                        if(!findTaskInList(mediumTasksList, task)) {
-                            mediumTasksList.add(task);
-                        }
-                        break;
-                    case HIGH:
-                        if(!findTaskInList(highTasksList, task)) {
-                            highTasksList.add(task);
-                        }
-                        break;
-                    case VERY_HIGH:
-                        if(!findTaskInList(veryHighTasksList, task)) {
-                            veryHighTasksList.add(task);
-                        }
-                        break;
-                }
-            }
-            LogSection veryLowSection = new LogSection(String.valueOf("   "+getContext().getString(R.string.very_low_section)), veryLowTasksList);
-            LogSection lowSection = new LogSection(String.valueOf("   "+getContext().getString(R.string.low_section)), lowTasksList);
-            LogSection mediumSection = new LogSection(String.valueOf("   "+getContext().getString(R.string.medium_section)), mediumTasksList);
-            LogSection highSection = new LogSection(String.valueOf("   "+getContext().getString(R.string.high_section)), highTasksList);
-            LogSection veryHighSection = new LogSection(String.valueOf("   "+getContext().getString(R.string.very_high_section)), veryHighTasksList);
+            LogSection next7Section = new LogSection(String.valueOf("   " + getContext().getString(R.string.next7days_section)), next7TasksList);
+            sectionAdapter.addSection(next7Section);
+        }
+        if (laterTasksList.size() > 0) {
+            sortList(laterTasksList, Task.DEADLINE, orderString);
+            LogSection laterSection = new LogSection(String.valueOf("   " + getContext().getString(R.string.later_section)), laterTasksList);
+            sectionAdapter.addSection(laterSection);
+        }
+        if (ongoingTasksList.size() > 0) {
+            LogSection ongoingSection = new LogSection(String.valueOf("   " + getContext().getString(R.string.ongoing_section)), ongoingTasksList);
+            sectionAdapter.addSection(ongoingSection);
+        }
+        if(nameList.size()>0){
+            sortList(nameList, Task.NAME, orderString);
+            LogSection nameSection = new LogSection(String.valueOf("   " + getContext().getString(R.string.tasks_section)), nameList);
+            sectionAdapter.addSection(nameSection);
+        }
+        if (veryLowTasksList.size() > 0) {
             sortList(veryLowTasksList, Task.DEADLINE, orderString);
+            LogSection veryLowSection = new LogSection(String.valueOf("   " + getContext().getString(R.string.very_low_section)), veryLowTasksList);
+            sectionAdapter.addSection(veryLowSection);
+        }
+        if (lowTasksList.size() > 0) {
             sortList(lowTasksList, Task.DEADLINE, orderString);
+            LogSection lowSection = new LogSection(String.valueOf("   " + getContext().getString(R.string.low_section)), lowTasksList);
+            sectionAdapter.addSection(lowSection);
+        }
+        if (mediumTasksList.size() > 0) {
             sortList(mediumTasksList, Task.DEADLINE, orderString);
+            LogSection mediumSection = new LogSection(String.valueOf("   " + getContext().getString(R.string.medium_section)), mediumTasksList);
+            sectionAdapter.addSection(mediumSection);
+        }
+        if (highTasksList.size() > 0) {
             sortList(highTasksList, Task.DEADLINE, orderString);
+            LogSection highSection = new LogSection(String.valueOf("   " + getContext().getString(R.string.high_section)), highTasksList);
+            sectionAdapter.addSection(highSection);
+        }
+        if (veryHighTasksList.size() > 0) {
             sortList(veryHighTasksList, Task.DEADLINE, orderString);
-
-            if (veryLowTasksList.size() > 0)
-                sectionAdapter.addSection(veryLowSection);
-            if (lowTasksList.size() > 0)
-                sectionAdapter.addSection(lowSection);
-            if (mediumTasksList.size() > 0)
-                sectionAdapter.addSection(mediumSection);
-            if (highTasksList.size() > 0)
-                sectionAdapter.addSection(highSection);
-            if (veryHighTasksList.size() > 0)
-                sectionAdapter.addSection(veryHighSection);
-
+            LogSection veryHighSection = new LogSection(String.valueOf("   " + getContext().getString(R.string.very_high_section)), veryHighTasksList);
+            sectionAdapter.addSection(veryHighSection);
+        }
+        if (completedTasksList.size() > 0) {
+            LogSection completedSection = new LogSection(String.valueOf("   " + getContext().getString(R.string.completed_section)), completedTasksList);
+            sectionAdapter.addSection(completedSection);
         }
         mRecyclerView.setAdapter(sectionAdapter);
         sectionAdapter.notifyDataSetChanged();
@@ -589,6 +619,7 @@ class LogSection extends StatelessSection {
                         // TODO: Changes only saved on this directory, team members?
                         mFirebaseDatabaseReference.child(directory + "/" + task.getId() + "/"
                                 + Task.STATE).setValue(task.getState());
+                        //buildSortedListAdapter(sortString,orderString);
                     }
                 });
                 break;
