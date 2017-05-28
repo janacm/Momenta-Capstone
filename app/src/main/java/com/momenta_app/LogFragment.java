@@ -56,6 +56,7 @@ public class LogFragment extends Fragment {
     private DatabaseReference mFirebaseDatabaseReference;
     private SectionedRecyclerViewAdapter sectionAdapter;
     private ArrayList<Task> overdueTasksList = new ArrayList<>();
+    private ArrayList<Task> todayTasksList = new ArrayList<>();
     private ArrayList<Task> tomorrowtasksList = new ArrayList<>();
     private ArrayList<Task> next7TasksList = new ArrayList<>();
     private ArrayList<Task> laterTasksList = new ArrayList<>();
@@ -368,6 +369,7 @@ public class LogFragment extends Fragment {
     private void buildSortedListAdapter(String sortString, String orderString) {
         sectionAdapter.removeAllSections();
         ongoingTasksList.clear();
+        todayTasksList.clear();
         overdueTasksList.clear();
         tomorrowtasksList.clear();
         next7TasksList.clear();
@@ -388,11 +390,13 @@ public class LogFragment extends Fragment {
                             ongoingTasksList.add(task);
                         } else if (task.getDeadlineValue().before(Calendar.getInstance()) && !findTaskInList(overdueTasksList, task) && !findTaskInList(ongoingTasksList, task)) {
                             overdueTasksList.add(task);
-                        } else if (task.getDeadlineValue().getTime().before(getDateInFuture(2)) && !findTaskInList(tomorrowtasksList, task) && !findTaskInList(ongoingTasksList, task) && !findTaskInList(overdueTasksList, task)) {
+                        } else if (task.getDeadlineValue().getTime().before(getDateInFuture(1)) && !findTaskInList(todayTasksList, task) && !findTaskInList(overdueTasksList, task) && !findTaskInList(ongoingTasksList, task)) {
+                            todayTasksList.add(task);
+                        } else if (task.getDeadlineValue().getTime().before(getDateInFuture(2)) && !findTaskInList(todayTasksList, task) && !findTaskInList(tomorrowtasksList, task) && !findTaskInList(ongoingTasksList, task) && !findTaskInList(overdueTasksList, task)) {
                             tomorrowtasksList.add(task);
-                        } else if (task.getDeadlineValue().getTime().before(getDateInFuture(8)) && !findTaskInList(next7TasksList, task) && !findTaskInList(ongoingTasksList, task) && !findTaskInList(overdueTasksList, task) && !findTaskInList(tomorrowtasksList, task)) {
+                        } else if (task.getDeadlineValue().getTime().before(getDateInFuture(8)) && !findTaskInList(todayTasksList, task) && !findTaskInList(next7TasksList, task) && !findTaskInList(ongoingTasksList, task) && !findTaskInList(overdueTasksList, task) && !findTaskInList(tomorrowtasksList, task)) {
                             next7TasksList.add(task);
-                        } else if (!findTaskInList(laterTasksList, task) && !findTaskInList(ongoingTasksList, task) && !findTaskInList(next7TasksList, task) && !findTaskInList(tomorrowtasksList, task) && !findTaskInList(overdueTasksList, task)) {
+                        } else if (!findTaskInList(laterTasksList, task) && !findTaskInList(todayTasksList, task) && !findTaskInList(ongoingTasksList, task) && !findTaskInList(next7TasksList, task) && !findTaskInList(tomorrowtasksList, task) && !findTaskInList(overdueTasksList, task)) {
                             laterTasksList.add(task);
                         }
                         break;
@@ -441,6 +445,10 @@ public class LogFragment extends Fragment {
             sortList(overdueTasksList, Task.DEADLINE, orderString);
             LogSection overdueSection = new LogSection(String.valueOf("   " + getContext().getString(R.string.overdue_section)), overdueTasksList);
             sectionAdapter.addSection(overdueSection);
+        }
+        if (todayTasksList.size() > 0) {
+            LogSection todaySection = new LogSection(String.valueOf("   " + getContext().getString(R.string.today_section)), todayTasksList);
+            sectionAdapter.addSection(todaySection);
         }
         if (tomorrowtasksList.size() > 0) {
             LogSection tomorrowSection = new LogSection(String.valueOf("   " + getContext().getString(R.string.tomorrow_section)), tomorrowtasksList);
