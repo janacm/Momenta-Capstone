@@ -30,4 +30,12 @@
         <item name="android:background">@color/black_overlay</item>
     </style>
 
+    <style name="checkboxWhiteBackground" parent="Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:textColor">@color/checkbox_color</item>
+    </style>
+
+    <style name="checkboxBlueBackground" parent="ThemeOverlay.AppCompat.Dark">
+        <item name="colorControlActivated">@color/colorPrimary</item>
+    </style>
+
 </resources>

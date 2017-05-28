@@ -3,18 +3,16 @@ apply plugin: 'com.github.triplet.play'
 import java.util.regex.Pattern
 
 task incrementVersionCode << {
-    println(":incrementVersionCode - Incrementing Version Code...")
-    def buildGradleFile = file("build.gradle")
-    def patternVersionCode = Pattern.compile("versionCode (\\d+)")
-    def buildGradleFileText = buildGradleFile.getText()
-    def matcherVersionCode = patternVersionCode.matcher(buildGradleFileText)
-    matcherVersionCode.find()
-    def mVersionCode = Integer.parseInt(matcherVersionCode.group(1))
-    def mNextVersionCode = mVersionCode + 1
-    def manifestContent = matcherVersionCode.replaceAll("versionCode " + mNextVersionCode)
-    println(":incrementVersionCode - current versionCode=" + mVersionCode);
-    println(":incrementVersionCode - next versionCode=" + mNextVersionCode);
-    buildGradleFile.write(manifestContent)
+    def buildFile = file("build.gradle")
+    def pattern = Pattern.compile("versionCode\\s+(\\d+)")
+    def manifestText = buildFile.getText()
+    def matcher = pattern.matcher(manifestText)
+    matcher.find()
+    def versionCode = Integer.parseInt(matcher.group(1))
+    println("Current Version Code=${matcher}")
+    println("Next Version Code=${versionCode}")
+    def manifestContent = matcher.replaceAll("versionCode " + ++versionCode)
+    buildFile.write(manifestContent)
 }
 
 android {
@@ -25,8 +23,8 @@ android {
         applicationId "com.momenta_app"
         minSdkVersion 19
         targetSdkVersion 24
-        versionCode 4
-        versionName "0.2.2"
+        versionCode 6
+        versionName "0."+versionCode+"."+System.getenv('CIRCLE_BUILD_NUM')
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 

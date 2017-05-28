@@ -26,9 +26,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Joe on 2016-02-01.
@@ -44,8 +46,10 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
     private ProgressBar loadingProgressBar;
 
     private HelperPreferences helperPreferences;
-    private DashboardTaskStatsAdapter dAdapter;
-    public RecyclerView dRecyclerView;
+    private DashboardTaskStatsAdapter taskStatAdapter;
+    private DashboardDayTaskAdapter taskDayAdapter;
+    public RecyclerView taskStatRecyclerView;
+    public RecyclerView taskDayRecyclerView;
     DatabaseReference mDatabaseReference;
     User mUser;
 
@@ -88,9 +92,17 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
         totalTimeSpent = (TextView) activityView.findViewById(R.id.dash_goals_total_time_spent_value);
         totalGoalTime = (TextView) activityView.findViewById(R.id.dash_goals_total_goal_value);
         progressBar = (RoundCornerProgressBar) activityView.findViewById(R.id.dash_goals_progress_bar);
-        dRecyclerView = (RecyclerView) activityView.findViewById(R.id.dashboard_tasks_stats_recycler_view);
-        dRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        dRecyclerView.setNestedScrollingEnabled(false);
+
+        taskStatRecyclerView = (RecyclerView) activityView.findViewById(R.id.dashboard_tasks_stats_recycler_view);
+        taskStatRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+//        taskStatRecyclerView.setNestedScrollingEnabled(false);
+
+        taskDayRecyclerView = (RecyclerView) activityView.findViewById(R.id.task_for_day_recycler);
+        taskDayRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        taskDayAdapter = new DashboardDayTaskAdapter(mDatabaseReference, new ArrayList<Task>());
+        taskDayAdapter.registerAdapterDataObserver(getAdapterDataObserver());
+        taskDayRecyclerView.setAdapter(taskDayAdapter);
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         if(user != null) {
@@ -107,7 +119,6 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
         // New child entries
         mDatabaseReference.child(directory).addValueEventListener(
                 new ValueEventListener() {
-                    //TODO Change to ChildEventListener --> More efficient
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         loadingProgressBar.setVisibility(View.GONE);
@@ -130,60 +141,15 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
                             task.setLastModified((Long) snapshot.child("lastModified").getValue());
                             task.setTimeSpent(snapshot.child("timeSpent").getValue(Integer.class));
                             task.setPriority((String) snapshot.child("priority").getValue());
-
+                            task.setType( (String)snapshot.child(Task.TYPE).getValue() );
+                            task.setState( (String)snapshot.child(Task.STATE).getValue() );
                             // Add task to the list
                             tasks.add(task);
                         }
 
-                        //Sort ArrayList items based on last modified task
-                        Collections.sort(tasks, new Comparator<Task>() {
-                            @Override
-                            public int compare(Task t1, Task t2) {
-                                if (t1.getLastModified() > t2.getLastModified())
-                                    return 1;
-                                if (t1.getLastModified() < t2.getLastModified())
-                                    return -1;
-                                return 0;
-                            }
-                        });
-
-                        //Reverse tasks list to be in descending order
-                        Collections.reverse(tasks);
-
-                        //Sublist of top 5 tasks is displayed in adapter
-                        if (!tasks.isEmpty()) {
-                            if (tasks.size() <= 5) {
-                                tasks = tasks.subList(0, tasks.size());
-                            } else {
-                                tasks = tasks.subList(0, 4);
-                            }
-                        }
-
-                        dAdapter = new DashboardTaskStatsAdapter(getContext(), tasks);
-                        dRecyclerView.setAdapter(dAdapter);
-
-                        if (isAdded()) {
-                            /***Updating the Goal Progress card's fields**/
-                            progressBar.setMax(totalGoal);
-                            progressBar.setPadding(10);
-                            progressBar.setProgress(totalTime);
-                            progressBar.setProgressBackgroundColor(ContextCompat.getColor(getContext(), R.color.total_time_goal));
-                            progressBar.setProgressColor(ContextCompat.getColor(getContext(), R.color.total_time_spent));
-
-                            int ttsh = totalTime / 60;
-                            int ttsm = totalTime % 60;
-
-                            int tgh = totalGoal / 60;
-                            int tgm = totalGoal % 60;
-
-                            totalTimeSpent.setText(timeSetText(ttsh, ttsm));
-                            totalGoalTime.setText(timeSetText(tgh, tgm));
-
-                            if (getView() != null) {
-                                getView().findViewById(R.id.awardsCard).setVisibility(View.VISIBLE);
-                                getView().findViewById(R.id.goalsCompletedCard).setVisibility(View.VISIBLE);
-                            }
-                        }
+                        setupTaskForDayCard(tasks);
+                        setupGoalProgressCard(totalGoal, totalTime);
+                        setupLatestTaskCard(tasks);
                     }
 
                     @Override
@@ -193,6 +159,106 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
         );
 
         return activityView;
+    }
+
+    private void setupTaskForDayCard(List<Task> tasks) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        long startOfDay = cal.getTimeInMillis();
+
+        cal.setTimeInMillis(cal.getTimeInMillis() + TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS));
+        long endOfDay = cal.getTimeInMillis();
+
+        ArrayList<Task> dayTaskList = new ArrayList<>();
+        for (Task t : tasks) {
+            if (t.getDeadline() >= startOfDay && t.getDeadline() < endOfDay
+                    && !t.getTypeValue().equals(Task.Type.ONGOING)) {
+                dayTaskList.add(t);
+            }
+        }
+
+        taskDayAdapter.updateTasks(dayTaskList);
+        taskDayRecyclerView.invalidate();
+    }
+
+    private void setupLatestTaskCard(List<Task> tasks) {
+        //Reverse tasks list to be in descending order
+        Collections.reverse(tasks);
+
+        //Sort ArrayList items based on last modified task
+        Collections.sort(tasks, new Comparator<Task>() {
+            @Override
+            public int compare(Task t1, Task t2) {
+                if (t1.getLastModified() > t2.getLastModified())
+                    return 1;
+                if (t1.getLastModified() < t2.getLastModified())
+                    return -1;
+                return 0;
+            }
+        });
+
+        //Sublist of top 5 tasks is displayed in adapter
+        if (!tasks.isEmpty()) {
+            if (tasks.size() <= 5) {
+                tasks = tasks.subList(0, tasks.size());
+            } else {
+                tasks = tasks.subList(0, 4);
+            }
+        }
+
+        taskStatAdapter = new DashboardTaskStatsAdapter(getContext(), tasks);
+        taskStatRecyclerView.setAdapter(taskStatAdapter);
+    }
+
+    private void setupGoalProgressCard(int totalGoal, int totalTime) {
+        if (isAdded()) {
+            /***Updating the Goal Progress card's fields**/
+            progressBar.setMax(totalGoal);
+            progressBar.setPadding(10);
+            progressBar.setProgress(totalTime);
+            progressBar.setProgressBackgroundColor(ContextCompat.getColor(getContext(), R.color.total_time_goal));
+            progressBar.setProgressColor(ContextCompat.getColor(getContext(), R.color.total_time_spent));
+
+            int ttsh = totalTime / 60;
+            int ttsm = totalTime % 60;
+
+            int tgh = totalGoal / 60;
+            int tgm = totalGoal % 60;
+
+            totalTimeSpent.setText(timeSetText(ttsh, ttsm));
+            totalGoalTime.setText(timeSetText(tgh, tgm));
+
+            if (getView() != null) {
+                getView().findViewById(R.id.task_for_day_card).setVisibility(View.VISIBLE);
+                getView().findViewById(R.id.awardsCard).setVisibility(View.VISIBLE);
+                getView().findViewById(R.id.goalsCompletedCard).setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    /**
+     *  Adds an observer too the RecyclerView.Adapter, listens for an empty adapter
+     *  and sets the visibility of the empty state text view.
+     */
+    private RecyclerView.AdapterDataObserver getAdapterDataObserver() {
+        return new RecyclerView.AdapterDataObserver() {
+
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                if (getView()==null) {
+                    return;
+                }
+                if (taskDayAdapter.getItemCount()==0) {
+                    getView().findViewById(R.id.task_for_day_empty_text_view).setVisibility(View.VISIBLE);
+                } else {
+                    getView().findViewById(R.id.task_for_day_empty_text_view).setVisibility(View.GONE);
+                }
+            }
+        };
     }
 
     /**

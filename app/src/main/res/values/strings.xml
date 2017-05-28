@@ -187,6 +187,8 @@
     <string name="invitation_message">No seriously, download momenta!</string>
     <string name="invitation_cta">Call to action text.</string>
     <string name="sample_deadline_string" />
+    <string name="tasks_for_the_day">Tasks for the day</string>
+    <string name="no_taks_due_today">No taks due today</string>
     <string name="sort_dialog_priority">Priority</string>
     <string name="overdue_section">OVERDUE</string>
     <string name="tomorrow_section">TOMORROW</string>

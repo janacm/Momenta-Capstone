@@ -7,6 +7,7 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -22,6 +23,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -46,7 +49,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class TaskActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener,
-        EasyPermissions.PermissionCallbacks{
+        EasyPermissions.PermissionCallbacks, CompoundButton.OnCheckedChangeListener {
     private static final String TAG = "TaskActivity";
 
     static final int REQUEST_AUTHORIZATION = 1000;
@@ -64,10 +67,11 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
     private TextRoundCornerProgressBar pBar;
     private TextView progressText;
     private TextView maxText;
+    private CheckBox checkBox;
 
     private boolean wasEdited = false;
     private Task.Priority priority;
-    private Task.Type type;
+    private Task.State state;
 
     //Firebase instances
     private DatabaseReference mFirebaseDatabaseReference;
@@ -121,7 +125,6 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                         task.setPriority( (String)dataSnapshot.child(Task.PRIORITY).getValue() );
                         task.setType( (String)dataSnapshot.child(Task.TYPE).getValue() );
                         task.setState( (String)dataSnapshot.child(Task.STATE).getValue() );
-                        type = task.getTypeValue();
                         for ( DataSnapshot member : dataSnapshot.child(Task.TEAM).getChildren()) {
                             task.addTeamMember(member.getValue().toString());
                         }
@@ -142,13 +145,14 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         pBar = (TextRoundCornerProgressBar)findViewById(R.id.progressBar);
         progressText = (TextView)findViewById(R.id.progress_text_value);
         maxText = (TextView)findViewById(R.id.max_text_value);
+        checkBox = (CheckBox)findViewById(R.id.task_checkbox);
 
         awardManager = AwardManager.getInstance(this);
         helperPreferences = new HelperPreferences(this);
     }
 
     public void initializeFields(Task task) {
-        activityName.setText( task.getName() );
+        activityName.setText(task.getName());
         activityDeadline.setText( task.getFormattedDeadline() );
         switch (task.getTypeValue()){
             case DEADLINE:
@@ -170,6 +174,13 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
             case TODO:
                 findViewById(R.id.task_deadline_layout).setVisibility(View.VISIBLE);
                 findViewById(R.id.task_priority_layout).setVisibility(View.VISIBLE);
+                boolean isChecked = !task.getStateValue().equals(Task.State.ACTIVE);
+                checkBox.setChecked(isChecked);
+                if (isChecked) {
+                    activityName.setPaintFlags(activityName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                }
+                checkBox.setOnCheckedChangeListener(this);
+                checkBox.setVisibility(View.VISIBLE);
                 break;
             case ONGOING:
                 findViewById(R.id.task_priority_layout).setVisibility(View.VISIBLE);
@@ -183,6 +194,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
         spinner.setOnItemSelectedListener(this);
         spinner.setSelection(spinnerPosition(task.getPriorityValue()));
         priority = task.getPriorityValue();
+        state = task.getStateValue();
     }
 
 
@@ -497,15 +509,14 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                 task.setPriorityValue(Task.Priority.VERY_HIGH);
                 break;
         }
-        if (!priority.equals(task.getPriorityValue())){
-            wasEdited = true;
-        }
     }
 
     @Override
     public void onBackPressed() {
-        boolean nameEdited = !activityName.getText().toString().trim().equals(task.getName());
-        if (nameEdited || wasEdited) {
+        boolean fieldsEdited = !activityName.getText().toString().trim().equals(task.getName());
+        fieldsEdited |= !state.equals(task.getStateValue());
+        fieldsEdited |= !priority.equals(task.getPriorityValue());
+        if (wasEdited || fieldsEdited) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(getString(R.string.discard_changes))
                     .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
@@ -709,6 +720,19 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
 
         if (!permissions) {
             ActivityCompat.requestPermissions(this, permissionsId, callbackId);
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        if (compoundButton.getId() == R.id.task_checkbox) {
+            if (b) {
+                task.setStateValue(Task.State.DONE);
+                activityName.setPaintFlags(activityName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            } else {
+                task.setStateValue(Task.State.ACTIVE);
+                activityName.setPaintFlags(activityName.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+            }
         }
     }
 }
