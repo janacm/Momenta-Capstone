@@ -26,9 +26,6 @@ android {
         versionCode 6
         versionName "0."+versionCode+"."+System.getenv('CIRCLE_BUILD_NUM')
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        jackOptions {
-            enabled true
-        }
     }
 
     signingConfigs {
@@ -60,10 +57,6 @@ android {
         disable 'MissingTranslation'
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
 }
 
 dependencies {

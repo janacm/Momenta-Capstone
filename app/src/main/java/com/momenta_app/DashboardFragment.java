@@ -28,6 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -100,7 +101,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
 
         taskDayRecyclerView = (RecyclerView) activityView.findViewById(R.id.task_for_day_recycler);
         taskDayRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        taskDayAdapter = new DashboardDayTaskAdapter(mDatabaseReference, new ArrayList<>());
+        taskDayAdapter = new DashboardDayTaskAdapter(mDatabaseReference, new ArrayList<Task>());
         taskDayAdapter.registerAdapterDataObserver(getAdapterDataObserver());
         taskDayRecyclerView.setAdapter(taskDayAdapter);
 
@@ -190,12 +191,15 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
         Collections.reverse(tasks);
 
         //Sort ArrayList items based on last modified task
-        Collections.sort(tasks, (t1, t2) -> {
-            if (t1.getLastModified() > t2.getLastModified())
-                return 1;
-            if (t1.getLastModified() < t2.getLastModified())
-                return -1;
-            return 0;
+        Collections.sort(tasks, new Comparator<Task>() {
+            @Override
+            public int compare(Task t1, Task t2) {
+                if (t1.getLastModified() > t2.getLastModified())
+                    return 1;
+                if (t1.getLastModified() < t2.getLastModified())
+                    return -1;
+                return 0;
+            }
         });
 
         //Sublist of top 5 tasks is displayed in adapter

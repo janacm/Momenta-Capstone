@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.google.firebase.database.DatabaseReference;
@@ -50,14 +51,17 @@ public class DashboardDayTaskAdapter extends RecyclerView.Adapter<RecyclerView.V
             case 0:
                 DeadlineViewHolder deadlineViewHolder = (DeadlineViewHolder)holder;
                 deadlineViewHolder.textview.setText(task.getName());
-                deadlineViewHolder.itemView.setOnClickListener(v -> {
-                    Intent intent = new Intent(context, TaskActivity.class);
-                    intent.putExtra(Task.ID, task.getId());
-                    context.startActivity(intent);
+                deadlineViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, TaskActivity.class);
+                        intent.putExtra(Task.ID, task.getId());
+                        context.startActivity(intent);
+                    }
                 });
                 break;
             case 1:
-                TodoViewHolder todoViewHolder = (TodoViewHolder)holder;
+                final TodoViewHolder todoViewHolder = (TodoViewHolder)holder;
                 todoViewHolder.checkBox.setText(task.getName());
                 boolean isChecked = !task.getStateValue().equals(Task.State.ACTIVE);
                 if (isChecked) {
@@ -65,20 +69,23 @@ public class DashboardDayTaskAdapter extends RecyclerView.Adapter<RecyclerView.V
                             | Paint.STRIKE_THRU_TEXT_FLAG);
                 }
                 todoViewHolder.checkBox.setChecked(isChecked);
-                todoViewHolder.checkBox.setOnCheckedChangeListener((compoundButton, b) -> {
-                    if (b) {
-                        task.setStateValue(Task.State.DONE);
-                        todoViewHolder.checkBox.setPaintFlags(todoViewHolder.checkBox.getPaintFlags()
-                                | Paint.STRIKE_THRU_TEXT_FLAG);
+                todoViewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                        if (b) {
+                            task.setStateValue(Task.State.DONE);
+                            todoViewHolder.checkBox.setPaintFlags(todoViewHolder.checkBox.getPaintFlags()
+                                    | Paint.STRIKE_THRU_TEXT_FLAG);
 
-                    } else {
-                        task.setStateValue(Task.State.ACTIVE);
-                        todoViewHolder.checkBox.setPaintFlags(todoViewHolder.checkBox.getPaintFlags()
-                                & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+                        } else {
+                            task.setStateValue(Task.State.ACTIVE);
+                            todoViewHolder.checkBox.setPaintFlags(todoViewHolder.checkBox.getPaintFlags()
+                                    & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                        }
+                        // TODO: Changes only saved on this directory, team members?
+                        ref.child(FirebaseProvider.getUserPath() + "/goals" + "/" + task.getId() + "/"
+                                + Task.STATE).setValue(task.getState());
                     }
-                    // TODO: Changes only saved on this directory, team members?
-                    ref.child(FirebaseProvider.getUserPath() + "/goals" + "/" + task.getId() + "/"
-                            + Task.STATE).setValue(task.getState());
                 });
                 break;
         }
