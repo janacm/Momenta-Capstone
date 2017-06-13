@@ -67,8 +67,8 @@ public class SelectTasksActivity extends AppCompatActivity {
                         // Iterate over all tasks
                         for (DataSnapshot snapshot: dataSnapshot.getChildren() ) {
                             long currentTime = System.currentTimeMillis();
-                            //If the deadline hasn't passed
-                            if (currentTime < (Long) snapshot.child(Task.DEADLINE).getValue()) {
+                            //If the deadline hasn't passed and task is still active
+                            if (currentTime < (Long) snapshot.child(Task.DEADLINE).getValue() && String.valueOf(snapshot.child(Task.STATE).getValue()).equals(String.valueOf((Task.State.ACTIVE)))) {
                                 Task task = new Task();
                                 task.setId((String) snapshot.child(Task.ID).getValue());
                                 task.setName((String) snapshot.child(Task.NAME).getValue());

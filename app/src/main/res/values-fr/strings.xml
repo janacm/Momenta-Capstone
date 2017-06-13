@@ -86,7 +86,7 @@
     <string name="discard_changes">Annuler vos changements?</string>
     <string name="time_in_minutes">Temps en minutes</string>
     <string name="add_item_string">Ajouter une nouvelle tâche</string>
-    <string name="award_commited_desc_1">\"Temps enregistré à une activité déjà commencée \"</string>
+    <string name="award_commited_desc_1">Temps enregistré à une activité déjà commencée</string>
     <string name="award_commited_title">Engagé</string>
     <string name="award_multi_tasker_desc_1">Temps enregistré dans</string>
     <string name="award_multi_tasker_desc_2">différentes activités</string>
@@ -104,4 +104,18 @@
     <string name="award_productive_desc_1">Enregistrer du temps après avoir vu la notification</string>
     <string name="award_ponctual_desc_1">Atteindre l\'objectif de temps avant la date limite sur</string>
     <string name="award_neophyte_desc_1">Enregistrer du temps pour la première fois envers une activité</string>
+    <string name="sort_dialog_priority">Priorité</string>
+    <string name="overdue_section">EN RETARD</string>
+    <string name="tomorrow_section">DEMAIN</string>
+    <string name="next7days_section">7 PROCHAINS JOURS</string>
+    <string name="later_section">PLUS TARD</string>
+    <string name="ongoing_section">EN COURS</string>
+    <string name="tasks_section">ACTIVITÉS</string>
+    <string name="very_low_section">TRÈS BASSE</string>
+    <string name="low_section">BASSE</string>
+    <string name="medium_section">MOYENNE</string>
+    <string name="high_section">HAUTE</string>
+    <string name="very_high_section">TRÈS HAUTE</string>
+    <string name="completed_section">COMPLETÉ</string>
+    <string name="today_section">AUJOURD\'HUI</string>
 </resources>

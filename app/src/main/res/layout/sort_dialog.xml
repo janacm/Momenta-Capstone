@@ -24,9 +24,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:id="@+id/radio_button_date_created"
+            android:id="@+id/radio_button_name"
             android:textSize="18sp"
-            android:text="@string/sort_dialog_date_created"/>
+            android:text="@string/sort_dialog_name"/>
 
         <android.support.v7.widget.AppCompatRadioButton
             android:layout_width="match_parent"
@@ -37,21 +37,14 @@
             android:text="@string/sort_dialog_dealine"
             android:checked="false" />
 
-        <android.support.v7.widget.AppCompatRadioButton
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:id="@+id/radio_button_name"
-            android:textSize="18sp"
-            android:text="@string/sort_dialog_name"/>
 
         <android.support.v7.widget.AppCompatRadioButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:id="@+id/radio_button_last_modified"
+            android:id="@+id/radio_button_priority"
             android:textSize="18sp"
-            android:text="@string/sort_dialog_last_modified"
+            android:text="@string/sort_dialog_priority"
             android:checked="false" />
     </RadioGroup>
 

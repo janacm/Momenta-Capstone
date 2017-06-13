@@ -27,6 +27,8 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
+
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -86,10 +88,7 @@ public class ActivityIntegrationTest {
             arrayList.add(t2);
             arrayList.add(t3);
 
-            //Setting up the adapter
-            Adapter adapter = new Adapter(arrayList);
-
-            logFragment.setAdapter(adapter);
+            logFragment.setTasksList(arrayList);
         }
     };
 
@@ -123,9 +122,11 @@ public class ActivityIntegrationTest {
         cal.set(year, month, day);
         insertActivity(name, hours, minutes, year, month, day);
 
-        onView(withId(R.id.viewpager)).perform(swipeLeft());
+        ViewInteraction viewPager = onView(
+                allOf(withId(R.id.viewpager), isDisplayed()));
+        viewPager.perform(swipeLeft());
         onView(withId(R.id.activity_recycler_view)).perform(
-                RecyclerViewActions.actionOnItemAtPosition(0, click()));
+                RecyclerViewActions.actionOnItemAtPosition(1, click()));
     }
 
     private void insertActivity(String activityName, String hours, String minutes,
@@ -138,7 +139,7 @@ public class ActivityIntegrationTest {
         onView(withId(R.id.fab_deadline)).perform(click());
         //Delay for a few secs while reveal animation plays
         try {
-            Thread.sleep(1200);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -170,32 +171,5 @@ public class ActivityIntegrationTest {
                 + context.getString(R.string.interval_time_summary_minutes))).check(matches(isDisplayed()));
     }
 
-    private class Adapter extends RecyclerView.Adapter<LogFragment.TaskViewHolder>{
 
-        ArrayList<Task> list;
-
-        Adapter(ArrayList<Task> list) {
-            this.list = list;
-        }
-        @Override
-        public LogFragment.TaskViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.list_item, parent, false);
-            return new LogFragment.TaskViewHolder(itemView);
-        }
-
-        @Override
-        public void onBindViewHolder(LogFragment.TaskViewHolder holder, int position) {
-            Task task = list.get(position);
-            holder.name.setText(task.getName());
-            holder.timeSpent.setText(task.getFormattedTimeSpent());
-            holder.progressBar.setMax(task.getGoal());
-            holder.progressBar.setProgress(task.getTimeSpent());
-        }
-
-        @Override
-        public int getItemCount() {
-            return list.size();
-        }
-    }
 }
