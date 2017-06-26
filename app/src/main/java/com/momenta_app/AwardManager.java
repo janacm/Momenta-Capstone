@@ -159,7 +159,7 @@ public class AwardManager {
         return false;
     }
 
-    public void handleAwardsProgress(Long progressIncrease, Task t){
+    public void handleAwardsProgress(Long progressIncrease, Task t, boolean fromScreenTakeOver){
 
         Task task = new Task();
         task.setTimeSpent(t.getTimeSpent());
@@ -170,8 +170,9 @@ public class AwardManager {
         //Increase the Neophyte award
         increaseAwardProgress(Constants.SHPREF_NEOPHYTE_AWARD_ID,1, task);
 
-        //Increase the Productive award
-        increaseAwardProgress(Constants.SHPREF_PRODUCTIVE_AWARD_ID,1, task);
+        //Increase the Productive award only if the user increases awards through screen take over activity
+        if(fromScreenTakeOver)
+            increaseAwardProgress(Constants.SHPREF_PRODUCTIVE_AWARD_ID,1, task);
 
         //Increase the perfectionnist award
         increaseAwardProgress(Constants.SHPREF_PERFECTIONIST_AWARD_ID, progressIncrease.doubleValue()/60.0, task);

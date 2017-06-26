@@ -402,7 +402,7 @@ public class AddTaskTimeActivity extends AppCompatActivity {
                                     mFirebaseDatabaseReference.child(tempGoalDir + "/" +Task.STATE)
                                             .setValue(Task.State.DONE);
                                 }
-                                awardManager.handleAwardsProgress(updatedTimeSpent,task);
+                                awardManager.handleAwardsProgress(updatedTimeSpent,task, false);
                             }
 
                             mFirebaseDatabaseReference.child(tempGoalDir + "/" +Task.TIME_SPENT)
