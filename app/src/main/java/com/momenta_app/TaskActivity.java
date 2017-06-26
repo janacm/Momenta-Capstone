@@ -371,7 +371,7 @@ public class TaskActivity extends AppCompatActivity implements AdapterView.OnIte
                                     totalTimeForDay += prevTimeLogged;
                                 }
                                 createCalendarEvent();
-                                awardManager.handleAwardsProgress(timeLogged.longValue(), task);
+                                awardManager.handleAwardsProgress(timeLogged.longValue(), task, false);
                                 mFirebaseDatabaseReference.child(timeSpentDirectory + "/" + Task.TIME_SPENT)
                                         .setValue(totalTimeForDay);
                             }
