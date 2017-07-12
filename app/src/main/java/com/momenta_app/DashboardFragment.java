@@ -215,7 +215,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener{
 
     private void setupGoalProgressCard(int totalGoal, int totalTime) {
         if (isAdded()) {
-            /***Updating the Goal Progress card's fields**/
+//            Updating the Goal Progress card's fields
             progressBar.setMax(totalGoal);
             progressBar.setPadding(10);
             progressBar.setProgress(totalTime);

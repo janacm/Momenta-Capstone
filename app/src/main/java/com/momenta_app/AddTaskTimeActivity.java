@@ -401,6 +401,9 @@ public class AddTaskTimeActivity extends AppCompatActivity {
                                 if(updatedTimeSpent >= task.getGoal()){
                                     mFirebaseDatabaseReference.child(tempGoalDir + "/" +Task.STATE)
                                             .setValue(Task.State.DONE);
+                                    // TODO: Put in name, instead of updated time
+                                    mFirebaseDatabaseReference.child(tempTimeDir + "/" + Task.NAME)
+                                            .setValue(task.getName());
                                 }
                                 awardManager.handleAwardsProgress(updatedTimeSpent,task);
                             }
@@ -411,7 +414,6 @@ public class AddTaskTimeActivity extends AppCompatActivity {
                                     .setValue(Calendar.getInstance().getTimeInMillis());
                             mFirebaseDatabaseReference.child(tempGoalDir + "/" +Task.LAST_MODIFIED_BY)
                                     .setValue(FirebaseProvider.getUserPath());
-
                         }
 
                         @Override

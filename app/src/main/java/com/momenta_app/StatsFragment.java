@@ -378,6 +378,7 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
                                 Task t =  new Task();
                                 t.setId(id.getKey());
                                 t.setTimeSpent( id.child(Task.TIME_SPENT).getValue(Integer.class) );
+                                t.setName( id.child(Task.NAME).getValue(String.class) );
                                 pieDataList.add(t);
                                 totalTime += t.getTimeSpent();
                             }
@@ -415,6 +416,7 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
                         Task t =  new Task();
                         t.setId(id.getKey());
                         t.setTimeSpent( id.child(Task.TIME_SPENT).getValue(Integer.class) );
+                        t.setName( id.child(Task.NAME).getValue(String.class) );
                         data.add(t);
                         totalTime += t.getTimeSpent();
                     }
@@ -422,14 +424,14 @@ public class StatsFragment extends Fragment implements OnChartValueSelectedListe
                     pieData.put(date.getKey(), data);
                 }
 
-                DataSnapshot goalDir = dataSnapshot.child("goals");
-                for (String date : pieData.keySet()) {
-                    ArrayList<Task> list = (ArrayList<Task>) pieData.get(date);
-                    for ( Task t : list ) {
-                        String name = (String)goalDir.child(t.getId()).child(Task.NAME).getValue();
-                        t.setName(name);
-                    }
-                }
+//                DataSnapshot goalDir = dataSnapshot.child("goals");
+//                for (String date : pieData.keySet()) {
+//                    ArrayList<Task> list = (ArrayList<Task>) pieData.get(date);
+//                    for ( Task t : list ) {
+//                        String name = (String)goalDir.child(t.getId()).child(Task.NAME).getValue();
+//                        t.setName(name);
+//                    }
+//                }
                 drawLineGraph();
                 drawPieChart();
             }
